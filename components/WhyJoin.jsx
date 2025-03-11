@@ -1,3 +1,4 @@
+import { benefits } from "@/lib/data";
 import React from "react";
 
 const WhyJoin = () => {
@@ -7,11 +8,23 @@ const WhyJoin = () => {
         <h1 className="text-sm uppercase font-bold text-center">
           Why Join Bestravel Perks Club?
         </h1>
-        <div className="">
-          <div className="card p-6 shadow bg-white flex flex-col gap-4 rounded-2xl">
-            <h3>Title</h3>
-            <p>a little description</p>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+          {benefits.map((benefit, idx) => (
+            <div
+              key={idx}
+              className="flex flex-col gap-4 items-center p-4 bg-white dark:bg-black rounded-2xl shadow"
+            >
+              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
+                <img
+                  src={benefit.icon}
+                  alt={benefit.title}
+                  className="w-16 h-16"
+                />
+              </div>
+              <h2 className="font-bold text-lg">{benefit.title}</h2>
+              <span className="text-center">{benefit.description}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
