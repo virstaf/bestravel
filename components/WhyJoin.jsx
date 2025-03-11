@@ -14,13 +14,10 @@ const WhyJoin = () => {
               key={idx}
               className="flex flex-col gap-4 items-center p-4 bg-white dark:bg-black rounded-2xl shadow"
             >
-              <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
-                <img
-                  src={benefit.icon}
-                  alt={benefit.title}
-                  className="w-16 h-16"
-                />
-              </div>
+              {/* <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center">
+                {benefit.icon}
+              </div> */}
+              <span className="text-green-600">{benefit.icon}</span>
               <h2 className="font-bold text-lg">{benefit.title}</h2>
               <span className="text-center">{benefit.description}</span>
             </div>
