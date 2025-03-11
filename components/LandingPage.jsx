@@ -3,6 +3,11 @@ import HeroSection from "./HeroSection";
 import BenefitsSection from "./LimitedTimeSection";
 import LimitedTimeSection from "./LimitedTimeSection";
 import WhyJoin from "./WhyJoin";
+import WelcomePackages from "./WelcomePackages";
+import HowItWorks from "./HowItWorks";
+import FeaturedDestinations from "./FeaturedDestinations";
+import Testimonials from "./Testimonials";
+import FAQSection from "./FAQSection";
 
 const LandingPage = () => {
   return (
@@ -10,7 +15,11 @@ const LandingPage = () => {
       <HeroSection />
       <LimitedTimeSection />
       <WhyJoin />
-      {/* <BenefitsSection /> */}
+      <WelcomePackages />
+      <HowItWorks />
+      <FeaturedDestinations />
+      <Testimonials />
+      <FAQSection />
     </>
   );
 };
