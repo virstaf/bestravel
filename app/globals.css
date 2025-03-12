@@ -130,3 +130,30 @@
   background-size: cover;
   background-position: center;
 }
+
+.slider-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  max-width: 500px;
+  /* margin: 0 auto; */
+}
+
+.slider-content {
+  transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+.slider-content.next {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slider-content.prev {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.slider-content.active {
+  transform: translateX(0);
+  opacity: 1;
+}

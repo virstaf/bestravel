@@ -8,6 +8,7 @@ import HowItWorks from "./HowItWorks";
 import FeaturedDestinations from "./FeaturedDestinations";
 import Testimonials from "./Testimonials";
 import FAQSection from "./FAQSection";
+import GetInTouch from "./GetInTouch";
 
 const LandingPage = () => {
   return (
@@ -20,6 +21,7 @@ const LandingPage = () => {
       <FeaturedDestinations />
       <Testimonials />
       <FAQSection />
+      <GetInTouch />
     </>
   );
 };
