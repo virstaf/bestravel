@@ -9,6 +9,7 @@ import FeaturedDestinations from "./FeaturedDestinations";
 import Testimonials from "./Testimonials";
 import FAQSection from "./FAQSection";
 import GetInTouch from "./GetInTouch";
+import Newsletter from "./Newsletter";
 
 const LandingPage = () => {
   return (
@@ -22,6 +23,7 @@ const LandingPage = () => {
       <Testimonials />
       <FAQSection />
       <GetInTouch />
+      <Newsletter />
     </>
   );
 };
