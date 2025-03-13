@@ -1,4 +1,4 @@
-import { socialLinks } from "@/lib/data";
+import { footerLinks, socialLinks } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
@@ -8,26 +8,18 @@ const Footer = () => {
     <>
       <div className="w-full py-8 bg-primary text-muted-foreground">
         <div className="content px-4 md:px-8 lg:px-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="links">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 justify-center items-center">
+            <div className="quick links">
               <h3 className="text-sm font-bold ">Quick Links</h3>
               <ul>
-                <li>
-                  <Link href="/about">About Us</Link>
-                </li>
-
-                <li>
-                  <Link href="/faq">FAQ</Link>
-                </li>
-                <li>
-                  <Link href="/terms">Terms & Conditions</Link>
-                </li>
-                <li>
-                  <Link href="/privacy">Privacy Policy</Link>
-                </li>
+                {footerLinks.map((link, idx) => (
+                  <li>
+                    <Link href={link.url}>{link.name}</Link>
+                  </li>
+                ))}
               </ul>
             </div>
-            <div className="cta">
+            <div className="cta hidden md:flex lg:block flex-col justify-center items-center">
               <h3 className="text-sm font-bold">
                 🎉 Act Now & Start Saving! 🎉
               </h3>
@@ -35,7 +27,7 @@ const Footer = () => {
                 Join Now for Exclusive Travel Perks!
               </Button>
             </div>
-            <div className="social max-w-[400px]">
+            <div className="social max-w-[200px] lg:max-w-[400px]">
               <h3 className="text-sm font-bold ">Follow Us on Social Media</h3>
               <div className="Socials flex gap-3 my-3">
                 {socialLinks.map((item, idx) => (
@@ -57,8 +49,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <p className="text-center bg-gray-200 ">
-        All rights reserved. &copy; {new Date().getFullYear()}
+      <p className="text-center bg-primary border border-x-0 border-b-0 text-muted-foreground py-1">
+        Bestravel &copy; {new Date().getFullYear()} All rights reserved.
       </p>
     </>
   );

@@ -9,7 +9,7 @@ const FeaturedDestinations = () => {
         <h2 className="text-sm uppercase font-bold text-center">
           ✨ Featured Destinations ✨
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+        <div className="grid grid-cols-1 sm:max-w-[500px] mx-auto lg:max-w-full lg:grid-cols-3 gap-4 mt-8">
           {destinations
             .filter((item) => item.isFeatured)
             .map((destination, idx) => (

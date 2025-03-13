@@ -5,7 +5,7 @@ import Image from "next/image";
 const HeroSection = () => {
   return (
     <div className="relative w-full h-full">
-      <div className="content h-full px-4 md:px-8 lg:px-12 grid grid-cols-2 gap-8 justify-center items-center">
+      <div className="content h-full px-4 md:px-8 lg:px-12 grid md:grid-cols-2 gap-8 justify-center items-center">
         {/* content... */}
         <div className="cta flex flex-col gap-6 items-center p-8 backdrop-blur rounded-4xl">
           <div className="flex flex-col text-center">

@@ -49,7 +49,9 @@ const ContactForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8 p-8 bg-white rounded-2xl shadow"
       >
-        <h1 className="text-sm uppercase font-bold">Contact Form</h1>
+        <h1 className="text-sm uppercase font-bold text-center">
+          Contact Form
+        </h1>
         <FormField
           control={form.control}
           name="fullname"
@@ -89,7 +91,10 @@ const ContactForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <div className="flex w-full justify-end">
+          {/* <span className="text-muted-foreground text-sm">Some text</span> */}
+          <Button type="submit">Submit</Button>
+        </div>
       </form>
     </Form>
   );

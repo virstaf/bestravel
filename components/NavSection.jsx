@@ -13,10 +13,6 @@ const NavSection = () => {
   const [activeTab, setActiveTab] = useState("home");
   const pathname = usePathname();
   const menuRef = useRef(null);
-  // const NavLinks = [
-  //   { name: "Home", slug: "home", path: "/" },
-  //   { name: "Explore", slug: "explore", path: "/explore" },
-  // ];
 
   useEffect(() => {
     setActiveTab(pathname.split("/")[1]);
@@ -56,7 +52,7 @@ const NavSection = () => {
           <span className="font-bold">Bestravel</span>
           {/* <Image
             src="/images/logo.png"
-            alt="brapurple logo"
+            alt="bestravel logo"
             width="41"
             height="40"
             className="object-fit"
@@ -100,20 +96,14 @@ const NavSection = () => {
         <div onClick={toggleMenu} className="md:hidden text-primary">
           {menuOpen ? <X /> : <AlignJustify />}
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant="secondary"
-            className="hover:scale-105 hidden md:block"
-          >
+        <div className="hidden md:flex gap-2">
+          <Button variant="secondary" className="hover:scale-105  md:block">
             <Link href="/login">Login</Link>
           </Button>
-          <Button className="hover:scale-105 hidden md:block">
+          <Button className="hover:scale-105  md:block">
             <Link href="/register">Register</Link>
           </Button>
         </div>
-        {/* <Button className="hover:scale-105 hidden md:block">
-          <Link href="/exclusive">Get Exclusive</Link>
-        </Button> */}
       </div>
     </div>
   );

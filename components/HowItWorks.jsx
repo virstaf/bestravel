@@ -8,7 +8,7 @@ const HowItWorks = () => {
         <h1 className="text-sm uppercase font-bold text-center">
           How it Works
         </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+        <div className="grid grid-cols-1 mx-auto sm:max-w-[450px] lg:max-w-full lg:grid-cols-3 gap-4 mt-8">
           {howItWorks.map((step, idx) => (
             <div
               key={idx}

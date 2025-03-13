@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 const LimitedTimeSection = () => {
   return (
     <div className="w-full py-8 bg-gray-200 ">
-      <div className="grid grid-cols-2 items-center justify-center gap-2 px-4 md:px-8 lg:px-12">
+      <div className="grid md:grid-cols-2 items-center justify-center gap-2 px-4 md:px-8 lg:px-12">
         <div>
           <h2 className="font-bold text-2xl">Limited-Time Offer!</h2>
           <span>Sign up today & receive up to 50% OFF membership fees!</span>

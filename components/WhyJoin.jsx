@@ -8,7 +8,7 @@ const WhyJoin = () => {
         <h2 className="text-sm uppercase font-bold text-center">
           Why Join Bestravel Perks Club?
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+        <div className="grid grid-cols-1 sm:max-w-[500px] lg:max-w-full mx-auto md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
           {benefits.map((benefit, idx) => (
             <div
               key={idx}
