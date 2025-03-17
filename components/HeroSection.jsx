@@ -5,27 +5,27 @@ import Image from "next/image";
 const HeroSection = () => {
   return (
     <div className="relative w-full h-full">
-      <div className="content h-full px-4 md:px-8 lg:px-12 grid md:grid-cols-2 gap-8 justify-center items-center">
+      <div className="container mx-auto py-12 h-full grid lg:grid-cols-2 gap-8 justify-center items-center">
         {/* content... */}
-        <div className="cta flex flex-col gap-6 items-center p-8 backdrop-blur rounded-4xl">
+        <div className="cta flex flex-col gap-6 items-center p-8 backdrop-blur bg-white/10 rounded-[2rem]">
           <div className="flex flex-col text-center">
-            <span className="uppercase text-xs font-bold">
+            <p className="uppercase text-xs pb-2 font-bold text-green-600">
               🌍 Travel More, Spend Less – with Exclusive Member Benefits!
-            </span>
+            </p>
             <h2 className="font-bold text-4xl">
               Unlock VIP Travel Perks & Save Up to 50%!
             </h2>
           </div>
-          <span>
+          <p className="text-center">
             Join today and get up to £500 in travel credits, VIP lounge access,
             and more!
-          </span>
+          </p>
           <Button>Join Now & Save 50%!</Button>
         </div>
         <div className="w-full h-full flex items-center justify-center">
-          <div className="heroImage h-[300px] rounded-2xl overflow-hidden">
+          <div className="heroImage object-cover mx-4 h-full rounded-2xl overflow-hidden">
             <Image
-              className="object-contain"
+              className="object-cover"
               src="/images/woman-on-canoe.jpg"
               width="1280"
               height="853"
