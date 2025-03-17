@@ -21,13 +21,9 @@ const LandingPage = () => {
       <HowItWorks />
       <FeaturedDestinations />
       <Testimonials />
-      <div className="w-full container mx-auto grid lg:grid-cols-2">
-        <FAQSection />
-        <GetInTouch />
-      </div>
-      <div className="w-full max-w-[450px] mx-auto">
-        <ContactForm />
-      </div>
+      <FAQSection />
+      <GetInTouch />
+
       <Newsletter />
     </>
   );
