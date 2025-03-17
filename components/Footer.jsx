@@ -1,7 +1,7 @@
 import { footerLinks, socialLinks } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "./ui/button";
+import { JoinDialog } from "./JoinDialog";
 
 const Footer = () => {
   return (
@@ -13,7 +13,7 @@ const Footer = () => {
               <h3 className="text-sm font-bold ">Quick Links</h3>
               <ul>
                 {footerLinks.map((link, idx) => (
-                  <li>
+                  <li key={idx}>
                     <Link href={link.url}>{link.name}</Link>
                   </li>
                 ))}
@@ -23,9 +23,12 @@ const Footer = () => {
               <h3 className="text-sm font-bold">
                 🎉 Act Now & Start Saving! 🎉
               </h3>
-              <Button variant="secondary" className="my-3">
-                Join Now for Exclusive Travel Perks!
-              </Button>
+              <div className="my-3">
+                <JoinDialog
+                  ButtonText={"Join Now for Exclusive Travel Perks!"}
+                  Variant={"outline"}
+                />
+              </div>
             </div>
             <div className="social max-w-[200px] lg:max-w-[400px]">
               <h3 className="text-sm font-bold ">Follow Us on Social Media</h3>

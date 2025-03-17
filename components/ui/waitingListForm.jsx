@@ -14,7 +14,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "./textarea";
 
 const formSchema = z.object({
   fullname: z
@@ -24,10 +23,16 @@ const formSchema = z.object({
     })
     .max(50),
   email: z.string().email({ message: "Invalid email address" }),
-  message: z.string().min(10).max(500),
+  phone: z
+    .string()
+    .min(8, { message: "Phone number must be at least 8 characters" })
+    .max(20, { message: "Phone number must be at most 20 characters" })
+    .regex(/^\+?[0-9\s\-()]+$/, {
+      message: "Invalid phone number format",
+    }),
 });
 
-const ContactForm = () => {
+const WaitingListForm = () => {
   function onSubmit(values) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
@@ -38,18 +43,15 @@ const ContactForm = () => {
     defaultValues: {
       fullname: "",
       email: "",
-      message: "",
+      phone: "",
     },
   });
   return (
     <div className="w-full max-w-[450px] mx-auto">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 p-8 bg-white rounded-2xl shadow"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <h1 className="text-sm uppercase font-bold text-center">
-            Contact Form
+            Join VIP Waiting Form
           </h1>
           <FormField
             control={form.control}
@@ -79,20 +81,21 @@ const ContactForm = () => {
           />
           <FormField
             control={form.control}
-            name="message"
+            name="phone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Message</FormLabel>
+                <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Your message here..." {...field} />
+                  <Input placeholder="phone number here..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <div className="flex w-full justify-end">
+
+          <div className="grid w-full justify-end">
             {/* <span className="text-muted-foreground text-sm">Some text</span> */}
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Join Now</Button>
           </div>
         </form>
       </Form>
@@ -100,4 +103,4 @@ const ContactForm = () => {
   );
 };
 
-export default ContactForm;
+export default WaitingListForm;

@@ -7,6 +7,7 @@ import { testimonials } from "@/lib/data";
 import { Dot } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
+import { JoinDialog } from "./JoinDialog";
 
 const Testimonials = () => {
   const [sliderIndex, setSliderIndex] = useState(0);
@@ -66,7 +67,8 @@ const Testimonials = () => {
             />
           </div>
         </div>
-        <Button>Join Now & Experience VIP Travel!</Button>
+        {/* <Button>Join Now & Experience VIP Travel!</Button> */}
+        <JoinDialog ButtonText={"Join Now & Experience VIP Travel!"} />
       </div>
     </div>
   );

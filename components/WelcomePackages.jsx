@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "./ui/button";
+import { JoinDialog } from "./JoinDialog";
 
 const WelcomePackages = () => {
   return (
@@ -16,7 +17,8 @@ const WelcomePackages = () => {
             <li>✅ Up to £500 Travel Credits for Hotel Bookings</li>
           </ul>
           <div className="">
-            <Button>Join Now & Start Saving!</Button>
+            {/* <Button>Join Now & Start Saving!</Button> */}
+            <JoinDialog ButtonText={"Join Now & Start Saving!"} />
           </div>
         </div>
       </div>

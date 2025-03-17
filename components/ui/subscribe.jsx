@@ -30,7 +30,7 @@ const SubscribeForm = () => {
           render={({ field }) => (
             <div className="flex flex-col flex-1">
               <Input
-                className="rounded-none border-none"
+                className="rounded-none pl-4 border-none"
                 placeholder="Email"
                 {...field}
               />

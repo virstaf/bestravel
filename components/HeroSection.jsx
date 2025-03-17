@@ -1,6 +1,6 @@
 import React from "react";
-import { Button } from "./ui/button";
 import Image from "next/image";
+import { JoinDialog } from "./JoinDialog";
 
 const HeroSection = () => {
   return (
@@ -20,7 +20,8 @@ const HeroSection = () => {
             Join today and get up to £500 in travel credits, VIP lounge access,
             and more!
           </p>
-          <Button>Join Now & Save 50%!</Button>
+          {/* <Button>Join VIP Waiting List Now!</Button> */}
+          <JoinDialog ButtonText={"Join VIP Waiting List Now!"} />
         </div>
         <div className="w-full h-full flex items-center justify-center">
           <div className="heroImage object-cover mx-4 h-full rounded-2xl overflow-hidden">

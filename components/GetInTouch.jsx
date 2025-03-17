@@ -7,8 +7,8 @@ const GetInTouch = () => {
         <h2 className="text-sm uppercase font-bold text-center mb-6">
           📞 Get in Touch!
         </h2>
-        <div className="grid">
-          <div className="flex flex-col gap-4 max-w-[750px] mx-auto">
+        <div className="grid xl:grid-cols-2 justify-center">
+          <div className="flex flex-col gap-4 max-w-[750px] py-6 mx-auto">
             <p>
               Have questions? Need help with your membership? Fill out the form
               below, and our travel experts will get back to you ASAP!
@@ -18,9 +18,7 @@ const GetInTouch = () => {
               <li>📧 Email Us: support@bestravelperks.com</li>
             </ul>
           </div>
-          <div className="w-full max-w-[450px] mx-auto">
-            <ContactForm />
-          </div>
+          <ContactForm />
         </div>
       </div>
     </div>
