@@ -4,15 +4,15 @@ import React from "react";
 const HowItWorks = () => {
   return (
     <div className="w-full py-8 bg-gray-200 ">
-      <div className="content px-4 md:px-8 lg:px-12">
+      <div className="container mx-auto px-4 md:px-8 lg:px-12">
         <h1 className="text-sm uppercase font-bold text-center">
           How it Works
         </h1>
-        <div className="grid grid-cols-1 mx-auto sm:max-w-[450px] lg:max-w-full lg:grid-cols-3 gap-4 mt-8">
+        <div className="grid grid-cols-1 mx-auto sm:max-w-[450px] lg:max-w-full lg:grid-cols-3 gap-6 mt-8">
           {howItWorks.map((step, idx) => (
             <div
               key={idx}
-              className="flex flex-col gap-4 items-center p-4 bg-white dark:bg-black rounded-2xl shadow relative"
+              className="flex flex-col gap-4 items-center p-4 py-2 bg-white dark:bg-black rounded-2xl shadow relative"
             >
               <div className="absolute top-3 left-4  text-xl font-bold backdrop-blur-2xl flex items-center justify-center">
                 {idx + 1}
