@@ -14,6 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import axios from "axios";
 
 const formSchema = z.object({
   fullname: z
@@ -33,10 +35,22 @@ const formSchema = z.object({
 });
 
 const WaitingListForm = () => {
-  function onSubmit(values) {
+  async function onSubmit(values) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+
+    try {
+      const response = await axios.post("api/waiting-list", values);
+      if (response.status === 200 || response.status === 201) {
+        toast.success(
+          response.data.message || "You've been added successfully"
+        );
+      }
+    } catch (error) {
+      toast.error(
+        error.response.data.errorMessage || "Something went wrong..."
+      );
+    }
   }
   const form = useForm({
     resolver: zodResolver(formSchema),
