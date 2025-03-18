@@ -15,12 +15,9 @@ const formSchema = z.object({
 
 const SubscribeForm = () => {
   const onSubmit = async (values) => {
-    console.log(values);
     try {
       const response = await axios.post("/api/newsletter", values);
-      console.log(response);
       if (response.status === 201 || response.status === 200) {
-        // alert(response.data.message);
         toast.success(response.data.message || "User has been added", {
           action: {
             label: "Okay",
