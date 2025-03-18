@@ -6,14 +6,31 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormMessage, FormField } from "./form";
+import axios from "axios";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
 });
 
 const SubscribeForm = () => {
-  const onSubmit = (values) => {
+  const onSubmit = async (values) => {
     console.log(values);
+    try {
+      const response = await axios.post("/api/newsletter", values);
+      console.log(response);
+      if (response.status === 201 || response.status === 200) {
+        // alert(response.data.message);
+        toast.success(response.data.message || "User has been added", {
+          action: {
+            label: "Okay",
+            onClick: () => console.log("Okay"),
+          },
+        });
+      }
+    } catch (error) {
+      toast.error(error.response.data.errorMessage || "Something went wrong");
+    }
   };
   const form = useForm({
     resolver: zodResolver(formSchema),
