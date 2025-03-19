@@ -96,12 +96,12 @@ const NavSection = () => {
         <div onClick={toggleMenu} className="md:hidden text-primary">
           {menuOpen ? <X /> : <AlignJustify />}
         </div>
-        <div className="hidden md:flex gap-2">
+        <div className="hidden md:flex gap-3">
           <Button variant="secondary" className="hover:scale-105  md:block">
-            <Link href="/login">Login</Link>
+            <Link href="/auth/login">Login</Link>
           </Button>
           <Button className="hover:scale-105  md:block">
-            <Link href="/register">Register</Link>
+            <Link href="/auth/signup">Register</Link>
           </Button>
         </div>
       </div>

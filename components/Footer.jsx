@@ -5,7 +5,7 @@ import { JoinDialog } from "./JoinDialog";
 
 const Footer = () => {
   return (
-    <>
+    <footer className="w-full">
       <div className="w-full py-8 bg-primary text-muted-foreground">
         <div className="content px-4 md:px-8 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 justify-center items-center">
@@ -34,7 +34,7 @@ const Footer = () => {
               <h3 className="text-sm font-bold ">Follow Us on Social Media</h3>
               <div className="Socials flex gap-3 my-3">
                 {socialLinks.map((item, idx) => (
-                  <Link key={idx} href={item.url}>
+                  <Link key={idx} href={item.url} target="_blank">
                     <Image
                       src={item.icon}
                       width={24}
@@ -52,10 +52,15 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <p className="text-center bg-primary border border-x-0 border-b-0 text-muted-foreground py-1">
-        Bestravel &copy; {new Date().getFullYear()} All rights reserved.
-      </p>
-    </>
+      <div className="flex justify-evenly flex-wrap gap-2 text-center bg-primary border border-x-0 border-b-0 text-muted-foreground px-4 py-1">
+        <p className="">
+          Bestravel &copy; {new Date().getFullYear()} All rights reserved.
+        </p>
+        <Link href="https://uniiktheo.tech" target="_blank">
+          <p className="ml-2">Designed by UniikTheo</p>
+        </Link>
+      </div>
+    </footer>
   );
 };
 export default Footer;
