@@ -9,10 +9,13 @@ import Testimonials from "./Testimonials";
 import FAQSection from "./FAQSection";
 import GetInTouch from "./GetInTouch";
 import Newsletter from "./Newsletter";
+import NavSection from "./NavSection";
+import Footer from "./Footer";
 
 const LandingPage = () => {
   return (
     <>
+      <NavSection />
       <HeroSection />
       <LimitedTimeSection />
       <WhyJoin />
@@ -23,6 +26,7 @@ const LandingPage = () => {
       <FAQSection />
       <GetInTouch />
       <Newsletter />
+      <Footer />
     </>
   );
 };
