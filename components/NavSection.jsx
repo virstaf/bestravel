@@ -49,7 +49,7 @@ const NavSection = () => {
           href="/"
           className="max-h-14 hover:cursor-pointer hover:scale-105"
         >
-          <span className="font-bold">Bestravel</span>
+          <span className="font-bold text-2xl text-green-600">Bestravel</span>
           {/* <Image
             src="/images/logo.png"
             alt="bestravel logo"

@@ -15,8 +15,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import axios from "axios";
 import { supabase } from "@/app/supabaseClient";
+import { useState, useEffect } from "react";
 
 const formSchema = z.object({
   fullname: z
@@ -36,22 +36,31 @@ const formSchema = z.object({
 });
 
 const WaitingListForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   async function onSubmit(values) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-
-    const { data, error } = await supabase
-      .from("waiting-list-users")
-      .insert(values);
-    if (error) {
-      toast.error(error.details || "Something went wrong...");
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase
+        .from("waiting-list-users")
+        .insert(values);
+      if (error) {
+        toast.error(error.details || "Something went wrong...");
+        form.reset();
+        setLoading(false);
+      } else {
+        toast.success("You've been added successfully" || data.message);
+        form.reset();
+        setIsLoading(false);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response.message || "Something went wrong...");
       form.reset();
-    } else {
-      toast.success("You've been added successfully" || data.message);
-      form.reset();
+      setLoading(false);
     }
-
-  
   }
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -110,7 +119,9 @@ const WaitingListForm = () => {
 
           <div className="grid w-full justify-end">
             {/* <span className="text-muted-foreground text-sm">Some text</span> */}
-            <Button type="submit">Join Now</Button>
+            <Button type="submit" disabled={isLoading}>
+              Join Now
+            </Button>
           </div>
         </form>
       </Form>
