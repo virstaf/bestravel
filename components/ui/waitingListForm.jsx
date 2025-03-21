@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import axios from "axios";
+import { supabase } from "@/app/supabaseClient";
 
 const formSchema = z.object({
   fullname: z
@@ -39,18 +40,18 @@ const WaitingListForm = () => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
 
-    try {
-      const response = await axios.post("api/waiting-list", values);
-      if (response.status === 200 || response.status === 201) {
-        toast.success(
-          response.data.message || "You've been added successfully"
-        );
-      }
-    } catch (error) {
-      toast.error(
-        error.response.data.errorMessage || "Something went wrong..."
-      );
+    const { data, error } = await supabase
+      .from("waiting-list-users")
+      .insert(values);
+    if (error) {
+      toast.error(error.details || "Something went wrong...");
+      form.reset();
+    } else {
+      toast.success("You've been added successfully" || data.message);
+      form.reset();
     }
+
+  
   }
   const form = useForm({
     resolver: zodResolver(formSchema),
