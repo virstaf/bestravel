@@ -104,8 +104,16 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
-          <div className="grid">
+          <div className="grid w-full gap-3">
             <Button type="submit">Sign up</Button>
+            <div className="flex w-full h-6 items-center justify-center">
+              <hr className="flex-1 border-muted-foreground" />
+              <span className="text-muted-foreground px-3">or</span>
+              <hr className="flex-1 border-muted-foreground" />
+            </div>
+            <Button type="button" variant="outline">
+              Continue with Google
+            </Button>
           </div>
           <div className="-mt-4 max-w-[280px] mx-auto">
             <p className="text-muted-foreground text-sm text-center ">

@@ -16,6 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import axios from "axios";
+import Image from "next/image";
+import { Building } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -87,13 +89,16 @@ const LoginForm = () => {
             )}
           />
 
-          <div className="grid w-full">
-            {/* <Link href="/auth/signup">
-              <span className="text-muted-foreground text-sm">
-                Don't have an account?
-              </span>
-            </Link> */}
-            <Button type="submit">Submit</Button>
+          <div className="grid w-full gap-3">
+            <Button type="submit">Login</Button>
+            <div className="flex w-full h-6 items-center justify-center">
+              <hr className="flex-1 border-muted-foreground" />
+              <span className="text-muted-foreground px-3">or</span>
+              <hr className="flex-1 border-muted-foreground" />
+            </div>
+            <Button type="button" variant="outline">
+              Continue with Google
+            </Button>
           </div>
           <div className="-mt-4 max-w-[280px] mx-auto">
             <p className="text-muted-foreground text-sm text-center ">
