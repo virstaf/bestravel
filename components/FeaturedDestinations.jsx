@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 
 const FeaturedDestinations = () => {
   return (
-    <div className="w-full py-8 border bg-gray-200">
+    <div className="w-full py-12">
       <div className="container mx-auto px-4 md:px-8 lg:px-12">
         <h2 className="text-sm uppercase font-bold text-center">
           ✨ Featured Destinations ✨

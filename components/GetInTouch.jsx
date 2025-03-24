@@ -2,7 +2,7 @@ import ContactForm from "./ui/contactForm";
 
 const GetInTouch = () => {
   return (
-    <div className="w-full py-8">
+    <div className="w-full py-12 bg-primary-foreground">
       <div className="container px-4 md:px-8 lg:px-12 mx-auto">
         <h2 className="text-sm uppercase font-bold text-center mb-6">
           📞 Get in Touch!

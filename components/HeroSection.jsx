@@ -6,7 +6,7 @@ import MyCarousel from "./ui/myCarousel";
 const HeroSection = () => {
   return (
     <div className="relative w-full h-full">
-      <div className="container mx-auto py-12 h-full min-h-[500px] grid lg:grid-cols-2 gap-8 justify-center items-center">
+      <div className="container mx-auto py-12 h-full min-h-[550px] grid lg:grid-cols-2 gap-8 justify-center items-center">
         {/* content... */}
         <div></div>
         <div className="cta flex flex-col gap-6 items-center p-8 backdrop-blur bg-white/10 rounded-[2rem]">

@@ -100,7 +100,7 @@ const NavSection = () => {
           </Button> */}
         {/* Remove after dashboard is complete */}
         <div>
-          <JoinDialog ButtonText={"Join VIP Waiting List Now!"} />
+          <JoinDialog ButtonText={"Join VIP Waiting Now!"} />
         </div>
       </div>
     </div>

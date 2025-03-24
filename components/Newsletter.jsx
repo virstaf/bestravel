@@ -3,7 +3,7 @@ import SubscribeForm from "./ui/subscribe";
 
 const Newsletter = () => {
   return (
-    <div className="w-full py-8 border bg-gray-200">
+    <div className="w-full py-12 border border-x-0">
       <div className="container mx-auto px-4 md:px-8 lg:px-12">
         <h2 className="text-sm uppercase font-bold text-center mb-6">
           📬 Subscribe to Our Travel Newsletter!
