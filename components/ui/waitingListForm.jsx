@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { supabase } from "@/app/supabaseClient";
 import { useState, useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   fullname: z
@@ -28,8 +29,8 @@ const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   phone: z
     .string()
-    .min(8, { message: "Phone number must be at least 8 characters" })
-    .max(20, { message: "Phone number must be at most 20 characters" })
+    // .min(8, { message: "Phone number must be at least 8 characters" })
+    // .max(20, { message: "Phone number must be at most 20 characters" })
     .regex(/^\+?[0-9\s\-()]+$/, {
       message: "Invalid phone number format",
     }),
@@ -49,7 +50,8 @@ const WaitingListForm = () => {
       if (error) {
         toast.error(error.details || "Something went wrong...");
         form.reset();
-        setLoading(false);
+        setIsLoading(false);
+        return { success: false, error };
       } else {
         toast.success("You've been added successfully" || data.message);
         form.reset();
@@ -59,7 +61,7 @@ const WaitingListForm = () => {
       console.error(err);
       toast.error(err.response.message || "Something went wrong...");
       form.reset();
-      setLoading(false);
+      setIsLoading(false);
     }
   }
   const form = useForm({
@@ -74,9 +76,9 @@ const WaitingListForm = () => {
     <div className="w-full max-w-[450px] mx-auto">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <h1 className="text-sm uppercase font-bold text-center">
-            Join VIP Waiting Form
-          </h1>
+          {/* <h1 className="text-sm uppercase font-bold text-center">
+            Join VIP Waiting
+          </h1> */}
           <FormField
             control={form.control}
             name="fullname"
@@ -84,7 +86,7 @@ const WaitingListForm = () => {
               <FormItem>
                 <FormLabel>Full name</FormLabel>
                 <FormControl>
-                  <Input placeholder="First Last" {...field} />
+                  <Input placeholder="Enter full name here..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -110,7 +112,7 @@ const WaitingListForm = () => {
               <FormItem>
                 <FormLabel>Phone</FormLabel>
                 <FormControl>
-                  <Input placeholder="phone number here..." {...field} />
+                  <Input placeholder="Enter phone number here..." {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -119,8 +121,8 @@ const WaitingListForm = () => {
 
           <div className="grid w-full justify-end">
             {/* <span className="text-muted-foreground text-sm">Some text</span> */}
-            <Button type="submit" disabled={isLoading}>
-              Join Now
+            <Button type="submit" className="w-24" disabled={isLoading}>
+              {isLoading ? <Loader2 /> : "Join Now"}
             </Button>
           </div>
         </form>

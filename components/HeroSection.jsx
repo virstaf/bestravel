@@ -25,7 +25,7 @@ const HeroSection = () => {
           {/* <Button>Join VIP Waiting List Now!</Button> */}
           <JoinDialog ButtonText={"Join VIP Waiting List Now!"} />
         </div>
-        <div className="w-full h-full flex items-center justify-center hidden">
+        <div className="w-full h-full  items-center justify-center hidden">
           {/* <MyCarousel /> */}
           <div className="heroImage object-cover mx-4 h-full rounded-2xl overflow-hidden ">
             <Image
