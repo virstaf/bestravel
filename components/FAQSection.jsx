@@ -6,9 +6,9 @@ import Image from "next/image";
 const FAQSection = () => {
   return (
     <div className="w-full py-12 ">
-      <div className="container">
+      <div className="container mx-auto px-4 md:px-8 lg:px-12 ">
         <div className="grid lg:grid-cols-2">
-          <div className="container mx-auto px-4 md:px-8 lg:px-12">
+          <div className="">
             <h2 className="text-sm uppercase font-bold text-center mb-6">
               ❓ Frequently Asked Questions (FAQ
               <span className="lowercase">s</span>)
@@ -27,7 +27,7 @@ const FAQSection = () => {
               </p>
             </div>
           </div>
-          <div className="relative my-5 p-2 bg-white rounded-lg shadow flex items-center justify-center">
+          <div className="relative hidden my-5 p-2 bg-white rounded-lg shadow lg:flex items-center justify-center">
             <Image
               className="p-2 bg-white rounded-lg hover:scale-105 transform transition duration-300 ease-in-out"
               src="/images/hotels/2018_Pres Suites_1.jpg"

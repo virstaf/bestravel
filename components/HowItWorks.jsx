@@ -12,7 +12,7 @@ const HowItWorks = () => {
           {howItWorks.map((step, idx) => (
             <div
               key={idx}
-              className="flex flex-col gap-4 items-center p-4 py-2 bg-white dark:bg-black rounded-2xl shadow relative"
+              className="flex flex-col gap-4 items-center p-4 bg-white dark:bg-black rounded-2xl shadow relative"
             >
               <div className="absolute top-3 left-4  text-xl font-bold backdrop-blur-2xl flex items-center justify-center">
                 <span className="">0{idx + 1}</span>
