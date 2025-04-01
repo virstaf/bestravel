@@ -8,6 +8,7 @@ import { Dot } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { JoinDialog } from "./JoinDialog";
+import Image from "next/image";
 
 const Testimonials = () => {
   const [sliderIndex, setSliderIndex] = useState(0);
@@ -35,7 +36,16 @@ const Testimonials = () => {
     <div className="w-full py-12 bg-primary-foreground">
       <div className="container mx-auto px-4 md:px-8 lg:px-12 text-center">
         <div className="grid lg:grid-cols-2">
-          <div className="image"></div>
+          <div className="relative p-2 bg-white rounded-lg shadow flex items-center justify-center">
+            <Image
+              className="p-2 bg-white rounded-lg hover:scale-105 transform transition duration-300 ease-in-out"
+              src="/images/hotels/2018_Pres Suites_9.jpg"
+              alt="Presidential Suite"
+              // width={500}
+              // height={500}
+              fill
+            />
+          </div>
           <div className="">
             <h2 className="text-sm uppercase font-bold text-center mb-6">
               ⭐ What Our Members Say

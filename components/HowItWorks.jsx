@@ -15,7 +15,7 @@ const HowItWorks = () => {
               className="flex flex-col gap-4 items-center p-4 py-2 bg-white dark:bg-black rounded-2xl shadow relative"
             >
               <div className="absolute top-3 left-4  text-xl font-bold backdrop-blur-2xl flex items-center justify-center">
-                {idx + 1}
+                <span className="">0{idx + 1}</span>
               </div>
               <span className="text-green-600">{step.icon}</span>
               <h2 className="font-bold text-lg">{step.title}</h2>

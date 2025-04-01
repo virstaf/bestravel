@@ -68,9 +68,9 @@ const ContactForm = () => {
             name="fullname"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full name</FormLabel>
+                {/* <FormLabel>Full name</FormLabel> */}
                 <FormControl>
-                  <Input placeholder="First Last" {...field} />
+                  <Input placeholder="Full Name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -81,7 +81,7 @@ const ContactForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                {/* <FormLabel>Email</FormLabel> */}
                 <FormControl>
                   <Input placeholder="example@email.com" {...field} />
                 </FormControl>
@@ -94,7 +94,7 @@ const ContactForm = () => {
             name="message"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Message</FormLabel>
+                {/* <FormLabel>Message</FormLabel> */}
                 <FormControl>
                   <Textarea placeholder="Your message here..." {...field} />
                 </FormControl>
