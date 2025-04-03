@@ -1,4 +1,6 @@
+import Link from "next/link";
 import ContactForm from "./ui/contactForm";
+import { Button } from "./ui/button";
 
 const GetInTouch = () => {
   return (
@@ -17,6 +19,16 @@ const GetInTouch = () => {
               <li>📞 Call Us: +44 (0) 1234 567 890</li>
               <li>📧 Email Us: support@bestravelperks.com</li>
             </ul>
+            <div className="button">
+              <Button asChild>
+                <Link
+                  href="/docs/Bestravel_Club_Top_10_Perk_eBook_with_CTA.pdf"
+                  download="Bestravel_Perk_eBook"
+                >
+                  Download Guide
+                </Link>
+              </Button>
+            </div>
           </div>
           <ContactForm />
         </div>
