@@ -19,8 +19,9 @@ const LoginPage = () => {
         <p className="text-amber-100 text-lg">- Jessica M.</p>
       </div>
       <div className="absolute right-10 top-5">
-        <Link href="/auth/signup">
-          <Button variant="secondary">Sign Up</Button>
+        <Link href="/auth/signup" className="text-sm !underline">
+          Sign up?
+          {/* <Button variant="secondary"></Button> */}
         </Link>
       </div>
       <div className="w-full h-full hidden lg:block overflow-hidden">

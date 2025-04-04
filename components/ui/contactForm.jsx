@@ -17,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "./textarea";
 import { toast } from "sonner";
 import axios from "axios";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   fullname: z
@@ -30,20 +32,25 @@ const formSchema = z.object({
 });
 
 const ContactForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
+
   async function onSubmit(values) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+
     try {
+      setIsLoading(true);
       const response = await axios.post("/api/contact", values);
       if (response.status === 201 || response.status === 200) {
         toast.success(
           response.data.message || "Message submitted successfully"
         );
+        form.reset();
       }
     } catch (error) {
       toast.error(error.response.data.errorMessage || "Something went wrong");
     }
+    setIsLoading(false);
   }
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -104,7 +111,15 @@ const ContactForm = () => {
           />
           <div className="flex w-full justify-end">
             {/* <span className="text-muted-foreground text-sm">Some text</span> */}
-            <Button type="submit">Submit</Button>
+            <Button type="submit" disabled={isLoading} className="w-24">
+              {isLoading ? (
+                <span className="animate-spin">
+                  <Loader2 />
+                </span>
+              ) : (
+                "Submit"
+              )}
+            </Button>
           </div>
         </form>
       </Form>

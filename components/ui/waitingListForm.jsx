@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -49,7 +48,6 @@ const WaitingListForm = () => {
         .insert(values);
       if (error) {
         toast.error(error.details || "Something went wrong...");
-        form.reset();
         setIsLoading(false);
         return { success: false, error };
       } else {
@@ -60,7 +58,6 @@ const WaitingListForm = () => {
     } catch (err) {
       console.error(err);
       toast.error(err.response.message || "Something went wrong...");
-      form.reset();
       setIsLoading(false);
     }
   }
@@ -122,7 +119,13 @@ const WaitingListForm = () => {
           <div className="grid w-full justify-end">
             {/* <span className="text-muted-foreground text-sm">Some text</span> */}
             <Button type="submit" className="w-24" disabled={isLoading}>
-              {isLoading ? <Loader2 /> : "Join Now"}
+              {isLoading ? (
+                <span className="animate-spin">
+                  <Loader2 />
+                </span>
+              ) : (
+                "Join Now"
+              )}
             </Button>
           </div>
         </form>

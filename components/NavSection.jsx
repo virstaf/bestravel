@@ -17,7 +17,6 @@ const NavSection = () => {
 
   useEffect(() => {
     setActiveTab(pathname.split("/")[1]);
-    console.log(activeTab);
     setMenuOpen(false);
   }, [pathname]);
 

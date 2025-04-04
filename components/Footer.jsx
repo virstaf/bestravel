@@ -52,7 +52,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="flex justify-evenly flex-wrap gap-2 text-center bg-primary border border-x-0 border-b-0 text-muted-foreground px-4 py-1">
+      <div className="flex justify-evenly flex-wrap gap-2 text-sm text-center bg-primary border border-x-0 border-b-0 text-muted-foreground px-4 py-1">
         <p className="">
           Bestravel &copy; {new Date().getFullYear()} All rights reserved.
         </p>

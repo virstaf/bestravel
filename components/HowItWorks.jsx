@@ -3,7 +3,7 @@ import React from "react";
 
 const HowItWorks = () => {
   return (
-    <div className="w-full py-12 bg-primary-foreground">
+    <div className="w-full py-15 bg-primary-foreground">
       <div className="container mx-auto px-4 md:px-8 lg:px-12">
         <h1 className="text-sm uppercase font-bold text-center">
           How it Works

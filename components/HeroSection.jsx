@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import { JoinDialog } from "./JoinDialog";
-import MyCarousel from "./ui/myCarousel";
 
 const HeroSection = () => {
   return (
