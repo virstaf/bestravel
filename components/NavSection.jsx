@@ -7,6 +7,7 @@ import { AlignJustify, X } from "lucide-react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { NavLinks } from "@/lib/data";
+import { JoinDialog } from "./JoinDialog";
 
 const NavSection = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -16,7 +17,6 @@ const NavSection = () => {
 
   useEffect(() => {
     setActiveTab(pathname.split("/")[1]);
-    console.log(activeTab);
     setMenuOpen(false);
   }, [pathname]);
 
@@ -50,13 +50,6 @@ const NavSection = () => {
           className="max-h-14 hover:cursor-pointer hover:scale-105"
         >
           <span className="font-bold text-2xl text-green-600">Bestravel</span>
-          {/* <Image
-            src="/images/logo.png"
-            alt="bestravel logo"
-            width="41"
-            height="40"
-            className="object-fit"
-          /> */}
         </Link>
         <div className="hidden md:flex space-x-4 md:space-x-8 lg:space-x-12">
           {NavLinks.map((item, idx) => {
@@ -93,16 +86,20 @@ const NavSection = () => {
             })}
           </div>
         )}
-        <div onClick={toggleMenu} className="md:hidden text-primary">
+        {/* <div onClick={toggleMenu} className="md:hidden text-primary">
           {menuOpen ? <X /> : <AlignJustify />}
-        </div>
+        </div> */}
+        {/* Reveal after dashboard is complete */}
+        {/* <Button variant="secondary" className="hover:scale-105  md:block">
         <div className="hidden md:flex gap-3">
-          <Button variant="secondary" className="hover:scale-105  md:block">
             <Link href="/auth/login">Login</Link>
           </Button>
           <Button className="hover:scale-105  md:block">
             <Link href="/auth/signup">Register</Link>
-          </Button>
+          </Button> */}
+        {/* Remove after dashboard is complete */}
+        <div>
+          <JoinDialog ButtonText={"Join VIP Waiting Now!"} />
         </div>
       </div>
     </div>

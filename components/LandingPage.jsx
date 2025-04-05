@@ -16,7 +16,9 @@ const LandingPage = () => {
   return (
     <>
       <NavSection />
-      <HeroSection />
+      <div className="heroBg">
+        <HeroSection />
+      </div>
       <LimitedTimeSection />
       <WhyJoin />
       <WelcomePackages />

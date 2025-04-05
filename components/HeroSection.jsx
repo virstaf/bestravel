@@ -5,8 +5,9 @@ import { JoinDialog } from "./JoinDialog";
 const HeroSection = () => {
   return (
     <div className="relative w-full h-full">
-      <div className="container mx-auto py-12 h-full grid lg:grid-cols-2 gap-8 justify-center items-center">
+      <div className="container mx-auto py-12 h-full min-h-[550px] grid lg:grid-cols-2 gap-8 justify-center items-center">
         {/* content... */}
+        <div></div>
         <div className="cta flex flex-col gap-6 items-center p-8 backdrop-blur bg-white/10 rounded-[2rem]">
           <div className="flex flex-col text-center">
             <p className="uppercase text-xs pb-2 font-bold text-green-600">
@@ -23,11 +24,12 @@ const HeroSection = () => {
           {/* <Button>Join VIP Waiting List Now!</Button> */}
           <JoinDialog ButtonText={"Join VIP Waiting List Now!"} />
         </div>
-        <div className="w-full h-full flex items-center justify-center">
-          <div className="heroImage object-cover mx-4 h-full rounded-2xl overflow-hidden">
+        <div className="w-full h-full  items-center justify-center hidden">
+          {/* <MyCarousel /> */}
+          <div className="heroImage object-cover mx-4 h-full rounded-2xl overflow-hidden ">
             <Image
               className="object-cover"
-              src="/images/woman-on-canoe.jpg"
+              src="/images/maldives_beach.jpg"
               width="1280"
               height="853"
               alt="woman on canoe"
