@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/app/supabaseClient";
 
 const formSchema = z.object({
   fullname: z
@@ -40,12 +41,17 @@ const ContactForm = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post("/api/contact", values);
-      if (response.status === 201 || response.status === 200) {
-        toast.success(
-          response.data.message || "Message submitted successfully"
-        );
+      const { data, error } = await supabase
+        .from("contact-form")
+        .insert(values);
+      if (error) {
+        toast.error(error.details || "Something went wrong...");
+        setIsLoading(false);
+        return { success: false, error };
+      } else {
+        toast.success("Message submitted successfully" || data.message);
         form.reset();
+        setIsLoading(false);
       }
     } catch (error) {
       toast.error(error.response.data.errorMessage || "Something went wrong");
