@@ -1,5 +1,7 @@
 "use client";
 
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -15,14 +17,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import axios from "axios";
-import Link from "next/link";
+import { Loader2 } from "lucide-react";
+import { loginAction, signupAction } from "@/actions/users";
 
 const formSchema = z.object({
   username: z
     .string()
-    .min(3, { message: "Username must be at least 3 characters long" })
-    .max(50),
+    .min(3, {
+      message: "Username must be at least 3 characters",
+    })
+    .max(40),
   email: z.string().email({ message: "Invalid email address" }),
   password: z
     .string()
@@ -31,28 +35,44 @@ const formSchema = z.object({
 });
 
 const SignupForm = () => {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
   async function onSubmit(values) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-    try {
-      const response = await axios.post("/api/auth/signup", values);
-      if (response.status === 201 || response.status === 200) {
-        toast.success(
-          response.data.message || "Message submitted successfully"
-        );
+    startTransition(async () => {
+      const { email } = values;
+      const { password } = values;
+      const { username } = values;
+
+      console.log(email, password);
+
+      let errorMessage;
+      let title;
+      let description;
+
+      errorMessage = (await signupAction(email, password, username))
+        .errorMessage;
+      title = "Signup successful";
+      description = "Check email to complete account creation";
+
+      if (!errorMessage) {
+        toast.success(title, { description: description });
+        router.replace("/");
+      } else {
+        toast.error("Error", { description: errorMessage });
       }
-    } catch (error) {
-      toast.error(error.response.data.errorMessage || "Something went wrong");
-    }
+    });
   }
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      username: "",
       email: "",
       password: "",
     },
   });
+
   return (
     <div className="w-full max-w-[450px] mx-auto">
       <Form {...form}>
@@ -105,13 +125,15 @@ const SignupForm = () => {
             )}
           />
           <div className="grid w-full gap-3">
-            <Button type="submit">Sign up</Button>
+            <Button disabled={isPending} type="submit">
+              {isPending ? <Loader2 className="animate-spin" /> : "Sign up"}
+            </Button>
             <div className="flex w-full h-6 items-center justify-center">
               <hr className="flex-1 border-muted-foreground" />
               <span className="text-muted-foreground px-3">or</span>
               <hr className="flex-1 border-muted-foreground" />
             </div>
-            <Button type="button" variant="outline">
+            <Button disabled={isPending} type="button" variant="outline">
               Continue with Google
             </Button>
           </div>

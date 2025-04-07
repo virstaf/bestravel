@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { supabase } from "@/app/supabaseClient";
+import { supabase } from "@/lib/supabase/client";
 
 const formSchema = z.object({
   fullname: z

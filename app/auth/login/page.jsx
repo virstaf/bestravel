@@ -19,7 +19,10 @@ const LoginPage = () => {
         <p className="text-amber-100 text-lg">- Jessica M.</p>
       </div>
       <div className="absolute right-10 top-5">
-        <Link href="/auth/signup" className="text-sm !underline">
+        <Link
+          href="/auth/signup"
+          className="text-sm !underline hover:text-green-500"
+        >
           Sign up?
           {/* <Button variant="secondary"></Button> */}
         </Link>

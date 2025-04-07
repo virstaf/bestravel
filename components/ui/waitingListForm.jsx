@@ -14,8 +14,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { supabase } from "@/app/supabaseClient";
-import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase/client";
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({

@@ -17,7 +17,10 @@ const SignupPage = () => {
         <p className="text-amber-100 text-lg">- David R.</p>
       </div>
       <div className="absolute right-10 top-5">
-        <Link href="/auth/login" className="text-sm !underline">
+        <Link
+          href="/auth/login"
+          className="text-sm !underline hover:text-green-500"
+        >
           Login?
           {/* <Button variant="secondary">Login</Button> */}
         </Link>

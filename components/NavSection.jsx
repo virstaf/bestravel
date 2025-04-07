@@ -3,17 +3,27 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { AlignJustify, X } from "lucide-react";
-import Image from "next/image";
+// import { AlignJustify, X } from "lucide-react";
+// import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { NavLinks } from "@/lib/data";
-import { JoinDialog } from "./JoinDialog";
+import UserProfile from "./ui/userProfile";
+import { supabase } from "@/lib/supabase/client";
 
 const NavSection = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
   const pathname = usePathname();
   const menuRef = useRef(null);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUserData(data.user);
+    };
+    fetchUserData();
+  }, [userData]);
 
   useEffect(() => {
     setActiveTab(pathname.split("/")[1]);
@@ -86,21 +96,18 @@ const NavSection = () => {
             })}
           </div>
         )}
-        {/* <div onClick={toggleMenu} className="md:hidden text-primary">
-          {menuOpen ? <X /> : <AlignJustify />}
-        </div> */}
-        {/* Reveal after dashboard is complete */}
-        {/* <Button variant="secondary" className="hover:scale-105  md:block">
-        <div className="hidden md:flex gap-3">
-            <Link href="/auth/login">Login</Link>
-          </Button>
-          <Button className="hover:scale-105  md:block">
-            <Link href="/auth/signup">Register</Link>
-          </Button> */}
-        {/* Remove after dashboard is complete */}
-        <div>
-          <JoinDialog ButtonText={"Join VIP Waiting Now!"} />
-        </div>
+        {userData ? (
+          <UserProfile />
+        ) : (
+          <div className="flex gap-2">
+            <Button asChild>
+              <Link href="auth/login">Login</Link>
+            </Button>
+            <Button className="hidden md:block" variant="secondary" asChild>
+              <Link href="auth/signup">Sign up</Link>
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

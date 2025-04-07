@@ -18,6 +18,9 @@ import { toast } from "sonner";
 import axios from "axios";
 import Image from "next/image";
 import { Building } from "lucide-react";
+import { loginAction } from "@/actions/users";
+import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -28,20 +31,33 @@ const formSchema = z.object({
 });
 
 const LoginForm = () => {
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
   async function onSubmit(values) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
-    try {
-      const response = await axios.post("/api/auth/login", values);
-      if (response.status === 201 || response.status === 200) {
-        toast.success(
-          response.data.message || "Message submitted successfully"
-        );
+    startTransition(async () => {
+      const { email } = values;
+      const { password } = values;
+
+      console.log(email, password);
+
+      let errorMessage;
+      let title;
+      let description;
+
+      errorMessage = (await loginAction(email, password)).errorMessage;
+      title = "Login successful";
+      description = "Welcome back";
+
+      if (!errorMessage) {
+        toast.success(title, { description: description });
+        router.replace("/");
+      } else {
+        toast.error("Error", { description: errorMessage });
       }
-    } catch (error) {
-      toast.error(error.response.data.errorMessage || "Something went wrong");
-    }
+    });
   }
   const form = useForm({
     resolver: zodResolver(formSchema),
