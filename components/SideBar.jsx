@@ -1,0 +1,49 @@
+"use client";
+
+import { sidebarNav } from "@/lib/data";
+import { AlignLeftIcon, AlignRightIcon } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+
+const SideBar = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // setActiveTab(pathname.split("/")[1]);
+    console.log("pathname::", pathname);
+  }, [pathname]);
+
+  return (
+    <div
+      className={`${
+        sidebarOpen ? "min-w-[250px]" : ""
+      } m-2 p-5 py-10 rounded-2xl bg-blue-900 text-white relative`}
+    >
+      <div
+        onClick={() => setSidebarOpen((prev) => !prev)}
+        className="absolute right-3 top-3 hover:text-gray-300"
+      >
+        <span>{sidebarOpen ? <AlignLeftIcon /> : <AlignRightIcon />}</span>
+      </div>
+      <ul className="flex flex-col gap-3">
+        {sidebarNav.map((item, idx) => (
+          <li key={idx}>
+            <Link
+              href={item.path}
+              className={`flex gap-3 hover:text-gray-300 p-2 rounded-md ${
+                item.path === pathname ? "bg-black/40" : ""
+              }`}
+            >
+              <span>{<item.icon />}</span>
+              {sidebarOpen && <span>{item.name}</span>}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+export default SideBar;

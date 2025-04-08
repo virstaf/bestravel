@@ -41,8 +41,6 @@ const LoginForm = () => {
       const { email } = values;
       const { password } = values;
 
-      console.log(email, password);
-
       let errorMessage;
       let title;
       let description;

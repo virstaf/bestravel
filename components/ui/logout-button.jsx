@@ -33,7 +33,12 @@ const LogoutButton = () => {
     setLoading(false);
   };
   return (
-    <Button className="w-24" disabled={loading} onClick={handleLogout}>
+    <Button
+      variant="outline"
+      className="border-red-400 text-red-400 hover:text-red-500 hover:border-red-500 hover:bg-red-100/50 w-24"
+      disabled={loading}
+      onClick={handleLogout}
+    >
       {loading ? <Loader2 className="animate-spin" /> : "Logout"}
     </Button>
   );
