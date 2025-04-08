@@ -51,7 +51,7 @@ const LoginForm = () => {
 
       if (!errorMessage) {
         toast.success(title, { description: description });
-        router.replace("/");
+        router.replace("/dashboard");
       } else {
         toast.error("Error", { description: errorMessage });
       }
