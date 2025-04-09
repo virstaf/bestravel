@@ -7,7 +7,7 @@ export default function DashboardLayout({ children }) {
   return (
     <AuthGuard>
       <div className="min-h-screen relative">
-        <main className="overflow-y-auto container mx-auto">
+        <main className="container mx-auto">
           <div className="flex flex-col">
             <DashNav />
             <div className="sm:flex">

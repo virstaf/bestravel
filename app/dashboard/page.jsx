@@ -7,7 +7,7 @@ const page = () => {
         page="Overview"
         description="🌴 Ready for your next adventure?"
       />
-      <div className="content min-w-full min-h-[calc(100vh-100px)] border"></div>
+      <div className="content min-w-full min-h-[calc(100vh-180px)] border"></div>
     </div>
   );
 };

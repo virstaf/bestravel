@@ -19,7 +19,7 @@ const SideBar = () => {
     <div
       className={`${
         sidebarOpen ? "sm:w-[250px]" : "sm:w-[80px]"
-      } m-2 p-5 sm:py-10 rounded-2xl overflow-x-scroll bg-blue-900 text-white relative`}
+      } m-2 p-5 sm:py-10 rounded-2xl overflow-x-auto bg-blue-900 text-white relative`}
     >
       <div
         onClick={() => setSidebarOpen((prev) => !prev)}
