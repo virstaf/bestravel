@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import CurrentUserAvatar from "../current-user-avatar";
 import LogoutButton from "./logout-button";
 import { useCurrentUserEmail } from "@/hooks/use-current-user-email";
+import Link from "next/link";
+import { Button } from "./button";
 
 const UserProfile = () => {
   const [logoutOpen, setLogoutOpen] = useState(false);
@@ -19,8 +21,14 @@ const UserProfile = () => {
       </span>
       <CurrentUserAvatar />
       <div
-        className={`${logoutOpen ? "block" : "hidden"} absolute top-10 right-0`}
+        className={`${
+          logoutOpen ? "flex" : "hidden"
+        } flex-col items-center gap-2 backdrop-blur-xs bg-white p-6 rounded-2xl shadow absolute top-10 right-0`}
       >
+        <span className="text-muted-foreground">{email}</span>
+        <Button asChild>
+          <Link href="/dashboard">Dashboard</Link>
+        </Button>
         <LogoutButton className="cursor-pointer" />
       </div>
     </div>

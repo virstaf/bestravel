@@ -165,3 +165,9 @@
   transform: translateX(0);
   opacity: 1;
 }
+
+.card-grid-container {
+  @media (width <= 30rem /* 640px */) {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
