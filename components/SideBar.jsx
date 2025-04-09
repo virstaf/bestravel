@@ -18,21 +18,21 @@ const SideBar = () => {
   return (
     <div
       className={`${
-        sidebarOpen ? "min-w-[250px]" : ""
-      } m-2 p-5 py-10 rounded-2xl bg-blue-900 text-white relative`}
+        sidebarOpen ? "sm:w-[250px]" : "sm:w-[80px]"
+      } m-2 p-5 sm:py-10 rounded-2xl overflow-x-scroll bg-blue-900 text-white relative`}
     >
       <div
         onClick={() => setSidebarOpen((prev) => !prev)}
-        className="absolute right-3 top-3 hover:text-gray-300"
+        className="hidden sm:block sm:absolute right-3 top-3 hover:text-gray-300"
       >
         <span>{sidebarOpen ? <AlignLeftIcon /> : <AlignRightIcon />}</span>
       </div>
-      <ul className="flex flex-col gap-3">
+      <ul className="flex sm:flex-col  justify-between gap-3">
         {sidebarNav.map((item, idx) => (
           <li key={idx}>
             <Link
               href={item.path}
-              className={`flex gap-3 hover:text-gray-300 p-2 rounded-md ${
+              className={`flex flex-col items-center  sm:flex-row gap-3 hover:text-gray-300 p-2 rounded-md ${
                 item.path === pathname ? "bg-black/40" : ""
               }`}
             >
