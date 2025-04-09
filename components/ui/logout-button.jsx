@@ -21,7 +21,7 @@ const LogoutButton = () => {
       toast.success("Logged out", {
         description: "You've been logged out successfully",
       });
-      router.push("/");
+      router.replace("/login");
     } else {
       console.error(errorMessage);
 

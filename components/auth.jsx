@@ -1,15 +1,20 @@
 "use client";
 
 import { useCurrentUserEmail } from "@/hooks/use-current-user-email";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 export const AuthGuard = ({ children }) => {
-  const email = useCurrentUserEmail();
+  useEffect(() => {
+    const fetchUserEmail = async () => {
+      const email = await useCurrentUserEmail();
+      console.log("auth guard::", email);
+      if (!email) {
+        redirect("/auth/login");
+      }
+    };
+    fetchUserEmail();
+  }, []);
 
-  const router = useRouter();
-
-  if (!email) {
-    router.replace("/auth/login");
-  }
   return <>{children}</>;
 };

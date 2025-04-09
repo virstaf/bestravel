@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,12 +14,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import axios from "axios";
-import Image from "next/image";
-import { Building } from "lucide-react";
 import { loginAction } from "@/actions/users";
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useTransition } from "react";
+import { redirect, useRouter } from "next/navigation";
+import { useCurrentUserEmail } from "@/hooks/use-current-user-email";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -33,6 +31,17 @@ const formSchema = z.object({
 const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
+  // useEffect(() => {
+  const fetchUserEmail = async () => {
+    const email = await useCurrentUserEmail();
+    console.log("login email::", email);
+    if (!email) {
+      redirect("/auth/login");
+    }
+  };
+  fetchUserEmail();
+  // }, []);
 
   async function onSubmit(values) {
     // Do something with the form values.
@@ -104,13 +113,15 @@ const LoginForm = () => {
           />
 
           <div className="grid w-full gap-3">
-            <Button type="submit">Login</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? <Loader2 className="animate-spin" /> : "Login"}
+            </Button>
             <div className="flex w-full h-6 items-center justify-center">
               <hr className="flex-1 border-muted-foreground" />
               <span className="text-muted-foreground px-3">or</span>
               <hr className="flex-1 border-muted-foreground" />
             </div>
-            <Button type="button" variant="outline">
+            <Button type="button" variant="outline" disabled={isPending}>
               Continue with Google
             </Button>
           </div>
