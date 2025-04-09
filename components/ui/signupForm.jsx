@@ -1,7 +1,7 @@
 "use client";
 
-import { useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
+import { redirect, useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { loginAction, signupAction } from "@/actions/users";
+import { getUser } from "@/lib/supabase/server";
 
 const formSchema = z.object({
   username: z
@@ -37,6 +38,17 @@ const formSchema = z.object({
 const SignupForm = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userObject = await getUser();
+
+      if (userObject) {
+        redirect("/dashboard");
+      }
+    };
+    fetchUser();
+  }, []);
 
   async function onSubmit(values) {
     startTransition(async () => {

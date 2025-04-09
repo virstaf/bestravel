@@ -17,8 +17,8 @@ import { toast } from "sonner";
 import { loginAction } from "@/actions/users";
 import { useEffect, useTransition } from "react";
 import { redirect, useRouter } from "next/navigation";
-import { useCurrentUserEmail } from "@/hooks/use-current-user-email";
 import { Loader2 } from "lucide-react";
+import { getUser } from "@/lib/supabase/server";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -32,16 +32,16 @@ const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
-  // useEffect(() => {
-  const fetchUserEmail = async () => {
-    const email = await useCurrentUserEmail();
-    console.log("login email::", email);
-    if (!email) {
-      redirect("/auth/login");
-    }
-  };
-  fetchUserEmail();
-  // }, []);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const userObject = await getUser();
+
+      if (userObject) {
+        redirect("/dashboard");
+      }
+    };
+    fetchUser();
+  }, []);
 
   async function onSubmit(values) {
     // Do something with the form values.

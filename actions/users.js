@@ -32,7 +32,6 @@ export const signupAction = async (email, password, username) => {
     const { auth } = await createClient();
     const { data, error } = await auth.signUp({ email, password });
     if (error) throw error;
-
     const userId = data.user?.id;
     if (!userId) throw new Error("Error signing up");
 
@@ -40,7 +39,7 @@ export const signupAction = async (email, password, username) => {
     const supabase = await createClient();
     const { error: insertError } = await supabase
       .from("users")
-      .insert({ id: parseInt(userId), username, email, role: "USER" });
+      .insert({ uuid: userId, username, email, role: "USER" });
 
     if (insertError) {
       console.error("Insert error:", insertError);
