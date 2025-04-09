@@ -71,43 +71,45 @@ const ContactForm = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 p-8 bg-white rounded-2xl shadow"
+          className="space-y-4 p-8 bg-white rounded-2xl shadow"
         >
-          <h1 className="text-sm uppercase font-bold text-center">
-            Contact Form
+          <h1 className="text-sm uppercase pb-2 font-bold text-center">
+            Leave us a message
           </h1>
-          <FormField
-            control={form.control}
-            name="fullname"
-            render={({ field }) => (
-              <FormItem>
-                {/* <FormLabel>Full name</FormLabel> */}
-                <FormControl>
-                  <Input placeholder="Full Name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                {/* <FormLabel>Email</FormLabel> */}
-                <FormControl>
-                  <Input placeholder="example@email.com" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex flex-col sm:flex-row gap-2 justify-between">
+            <FormField
+              control={form.control}
+              name="fullname"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Full name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="John Doe" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="example@email.com" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
             name="message"
             render={({ field }) => (
               <FormItem>
-                {/* <FormLabel>Message</FormLabel> */}
+                <FormLabel>Message</FormLabel>
                 <FormControl>
                   <Textarea placeholder="Your message here..." {...field} />
                 </FormControl>

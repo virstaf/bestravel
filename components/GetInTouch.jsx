@@ -30,7 +30,9 @@ const GetInTouch = () => {
               </Button>
             </div>
           </div>
+          {/* <div className="w-full flex justify-center items-center"> */}
           <ContactForm />
+          {/* </div> */}
         </div>
       </div>
     </div>

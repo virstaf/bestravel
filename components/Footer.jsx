@@ -7,7 +7,7 @@ const Footer = () => {
   return (
     <footer className="w-full">
       <div className="w-full py-8 bg-primary text-muted-foreground">
-        <div className="content px-4 md:px-8 lg:px-12">
+        <div className="container mx-auto px-4 md:px-8 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 justify-center items-center">
             <div className="quick links">
               <h3 className="text-sm font-bold ">Quick Links</h3>
