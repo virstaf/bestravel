@@ -6,14 +6,15 @@ import SideBar from "@/components/SideBar";
 export default function DashboardLayout({ children }) {
   return (
     <AuthGuard>
-      <div className="h-screen">
-        {/* <Sidebar /> Collapsible sidebar with icons */}
-        <main className="flex-1 overflow-y-auto">
+      <div className="min-h-screen relative">
+        <main className="overflow-y-auto container mx-auto">
           <div className="flex flex-col">
             <DashNav />
-            <div className="flex">
-              <SideBar />
-              {children}
+            <div className="sm:flex">
+              <div className="fixed w-full sm:w-auto bottom-0 sm:static sm:bottom-auto z-50">
+                <SideBar />
+              </div>
+              <div className="mb-[100px] sm:mb-0 w-full">{children}</div>
             </div>
           </div>
         </main>
