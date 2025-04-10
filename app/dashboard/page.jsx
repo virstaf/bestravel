@@ -6,13 +6,14 @@ import { hotDeals, hotels } from "@/lib/data";
 
 const page = () => {
   return (
-    <div className="mx-auto px-4 w-full h-full">
+    <div className="px-4 h-full w-full sm:w-[calc(100%-100px)]">
       <DashHeader
         page="Overview"
         description="🌴 Ready for your next adventure?"
+        className="w-full mx-auto"
       />
-      <div className="w-full sm:w-[calc(100%-100px)] min-h-[calc(100vh-180px)]">
-        <section className="my-6">
+      <div className="w-full min-h-[calc(100vh-180px)]">
+        <section className="my-12">
           <SectionHeader title="Hot Deals" link="/deal" />
           <p className="text-muted-foreground mb-4">
             Discover the best deals on travel, flights, and more. Don't miss out
@@ -32,8 +33,8 @@ const page = () => {
             ))}
           </div>
         </section>
-        <section className="my-6 max-w-full bg-gray-100 rounded-2xl p-4">
-          <h2 className="text-2xl font-semibold mb-4">
+        <section className="my-12 max-w-full bg-gray-100 rounded-2xl p-4">
+          <h2 className="text-xl font-semibold mb-4">
             Hotel Recommendations for You
           </h2>
           <div className="overflow-x-auto hide-scrollbar w-full px-4">

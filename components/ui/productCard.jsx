@@ -16,7 +16,7 @@ const ProductCard = ({
   return (
     <div
       className={
-        "rounded-2xl w-full max-w-[220px] sm:max-w-[250px] bg-white shadow-2xl flex flex-col overflow-hidden"
+        "rounded-2xl w-full max-w-[300px] sm:max-w-[250px] bg-white shadow-2xl flex flex-col overflow-hidden"
       }
     >
       <div className="img w-full relative h-[150px]">
