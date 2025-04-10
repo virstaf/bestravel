@@ -3,8 +3,8 @@ import UserProfile from "./ui/userProfile";
 import Link from "next/link";
 
 const dashSecNav = [
-  { name: "Support", path: "/about" },
-  { name: "Account", path: "/contact" },
+  { name: "Support", path: "#" },
+  { name: "Account", path: "#" },
 ];
 
 const DashNav = () => {

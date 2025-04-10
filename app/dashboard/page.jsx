@@ -1,7 +1,8 @@
 import DashHeader from "@/components/dash-header";
+import HotelCard from "@/components/ui/hotelCard";
 import ProductCard from "@/components/ui/productCard";
 import SectionHeader from "@/components/ui/section-header";
-import { hotDeals } from "@/lib/data";
+import { hotDeals, hotels } from "@/lib/data";
 
 const page = () => {
   return (
@@ -10,7 +11,7 @@ const page = () => {
         page="Overview"
         description="🌴 Ready for your next adventure?"
       />
-      <div className="min-w-full min-h-[calc(100vh-180px)]">
+      <div className="w-[calc(100%-100px)] min-h-[calc(100vh-180px)]">
         <section className="my-6">
           <SectionHeader title="Hot Deals" link="/deal" />
           <p className="text-muted-foreground mb-4">
@@ -29,6 +30,18 @@ const page = () => {
                 imgSrc={deal.imgSrc}
               />
             ))}
+          </div>
+        </section>
+        <section className="my-6 max-w-full bg-gray-100 rounded-2xl p-4">
+          <h2 className="text-2xl font-semibold mb-4">
+            Hotel Recommendations for You
+          </h2>
+          <div className="overflow-x-auto hide-scrollbar w-full px-4">
+            <div className="flex gap-6 snap-x snap-mandatory">
+              {hotels.map((hotel, index) => (
+                <HotelCard key={index} hotel={hotel} />
+              ))}
+            </div>
           </div>
         </section>
       </div>
