@@ -6,9 +6,9 @@ import SideBar from "@/components/SideBar";
 export default function DashboardLayout({ children }) {
   return (
     <AuthGuard>
-      <div className="min-h-screen relative">
-        <main className="container mx-auto">
-          <div className="flex flex-col">
+      <div className="min-h-screen relative overflow-hidden">
+        <main className="container mx-auto ">
+          <div className="flex flex-col ">
             <DashNav />
             <div className="sm:flex">
               <div className="fixed w-full sm:w-auto bottom-0 sm:top-20 sm:bottom-auto z-50">
