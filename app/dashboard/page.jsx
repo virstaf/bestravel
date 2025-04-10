@@ -11,7 +11,7 @@ const page = () => {
         page="Overview"
         description="🌴 Ready for your next adventure?"
       />
-      <div className="w-[calc(100%-100px)] min-h-[calc(100vh-180px)]">
+      <div className="w-full sm:w-[calc(100%-100px)] min-h-[calc(100vh-180px)]">
         <section className="my-6">
           <SectionHeader title="Hot Deals" link="/deal" />
           <p className="text-muted-foreground mb-4">
