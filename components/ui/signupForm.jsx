@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { loginAction, signupAction } from "@/actions/users";
 import { getUser } from "@/lib/supabase/server";
+import Image from "next/image";
 
 const formSchema = z.object({
   username: z
@@ -146,6 +147,13 @@ const SignupForm = () => {
               <hr className="flex-1 border-muted-foreground" />
             </div>
             <Button disabled={isPending} type="button" variant="outline">
+              <Image
+                src="/images/google.svg"
+                alt="Google"
+                width={20}
+                height={20}
+                className="mr-2"
+              />
               Continue with Google
             </Button>
           </div>

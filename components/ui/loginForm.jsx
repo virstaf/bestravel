@@ -19,6 +19,7 @@ import { useEffect, useTransition } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { getUser } from "@/lib/supabase/server";
+import Image from "next/image";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -122,6 +123,13 @@ const LoginForm = () => {
               <hr className="flex-1 border-muted-foreground" />
             </div>
             <Button type="button" variant="outline" disabled={isPending}>
+              <Image
+                src="/images/google.svg"
+                alt="Google"
+                width={20}
+                height={20}
+                className="mr-2"
+              />
               Continue with Google
             </Button>
           </div>
