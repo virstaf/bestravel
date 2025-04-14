@@ -30,7 +30,7 @@ const FAQSection = () => {
           <div className="relative hidden my-5 p-2 bg-white rounded-lg shadow lg:flex items-center justify-center">
             <Image
               className="p-2 bg-white rounded-lg hover:scale-105 transform transition duration-300 ease-in-out"
-              src="/images/hotels/2018_Pres Suites_1.jpg"
+              src="/images/hotels/2018_Pres_Suites_1.jpg"
               alt="Presidential Suite"
               // width={500}
               // height={500}

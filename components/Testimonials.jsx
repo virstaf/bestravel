@@ -39,7 +39,7 @@ const Testimonials = () => {
           <div className="relative p-2 hidden bg-white rounded-lg shadow lg:flex items-center justify-center">
             <Image
               className="p-2 bg-white rounded-lg hover:scale-105 transform transition duration-300 ease-in-out"
-              src="/images/hotels/2018_Pres Suites_9.jpg"
+              src="/images/hotels/2018_Pres_Suites_9.jpg"
               alt="Presidential Suite"
               // width={500}
               // height={500}

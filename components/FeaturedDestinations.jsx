@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 
 const FeaturedDestinations = () => {
   return (
-    <div className="w-full py-12">
+    <div className="w-full py-12 my-6">
       <div className="container mx-auto px-4 md:px-8 lg:px-12">
         <h2 className="text-sm uppercase font-bold text-center">
           ✨ Featured Destinations ✨
@@ -23,9 +23,9 @@ const FeaturedDestinations = () => {
               />
             ))}
         </div>
-        <div className="w-full my-6 flex justify-center">
+        {/* <div className="w-full my-6 flex justify-center">
           <Button>View More</Button>
-        </div>
+        </div> */}
       </div>
     </div>
   );
