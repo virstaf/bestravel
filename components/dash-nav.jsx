@@ -12,7 +12,7 @@ const DashNav = () => {
     <div className="dark:bg-black/50 backdrop-blur-sm w-full sticky top-0 z-50">
       <div className="h-16 container mx-auto px-4 flex justify-between items-center relative">
         <Link href="/" className="text-blue-700 text-2xl italic">
-          {/* Bestravel */}
+          {/* Virstravel */}
           <svg
             width="130"
             height="26"

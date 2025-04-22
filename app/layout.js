@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Bestravel App",
+  title: "Virstravel App",
   description: "Built by Uniik",
 };
 

@@ -54,10 +54,10 @@ const Footer = () => {
       </div>
       <div className="flex justify-evenly flex-wrap gap-2 text-sm text-center bg-primary border border-x-0 border-b-0 text-muted-foreground px-4 py-1">
         <p className="">
-          Bestravel &copy; {new Date().getFullYear()} All rights reserved.
+          Virstravel &copy; {new Date().getFullYear()} All rights reserved.
         </p>
         <Link href="https://uniiktheo.tech" target="_blank">
-          <p className="ml-2">Designed by UniikTheo</p>
+          <p className="ml-2">Powered by Virstaf</p>
         </Link>
       </div>
     </footer>

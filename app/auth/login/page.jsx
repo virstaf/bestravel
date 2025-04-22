@@ -10,7 +10,7 @@ const LoginPage = () => {
       <div className="absolute top-5 left-10">
         <Link href="/">
           <span className="font-bold text-2xl text-green-600">
-            {/* Bestravel */}
+            {/* Virstravel */}
             <svg
               width="130"
               height="26"
@@ -28,7 +28,7 @@ const LoginPage = () => {
       </div>
       <div className="absolute bottom-10 left-10 hidden lg:block max-w-[450px]">
         <p className="text-white text-xl">
-          "Bestravel Perks Club helped me save hundreds on my dream vacation!"
+          "Virstravel Perks Club helped me save hundreds on my dream vacation!"
         </p>
         <p className="text-amber-100 text-lg">- Jessica M.</p>
       </div>

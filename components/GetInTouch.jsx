@@ -17,13 +17,13 @@ const GetInTouch = () => {
             </p>
             <ul className="mb-6">
               <li>📞 Call Us: +44 (0) 1234 567 890</li>
-              <li>📧 Email Us: support@bestravelperks.com</li>
+              <li>📧 Email Us: support@virstravelperks.com</li>
             </ul>
             <div className="button">
               <Button asChild>
                 <Link
-                  href="/docs/Bestravel_Club_Top_10_Perk_eBook_with_CTA.pdf"
-                  download="Bestravel_Perk_eBook"
+                  href="/docs/Virstravel_Club_Top_10_Perk_eBook_with_CTA.pdf"
+                  download="Virstravel_Perk_eBook"
                 >
                   Download Guide
                 </Link>

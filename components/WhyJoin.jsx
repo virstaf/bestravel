@@ -6,7 +6,7 @@ const WhyJoin = () => {
     <div className="w-full py-12 bg-primary-foreground">
       <div className="container mx-auto px-4 md:px-8 lg:px-12">
         <h2 className="text-sm uppercase font-bold text-center">
-          Why Join Bestravel Perks Club?
+          Why Join Virstravel Perks Club?
         </h2>
         <div className="grid grid-cols-1 sm:max-w-[500px] lg:max-w-full mx-auto md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
           {benefits.map((benefit, idx) => (

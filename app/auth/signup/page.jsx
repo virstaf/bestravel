@@ -8,7 +8,7 @@ const SignupPage = () => {
       <div className="absolute top-5 left-10">
         <Link href="/">
           <span className="hover:scale-105 transition-transform duration-200 ease-in-out">
-            {/* Bestravel */}
+            {/* Virstravel */}
             <svg
               width="130"
               height="26"
