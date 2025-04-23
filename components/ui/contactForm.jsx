@@ -67,11 +67,11 @@ const ContactForm = () => {
     },
   });
   return (
-    <div className="w-full max-w-[450px] mx-auto">
+    <div className="w-full max-w-[550px]">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-4 p-8 bg-white rounded-2xl shadow"
+          className="space-y-4 p-6 bg-white rounded-2xl shadow"
         >
           <h1 className="text-sm uppercase pb-2 font-bold text-center">
             Leave us a message
@@ -81,7 +81,7 @@ const ContactForm = () => {
               control={form.control}
               name="fullname"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>Full name</FormLabel>
                   <FormControl>
                     <Input placeholder="John Doe" {...field} />
@@ -94,7 +94,7 @@ const ContactForm = () => {
               control={form.control}
               name="email"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="w-full">
                   <FormLabel>Email</FormLabel>
                   <FormControl>
                     <Input placeholder="example@email.com" {...field} />

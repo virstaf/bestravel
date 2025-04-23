@@ -52,3 +52,33 @@ export const signupAction = async (email, password, username) => {
     return handleError(error);
   }
 };
+
+export const googleLoginAction = async () => {
+  try {
+    const { auth } = await createClient();
+    const { error } = await auth.signInWithOAuth({
+      provider: "google",
+    });
+
+    if (error) {
+      console.error("Google login error:", error);
+      throw error;
+    }
+
+    return { errorMessage: null };
+  } catch (err) {
+    return handleError(err);
+  }
+};
+
+export const resetPasswordAction = async (email) => {
+  try {
+    const { auth } = await createClient();
+    const { error } = await auth.resetPasswordForEmail(email);
+
+    if (error) throw error;
+    return { errorMessage: null };
+  } catch (err) {
+    return handleError(err);
+  }
+};

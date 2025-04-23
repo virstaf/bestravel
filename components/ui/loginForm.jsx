@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { loginAction } from "@/actions/users";
+import { googleLoginAction, loginAction } from "@/actions/users";
 import { useEffect, useTransition } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -45,8 +45,6 @@ const LoginForm = () => {
   }, []);
 
   async function onSubmit(values) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     startTransition(async () => {
       const { email } = values;
       const { password } = values;
@@ -74,6 +72,18 @@ const LoginForm = () => {
       password: "",
     },
   });
+
+  const handleGoogleLogin = async () => {
+    let errorMessage;
+    let title;
+    let description;
+
+    startTransition(async () => {
+      errorMessage = (await googleLoginAction()).errorMessage;
+      if (errorMessage) console.error(errorMessage);
+    });
+  };
+
   return (
     <div className="w-full max-w-[450px] mx-auto">
       <Form {...form}>
@@ -122,7 +132,12 @@ const LoginForm = () => {
               <span className="text-muted-foreground px-3">or</span>
               <hr className="flex-1 border-muted-foreground" />
             </div>
-            <Button type="button" variant="outline" disabled={isPending}>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isPending}
+              onClick={handleGoogleLogin}
+            >
               <Image
                 src="/images/google.svg"
                 alt="Google"

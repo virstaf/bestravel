@@ -6,7 +6,7 @@ import { JoinDialog } from "./JoinDialog";
 const Footer = () => {
   return (
     <footer className="w-full">
-      <div className="w-full py-8 bg-primary text-muted-foreground">
+      <div className="w-full py-8 bg-slate-900 text-(--muted)">
         <div className="container mx-auto px-4 md:px-8 lg:px-12">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 justify-center items-center">
             <div className="quick links">
@@ -26,7 +26,7 @@ const Footer = () => {
               <div className="my-3">
                 <JoinDialog
                   ButtonText={"Join Now for Exclusive Travel Perks!"}
-                  Variant={"outline"}
+                  Variant={"secondary"}
                 />
               </div>
             </div>
@@ -52,7 +52,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="flex justify-evenly flex-wrap gap-2 text-sm text-center bg-primary border border-x-0 border-b-0 text-muted-foreground px-4 py-1">
+      <div className="flex bg-slate-900 justify-evenly flex-wrap gap-2 text-white text-sm text-center border border-x-0 border-b-0 px-4 py-1">
         <p className="">
           Virstravel &copy; {new Date().getFullYear()} All rights reserved.
         </p>

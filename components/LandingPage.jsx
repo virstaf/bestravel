@@ -11,6 +11,7 @@ import GetInTouch from "./GetInTouch";
 import Newsletter from "./Newsletter";
 import NavSection from "./NavSection";
 import Footer from "./Footer";
+import CtaBanner from "./CTA-Banner";
 
 const LandingPage = () => {
   return (
@@ -26,6 +27,7 @@ const LandingPage = () => {
       <FeaturedDestinations />
       <Testimonials />
       <FAQSection />
+      <CtaBanner />
       <GetInTouch />
       <Newsletter />
       <Footer />

@@ -5,9 +5,7 @@ const HowItWorks = () => {
   return (
     <div className="w-full py-15 bg-primary-foreground">
       <div className="container mx-auto px-4 md:px-8 lg:px-12">
-        <h1 className="text-sm uppercase font-bold text-center">
-          How it Works
-        </h1>
+        <h1 className="text-3xl font-bold mb-10 text-center">How it Works</h1>
         <div className="grid grid-cols-1 mx-auto sm:max-w-[450px] lg:max-w-full lg:grid-cols-3 gap-6 mt-8">
           {howItWorks.map((step, idx) => (
             <div
