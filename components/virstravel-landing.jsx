@@ -12,7 +12,7 @@ export default function VirstravelLandingPage() {
           Unlock VIP Travel Benefits & Save Big on Every Trip!
         </p>
         <p className="text-lg mb-4">
-          💥 Up to 50% OFF Membership + £500 in Hotel Credits
+          💥 Up to 50% OFF Membership + Exciting deals in Hotel Credits
         </p>
         <button className="bg-white text-blue-600 px-6 py-3 rounded-full font-semibold hover:bg-gray-100 transition">
           Join Now & Claim Your Perks

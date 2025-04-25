@@ -13,7 +13,7 @@ const LimitedTimeSection = () => {
         <div className="flex flex-col gap-4">
           <ul>
             <li>
-              ✅ Get up to £500 in travel credits for future hotel bookings!
+              ✅ Get exciting deals in travel credits for future hotel bookings!
             </li>
             <li>⏳ Hurry! These offers won’t last long!</li>
           </ul>

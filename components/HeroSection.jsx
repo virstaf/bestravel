@@ -18,8 +18,8 @@ const HeroSection = () => {
             </h2>
           </div>
           <p className="text-center">
-            Join today and get up to £500 in travel credits, VIP lounge access,
-            and more!
+            Join today and get exciting deals in travel credits, VIP lounge
+            access, and more!
           </p>
           {/* <Button>Join VIP Waiting List Now!</Button> */}
           <JoinDialog ButtonText={"Join VIP Waiting List Now!"} />
