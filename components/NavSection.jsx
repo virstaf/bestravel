@@ -111,7 +111,11 @@ const NavSection = () => {
             <Button asChild>
               <Link href="auth/login">Login</Link>
             </Button>
-            <Button className="hidden md:block" variant="secondary" asChild>
+            <Button
+              className="hidden md:block hover:bg-gray-200"
+              variant="outline"
+              asChild
+            >
               <Link href="auth/signup">Sign up</Link>
             </Button>
           </div>

@@ -1,7 +1,7 @@
 import { footerLinks, socialLinks } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
-import { JoinDialog } from "./JoinDialog";
+import { Button } from "./ui/button";
 
 const Footer = () => {
   return (
@@ -24,10 +24,11 @@ const Footer = () => {
                 🎉 Act Now & Start Saving! 🎉
               </h3>
               <div className="my-3">
-                <JoinDialog
-                  ButtonText={"Join Now for Exclusive Travel Perks!"}
-                  Variant={"secondary"}
-                />
+                <Button asChild variant={"secondary"} size={"lg"}>
+                  <Link href="/auth/signup">
+                    Join Now for Exclusive Travel Perks!
+                  </Link>
+                </Button>
               </div>
             </div>
             <div className="social max-w-[200px] lg:max-w-[400px]">
