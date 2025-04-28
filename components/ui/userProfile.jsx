@@ -6,10 +6,12 @@ import LogoutButton from "./logout-button";
 import { useCurrentUserEmail } from "@/hooks/use-current-user-email";
 import Link from "next/link";
 import { Button } from "./button";
+import { usePathname } from "next/navigation";
 
 const UserProfile = () => {
   const [logoutOpen, setLogoutOpen] = useState(false);
   const email = useCurrentUserEmail();
+  const pathname = usePathname();
 
   return (
     <div
@@ -26,9 +28,11 @@ const UserProfile = () => {
         } flex-col items-center gap-2 backdrop-blur-xs bg-white p-6 rounded-2xl shadow absolute top-10 right-0`}
       >
         <span className="text-muted-foreground">{email}</span>
-        <Button asChild>
-          <Link href="/dashboard">Dashboard</Link>
-        </Button>
+        {!pathname.includes("dashboard") && (
+          <Button asChild>
+            <Link href="/dashboard">Dashboard</Link>
+          </Button>
+        )}
         <LogoutButton className="cursor-pointer" />
       </div>
     </div>

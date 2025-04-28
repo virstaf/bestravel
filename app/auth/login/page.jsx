@@ -37,10 +37,10 @@ const LoginPage = () => {
       <div className="w-full h-full hidden lg:block overflow-hidden">
         <Image
           className="w-full h-full object-cover"
-          src="/images/new-york.jpg"
-          width="640"
-          height="853"
-          alt="login_image"
+          src="/images/cheers-at-sea-side.jpg"
+          width="2624"
+          height="3280"
+          alt="login_split_image"
         />
       </div>
       <div className="form flex items-center justify-center w-full h-full">

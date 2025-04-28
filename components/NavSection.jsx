@@ -58,7 +58,7 @@ const NavSection = () => {
           href="/"
           className="max-h-14 hover:cursor-pointer hover:scale-105"
         >
-          <div className="h-full relative" asChild>
+          <div className="h-full relative">
             <Image
               src="/virstravel.png"
               alt="logo"
