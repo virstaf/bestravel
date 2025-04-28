@@ -3,7 +3,7 @@ import React from "react";
 
 const WhyJoin = () => {
   return (
-    <div className="w-full py-12 bg-primary-foreground">
+    <div className="w-full py-12 bg-primary-foreground" id="why-join">
       <div className="container mx-auto px-4 md:px-8 lg:px-12">
         <h2 className="text-sm uppercase font-bold text-center">
           Why Join Virstravel Perks Club?

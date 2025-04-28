@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const FAQSection = () => {
   return (
-    <div className="w-full py-12 ">
+    <div className="w-full py-12 " id="faq-section">
       <div className="container mx-auto px-4 md:px-8 lg:px-12 ">
         <div className="grid lg:grid-cols-2">
           <div className="">
