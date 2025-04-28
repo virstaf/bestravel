@@ -18,11 +18,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { loginAction, signupAction } from "@/actions/users";
+import { googleAuthAction, signupAction } from "@/actions/users";
 import { getUser } from "@/lib/supabase/server";
 import Image from "next/image";
 import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
 
 const formSchema = z.object({
   username: z
@@ -92,6 +93,21 @@ const SignupForm = () => {
       }
     });
   }
+
+  const handleGoogleAuth = async () => {
+    startTransition(async () => {
+      try {
+        await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: `${window.location.origin}/dashboard`,
+          },
+        });
+      } catch (error) {
+        toast.error("Error", { description: error.message });
+      }
+    });
+  };
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -202,7 +218,12 @@ const SignupForm = () => {
               <span className="text-muted-foreground px-3">or</span>
               <hr className="flex-1 border-muted-foreground" />
             </div>
-            <Button disabled={isPending} type="button" variant="outline">
+            <Button
+              onClick={handleGoogleAuth}
+              disabled={isPending}
+              type="button"
+              variant="outline"
+            >
               <Image
                 src="/images/google.svg"
                 alt="Google"

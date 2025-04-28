@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { googleLoginAction, loginAction } from "@/actions/users";
+import { googleAuthAction, loginAction } from "@/actions/users";
 import { useEffect, useState, useTransition } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -22,6 +22,7 @@ import { getUser } from "@/lib/supabase/server";
 import Image from "next/image";
 import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -76,14 +77,20 @@ const LoginForm = () => {
     },
   });
 
-  const handleGoogleLogin = async () => {
-    let errorMessage;
-    let title;
-    let description;
-
+  const handleGoogleAuth = async () => {
     startTransition(async () => {
-      errorMessage = (await googleLoginAction()).errorMessage;
-      if (errorMessage) console.error(errorMessage);
+      try {
+        await supabase.auth.signInWithOAuth({
+          provider: "google",
+          options: {
+            redirectTo: `${window.location.origin}/dashboard`,
+          },
+        });
+      } catch (error) {
+        toast.error("Error", {
+          description: "Error signing in with Google",
+        });
+      }
     });
   };
 
@@ -106,7 +113,7 @@ const LoginForm = () => {
               <FormItem>
                 <FormLabel>Email</FormLabel>
                 <FormControl>
-                  <Input placeholder="example@email.com" {...field} />
+                  <Input placeholder="example@domain.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -152,7 +159,7 @@ const LoginForm = () => {
               type="button"
               variant="outline"
               disabled={isPending}
-              onClick={handleGoogleLogin}
+              onClick={handleGoogleAuth}
             >
               <Image
                 src="/images/google.svg"
