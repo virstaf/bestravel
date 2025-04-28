@@ -21,6 +21,8 @@ import { Loader2 } from "lucide-react";
 import { loginAction, signupAction } from "@/actions/users";
 import { getUser } from "@/lib/supabase/server";
 import Image from "next/image";
+import { EyeClosed } from "lucide-react";
+import { Eye } from "lucide-react";
 
 const formSchema = z.object({
   username: z
@@ -34,11 +36,17 @@ const formSchema = z.object({
     .string()
     .min(8, { message: "password must contain at least 8 characters!" })
     .max(40),
+  confirmPassword: z
+    .string()
+    .min(8, { message: "password must contain at least 8 characters!" })
+    .max(40),
 });
 
 const SignupForm = () => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -52,9 +60,17 @@ const SignupForm = () => {
   }, []);
 
   async function onSubmit(values) {
+    const { password } = values;
+    const { confirmPassword } = values;
+    if (password !== confirmPassword) {
+      alert(password, confirmPassword);
+      toast.error("Error", { description: "Passwords do not match" });
+      return;
+    }
+
     startTransition(async () => {
       const { email } = values;
-      const { password } = values;
+
       const { username } = values;
 
       console.log(email, password);
@@ -83,13 +99,14 @@ const SignupForm = () => {
       username: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   return (
     <div className="w-full max-w-[450px] mx-auto">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-8 ">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-8 ">
           <div className="flex flex-col gap-1">
             <h3 className="text-2xl font-medium text-center">
               Create an account
@@ -124,19 +141,58 @@ const SignupForm = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="Password123" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="relative">
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute bottom-1 right-2 cursor-pointer"
+            >
+              <span className="text-muted-foreground">
+                {showPassword ? <EyeClosed /> : <Eye />}
+              </span>
+            </div>
+          </div>
+          <div className="relative">
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+              className="absolute bottom-1 right-2 cursor-pointer"
+            >
+              <span className="text-muted-foreground">
+                {showConfirmPassword ? <EyeClosed /> : <Eye />}
+              </span>
+            </div>
+          </div>
           <div className="grid w-full gap-3">
             <Button disabled={isPending} type="submit">
               {isPending ? <Loader2 className="animate-spin" /> : "Sign up"}
