@@ -15,11 +15,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { googleLoginAction, loginAction } from "@/actions/users";
-import { useEffect, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { getUser } from "@/lib/supabase/server";
 import Image from "next/image";
+import { EyeClosed } from "lucide-react";
+import { Eye } from "lucide-react";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -31,6 +33,7 @@ const formSchema = z.object({
 
 const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -109,19 +112,32 @@ const LoginForm = () => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input type="password" placeholder="Password123" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="relative">
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute bottom-1 right-2 cursor-pointer"
+            >
+              <span className="text-muted-foreground">
+                {showPassword ? <EyeClosed /> : <Eye />}
+              </span>
+            </div>
+          </div>
 
           <div className="grid w-full gap-3">
             <Button type="submit" disabled={isPending}>
