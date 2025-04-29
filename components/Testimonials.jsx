@@ -9,6 +9,7 @@ import { ArrowRight } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { JoinDialog } from "./JoinDialog";
 
 const Testimonials = () => {
   const [sliderIndex, setSliderIndex] = useState(0);
@@ -80,9 +81,10 @@ const Testimonials = () => {
                 />
               </div>
             </div>
-            <Button>
+            <JoinDialog ButtonText={"Join Now & Experience VIP Travel!"} />
+            {/* <Button>
               <Link href="/auth/signup">Join Now & Experience VIP Travel!</Link>
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

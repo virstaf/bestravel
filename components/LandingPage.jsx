@@ -12,6 +12,7 @@ import Newsletter from "./Newsletter";
 import NavSection from "./NavSection";
 import Footer from "./Footer";
 import CtaBanner from "./CTA-Banner";
+import LandingFooter from "./LandingFooter";
 
 const LandingPage = () => {
   return (
@@ -30,7 +31,8 @@ const LandingPage = () => {
       <CtaBanner />
       <GetInTouch />
       <Newsletter />
-      <Footer />
+      <LandingFooter />
+      {/* <Footer /> */}
     </>
   );
 };

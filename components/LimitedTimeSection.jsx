@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { JoinDialog } from "./JoinDialog";
 
 const LimitedTimeSection = () => {
   return (
@@ -18,9 +19,10 @@ const LimitedTimeSection = () => {
             <li>⏳ Hurry! These offers won’t last long!</li>
           </ul>
           <div className="">
-            <Button asChild>
+            <JoinDialog ButtonText={"Join VIP Waiting"} />
+            {/* <Button asChild>
               <Link href="/auth/signup">Join Now & Claim Your Offer!</Link>
-            </Button>
+            </Button> */}
           </div>
         </div>
       </div>

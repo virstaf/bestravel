@@ -8,6 +8,7 @@ import { NavLinks } from "@/lib/data";
 import UserProfile from "./ui/userProfile";
 import { supabase } from "@/lib/supabase/client";
 import Image from "next/image";
+import { JoinDialog } from "./JoinDialog";
 
 const NavSection = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -104,7 +105,8 @@ const NavSection = () => {
             })}
           </div>
         )}
-        {userData ? (
+        <JoinDialog ButtonText={"Join VIP Waiting"} />
+        {/* {userData ? (
           <UserProfile />
         ) : (
           <div className="flex gap-2">
@@ -119,7 +121,7 @@ const NavSection = () => {
               <Link href="auth/signup">Sign up</Link>
             </Button>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

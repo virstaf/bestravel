@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { JoinDialog } from "./JoinDialog";
 
 const HeroSection = () => {
   return (
@@ -22,9 +23,10 @@ const HeroSection = () => {
             Join today and get exciting deals in travel credits, VIP lounge
             access, and more!
           </p>
-          <Button asChild>
+          <JoinDialog ButtonText={"Request Custom Trip"} />
+          {/* <Button asChild>
             <Link href="/auth/signup">Claim Benefits Today!</Link>
-          </Button>
+          </Button> */}
         </div>
         <div className="w-full h-full  items-center justify-center hidden">
           {/* <MyCarousel /> */}
