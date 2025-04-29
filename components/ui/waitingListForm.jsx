@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { supabase } from "@/lib/supabase/client";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import axios from "axios";
 
 const formSchema = z.object({
   fullname: z
@@ -51,6 +52,7 @@ const WaitingListForm = () => {
         setIsLoading(false);
         return { success: false, error };
       } else {
+        await axios.post("/api/waiting-list", values);
         toast.success("You've been added successfully" || data.message);
         form.reset();
         setIsLoading(false);

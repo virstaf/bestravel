@@ -49,6 +49,7 @@ const ContactForm = () => {
         setIsLoading(false);
         return { success: false, error };
       } else {
+        axios.post("/api/contact", values);
         toast.success("Message submitted successfully" || data.message);
         form.reset();
         setIsLoading(false);

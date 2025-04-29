@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Virstravel",
+  title: "Virstravel Club",
   description: "Travel made easy",
   icons: {
     icon: "/favicon.ico",

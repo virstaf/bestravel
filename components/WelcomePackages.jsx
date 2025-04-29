@@ -15,7 +15,6 @@ const WelcomePackages = () => {
             <li>
               ✅ Up to 50% Discount on Membership Fees (Limited-Time Only!)
             </li>
-            <li>✅ Up to exciting Travel Credits for Hotel Bookings</li>
           </ul>
           <div className="">
             <JoinDialog ButtonText={"Join Now & Start Saving!"} />
