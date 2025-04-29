@@ -15,8 +15,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Virstravel App",
-  description: "Built by Uniik",
+  title: "Virstravel",
+  description: "Travel made easy",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({ children }) {
