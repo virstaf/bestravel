@@ -12,8 +12,8 @@ const HeroSection = () => {
         <div></div>
         <div className="cta flex flex-col gap-6 items-center p-8 backdrop-blur bg-white/10 rounded-[2rem]">
           <div className="flex flex-col text-center">
-            <p className="uppercase text-xs pb-2 font-bold text-green-600">
-              🌍 Travel More, Spend Less – with Exclusive Member Benefits!
+            <p className="uppercase text-xs tracking-wider pb-2 font-bold text-secondary">
+              🌍 Travel More, Spend Less, Enjoy Member Benefits!
             </p>
             <h2 className="font-bold text-4xl">
               Unlock VIP Travel Perks & Save Up to 50%!

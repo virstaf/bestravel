@@ -45,9 +45,10 @@ const WaitingListForm = () => {
     try {
       setIsLoading(true);
       const { data, error } = await supabase
-        .from("waiting-list-users")
+        .from("waiting_list")
         .insert(values);
       if (error) {
+        console.error(error);
         toast.error(error.details || "Something went wrong...");
         setIsLoading(false);
         return { success: false, error };

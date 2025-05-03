@@ -1,0 +1,25 @@
+travel-buddy/
+├── app/
+│   ├── (auth)/               # Authentication routes
+│   │   ├── login/
+│   │   ├── signup/
+│   │   └── callback/
+│   ├── dashboard/            # Protected routes
+│   │   ├── trips/
+│   │   ├── profile/
+│   │   └── settings/
+│   └── api/                  # API routes
+│       ├── trips/
+│       ├── users/
+│       └── waiting-list/
+├── lib/
+│   ├── supabase/             # Supabase client setup
+│   │   └── client.ts
+│   ├── database/             # Database types and utilities
+│   │   ├── types.ts          # Generated types from Supabase
+│   │   └── queries/
+│   ├── auth/                 # Auth utilities
+│   └── utils/                # Helper functions
+├── components/               # Shared UI components
+├── styles/                   # Global styles
+└── .env.local                # Environment variables
