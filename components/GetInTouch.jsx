@@ -14,13 +14,13 @@ const GetInTouch = () => {
               below, and our travel experts will get back to you ASAP!
             </p>
             <ul className="mb-6">
-              <li>📞 Call Us: +44 (0) 1234 567 890</li>
-              <li>📧 Email Us: support@virstravelperks.com</li>
+              <li>📞 Call Us: +44 7940 517222</li>
+              <li>📧 Email Us: devtech@virstaf.com</li>
             </ul>
             <div className="button">
               <Button asChild>
                 <Link
-                  href="/docs/Virstravel_Club_Top_10_Perk_eBook_with_CTA.pdf"
+                  href="/docs/Virstravel_Club_Top_10_Perk_eBook.pdf"
                   download="Virstravel_Perk_eBook"
                 >
                   Download Guide
