@@ -80,12 +80,12 @@ const LoginForm = () => {
   const handleGoogleAuth = async () => {
     startTransition(async () => {
       try {
-        await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: `${window.location.origin}/dashboard`,
-          },
-        });
+        const { error } = await googleAuthAction();
+        if (error) {
+          toast.error("Error", {
+            description: "Error signing in with Google",
+          });
+        }
       } catch (error) {
         toast.error("Error", {
           description: "Error signing in with Google",
