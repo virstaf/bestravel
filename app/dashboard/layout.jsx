@@ -1,5 +1,6 @@
 import { AuthGuard } from "@/components/auth";
 import DashNav from "@/components/dash-nav";
+import LandingFooter from "@/components/LandingFooter";
 import SideBar from "@/components/SideBar";
 // import Sidebar from "@/components/dashboard/sidebar";
 
@@ -21,6 +22,7 @@ export default function DashboardLayout({ children }) {
           </div>
         </main>
       </div>
+      <LandingFooter />
     </AuthGuard>
   );
 }
