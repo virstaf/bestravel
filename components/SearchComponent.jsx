@@ -7,7 +7,7 @@ import { Search } from "lucide-react";
 const SearchComponent = () => {
   const [query, setQuery] = useState("");
   return (
-    <div className="max-w-[350px] border rounded-lg flex items-center">
+    <div className="max-w-[350px] border rounded-lg flex items-center bg-white shadow-sm">
       <span className="text-muted-foreground p-2">
         <Search />
       </span>

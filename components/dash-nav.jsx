@@ -10,10 +10,10 @@ const dashSecNav = [
 
 const DashNav = () => {
   return (
-    <div className="dark:bg-black/50 backdrop-blur-sm w-full sticky top-0 z-50">
-      <div className="h-16 container mx-auto px-4 flex justify-between items-center relative">
+    <div className="dark:bg-black/50 backdrop-blur-sm fixed top-0 container z-50">
+      <div className="h-16 px-4 flex justify-between items-center relative">
         <Link
-          href="/"
+          href="/dashboard"
           className="max-h-14 hover:cursor-pointer hover:scale-105"
         >
           <div className="h-full relative">

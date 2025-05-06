@@ -10,7 +10,17 @@ export const useCurrentUserName = () => {
       if (error) {
         console.error(error);
       }
-      setName(data.user?.email ?? "?");
+      const splitEmail = data.user?.email?.split("@");
+      if (splitEmail && splitEmail.length > 0) {
+        // const  = splitEmail[0].charAt(0).toUpperCase() + splitEmail[0].slice(1);
+        const firstChar = splitEmail[0].charAt(0).toUpperCase();
+        const restOfName = splitEmail[0].slice(1).toLowerCase();
+        const formattedName = firstChar + restOfName;
+        setName(formattedName);
+
+        return;
+      }
+      // setName(data.user?.email ?? "?");
     };
 
     fetchProfileName();
