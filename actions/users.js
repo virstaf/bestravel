@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server.js";
 import { handleError } from "../lib/utils.ts";
 import { redirect } from "next/navigation.js";
 
-const baseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
 
 export const loginAction = async (email, password) => {
   try {
@@ -69,11 +69,12 @@ export const resetPasswordAction = async (email) => {
 };
 
 export const googleAuthAction = async () => {
+  console.log("base url", baseUrl);
   const { auth } = await createClient();
   const { data, error } = await auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${baseUrl}/dashboard`,
+      redirectTo: `${baseUrl}/auth/callback`,
       queryParams: {
         access_type: "offline",
         prompt: "consent",
