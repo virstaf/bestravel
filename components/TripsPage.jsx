@@ -21,7 +21,7 @@ export default async function Trips() {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold">My Trips</h1>
+        <h1 className="text-md font-bold uppercase text-primary">My Trips</h1>
         <Link href="/dashboard/trips/new">
           <Button>New Trip</Button>
         </Link>

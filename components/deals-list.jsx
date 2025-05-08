@@ -21,6 +21,7 @@ export default function DealsList({
   limit = null,
 }) {
   const [deals, setDeals] = useState(initialDeals);
+  const [partner, setPartner] = useState([]);
   const [loading, setLoading] = useState(!initialDeals.length);
   const [error, setError] = useState(null);
 
@@ -38,10 +39,13 @@ export default function DealsList({
         if (!response.ok) throw new Error("Failed to fetch deals");
 
         const data = await response.json();
+        // console.log("deals::: ", data[0].partner);
         setDeals(data);
+        setPartner(() => data.map((deal) => deal.partner));
       } catch (err) {
         setError(err.message);
       } finally {
+        console.log("partner:::", partner);
         setLoading(false);
       }
     };
@@ -93,25 +97,27 @@ export default function DealsList({
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {deals.map((deal) => (
+      {deals.map((deal, index) => (
         <Card key={deal.id} className="hover:shadow-lg transition-shadow">
           <CardHeader>
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle>{deal.title}</CardTitle>
-                <CardDescription>{deal.partners.name}</CardDescription>
+                {/* <CardDescription>{partner[index].name}</CardDescription> */}
+                <CardDescription>Air Lounge</CardDescription>
               </div>
-              {deal.partners.is_featured && (
-                <Badge variant="secondary" className="flex items-center">
-                  <StarIcon className="h-3 w-3 mr-1" /> Featured
-                </Badge>
-              )}
+              {/* {partner[index].is_featured && ( */}
+              <Badge variant="secondary" className="flex items-center">
+                <StarIcon className="h-3 w-3 mr-1" /> Featured
+              </Badge>
+              {/*  )} */}
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center">
               <MapPinIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-              <span>{deal.partners.location}</span>
+              {/* <span>{partner[index].location}</span> */}
+              <span>Adabraka</span>
             </div>
 
             <div className="flex items-center">
@@ -152,5 +158,9 @@ export default function DealsList({
         </Card>
       ))}
     </div>
+
+    // <div className="troubleshoot">
+    //   <span>troubleshooting</span>
+    // </div>
   );
 }

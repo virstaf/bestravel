@@ -1,6 +1,8 @@
 "use client";
 
 import { useCurrentUserName } from "@/hooks/use-current-user-name";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 const WelcomeCard = () => {
   const userName = useCurrentUserName();
@@ -13,9 +15,12 @@ const WelcomeCard = () => {
       <p className="text-gray-600 py-2 mb-2 backdrop-blur-3xl pr-2 rounded z-10">
         Checkout the latest travel deals and offers
       </p>
-      <button className="px-4 py-2 bg-secondary z-10 text-white rounded-lg hover:bg-secondary/80 transition duration-200">
-        Explore Deals
-      </button>
+      <Button
+        asChild
+        className="px-4 py-2 bg-secondary z-10 text-white rounded-lg hover:bg-secondary/80 transition duration-200"
+      >
+        <Link href="/dashboard/deals">Explore Deals</Link>
+      </Button>
     </div>
   );
 };

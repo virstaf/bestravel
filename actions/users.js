@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server.js";
 import { handleError } from "../lib/utils.ts";
 import { redirect } from "next/navigation.js";
 
-const baseUrl = process.env.NEXT_PUBLIC_BASEURL;
+const baseUrl = process.env.NEXT_PUBLIC_BASEURL || "https://virstravelclub.com";
 
 export const loginAction = async (email, password) => {
   try {
@@ -69,12 +69,11 @@ export const resetPasswordAction = async (email) => {
 };
 
 export const googleAuthAction = async () => {
-  console.log("base url", baseUrl);
   const { auth } = await createClient();
   const { data, error } = await auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${baseUrl}/auth/callback`,
+      redirectTo: `${baseUrl}/dashboard`,
       queryParams: {
         access_type: "offline",
         prompt: "consent",
@@ -83,7 +82,6 @@ export const googleAuthAction = async () => {
   });
 
   if (data.url) {
-    console.log("data::: ", data);
     redirect(data.url); // use the redirect API for your server framework
   }
   if (error) {

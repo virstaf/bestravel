@@ -30,7 +30,9 @@ const Deals = async () => {
   return (
     <div className="space-y-12">
       <div className="space-y-4">
-        <h1 className="text-3xl font-bold">Featured Deals</h1>
+        <h1 className="text-md font-bold uppercase text-primary">
+          Featured Deals
+        </h1>
         <p className="text-muted-foreground">
           Special offers from our premium partners
         </p>
@@ -38,7 +40,9 @@ const Deals = async () => {
       </div>
 
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold">All Current Deals</h2>
+        <h2 className="text-md font-bold uppercase text-primary">
+          All Current Deals
+        </h2>
         <p className="text-muted-foreground">Browse all available offers</p>
         <DealsList />
       </div>

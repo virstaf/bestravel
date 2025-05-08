@@ -8,7 +8,7 @@ const DealsPage = () => {
         page="Explore Deals"
         description="🌍 Pick your next adventure?"
       />
-      <div className="content min-w-full min-h-[calc(100vh-180px)]">
+      <div className="content min-w-full min-h-[calc(100vh-180px)] py-8">
         <Deals />
       </div>
     </div>

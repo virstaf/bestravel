@@ -14,15 +14,16 @@ export async function GET(request) {
       .from("deals")
       .select(
         `
-        *,
-        partners:partner_id (
-          name,
-          type,
-          location,
-          images,
-          amenities
-        )
-      `
+      *,
+      partner:partner_id (
+        name,
+        type,
+        location,
+        images,
+        amenities,
+        is_featured
+      )
+    `
       )
       .eq("is_active", true)
       .gte("end_date", new Date().toISOString())
