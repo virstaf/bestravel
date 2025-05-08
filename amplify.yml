@@ -3,7 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - env | grep -e EMAIL_PASS -e ADMIN_EMAIL >> .env.production
+        - env | grep -e EMAIL_PASS -e ADMIN_EMAIL -e SUPABASE_URL -e SUPABASE_ANON_KEY >> .env.production
         - env | grep -e NEXT_PUBLIC_SUPABASE_URL -e NEXT_PUBLIC_SUPABASE_KEY -e NEXT_PUBLIC_BASEURL >> .env.production
         - npm install -g pnpm
         - pnpm install
@@ -13,7 +13,7 @@ frontend:
   artifacts:
     baseDirectory: .next
     files:
-      - '**/*'
+      - "**/*"
   cache:
     paths:
       - .next/cache/**/*
