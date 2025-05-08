@@ -1,7 +1,10 @@
 import DashHeader from "@/components/dash-header";
+import DealsList from "@/components/deals-list";
+import DealsSection from "@/components/deals-section";
 import HotelCard from "@/components/ui/hotelCard";
 import ProductCard from "@/components/ui/productCard";
 import SectionHeader from "@/components/ui/section-header";
+import WelcomeCard from "@/components/welcome-card";
 import { hotDeals, hotels } from "@/lib/data";
 
 const page = () => {
@@ -14,6 +17,10 @@ const page = () => {
       />
       <div className="w-full min-h-[calc(100vh-180px)]">
         <section className="my-12">
+          <WelcomeCard />
+        </section>
+        <section className="my-12">
+          {/* <DealsSection /> */}
           <SectionHeader title="Hot Deals" link="/deal" />
           <p className="text-muted-foreground mb-4">
             Discover the best deals on travel, flights, and more. Don't miss out
@@ -34,7 +41,7 @@ const page = () => {
           </div>
         </section>
         <section className="my-12 max-w-full bg-gray-100 rounded-2xl p-4">
-          <h2 className="text-xl font-semibold mb-4">
+          <h2 className="text-md font-bold uppercase text-primary mb-4">
             Hotel Recommendations for You
           </h2>
           <div className="overflow-x-auto hide-scrollbar w-full px-4">
