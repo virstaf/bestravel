@@ -82,7 +82,7 @@ export const googleAuthAction = async () => {
   });
 
   if (data.url) {
-    console.log("::redirecting!")
+    console.log("::redirecting!");
     redirect(data.url); // use the redirect API for your server framework
   }
   if (error) {

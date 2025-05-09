@@ -16,11 +16,11 @@ export const useCurrentUserName = () => {
         const firstChar = splitEmail[0].charAt(0).toUpperCase();
         const restOfName = splitEmail[0].slice(1).toLowerCase();
         const formattedName = firstChar + restOfName;
-        setName(formattedName);
 
+        // console.log("username:::", data.user?.user_metadata?.full_name);
+        setName(data.user?.user_metadata?.full_name || formattedName);
         return;
       }
-      // setName(data.user?.email ?? "?");
     };
 
     fetchProfileName();

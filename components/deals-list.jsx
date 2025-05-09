@@ -45,7 +45,6 @@ export default function DealsList({
       } catch (err) {
         setError(err.message);
       } finally {
-        console.log("partner:::", partner);
         setLoading(false);
       }
     };
@@ -103,10 +102,12 @@ export default function DealsList({
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle>{deal.title}</CardTitle>
-                {/* <CardDescription>{partner[index].name}</CardDescription> */}
-                <CardDescription>Air Lounge</CardDescription>
+                <CardDescription>{deal.partners?.name}</CardDescription>
+                <CardDescription>{partner[index]?.name}</CardDescription>
+                {/* {console.log("partner[index]:::", partner[index])} */}
+                {/* <CardDescription>Air Lounge</CardDescription> */}
               </div>
-              {/* {partner[index].is_featured && ( */}
+              {/* {deal.partners?.is_featured && ( */}
               <Badge variant="secondary" className="flex items-center">
                 <StarIcon className="h-3 w-3 mr-1" /> Featured
               </Badge>
