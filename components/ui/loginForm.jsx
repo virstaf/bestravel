@@ -82,14 +82,14 @@ const LoginForm = () => {
       try {
         const { error } = await googleAuthAction();
         if (error) {
-          toast.error("Error", {
-            description: "Error signing in with Google",
-          });
+          // toast.error("Error", {
+          //   description: "Error signing in with Google",
+          // });
         }
       } catch (error) {
-        toast.error("Error", {
-          description: "Error signing in with Google",
-        });
+        // toast.error("Error", {
+        //   description: "Error signing in with Google",
+        // });
       }
     });
   };

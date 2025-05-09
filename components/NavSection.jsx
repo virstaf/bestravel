@@ -105,8 +105,8 @@ const NavSection = () => {
             })}
           </div>
         )}
-        <JoinDialog ButtonText={"Join VIP Waiting"} />
-        {/* {userData ? (
+        {/* <JoinDialog ButtonText={"Join VIP Waiting"} /> */}
+        {userData ? (
           <UserProfile />
         ) : (
           <div className="flex gap-2">
@@ -121,7 +121,7 @@ const NavSection = () => {
               <Link href="auth/signup">Sign up</Link>
             </Button>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );
