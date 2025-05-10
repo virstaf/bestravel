@@ -1,4 +1,3 @@
-// components/DealsList.js
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -14,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarIcon, StarIcon, MapPinIcon } from "lucide-react";
+import { getFeaturedDealsAction } from "@/actions/deals";
 
 export default function DealsList({
   initialDeals = [],
@@ -32,16 +32,19 @@ export default function DealsList({
       try {
         setLoading(true);
         let url = "/api/deals?";
-        if (featuredOnly) url += "featured=true&";
-        if (limit) url += `limit=${limit}`;
 
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Failed to fetch deals");
-
-        const data = await response.json();
-        // console.log("deals::: ", data[0].partner);
-        setDeals(data);
-        setPartner(() => data.map((deal) => deal.partner));
+        if (featuredOnly) {
+          const data = await getFeaturedDealsAction(3);
+          if (!data) throw new Error("Failed to fetch deals");
+          setDeals(data);
+          setPartner(() => data.map((deal) => deal.partner));
+        } else {
+          const response = await fetch(url);
+          if (!response.ok) throw new Error("Failed to fetch deals");
+          const data = await response.json();
+          setDeals(data);
+          setPartner(() => data.map((deal) => deal.partner));
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -102,23 +105,23 @@ export default function DealsList({
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle>{deal.title}</CardTitle>
-                <CardDescription>{deal.partners?.name}</CardDescription>
-                <CardDescription>{partner[index]?.name}</CardDescription>
-                {/* {console.log("partner[index]:::", partner[index])} */}
-                {/* <CardDescription>Air Lounge</CardDescription> */}
+                <CardDescription>
+                  {deal.partners?.name || partner[index]?.name}
+                </CardDescription>
               </div>
-              {/* {deal.partners?.is_featured && ( */}
-              <Badge variant="secondary" className="flex items-center">
-                <StarIcon className="h-3 w-3 mr-1" /> Featured
-              </Badge>
-              {/*  )} */}
+              {(deal.partners?.is_featured || partner[index]?.is_featured) && (
+                <Badge variant="secondary" className="flex items-center">
+                  <StarIcon className="h-3 w-3 mr-1" /> Featured
+                </Badge>
+              )}
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center">
               <MapPinIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-              {/* <span>{partner[index].location}</span> */}
-              <span>Adabraka</span>
+              <span>
+                {deals.partners?.location || partner[index]?.location}
+              </span>
             </div>
 
             <div className="flex items-center">

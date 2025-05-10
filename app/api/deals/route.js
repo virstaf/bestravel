@@ -1,4 +1,3 @@
-// app/api/deals/route.js
 import { createClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 
@@ -14,24 +13,23 @@ export async function GET(request) {
       .from("deals")
       .select(
         `
-      *,
-      partner:partner_id (
-        name,
-        type,
-        location,
-        images,
-        amenities,
-        is_featured
-      )
-    `
+        *,
+        partner:partner_id (
+          name,
+          type,
+          location,
+          is_featured
+        )
+      `
       )
       .eq("is_active", true)
-      .gte("end_date", new Date().toISOString())
-      .order("created_at", { ascending: false });
+      .gte("end_date", new Date().toISOString());
 
     if (featured) {
-      query = query.eq("partners.is_featured", true);
+      query = query.eq("partner.is_featured", true);
     }
+
+    query = query.order("created_at", { ascending: false });
 
     if (limit) {
       query = query.limit(parseInt(limit));
@@ -39,10 +37,14 @@ export async function GET(request) {
 
     const { data: deals, error } = await query;
 
-    if (error) throw error;
+    if (error) {
+      console.error("Error fetching deals:", error);
+      throw error;
+    }
 
-    return NextResponse.json(deals);
+    return NextResponse.json(deals || []);
   } catch (error) {
+    console.error("API error:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

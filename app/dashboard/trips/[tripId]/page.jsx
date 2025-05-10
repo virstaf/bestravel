@@ -18,7 +18,7 @@ const TripDetailPage = async ({ params }) => {
   const { data: trip } = await supabase
     .from("trips")
     .select("*")
-    .eq("id", params.tripId)
+    .eq("id", await params.tripId)
     .eq("user_id", user.id)
     .single();
 
