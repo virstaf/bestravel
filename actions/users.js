@@ -1,8 +1,9 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server.js";
-import { handleError } from "../lib/utils.ts";
+import { generateCustomerId, handleError } from "../lib/utils.ts";
 import { redirect } from "next/navigation.js";
+import { sendEmail } from "./sendEmail.js";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASEURL || "https://virstravelclub.com";
 
@@ -33,22 +34,60 @@ export const logoutAction = async () => {
 export const signupAction = async (email, password, username) => {
   try {
     const { auth } = await createClient();
-    const { data, error } = await auth.signUp({ email, password });
-    if (error) throw error;
+    const { data, error } = await auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          display_name: username,
+        },
+      },
+    });
+
+    // 2. Generate unique customer ID
+    const customerId = generateCustomerId();
+
+    if (error) {
+      console.error("error signing up", error);
+      throw error;
+    }
     const userId = data.user?.id;
+    console.log("user Id:", userId);
     if (!userId) throw new Error("Error signing up");
 
-    // Add user to database
+    // 3. Create profile record
     const supabase = await createClient();
-    const { error: insertError } = await supabase
-      .from("users")
-      .insert({ uuid: userId, username, email, role: "USER" });
+    const { error: profileError } = await supabase.from("profiles").insert({
+      id: userId,
+      email: email,
+      username: username.toLowerCase().replace(/\s+/g, "_"),
+      full_name: username,
+      customer_id: customerId,
+      role: "USER",
+    });
 
-    if (insertError) {
-      console.error("Insert error:", insertError);
+    if (profileError) return handleError(profileError);
 
-      throw insertError;
-    }
+    await sendEmail(
+      email,
+      "Welcome to VirsTravel Club",
+      `Hello ${username},\n\nThank you for signing up for Virs Travel Club! We're excited to have you on board.\nNote, your customer ID is ${customerId}\n\nBest regards,\nThe Virs Travel Club Team`
+    );
+
+    // if (error) throw error;
+    // const userId = data.user?.id;
+    // if (!userId) throw new Error("Error signing up");
+
+    // // Add user to database
+    // const { error: insertError } = await supabase
+    //   .from("users")
+    //   .insert({ uuid: userId, username, email, role: "USER" });
+
+    // if (insertError) {
+    //   console.error("Insert error:", insertError);
+
+    //   throw insertError;
+    // }
 
     return { errorMessage: null };
   } catch (error) {

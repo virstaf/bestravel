@@ -80,12 +80,7 @@ const LoginForm = () => {
   const handleGoogleAuth = async () => {
     startTransition(async () => {
       try {
-        const { error } = await googleAuthAction();
-        if (error) {
-          // toast.error("Error", {
-          //   description: "Error signing in with Google",
-          // });
-        }
+        await googleAuthAction();
       } catch (error) {
         // toast.error("Error", {
         //   description: "Error signing in with Google",

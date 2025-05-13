@@ -74,8 +74,6 @@ const SignupForm = () => {
 
       const { username } = values;
 
-      console.log(email, password);
-
       let errorMessage;
       let title;
       let description;
@@ -87,7 +85,8 @@ const SignupForm = () => {
 
       if (!errorMessage) {
         toast.success(title, { description: description });
-        router.replace("/dashboard");
+        // router.replace("/dashboard");
+        router.refresh();
       } else {
         toast.error("Error", { description: errorMessage });
       }
@@ -97,15 +96,8 @@ const SignupForm = () => {
   const handleGoogleAuth = async () => {
     startTransition(async () => {
       try {
-        await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: `${window.location.origin}/dashboard`,
-          },
-        });
-      } catch (error) {
-        toast.error("Error", { description: error.message });
-      }
+        await googleAuthAction();
+      } catch (error) {}
     });
   };
 

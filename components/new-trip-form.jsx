@@ -20,6 +20,7 @@ const NewTripForm = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
     title: "",
+    location: "",
     destination: "",
     start_date: null,
     end_date: null,
@@ -61,13 +62,18 @@ const NewTripForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-md">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 max-w-md bg-white p-6 rounded-2xl shadow-xl"
+    >
       {error && (
         <div className="p-4 text-red-500 bg-red-50 rounded-md">{error}</div>
       )}
 
       <div>
-        <Label htmlFor="title">Trip Title</Label>
+        <Label className="mb-1" htmlFor="title">
+          Trip Title
+        </Label>
         <Input
           id="title"
           value={formData.title}
@@ -77,7 +83,23 @@ const NewTripForm = () => {
       </div>
 
       <div>
-        <Label htmlFor="destination">Destination</Label>
+        <Label className="mb-1" htmlFor="destination">
+          From
+        </Label>
+        <Input
+          id="destination"
+          value={formData.location}
+          onChange={(e) =>
+            setFormData({ ...formData, location: e.target.value })
+          }
+          required
+        />
+      </div>
+
+      <div>
+        <Label className="mb-1" htmlFor="destination">
+          Destination
+        </Label>
         <Input
           id="destination"
           value={formData.destination}
@@ -90,7 +112,7 @@ const NewTripForm = () => {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label>Start Date</Label>
+          <Label className="mb-1">Start Date</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full">
@@ -114,7 +136,7 @@ const NewTripForm = () => {
         </div>
 
         <div>
-          <Label>End Date</Label>
+          <Label className="mb-1">End Date</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full">
@@ -140,7 +162,7 @@ const NewTripForm = () => {
 
       <div className="grid grid-cols-2 gap-4">
         <div className="">
-          <Label>Adults</Label>
+          <Label className="mb-1">Adults</Label>
           <Input
             type="number"
             min="1"
@@ -152,7 +174,7 @@ const NewTripForm = () => {
           />
         </div>
         <div className="">
-          <Label>Children</Label>
+          <Label className="mb-1">Children</Label>
           <Input
             type="number"
             min="0"
@@ -166,7 +188,7 @@ const NewTripForm = () => {
       </div>
 
       <div className="budget">
-        <Label>Budget ($ USD)</Label>
+        <Label className="mb-1">Budget ($ USD)</Label>
         <Input
           type="number"
           min="100"
