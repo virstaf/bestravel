@@ -49,30 +49,35 @@ export const signupAction = async (email, password, username) => {
 
     if (error) {
       console.error("error signing up", error);
-      throw error;
+      return handleError(error.message);
     }
     const userId = data.user?.id;
-    console.log("user Id:", userId);
-    if (!userId) throw new Error("Error signing up");
 
-    // 3. Create profile record
-    const supabase = await createClient();
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: userId,
-      email: email,
-      username: username.toLowerCase().replace(/\s+/g, "_"),
-      full_name: username,
-      customer_id: customerId,
-      role: "USER",
-    });
-
-    if (profileError) return handleError(profileError);
+    // 3. Send welcome email
 
     await sendEmail(
       email,
       "Welcome to VirsTravel Club",
       `Hello ${username},\n\nThank you for signing up for Virs Travel Club! We're excited to have you on board.\nNote, your customer ID is ${customerId}\n\nBest regards,\nThe Virs Travel Club Team`
     );
+    if (!userId) throw new Error("Error signing up");
+
+    const supabase = await createClient();
+    // const { error: profileError } = await supabase.from("profiles").insert({
+    const response = await supabase.from("profiles").insert({
+      id: userId,
+      email,
+      username: username.toLowerCase().replace(/\s+/g, "_"),
+      full_name: username,
+      customer_id: customerId,
+      role: "USER",
+    });
+
+    if (response.error) {
+      console.error("Error creating profile:", response.error);
+      throw handleError(response.error || "Error creating profile");
+    }
+    console.log("response::", response);
 
     // if (error) throw error;
     // const userId = data.user?.id;
