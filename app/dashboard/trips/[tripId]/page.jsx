@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 const TripDetailPage = async ({ params }) => {
+  const { tripId } = params;
   const supabase = await createClient();
   const {
     data: { user },
@@ -18,7 +19,7 @@ const TripDetailPage = async ({ params }) => {
   const { data: trip } = await supabase
     .from("trips")
     .select("*")
-    .eq("id", await params.tripId)
+    .eq("id", tripId)
     .eq("user_id", user.id)
     .single();
 

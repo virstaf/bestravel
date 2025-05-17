@@ -14,6 +14,7 @@ import {
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import { CircleDollarSign } from "lucide-react";
 
 export default function TripDetail({ trip }) {
   const router = useRouter();
@@ -107,7 +108,7 @@ export default function TripDetail({ trip }) {
 
               {trip.budget && (
                 <div className="flex items-center">
-                  <CurrencyIcon className="h-5 w-5 mr-2 text-muted-foreground" />
+                  <CircleDollarSign className="h-5 w-5 mr-2 text-muted-foreground" />
                   <span>Budget: ${trip.budget.toLocaleString()}</span>
                 </div>
               )}
@@ -133,11 +134,13 @@ export default function TripDetail({ trip }) {
             </CardHeader>
             <CardContent className="space-y-2">
               <Button variant="outline" className="w-full">
-                Book Hotel
+                <Link href={`/dashboard/trips/${trip.id}/reserve`}>
+                  Reserve for Trip
+                </Link>
               </Button>
-              <Button variant="outline" className="w-full">
+              {/* <Button variant="outline" className="w-full">
                 Add Itinerary
-              </Button>
+              </Button> */}
               <Button variant="outline" className="w-full">
                 Invite Friends
               </Button>

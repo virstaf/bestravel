@@ -7,14 +7,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
-export default function ProfileForm({ profile }) {
+const ProfileForm = ({ profile }) => {
   const [formData, setFormData] = useState({
-    full_name: profile.full_name || "",
-    username: profile.username || "",
-    bio: profile.bio || "",
-    website: profile.website || "",
-    public_email: profile.public_email || "",
-    avatar_url: profile.avatar_url || "",
+    full_name: profile?.full_name || "",
+    username: profile?.username || "",
+    bio: profile?.bio || "",
+    website: profile?.website || "",
+    public_email: profile?.public_email || "",
+    avatar_url: profile?.avatar_url || "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -29,7 +29,7 @@ export default function ProfileForm({ profile }) {
       const { error } = await supabase
         .from("profiles")
         .update(formData)
-        .eq("id", profile.id);
+        .eq("id", profile?.id);
 
       if (error) throw error;
       router.refresh();
@@ -45,7 +45,7 @@ export default function ProfileForm({ profile }) {
     if (!file) return;
 
     const fileExt = file.name.split(".").pop();
-    const fileName = `${profile.id}-${Date.now()}.${fileExt}`;
+    const fileName = `${profile?.id}-${Date.now()}.${fileExt}`;
     const filePath = `${fileName}`;
 
     const { error: uploadError } = await supabase.storage
@@ -66,7 +66,9 @@ export default function ProfileForm({ profile }) {
       <div className="flex items-center gap-6">
         <Avatar className="h-20 w-20">
           <AvatarImage src={formData.avatar_url} />
-          <AvatarFallback>{profile.full_name?.charAt(0) || "U"}</AvatarFallback>
+          <AvatarFallback>
+            {profile?.full_name?.charAt(0) || "U"}
+          </AvatarFallback>
         </Avatar>
         <div>
           <label htmlFor="avatar" className="block text-sm font-medium mb-2">
@@ -93,7 +95,7 @@ export default function ProfileForm({ profile }) {
         </label>
         <Input
           id="customer_id"
-          value={profile.customer_id}
+          value={profile?.customer_id}
           readOnly
           className="bg-muted"
         />
@@ -126,4 +128,6 @@ export default function ProfileForm({ profile }) {
       </Button>
     </form>
   );
-}
+};
+
+export default ProfileForm;
