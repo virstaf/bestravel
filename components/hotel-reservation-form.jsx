@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "./ui/textarea";
+import Link from "next/link";
 
 const HotelReservationForm = ({ trip, onSubmit, loading }) => {
   const [formData, setFormData] = useState({
@@ -41,8 +42,11 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
     <div>
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
         <div>
-          <Label className="mb-1">Hotel Name</Label>
+          <Label className="mb-1" htmlFor="hotel">
+            Hotel Name
+          </Label>
           <Input
+            id="hotel"
             value={formData.hotelName}
             placeholder="Preferred hotels, separated by comma if multiple"
             onChange={(e) =>
@@ -53,8 +57,11 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
         </div>
 
         <div>
-          <Label className="mb-1">Preferred Location</Label>
+          <Label className="mb-1" htmlFor="location">
+            Preferred Location
+          </Label>
           <Input
+            id="location"
             value={formData.preferredLocation}
             placeholder="City center, seaside area, etc."
             onChange={(e) =>
@@ -66,7 +73,12 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Check-in</label>
+            <label
+              // htmlFor="check-in"
+              className="block text-sm font-medium mb-1"
+            >
+              Check-in
+            </label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full">
@@ -88,18 +100,23 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Check-out</label>
+            <label
+              // htmlFor="check-out"
+              className="block text-sm font-medium mb-1"
+            >
+              Check-out
+            </label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full">
-                  {format(new Date(formData.checkIn), "PPP")}
+                  {format(new Date(formData.checkOut), "PPP")}
                   <CalendarIcon className="ml-2 h-4 w-4" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={new Date(formData.checkIn)}
+                  selected={new Date(formData.checkOut)}
                   onSelect={(date) =>
                     setFormData({ ...formData, checkOut: date })
                   }
@@ -117,6 +134,8 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
             </Label>
             <Input
               type="number"
+              name="rating"
+              id="rating"
               min={1}
               max={5}
               value={formData.starRating}
@@ -131,6 +150,8 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
             </Label>
             <Input
               type="number"
+              name="rooms"
+              id="rooms"
               min={1}
               value={formData.rooms}
               onChange={(e) =>
@@ -146,6 +167,9 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
               Bed Type
             </Label>
             <Select
+              name="bed"
+              id="bed"
+              // defaultValue="single"
               onChange={(value) => setFormData({ ...formData, bedType: value })}
             >
               <SelectTrigger className="w-full">
@@ -163,6 +187,8 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
               Meals
             </Label>
             <Select
+              name="meals"
+              id="meals"
               onChange={(value) => setFormData({ ...formData, meals: value })}
             >
               <SelectTrigger className="w-full">
@@ -190,10 +216,14 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
             }
           />
         </div>
-
-        <Button type="submit" disabled={loading}>
-          {loading ? "Submitting..." : "Request Hotel"}
-        </Button>
+        <div className="flex justify-between">
+          <Button type="submit" disabled={loading}>
+            {loading ? "Submitting..." : "Request Hotel"}
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href={`/dashboard/trips/${trip.id}`}>Back</Link>
+          </Button>
+        </div>
       </form>
     </div>
   );

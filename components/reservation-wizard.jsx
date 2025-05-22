@@ -1,12 +1,13 @@
 "use client";
 import { useState } from "react";
-import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HotelReservationForm from "./hotel-reservation-form";
 import TransferReservationForm from "./transfer-reservation-form";
 import FlightReservationForm from "./flight-reservation-form";
+import { toast } from "sonner";
+import axios from "axios";
+import { getUser } from "@/lib/supabase/server";
 
 export default function ReservationWizard({ trip, userId }) {
   const [activeTab, setActiveTab] = useState("hotel");
@@ -14,23 +15,50 @@ export default function ReservationWizard({ trip, userId }) {
   const router = useRouter();
 
   const handleSubmit = async (type, details) => {
+    const user = await getUser();
+    // console.log("user:::", user);
     setLoading(true);
     try {
-      // console.log("Submitting reservation:", type, details);
-      const { error } = await supabase.from("reservations").insert({
+      const { error } = await axios.post("/api/reservation", {
         trip_id: trip.id,
         user_id: userId,
         type,
         details,
         start_date: trip.start_date,
         end_date: trip.end_date,
+        email: user.email,
       });
 
-      if (error) throw error;
+      if (error) {
+        toast.error("Error submitting reservation. Please try again.");
+        throw error;
+      }
+
+      // const { dbError } = await supabase.from("reservations").insert({
+      //   trip_id: trip.id,
+      //   user_id: userId,
+      //   type,
+      //   details,
+      //   start_date: trip.start_date,
+      //   end_date: trip.end_date,
+      // });
+
+      // if (dbError) {
+      //   console.error("db error:::", dbError);
+      // }
+
+      toast.success(
+        `${
+          type.charAt(0).toUpperCase() + type.slice(1)
+        } reservation submitted successfully!`
+      );
 
       router.refresh();
     } catch (error) {
-      // console.error("Reservation error:", error);
+      console.error(
+        `${type.charAt(0).toUpperCase() + type.slice(1)} reservation error:`,
+        error
+      );
     } finally {
       setLoading(false);
     }

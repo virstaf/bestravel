@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/popover";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import Link from "next/link";
 
 const TransferReservationForm = ({ trip, onSubmit, loading }) => {
   const [formData, setFormData] = useState({
@@ -169,10 +170,14 @@ const TransferReservationForm = ({ trip, onSubmit, loading }) => {
           }
         />
       </div>
-
-      <Button type="submit" disabled={loading}>
-        {loading ? "Submitting..." : "Request Transfer"}
-      </Button>
+      <div className="flex justify-between">
+        <Button type="submit" disabled={loading}>
+          {loading ? "Submitting..." : "Request Transfer"}
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href={`/dashboard/trips/${trip.id}`}>Back</Link>
+        </Button>
+      </div>
     </form>
   );
 };

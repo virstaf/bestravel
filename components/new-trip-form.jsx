@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
+import { toast } from "sonner";
 
 const NewTripForm = () => {
   const router = useRouter();
@@ -49,7 +50,12 @@ const NewTripForm = () => {
         status: "planning",
       });
 
-      if (error) throw error;
+      if (error) {
+        toast.error("Error creating trip. Please try again.");
+        throw error;
+      }
+
+      toast.success("Trip created successfully!");
 
       router.push("/dashboard/trips");
       router.refresh();
