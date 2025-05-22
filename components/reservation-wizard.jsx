@@ -16,19 +16,19 @@ export default function ReservationWizard({ trip, userId }) {
   const handleSubmit = async (type, details) => {
     setLoading(true);
     try {
-      console.log("Submitting reservation:", type, details);
-      // const { error } = await supabase.from("reservations").insert({
-      //   trip_id: trip.id,
-      //   user_id: userId,
-      //   type,
-      //   details,
-      //   start_date: trip.start_date,
-      //   end_date: trip.end_date,
-      // });
+      // console.log("Submitting reservation:", type, details);
+      const { error } = await supabase.from("reservations").insert({
+        trip_id: trip.id,
+        user_id: userId,
+        type,
+        details,
+        start_date: trip.start_date,
+        end_date: trip.end_date,
+      });
 
-      // if (error) throw error;
+      if (error) throw error;
 
-      // router.refresh();
+      router.refresh();
     } catch (error) {
       // console.error("Reservation error:", error);
     } finally {
@@ -37,7 +37,7 @@ export default function ReservationWizard({ trip, userId }) {
   };
 
   return (
-    <div className="p-4 pb-6 bg-white rounded-lg shadow-md">
+    <div className="p-4 pb-6 bg-white mx-auto max-w-[750px] rounded-lg shadow-md">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="hotel">Hotel</TabsTrigger>

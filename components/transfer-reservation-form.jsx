@@ -171,7 +171,7 @@ const TransferReservationForm = ({ trip, onSubmit, loading }) => {
       </div>
 
       <Button type="submit" disabled={loading}>
-        {loading ? "Booking Transfer..." : "Reserve Transfer"}
+        {loading ? "Submitting..." : "Request Transfer"}
       </Button>
     </form>
   );

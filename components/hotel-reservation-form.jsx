@@ -192,7 +192,7 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
         </div>
 
         <Button type="submit" disabled={loading}>
-          {loading ? "Booking..." : "Reserve Hotel"}
+          {loading ? "Submitting..." : "Request Hotel"}
         </Button>
       </form>
     </div>

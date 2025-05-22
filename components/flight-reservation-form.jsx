@@ -169,7 +169,7 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
         </div>
 
         <Button type="submit" disabled={loading}>
-          {loading ? "Searching Flights..." : "Find Flights"}
+          {loading ? "Submitting..." : "Request Flights"}
         </Button>
       </form>
     </div>
