@@ -3,7 +3,7 @@
 import nodeMailer from "nodemailer";
 // import { createClient } from "@/lib/supabase/server";
 
-export const sendEmail = async (email, subject, message) => {
+export const sendEmail = async (email, subject, message, html = "") => {
   // const { auth } = await createClient();
 
   const transporter = nodeMailer.createTransport({
@@ -19,6 +19,7 @@ export const sendEmail = async (email, subject, message) => {
     to: email,
     subject: subject,
     text: message,
+    html: html,
   };
 
   try {

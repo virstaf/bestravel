@@ -15,8 +15,9 @@ export default function ReservationWizard({ trip, userId }) {
   const router = useRouter();
 
   const handleSubmit = async (type, details) => {
+    console.log("reservation:::", trip, details);
+
     const user = await getUser();
-    // console.log("user:::", user);
     setLoading(true);
     try {
       const { error } = await axios.post("/api/reservation", {

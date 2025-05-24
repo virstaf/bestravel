@@ -26,7 +26,10 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
     arrivalCity: trip.destination.split(",")[0].trim(), // Auto-fill from trip
     departureDate: trip.start_date,
     returnDate: trip.end_date,
-    passengers: 1,
+    adults: 1,
+    children: 0,
+    // child1Age: "", // Optional, can be extended for more children
+    // passengers: adults + children,
     class: "economy",
     airlinePreference: "",
     specialRequests: "",
@@ -113,19 +116,62 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label className="mb-1">Passengers</Label>
+          <div className="">
+            <Label className="mb-1">Adults</Label>
             <Input
               type="number"
               min="1"
               max="10"
-              value={formData.passengers}
+              value={formData.adults}
               onChange={(e) =>
-                setFormData({ ...formData, passengers: e.target.value })
+                setFormData({
+                  ...formData,
+                  adults: e.target.value,
+                })
               }
             />
           </div>
+          <div className="">
+            <Label className="mb-1">Children</Label>
+            <Input
+              type="number"
+              min="0"
+              max="10"
+              value={formData.children}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  children: e.target.value,
+                })
+              }
+            />
+          </div>
+        </div>
 
+        {formData.children > 0 && (
+          <div className="children-age">
+            {Array.from({ length: formData.children }).map((_, index) => (
+              <div className="mb-2 grid grid-cols-2" key={index}>
+                <Label className="mb-1">Age of child {index + 1}</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  max="17"
+                  placeholder="Age in years"
+                  value={formData[`child${index + 1}Age`] || ""}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      [`child${index + 1}Age`]: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <Label className="mb-1">Class</Label>
             <Select
@@ -145,17 +191,17 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
               </SelectContent>
             </Select>
           </div>
-        </div>
 
-        <div>
-          <Label className="mb-1">Airline Preference</Label>
-          <Input
-            value={formData.airlinePreference}
-            placeholder="Specific airline (optional)"
-            onChange={(e) =>
-              setFormData({ ...formData, airlinePreference: e.target.value })
-            }
-          />
+          <div>
+            <Label className="mb-1">Airline Preference</Label>
+            <Input
+              value={formData.airlinePreference}
+              placeholder="Specific airline (optional)"
+              onChange={(e) =>
+                setFormData({ ...formData, airlinePreference: e.target.value })
+              }
+            />
+          </div>
         </div>
 
         <div>
