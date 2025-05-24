@@ -15,7 +15,7 @@ export default function ReservationWizard({ trip, userId }) {
   const router = useRouter();
 
   const handleSubmit = async (type, details) => {
-    console.log("reservation:::", trip, details);
+    // console.log("reservation:::", trip, details);
 
     const user = await getUser();
     setLoading(true);
