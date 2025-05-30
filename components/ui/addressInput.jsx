@@ -49,7 +49,6 @@ const AddressInput = () => {
                 {suggestion.description}
               </CommandItem>
             ))}
-            //{" "}
           </CommandGroup>
         )}
         {/* <CommandSeparator /> */}

@@ -21,6 +21,7 @@ import { format } from "date-fns";
 import Link from "next/link";
 
 const FlightReservationForm = ({ trip, onSubmit, loading }) => {
+  const [isCheckInBag, setIsCheckInBag] = useState(false);
   const [formData, setFormData] = useState({
     departureCity: "",
     arrivalCity: trip.destination.split(",")[0].trim(), // Auto-fill from trip
@@ -28,11 +29,10 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
     returnDate: trip.end_date,
     adults: 1,
     children: 0,
-    // child1Age: "", // Optional, can be extended for more children
-    // passengers: adults + children,
     class: "economy",
     airlinePreference: "",
     specialRequests: "",
+    checkInBag: isCheckInBag,
   });
 
   const handleSubmit = (e) => {
@@ -204,15 +204,38 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
           </div>
         </div>
 
-        <div>
-          <Label className="mb-1">Special Requests</Label>
-          <Input
-            value={formData.specialRequests}
-            placeholder="Seat preferences, meal restrictions, etc."
-            onChange={(e) =>
-              setFormData({ ...formData, specialRequests: e.target.value })
-            }
-          />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label className="mb-1">Special Requests</Label>
+            <Input
+              value={formData.specialRequests}
+              placeholder="Seat preferences, meal restrictions, etc."
+              onChange={(e) =>
+                setFormData({ ...formData, specialRequests: e.target.value })
+              }
+            />
+          </div>
+          <div className="">
+            <Label className="mb-1">Check in bag required?</Label>
+            <div className="flex mt-1">
+              <input
+                type="checkbox"
+                name="check-in-bag"
+                id="check-in-bag"
+                checked={isCheckInBag}
+                onChange={(e) => {
+                  setIsCheckInBag(e.target.checked);
+                  setFormData({
+                    ...formData,
+                    checkInBag: e.target.checked,
+                  });
+                }}
+              />
+              <p className="text-sm text-gray-500 ml-2">
+                Check this box if you have some luggage to check in.
+              </p>
+            </div>
+          </div>
         </div>
         <div className="flex justify-between">
           <Button type="submit" disabled={loading}>
