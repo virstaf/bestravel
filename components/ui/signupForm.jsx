@@ -83,8 +83,8 @@ const SignupForm = () => {
 
       if (!errorMessage) {
         toast.success(title, { description: description });
-        router.replace("/dashboard");
-        // router.refresh();
+        // router.replace("/dashboard");
+        router.refresh();
       } else {
         toast.error("Error", { description: errorMessage });
       }

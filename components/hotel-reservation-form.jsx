@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Link from "next/link";
+import AddressInput from "./ui/addressInput";
 
 const HotelReservationForm = ({ trip, onSubmit, loading }) => {
   const [formData, setFormData] = useState({
@@ -82,6 +83,10 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
             }
             required
           />
+        </div>
+
+        <div className="">
+          <AddressInput />
         </div>
 
         <div className="grid grid-cols-2 gap-4">

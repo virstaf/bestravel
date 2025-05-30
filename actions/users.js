@@ -58,7 +58,7 @@ export const signupAction = async (email, password, username) => {
     await sendEmail(
       email,
       "Welcome to VirsTravel Club",
-      `Hello ${username},\n\nThank you for signing up for Virs Travel Club! We're excited to have you on board.\nNote, your customer ID is ${customerId}\n\nBest regards,\nThe Virs Travel Club Team`
+      `Hello ${username},\n\nThank you for signing up for Virs Travel Club! We're excited to have you on board.\nNote, your Member ID, ${customerId}\n\nBest regards,\nThe Virs Travel Club Team`
     );
     if (!userId) throw new Error("Error signing up");
 
