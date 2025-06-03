@@ -53,14 +53,6 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label className="mb-1">Departure City</Label>
-            {/* <Input
-              value={formData.departureCity}
-              placeholder="City or airport code"
-              onChange={(e) =>
-                setFormData({ ...formData, departureCity: e.target.value })
-              }
-              required
-            /> */}
             <AddressInput
               placeholder="Enter departure city or airport code"
               value={formData.departureCity}

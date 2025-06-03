@@ -57,6 +57,7 @@ const AddressInput = ({
               onChange(selectedValue); // Update parent state
               setSearch(false);
               setShouldSearch(false);
+              setSuggestions([]); // Clear suggestions after selection
             }}
           />
         ))}
