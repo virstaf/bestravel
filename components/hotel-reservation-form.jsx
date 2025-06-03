@@ -35,19 +35,10 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
     specialRequests: "",
   });
 
-  const [query, setQuery] = useState("");
-  const [shouldSearch, setShouldSearch] = useState(true);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
     onSubmit(formData);
-  };
-
-  const handleAddressChange = (e) => {
-    setFormData({ ...formData, city: e.target.value });
-    setQuery(e.target.value);
-    console.log(e.target.value);
   };
 
   return (
@@ -59,12 +50,8 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
           </Label>
           <AddressInput
             placeholder="Enter city..."
-            value={formData.city} // Controlled value
-            onChange={(value) => setFormData({ ...formData, city: value })} // Update formData
-            query={query}
-            setQuery={setQuery}
-            shouldSearch={shouldSearch}
-            setShouldSearch={setShouldSearch}
+            value={formData.city}
+            onChange={(value) => setFormData({ ...formData, city: value })}
           />
         </div>
 
@@ -97,10 +84,6 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
             required
           />
         </div>
-
-        {/* <div className="">
-          <AddressInput />
-        </div> */}
 
         <div className="grid grid-cols-2 gap-4">
           <div>

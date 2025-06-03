@@ -74,18 +74,6 @@ const TransferReservationForm = ({ trip, onSubmit, loading }) => {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label className="mb-1">Pickup Location</Label>
-          {/* <Input
-            value={formData.pickupLocation}
-            placeholder={
-              formData.transferType === "airport"
-                ? "Airport code (e.g. JFK)"
-                : "Address or location"
-            }
-            onChange={(e) =>
-              setFormData({ ...formData, pickupLocation: e.target.value })
-            }
-            required
-          /> */}
           <AddressInput
             placeholder={
               formData.transferType === "airport"
@@ -95,33 +83,17 @@ const TransferReservationForm = ({ trip, onSubmit, loading }) => {
             onChange={(value) =>
               setFormData({ ...formData, pickupLocation: value })
             }
-            query={pickupQuery}
-            setQuery={setPickupQuery}
-            shouldSearch={shouldPickupSearch}
-            setShouldSearch={setShouldPickupSearch}
           />
         </div>
 
         <div>
           <Label className="mb-1">Dropoff Location</Label>
-          {/* <Input
-            value={formData.dropoffLocation}
-            placeholder="Hotel name or address"
-            onChange={(e) =>
-              setFormData({ ...formData, dropoffLocation: e.target.value })
-            }
-            required
-          /> */}
           <AddressInput
             placeholder="Enter dropoff location..."
             value={formData.dropoffLocation}
             onChange={(value) =>
               setFormData({ ...formData, dropoffLocation: value })
             }
-            query={dropoffQuery}
-            setQuery={setDropoffQuery}
-            shouldSearch={shouldDropoffSearch}
-            setShouldSearch={setShouldDropoffSearch}
           />
         </div>
       </div>

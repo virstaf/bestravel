@@ -36,11 +36,6 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
     checkInBag: isCheckInBag,
   });
 
-  const [departureQuery, setDepartureQuery] = useState("");
-  const [shouldDepartureSearch, setShouldDepartureSearch] = useState(true);
-  const [arrivalQuery, setArrivalQuery] = useState("");
-  const [shouldArrivalSearch, setShouldArrivalSearch] = useState(true);
-
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
@@ -59,10 +54,6 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
               onChange={(value) =>
                 setFormData({ ...formData, departureCity: value })
               }
-              query={departureQuery}
-              setQuery={setDepartureQuery}
-              shouldSearch={shouldDepartureSearch}
-              setShouldSearch={setShouldDepartureSearch}
             />
           </div>
 
@@ -74,10 +65,6 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
               onChange={(value) =>
                 setFormData({ ...formData, arrivalCity: value })
               }
-              query={arrivalQuery}
-              setQuery={setArrivalQuery}
-              shouldSearch={shouldArrivalSearch}
-              setShouldSearch={setShouldArrivalSearch}
             />
           </div>
         </div>
