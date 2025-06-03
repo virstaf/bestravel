@@ -171,6 +171,7 @@ const NewTripForm = () => {
           <Input
             type="number"
             min="1"
+            max="8"
             value={formData.adults}
             onChange={(e) =>
               setFormData({ ...formData, adults: e.target.value })
@@ -183,6 +184,7 @@ const NewTripForm = () => {
           <Input
             type="number"
             min="0"
+            max="8"
             value={formData.children}
             onChange={(e) =>
               setFormData({ ...formData, children: e.target.value })

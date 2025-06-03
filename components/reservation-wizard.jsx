@@ -8,6 +8,7 @@ import FlightReservationForm from "./flight-reservation-form";
 import { toast } from "sonner";
 import axios from "axios";
 import { getUser } from "@/lib/supabase/server";
+import { supabase } from "@/lib/supabase/client";
 
 export default function ReservationWizard({ trip, userId }) {
   const [activeTab, setActiveTab] = useState("hotel");
@@ -35,18 +36,18 @@ export default function ReservationWizard({ trip, userId }) {
         throw error;
       }
 
-      // const { dbError } = await supabase.from("reservations").insert({
-      //   trip_id: trip.id,
-      //   user_id: userId,
-      //   type,
-      //   details,
-      //   start_date: trip.start_date,
-      //   end_date: trip.end_date,
-      // });
+      const { dbError } = await supabase.from("reservations").insert({
+        trip_id: trip.id,
+        user_id: userId,
+        type,
+        details,
+        start_date: trip.start_date,
+        end_date: trip.end_date,
+      });
 
-      // if (dbError) {
-      //   console.error("db error:::", dbError);
-      // }
+      if (dbError) {
+        console.error("db error:::", dbError);
+      }
 
       toast.success(
         `${

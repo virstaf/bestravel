@@ -10,7 +10,22 @@ export const useCurrentUserName = () => {
       if (error) {
         console.error(error);
       }
-      const splitEmail = data.user?.email?.split("@");
+      const userEmail = data.user?.email;
+      const splitEmail = userEmail.split("@");
+
+      const { data: userData, error: userError } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("email", userEmail)
+        .maybeSingle();
+      if (userError) {
+        console.error("Error fetching user profile:", userError);
+      }
+      console.log("userData:::", userData);
+      if (userData && userData.username) {
+        setName(userData.username);
+        return;
+      }
       if (splitEmail && splitEmail.length > 0) {
         // const  = splitEmail[0].charAt(0).toUpperCase() + splitEmail[0].slice(1);
         const firstChar = splitEmail[0].charAt(0).toUpperCase();
