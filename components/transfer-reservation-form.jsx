@@ -19,6 +19,7 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
+import AddressInput from "./ui/addressInput";
 
 const TransferReservationForm = ({ trip, onSubmit, loading }) => {
   const [isReturnTransfer, setIsReturnTransfer] = useState(false);
@@ -36,6 +37,11 @@ const TransferReservationForm = ({ trip, onSubmit, loading }) => {
     passengers: 2,
     specialRequests: "",
   });
+
+  const [pickupQuery, setPickupQuery] = useState("");
+  const [shouldPickupSearch, setShouldPickupSearch] = useState(true);
+  const [dropoffQuery, setDropoffQuery] = useState("");
+  const [shouldDropoffSearch, setShouldDropoffSearch] = useState(true);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -67,7 +73,7 @@ const TransferReservationForm = ({ trip, onSubmit, loading }) => {
       <div className="grid grid-cols-2 gap-4">
         <div>
           <Label className="mb-1">Pickup Location</Label>
-          <Input
+          {/* <Input
             value={formData.pickupLocation}
             placeholder={
               formData.transferType === "airport"
@@ -78,18 +84,43 @@ const TransferReservationForm = ({ trip, onSubmit, loading }) => {
               setFormData({ ...formData, pickupLocation: e.target.value })
             }
             required
+          /> */}
+          <AddressInput
+            placeholder={
+              formData.transferType === "airport"
+                ? "Airport code (e.g. JFK)"
+                : "Address or location"
+            }
+            onChange={(value) =>
+              setFormData({ ...formData, pickupLocation: value })
+            }
+            query={pickupQuery}
+            setQuery={setPickupQuery}
+            shouldSearch={shouldPickupSearch}
+            setShouldSearch={setShouldPickupSearch}
           />
         </div>
 
         <div>
           <Label className="mb-1">Dropoff Location</Label>
-          <Input
+          {/* <Input
             value={formData.dropoffLocation}
             placeholder="Hotel name or address"
             onChange={(e) =>
               setFormData({ ...formData, dropoffLocation: e.target.value })
             }
             required
+          /> */}
+          <AddressInput
+            placeholder="Enter dropoff location..."
+            value={formData.dropoffLocation}
+            onChange={(value) =>
+              setFormData({ ...formData, dropoffLocation: value })
+            }
+            query={dropoffQuery}
+            setQuery={setDropoffQuery}
+            shouldSearch={shouldDropoffSearch}
+            setShouldSearch={setShouldDropoffSearch}
           />
         </div>
       </div>

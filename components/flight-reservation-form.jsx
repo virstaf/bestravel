@@ -19,6 +19,7 @@ import {
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
+import AddressInput from "./ui/addressInput";
 
 const FlightReservationForm = ({ trip, onSubmit, loading }) => {
   const [isCheckInBag, setIsCheckInBag] = useState(false);
@@ -35,6 +36,11 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
     checkInBag: isCheckInBag,
   });
 
+  const [departureQuery, setDepartureQuery] = useState("");
+  const [shouldDepartureSearch, setShouldDepartureSearch] = useState(true);
+  const [arrivalQuery, setArrivalQuery] = useState("");
+  const [shouldArrivalSearch, setShouldArrivalSearch] = useState(true);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
@@ -46,25 +52,39 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label className="mb-1">Departure City</Label>
-            <Input
+            {/* <Input
               value={formData.departureCity}
               placeholder="City or airport code"
               onChange={(e) =>
                 setFormData({ ...formData, departureCity: e.target.value })
               }
               required
+            /> */}
+            <AddressInput
+              placeholder="Enter departure city or airport code"
+              value={formData.departureCity}
+              onChange={(value) =>
+                setFormData({ ...formData, departureCity: value })
+              }
+              query={departureQuery}
+              setQuery={setDepartureQuery}
+              shouldSearch={shouldDepartureSearch}
+              setShouldSearch={setShouldDepartureSearch}
             />
           </div>
 
           <div>
             <Label className="mb-1">Arrival City</Label>
-            <Input
+            <AddressInput
+              placeholder="Enter arrival city or airport code"
               value={formData.arrivalCity}
-              placeholder="City or airport code"
-              onChange={(e) =>
-                setFormData({ ...formData, arrivalCity: e.target.value })
+              onChange={(value) =>
+                setFormData({ ...formData, arrivalCity: value })
               }
-              required
+              query={arrivalQuery}
+              setQuery={setArrivalQuery}
+              shouldSearch={shouldArrivalSearch}
+              setShouldSearch={setShouldArrivalSearch}
             />
           </div>
         </div>

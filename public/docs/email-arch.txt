@@ -1,0 +1,1 @@
+Next.js Form Submit → Supabase Booking → Next.js API → HubSpot API → Email to User/Admin

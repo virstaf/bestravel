@@ -1,24 +1,19 @@
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "@/components/ui/command";
 import { autoCompletePlaces } from "@/lib/google";
 import { useEffect, useState } from "react";
+import { Input } from "./input";
+import InputSuggestion from "./input-suggestion";
 
-const AddressInput = () => {
-  const [query, setQuery] = useState("");
+const AddressInput = ({
+  placeholder = "Enter address...",
+  value, // Receive value prop from parent
+  onChange, // Receive onChange prop from parent
+  query,
+  setQuery,
+  shouldSearch,
+  setShouldSearch,
+}) => {
   const [suggestions, setSuggestions] = useState([]);
-
-  //   const handleInputChange = (e) => {
-  //     setQuery(e.target.value);
-  //   };
+  const [search, setSearch] = useState(shouldSearch);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -26,7 +21,7 @@ const AddressInput = () => {
       setSuggestions(results);
     };
 
-    if (query) {
+    if (query && search && query.length > 2) {
       fetchSuggestions();
     } else {
       setSuggestions([]);
@@ -34,26 +29,39 @@ const AddressInput = () => {
   }, [query]);
 
   return (
-    <Command>
-      <CommandInput
-        placeholder="Type a location..."
-        value={query}
-        onValueChange={setQuery}
+    <div>
+      <Input
+        placeholder={placeholder}
+        value={value || query}
+        onChange={(e) => {
+          setQuery(e.target.value);
+          onChange(e.target.value);
+          setSearch(true);
+        }}
+        onFocus={() => setSearch(true)}
+        onBlur={() =>
+          setTimeout(() => {
+            setSearch(false);
+            setShouldSearch(false);
+          }, 200)
+        } // Small delay to allow click
       />
-      <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
-        {suggestions && (
-          <CommandGroup heading="Suggestions">
-            {suggestions.map((suggestion) => (
-              <CommandItem key={suggestion.place_id}>
-                {suggestion.description}
-              </CommandItem>
-            ))}
-          </CommandGroup>
-        )}
-        {/* <CommandSeparator /> */}
-      </CommandList>
-    </Command>
+      <div className="mt-2">
+        {suggestions.map((suggestion) => (
+          <InputSuggestion
+            key={suggestion.place_id}
+            suggestion={suggestion}
+            onClick={() => {
+              const selectedValue = suggestion.description;
+              setQuery(selectedValue);
+              onChange(selectedValue); // Update parent state
+              setSearch(false);
+              setShouldSearch(false);
+            }}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
 

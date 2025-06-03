@@ -35,10 +35,21 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
     specialRequests: "",
   });
 
+  const [query, setQuery] = useState("");
+  const [shouldSearch, setShouldSearch] = useState(true);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    console.log(formData);
+    // onSubmit(formData);
   };
+
+  const handleAddressChange = (e) => {
+    setFormData({ ...formData, city: e.target.value });
+    setQuery(e.target.value);
+    console.log(e.target.value);
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
@@ -46,12 +57,14 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
           <Label className="mb-1" htmlFor="city">
             City
           </Label>
-          <Input
-            id="city"
-            value={formData.city}
-            placeholder="Enter the city"
-            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-            required
+          <AddressInput
+            placeholder="Enter city..."
+            value={formData.city} // Controlled value
+            onChange={(value) => setFormData({ ...formData, city: value })} // Update formData
+            query={query}
+            setQuery={setQuery}
+            shouldSearch={shouldSearch}
+            setShouldSearch={setShouldSearch}
           />
         </div>
 
@@ -85,9 +98,9 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
           />
         </div>
 
-        <div className="">
+        {/* <div className="">
           <AddressInput />
-        </div>
+        </div> */}
 
         <div className="grid grid-cols-2 gap-4">
           <div>
