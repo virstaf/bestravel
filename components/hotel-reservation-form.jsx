@@ -41,7 +41,7 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    // onSubmit(formData);
+    onSubmit(formData);
   };
 
   const handleAddressChange = (e) => {
