@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -41,19 +40,19 @@ const ContactForm = () => {
 
     try {
       setIsLoading(true);
-      const { data, error } = await supabase
-        .from("contact-form")
-        .insert(values);
-      if (error) {
-        toast.error(error.details || "Something went wrong...");
-        setIsLoading(false);
-        return { success: false, error };
-      } else {
-        axios.post("/api/contact", values);
-        toast.success("Message submitted successfully" || data.message);
-        form.reset();
-        setIsLoading(false);
-      }
+      // const { data, error } = await supabase
+      //   .from("contact-form")
+      //   .insert(values);
+      // if (error) {
+      //   toast.error(error.details || "Something went wrong...");
+      //   setIsLoading(false);
+      //   return { success: false, error };
+      // } else {
+      axios.post("/api/contact-form", values);
+      toast.success("Message submitted successfully" || data.message);
+      form.reset();
+      setIsLoading(false);
+      // }
     } catch (error) {
       toast.error(error.response.data.errorMessage || "Something went wrong");
     }

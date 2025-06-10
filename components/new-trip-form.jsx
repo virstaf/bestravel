@@ -69,7 +69,7 @@ const NewTripForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 max-w-md bg-white p-6 rounded-2xl shadow-xl"
+      className="space-y-6 max-w-md w-full bg-white p-6 rounded-2xl shadow-xl"
     >
       {error && (
         <div className="p-4 text-red-500 bg-red-50 rounded-md">{error}</div>
