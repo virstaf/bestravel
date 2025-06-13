@@ -9,9 +9,17 @@ import {
   Tailwind,
 } from "@react-email/components";
 
+let logoSrc;
+
 const baseUrl = process.env.NEXT_PUBLIC_BASEURL
   ? `https://${process.env.NEXT_PUBLIC_BASEURL}`
   : "";
+
+if (baseUrl && !baseUrl.startsWith("https://")) {
+  logoSrc = `${baseUrl}/static/virstravel.png`;
+} else {
+  logoSrc = `/virstravel.png`;
+}
 
 const ContactEmail = ({ fullname }) => {
   return (
@@ -21,7 +29,7 @@ const ContactEmail = ({ fullname }) => {
           <Container className="p-45 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
             <Container className="mx-auto mt-12 mb-12">
               <Img
-                src={`/virstravel.png`}
+                src={logoSrc}
                 width="184"
                 height="75"
                 alt="Virstravel"
@@ -40,6 +48,10 @@ const ContactEmail = ({ fullname }) => {
                 The Virstravel Club Team
               </Text>
             </Container>
+
+            <Text className="mb-45 text-center text-gray-400">
+              Chantry House, IncuHive Space, 38 The Chantry, Andover, SP10 1LZ.
+            </Text>
           </Container>
         </Body>
       </Tailwind>

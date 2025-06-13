@@ -1,16 +1,39 @@
 "use server";
 
+// import { render } from "@react-email/components";
 import ContactEmail from "@/email-templates/contact";
+import WelcomeEmail from "@/email-templates/welcome";
 import { Resend } from "resend";
 
-// import Resend from "resend";
+export const resendEmail = async (values, type) => {
+  const adminEmail = "noreply@virstravelclub.com";
+  let receivingEmail, emailTemplate, subject;
 
-export const resendEmail = async (values) => {
-  const { fullname, email, message } = values;
+  if (type === "contact") {
+    const { fullname, email, message } = values;
+    emailTemplate = <ContactEmail fullname={fullname} />;
+    subject = "We've got your message";
+    receivingEmail = email;
 
-  if (!fullname || !email || !message) {
-    console.error("Missing required fields");
-    return { success: false, message: "All fields are required" };
+    if (!fullname || !email || !message) {
+      console.error("Missing required fields");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "welcome") {
+    const { fullname, membershipId, email } = values;
+    console.log("Welcome email values:", values);
+    emailTemplate = (
+      <WelcomeEmail fullname={fullname} membershipId={membershipId} />
+    );
+    subject = "Welcome to Virstravel Club";
+    receivingEmail = email;
+
+    if (!fullname || !membershipId || !email) {
+      console.error("Missing required fields");
+      return { success: false, message: "All fields are required" };
+    }
   }
 
   const resend = new Resend(process.env.RESEND_API_KEY);
@@ -21,13 +44,10 @@ export const resendEmail = async (values) => {
 
   try {
     const { data, error } = await resend.emails.send({
-      from: "noreply@virstravelclub.com",
-      to: email,
-      subject: "We’ve Got Your Message!",
-      react: <ContactEmail fullname={fullname} />,
-      //   html: `
-      //     <p>Hi ${fullname},</p>
-      //     <p>Thank you for reaching out to us! We have received your message and will get back to you shortly.</p>`,
+      from: adminEmail,
+      to: receivingEmail,
+      subject: subject,
+      react: emailTemplate,
     });
 
     if (error) {

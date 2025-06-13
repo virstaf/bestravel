@@ -49,7 +49,7 @@ const ContactForm = () => {
       //   setIsLoading(false);
       //   return { success: false, error };
       // } else {
-      const { success, message } = await resendEmail(values);
+      const { success, message } = await resendEmail(values, "contact");
       if (!success) {
         toast.error(message || "Something went wrong");
       }
