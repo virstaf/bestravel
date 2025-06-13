@@ -1,4 +1,5 @@
 import CtaBanner from "./CTA-Banner";
+import HotelSearchBox from "./search-hotel-form";
 
 export default function VirstravelLandingPage() {
   return (
@@ -82,6 +83,12 @@ export default function VirstravelLandingPage() {
           Join Now – Unlock Your Perks
         </button>
       </section> */}
+
+      {/* Test Amadeus */}
+      <section className="bg-blue-600 text-white py-16 px-6 text-center">
+        <h2 className="text-3xl font-bold mb-4">Search your desired ?</h2>
+        <HotelSearchBox />
+      </section>
       <CtaBanner />
     </div>
   );

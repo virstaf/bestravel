@@ -12,7 +12,7 @@ const PrivacyPage = () => {
           <p>
             Welcome to Virstravel, operated by Virstaf LTD ("we", "us", "our").
             We are registered in England and Wales with a registered office at
-            89-90 Paul Street, London, EC2A 4NE.
+            Chantry House, IncuHive Space, 38 The Chantry, Andover, SP10 1LZ.
           </p>
           <p>
             Protecting your personal information is important to us. This
@@ -170,9 +170,8 @@ const PrivacyPage = () => {
               </p>
               <ul>
                 <li className="list-none">Virstaf LTD</li>
-                <li className="list-none">
-                  89-90 Paul Street, London, EC2A 4NE
-                </li>
+                <li className="list-none">Chantry House, IncuHive Space, 38</li>
+                <li className="list-none">The Chantry, Andover, SP10 1LZ</li>
                 <li className="list-none">Email: info@virstaf.com</li>
               </ul>
             </li>
