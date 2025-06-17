@@ -6,12 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Label } from "./ui/label";
 
 const ProfileForm = ({ profile }) => {
   const [formData, setFormData] = useState({
     full_name: profile?.full_name || "",
     username: profile?.username || "",
     bio: profile?.bio || "",
+    phone: profile?.phone || "",
+    country: profile?.country || "",
     website: profile?.website || "",
     public_email: profile?.public_email || "",
     avatar_url: profile?.avatar_url || "",
@@ -38,6 +41,19 @@ const ProfileForm = ({ profile }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCancel = () => {
+    setFormData({
+      full_name: profile?.full_name || "",
+      username: profile?.username || "",
+      bio: profile?.bio || "",
+      website: profile?.website || "",
+      public_email: profile?.public_email || "",
+      avatar_url: profile?.avatar_url || "",
+      country: profile?.country || "",
+      phone: profile?.phone || "",
+    });
   };
 
   const handleAvatarUpload = async (e) => {
@@ -97,17 +113,29 @@ const ProfileForm = ({ profile }) => {
           id="customer_id"
           value={profile?.customer_id}
           readOnly
-          className="bg-muted"
+          className="bg-gray-100 cursor-not-allowed"
         />
         <p className="text-xs text-muted-foreground mt-1">
           Share this ID when contacting support
         </p>
       </div>
 
+      <div className="username">
+        <Label htmlFor="username" className="mb-1">
+          Username
+        </Label>
+        <Input
+          id="username"
+          value={profile?.username}
+          readOnly
+          className="bg-gray-100 cursor-not-allowed"
+        />
+      </div>
+
       <div>
-        <label htmlFor="full_name" className="block text-sm font-medium mb-1">
+        <Label htmlFor="full_name" className="mb-1">
           Full Name
-        </label>
+        </Label>
         <Input
           id="full_name"
           value={formData.full_name}
@@ -117,15 +145,70 @@ const ProfileForm = ({ profile }) => {
         />
       </div>
 
-      {/* Add other fields similarly */}
+      <div className="email">
+        <Label htmlFor="public_email" className="mb-1">
+          Email
+        </Label>
+        <Input
+          id="public_email"
+          type="email"
+          value={formData.public_email}
+          onChange={(e) =>
+            setFormData({ ...formData, public_email: e.target.value })
+          }
+        />
+      </div>
+
+      <div className="phone">
+        <Label htmlFor="phone" className="mb-1">
+          Phone
+        </Label>
+        <Input
+          id="phone"
+          type="tel"
+          value={formData.phone}
+          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+        />
+      </div>
+
+      <div className="country">
+        <Label htmlFor="country" className="mb-1">
+          Country
+        </Label>
+        <Input
+          id="country"
+          type="country"
+          value={formData.country}
+          onChange={(e) =>
+            setFormData({ ...formData, country: e.target.value })
+          }
+        />
+      </div>
+
+      <div className="bio">
+        <Label htmlFor="bio" className="mb-1">
+          Bio
+        </Label>
+        <Textarea
+          id="bio"
+          value={formData.bio}
+          onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+          rows={3}
+          placeholder="Tell us about yourself"
+        />
+      </div>
 
       {error && (
         <div className="p-4 text-red-500 bg-red-50 rounded-md">{error}</div>
       )}
-
-      <Button type="submit" disabled={loading}>
-        {loading ? "Saving..." : "Save Changes"}
-      </Button>
+      <div className="buttons flex justify-between">
+        <Button type="button" variant="outline" onClick={handleCancel}>
+          Cancel
+        </Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? "Saving..." : "Save Changes"}
+        </Button>
+      </div>
     </form>
   );
 };

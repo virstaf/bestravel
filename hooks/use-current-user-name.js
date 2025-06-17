@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
+import { getUser } from "@/lib/supabase/server";
 import { useEffect, useState } from "react";
 
 export const useCurrentUserName = () => {
@@ -6,11 +7,9 @@ export const useCurrentUserName = () => {
 
   useEffect(() => {
     const fetchProfileName = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error(error);
-      }
-      const userEmail = data.user?.email;
+      const user = await getUser();
+
+      const userEmail = user?.email;
       const splitEmail = userEmail.split("@");
 
       const { data: userData, error: userError } = await supabase

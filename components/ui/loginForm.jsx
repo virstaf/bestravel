@@ -22,7 +22,6 @@ import { getUser } from "@/lib/supabase/server";
 import Image from "next/image";
 import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
-import { supabase } from "@/lib/supabase/client";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -79,13 +78,7 @@ const LoginForm = () => {
 
   const handleGoogleAuth = async () => {
     startTransition(async () => {
-      try {
-        await googleAuthAction();
-      } catch (error) {
-        // toast.error("Error", {
-        //   description: "Error signing in with Google",
-        // });
-      }
+      await googleAuthAction();
     });
   };
 

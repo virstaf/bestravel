@@ -3,16 +3,61 @@
 import { createClient } from "@/lib/supabase/server.js";
 import { generateCustomerId, handleError } from "../lib/utils.ts";
 import { redirect } from "next/navigation.js";
-import { sendEmail } from "./sendEmail.js";
 import { resendEmail } from "./resendEmail.js";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASEURL || "https://virstravelclub.com";
 
 export const loginAction = async (email, password) => {
   try {
-    const { auth } = await createClient();
-    const { error } = await auth.signInWithPassword({ email, password });
+    const supabase = await createClient();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
     if (error) throw error;
+    const userId = data.user?.id;
+
+    const profile = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("email", email)
+      .single();
+
+    console.log("profile::", profile);
+    if (!profile.data) {
+      // 1. Generate unique customer ID
+      const customerId = generateCustomerId();
+      // 2. Create profile if it doesn't exist
+      const response = await supabase.from("profiles").insert({
+        id: userId,
+        email,
+        username: data.user?.user_metadata?.username || email.split("@")[0],
+        full_name: data.user?.user_metadata?.full_name || "",
+        customer_id: customerId,
+        role: "USER",
+      });
+      if (response.error) {
+        console.error("Error creating profile:", response.error);
+        throw handleError(response.error || "Error creating profile");
+      } else {
+        console.log("Profile created successfully:", response.data);
+        const sendNotification = await resendEmail(
+          {
+            fullname: data.user?.user_metadata?.username || email.split("@")[0],
+            membershipId: customerId,
+            email,
+          },
+          "welcome"
+        );
+        if (!sendNotification.success) {
+          console.error(
+            "Error sending welcome email:",
+            sendNotification.message
+          );
+          return handleError(sendNotification.message);
+        }
+      }
+    }
 
     return { errorMessage: null };
   } catch (error) {
@@ -34,59 +79,59 @@ export const logoutAction = async () => {
 
 export const signupAction = async (email, password, username) => {
   try {
-      const { auth } = await createClient();
-      const { data, error } = await auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            display_name: username,
-          },
-        },
-      });
-
-    // 2. Generate unique customer ID
-    const customerId = generateCustomerId();
-
-    if (error) {
-      console.error("error signing up", error);
-      return handleError(error.message);
-    }
-    const userId = data.user?.id;
-
-    // 3. Send welcome email
-    // console.log("before sending welcome email", username, customerId, email);
-    const sendNotification = await resendEmail(
-      {
-        fullname: username,
-        membershipId: customerId,
-        email,
-      },
-      "welcome"
-    );
-    if (!sendNotification.success) {
-      console.error("Error sending welcome email:", sendNotification.message);
-      return handleError(sendNotification.message);
-    }
-
-    if (!userId) throw new Error("Error signing up");
-
-    const supabase = await createClient();
-
-    const response = await supabase.from("profiles").insert({
-      id: userId,
+    const { auth } = await createClient();
+    const { data, error } = await auth.signUp({
       email,
-      username: username.toLowerCase().replace(/\s+/g, "_"),
-      full_name: username,
-      customer_id: customerId,
-      role: "USER",
+      password,
+      options: {
+        data: {
+          display_name: username,
+        },
+      },
     });
 
-    if (response.error) {
-      console.error("Error creating profile:", response.error);
-      throw handleError(response.error || "Error creating profile");
-    }
-    console.log("response::", response);
+    // // 2. Generate unique customer ID
+    // const customerId = generateCustomerId();
+
+    // if (error) {
+    //   console.error("error signing up", error);
+    //   return handleError(error.message);
+    // }
+    // const userId = data.user?.id;
+
+    // // 3. Send welcome email
+    // // console.log("before sending welcome email", username, customerId, email);
+    // const sendNotification = await resendEmail(
+    //   {
+    //     fullname: username,
+    //     membershipId: customerId,
+    //     email,
+    //   },
+    //   "welcome"
+    // );
+    // if (!sendNotification.success) {
+    //   console.error("Error sending welcome email:", sendNotification.message);
+    //   return handleError(sendNotification.message);
+    // }
+
+    // if (!userId) throw new Error("Error signing up");
+
+    // const supabase = await createClient();
+
+    // const response = await supabase.from("profiles").insert({
+    //   id: userId,
+    //   email,
+    //   username: username.toLowerCase().replace(/\s+/g, "_"),
+    //   full_name: username,
+    //   customer_id: customerId,
+    //   role: "USER",
+    // });
+
+    // if (response.error) {
+    //   console.error("Error creating profile:", response.error);
+    //   throw handleError(response.error || "Error creating profile");
+    // }
+    // console.log("response::", response);
 
     return { errorMessage: null };
   } catch (error) {

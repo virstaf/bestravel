@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -156,7 +157,7 @@ export default function DealsList({
           </CardContent>
           <CardFooter>
             <Button asChild className="w-full">
-              <Link href={`/deals/${deal.id}`}>View Deal</Link>
+              <Link href={`/dashboard/deals/${deal.id}`}>View Deal</Link>
             </Button>
           </CardFooter>
         </Card>

@@ -17,7 +17,7 @@ export default DealsSection;
 export async function getStaticProps() {
   try {
     const deals = await getFeaturedDealsAction({ limit: 3 });
-    console.log("getStaticProps Deals:::", deals);
+    console.error("getStaticProps Deals:::", deals);
 
     return {
       props: {

@@ -4,38 +4,6 @@ import { createClient } from "@/lib/supabase/server";
 
 export const getFeaturedDealsAction = async ({ limit }) => {
   const supabase = await createClient();
-  // try {
-
-  //   let query = supabase
-  //     .from("deals")
-  //     .select(
-  //       `
-  //     *,
-  //     partner:partner_id (
-  //       name,
-  //       type,
-  //       location,
-  //       is_featured
-  //     )
-  //   `
-  //     )
-  //     .eq("is_active", true)
-  //     .gte("end_date", new Date().toISOString());
-  //   query = query.eq("partner.is_featured", true);
-  //   query = query.order("created_at", { ascending: false });
-  //   query = query.limit(limit || 3);
-
-  //   const { data: featuredDeals, error } = await query;
-
-  //   if (error) {
-  //     console.error("Error fetching featured deals:", error);
-  //     throw error;
-  //   }
-
-  //   return featuredDeals || [];
-  // } catch (error) {
-  //   return { errorMessage: error.message };
-  // }
 
   const getDealsWithPartners = async () => {
     // 1. Fetch deals

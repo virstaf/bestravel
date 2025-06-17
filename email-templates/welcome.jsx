@@ -24,7 +24,7 @@ if (baseUrl && !baseUrl.startsWith("https://")) {
   logoSrc = `/virstravel.png`;
 }
 
-const WelcomeEmail = ({ fullname, membershipId = "V120809801" }) => {
+const WelcomeEmail = ({ fullname, membershipId }) => {
   return (
     <Html>
       <Tailwind>
