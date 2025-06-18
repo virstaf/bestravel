@@ -82,9 +82,7 @@ const ProfileForm = ({ profile }) => {
       <div className="flex items-center gap-6">
         <Avatar className="h-20 w-20">
           <AvatarImage src={formData.avatar_url} />
-          <AvatarFallback>
-            {profile?.full_name?.charAt(0) || "U"}
-          </AvatarFallback>
+          <AvatarFallback>{profile?.username?.charAt(0) || "U"}</AvatarFallback>
         </Avatar>
         <div>
           <label htmlFor="avatar" className="block text-sm font-medium mb-2">
