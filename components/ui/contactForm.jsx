@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -20,6 +19,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
+import { resendEmail } from "@/actions/resendEmail";
 
 const formSchema = z.object({
   fullname: z
@@ -41,19 +41,22 @@ const ContactForm = () => {
 
     try {
       setIsLoading(true);
-      const { data, error } = await supabase
-        .from("contact-form")
-        .insert(values);
-      if (error) {
-        toast.error(error.details || "Something went wrong...");
-        setIsLoading(false);
-        return { success: false, error };
-      } else {
-        axios.post("/api/contact", values);
-        toast.success("Message submitted successfully" || data.message);
-        form.reset();
-        setIsLoading(false);
+      // const { data, error } = await supabase
+      //   .from("contact-form")
+      //   .insert(values);
+      // if (error) {
+      //   toast.error(error.details || "Something went wrong...");
+      //   setIsLoading(false);
+      //   return { success: false, error };
+      // } else {
+      const { success, message } = await resendEmail(values, "contact");
+      if (!success) {
+        toast.error(message || "Something went wrong");
       }
+      toast.success("Message sent successfully!");
+      form.reset();
+      setIsLoading(false);
+      // }
     } catch (error) {
       toast.error(error.response.data.errorMessage || "Something went wrong");
     }
@@ -72,6 +75,7 @@ const ContactForm = () => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
+          // action={resendEmail}
           className="space-y-4 p-6 bg-white rounded-2xl shadow"
         >
           <h1 className="text-sm uppercase pb-2 font-bold text-center">

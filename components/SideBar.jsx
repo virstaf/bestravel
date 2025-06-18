@@ -5,6 +5,11 @@ import { AlignLeftIcon, AlignRightIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const SideBar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -36,8 +41,13 @@ const SideBar = () => {
                 item.path === pathname ? "bg-black/40" : ""
               }`}
             >
-              <span>{<item.icon />}</span>
-              {sidebarOpen && <span>{item.name}</span>}
+              <Tooltip>
+                <TooltipTrigger>{<item.icon />}</TooltipTrigger>
+                <TooltipContent>
+                  <span className="text-white">{item.name}</span>
+                </TooltipContent>
+                {sidebarOpen && <span>{item.name}</span>}
+              </Tooltip>
             </Link>
           </li>
         ))}

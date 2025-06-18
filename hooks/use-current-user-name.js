@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
+import { getUser } from "@/lib/supabase/server";
 import { useEffect, useState } from "react";
 
 export const useCurrentUserName = () => {
@@ -6,11 +7,24 @@ export const useCurrentUserName = () => {
 
   useEffect(() => {
     const fetchProfileName = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error(error);
+      const user = await getUser();
+
+      const userEmail = user?.email;
+      const splitEmail = userEmail.split("@");
+
+      const { data: userData, error: userError } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("email", userEmail)
+        .maybeSingle();
+      if (userError) {
+        console.error("Error fetching user profile:", userError);
       }
-      const splitEmail = data.user?.email?.split("@");
+      console.log("userData:::", userData);
+      if (userData && userData.username) {
+        setName(userData.username);
+        return;
+      }
       if (splitEmail && splitEmail.length > 0) {
         // const  = splitEmail[0].charAt(0).toUpperCase() + splitEmail[0].slice(1);
         const firstChar = splitEmail[0].charAt(0).toUpperCase();

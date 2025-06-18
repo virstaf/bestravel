@@ -59,13 +59,18 @@ const EditTripForm = ({ trip }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6 max-w-2xl bg-white p-6 rounded-2xl shadow-xl mb-6"
+    >
       {error && (
         <div className="p-4 text-red-500 bg-red-50 rounded-md">{error}</div>
       )}
 
       <div>
-        <Label htmlFor="title">Trip Title</Label>
+        <Label className="mb-1" htmlFor="title">
+          Trip Title
+        </Label>
         <Input
           id="title"
           value={formData.title}
@@ -75,7 +80,9 @@ const EditTripForm = ({ trip }) => {
       </div>
 
       <div>
-        <Label htmlFor="destination">Destination</Label>
+        <Label className="mb-1" htmlFor="destination">
+          Destination
+        </Label>
         <Input
           id="destination"
           value={formData.destination}
@@ -135,7 +142,9 @@ const EditTripForm = ({ trip }) => {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <Label htmlFor="adults">Adults</Label>
+          <Label className="mb-1" htmlFor="adults">
+            Adults
+          </Label>
           <Input
             id="adults"
             type="number"
@@ -150,7 +159,9 @@ const EditTripForm = ({ trip }) => {
           />
         </div>
         <div>
-          <Label htmlFor="children">Children</Label>
+          <Label className="mb-1" htmlFor="children">
+            Children
+          </Label>
           <Input
             id="children"
             type="number"
@@ -167,7 +178,9 @@ const EditTripForm = ({ trip }) => {
       </div>
 
       <div>
-        <Label htmlFor="budget">Budget ($)</Label>
+        <Label className="mb-1" htmlFor="budget">
+          Budget ($)
+        </Label>
         <Input
           id="budget"
           type="number"
@@ -183,7 +196,9 @@ const EditTripForm = ({ trip }) => {
       </div>
 
       <div>
-        <Label htmlFor="description">Description</Label>
+        <Label className="mb-1" htmlFor="description">
+          Description
+        </Label>
         <Textarea
           id="description"
           value={formData.description}

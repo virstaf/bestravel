@@ -16,7 +16,7 @@ const Error = ({ error, reset }) => {
 
   return (
     <>
-      <NavSection />
+      {/* <NavSection /> */}
       <main className="container mx-auto h-screen flex flex-col justify-center items-center gap-4">
         <h2 className="text-red-500 font-bold">Something went wrong!</h2>
         <div className="flex gap-4">
@@ -26,7 +26,7 @@ const Error = ({ error, reset }) => {
           </Button>
         </div>
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };

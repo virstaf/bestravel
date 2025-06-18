@@ -10,13 +10,12 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-// import {  CalendarIcon,  MapPinIcon,  UsersIcon, } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { Calendar } from "lucide-react";
 import { MapPin } from "lucide-react";
 import { UsersIcon } from "lucide-react";
 
-export default function TripsList({ initialTrips = [] }) {
+const TripsList = ({ initialTrips = [], limit }) => {
   const [trips, setTrips] = useState(initialTrips);
   const [loading, setLoading] = useState(!initialTrips.length);
   const [error, setError] = useState(null);
@@ -116,7 +115,7 @@ export default function TripsList({ initialTrips = [] }) {
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {trips.map((trip) => (
+      {trips.slice(0, limit ? limit : trips.length).map((trip) => (
         <Card key={trip.id} className="hover:shadow-lg transition-shadow">
           <CardHeader>
             <CardTitle>{trip.title}</CardTitle>
@@ -160,4 +159,6 @@ export default function TripsList({ initialTrips = [] }) {
       ))}
     </div>
   );
-}
+};
+
+export default TripsList;

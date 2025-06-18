@@ -1,42 +1,17 @@
-// app/deals/page.js
-import { createClient } from "@/lib/supabase/server";
+import { getFeaturedDealsAction } from "@/actions/deals";
 import DealsList from "@/components/deals-list";
 
-const Deals = async () => {
-  const supabase = await createClient();
-
-  // Fetch featured deals for server-side rendering
-  const { data: featuredDeals } = await supabase
-    .from("deals")
-    .select(
-      `
-      *,
-      partners:partner_id (
-        name,
-        type,
-        location,
-        images,
-        amenities,
-        is_featured
-      )
-    `
-    )
-    .eq("is_active", true)
-    .eq("partners.is_featured", true)
-    .gte("end_date", new Date().toISOString())
-    .order("created_at", { ascending: false })
-    .limit(3);
-
+const Deals = async ({ featuredDeals, allDeals }) => {
   return (
     <div className="space-y-12">
       <div className="space-y-4">
-        <h1 className="text-md font-bold uppercase text-primary">
+        <h2 className="text-md font-bold uppercase text-primary">
           Featured Deals
-        </h1>
+        </h2>
         <p className="text-muted-foreground">
           Special offers from our premium partners
         </p>
-        <DealsList initialDeals={featuredDeals} featuredOnly />
+        <DealsList initialDeals={featuredDeals} featuredOnly limit={3} />
       </div>
 
       <div className="space-y-4">
@@ -44,10 +19,40 @@ const Deals = async () => {
           All Current Deals
         </h2>
         <p className="text-muted-foreground">Browse all available offers</p>
-        <DealsList />
+        <DealsList initialDeals={allDeals} />
       </div>
     </div>
   );
 };
 
 export default Deals;
+
+export async function getStaticProps() {
+  try {
+    const featuredDeals = await getFeaturedDealsAction({
+      featured: true,
+      limit: 2,
+    });
+
+    const allDeals = await fetch(
+      `${process.env.NEXT_PUBLIC_BASEURL}/deals?limit=10`
+    );
+
+    return {
+      props: {
+        featuredDeals: await featuredDeals.json(),
+        allDeals: await allDeals.json(),
+      },
+      revalidate: 300, // 5 minutes
+    };
+  } catch (error) {
+    console.error("Error in getStaticProps:", error);
+    return {
+      props: {
+        featuredDeals: [], // Fallback empty array
+        allDeals: [], // Fallback empty array
+      },
+      revalidate: 60, // Try again sooner if error
+    };
+  }
+}

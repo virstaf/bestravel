@@ -53,8 +53,8 @@ const NavSection = () => {
   };
 
   return (
-    <div className="dark:bg-black/50 backdrop-blur-sm w-full fixed top-0 z-50">
-      <div className="h-16 container mx-auto px-4 flex justify-between items-center relative">
+    <div className="dark:bg-black/50 backdrop-blur-sm w-full h-16 fixed top-0 z-50">
+      <div className="h-full container mx-auto px-4 flex justify-between items-center relative">
         <Link
           href="/"
           className="max-h-14 hover:cursor-pointer hover:scale-105"
@@ -105,8 +105,8 @@ const NavSection = () => {
             })}
           </div>
         )}
-        <JoinDialog ButtonText={"Join VIP Waiting"} />
-        {/* {userData ? (
+        {/* <JoinDialog ButtonText={"Join VIP Waiting"} /> */}
+        {userData ? (
           <UserProfile />
         ) : (
           <div className="flex gap-2">
@@ -121,7 +121,7 @@ const NavSection = () => {
               <Link href="auth/signup">Sign up</Link>
             </Button>
           </div>
-        )} */}
+        )}
       </div>
     </div>
   );

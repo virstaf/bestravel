@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,7 +22,6 @@ import { getUser } from "@/lib/supabase/server";
 import Image from "next/image";
 import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
-import { supabase } from "@/lib/supabase/client";
 
 const formSchema = z.object({
   username: z
@@ -74,8 +72,6 @@ const SignupForm = () => {
 
       const { username } = values;
 
-      console.log(email, password);
-
       let errorMessage;
       let title;
       let description;
@@ -87,7 +83,8 @@ const SignupForm = () => {
 
       if (!errorMessage) {
         toast.success(title, { description: description });
-        router.replace("/dashboard");
+        router.replace("/auth/login");
+        // router.refresh();
       } else {
         toast.error("Error", { description: errorMessage });
       }
@@ -97,15 +94,8 @@ const SignupForm = () => {
   const handleGoogleAuth = async () => {
     startTransition(async () => {
       try {
-        await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: `${window.location.origin}/dashboard`,
-          },
-        });
-      } catch (error) {
-        toast.error("Error", { description: error.message });
-      }
+        await googleAuthAction();
+      } catch (error) {}
     });
   };
 

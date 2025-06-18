@@ -5,6 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const generateCustomerId = () => {
+  const prefix = "V";
+  const randomNum = Math.floor(100000 + Math.random() * 900000);
+  return `${prefix}${randomNum}`;
+};
+
 export const handleError = (error: unknown) => {
   if (error instanceof Error) {
     console.error("error plenty:::", error);
