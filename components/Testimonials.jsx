@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import SlidingCard from "./ui/slidingCard";
-import { testimonials } from "@/lib/data";
+import { testimonialsData as testimonials } from "@/lib/data";
 import { Dot } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
