@@ -23,7 +23,7 @@ const Footer = () => {
               <h3 className="text-sm font-bold">
                 🎉 Act Now & Start Saving! 🎉
               </h3>
-              <div className="my-3">
+              <div className="my-3 px-2">
                 <Button asChild variant={"secondary"} size={"lg"}>
                   <Link href="/auth/signup">
                     Join Now for Exclusive Travel Perks!

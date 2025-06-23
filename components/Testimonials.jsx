@@ -48,10 +48,10 @@ const Testimonials = () => {
             />
           </div>
           <div className="">
-            <h2 className="text-sm uppercase font-bold text-center mb-6">
-              ⭐ What Our Members Say
+            <h2 className="text-primary font-semibold text-xl text-center mb-6">
+              What Our Members Say
             </h2>
-            <p>📢 Real testimonials from happy travelers!</p>
+            <p>Real testimonials from happy travelers!</p>
             <div className="slider-container relative mb-8 min-h-[200px] mx-auto group">
               <SlidingCard
                 message={testimonials[sliderIndex].message}
@@ -81,7 +81,7 @@ const Testimonials = () => {
                 />
               </div>
             </div>
-            <JoinDialog ButtonText={"Join Now & Experience VIP Travel!"} />
+            {/* <JoinDialog ButtonText={"Join Now & Experience VIP Travel!"} /> */}
             {/* <Button>
               <Link href="/auth/signup">Join Now & Experience VIP Travel!</Link>
             </Button> */}
