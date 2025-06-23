@@ -1,5 +1,6 @@
 import Hero from "@/components/hero";
 import ProblemSection from "@/components/problem";
+import SolutionSection from "@/components/solution";
 import React from "react";
 
 const HomePage = () => {
@@ -12,7 +13,9 @@ const HomePage = () => {
         <section>
           <ProblemSection />
         </section>
-        <section>Solution</section>
+        <section>
+          <SolutionSection />
+        </section>
         <section>Services</section>
         <section>Benefit</section>
         <section>Process</section>
