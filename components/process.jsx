@@ -13,13 +13,25 @@ const Process = () => {
             It’s Easy to Start:
           </p>
         </div>
-        <div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {processSteps.map((item, index) => (
-            <div className="flex">
-              <span>Step {index + 1}</span>
-              <div className="">
-                <span>{item.title}</span>
-                <span>{item.description}</span>
+            <div
+              className="flex bg-white shadow-md rounded-lg p-6 mb-6 transition-transform transform hover:scale-105"
+              key={index}
+            >
+              <div className="w-3/4">
+                <span className="text-secondary uppercase font-bold text-sm">
+                  Step 0{index + 1}
+                </span>
+                <h3 className="text-primary text-2xl font-bold">
+                  {item.title}
+                </h3>
+                <p className="text-gray-600 mt-2">{item.description}</p>
+              </div>
+              <div className="w-1/4 flex items-center justify-center">
+                {item.icon && (
+                  <span>{<item.icon className="w-8 h-8 text-primary" />}</span>
+                )}
               </div>
             </div>
           ))}

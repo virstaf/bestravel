@@ -1,5 +1,7 @@
 import MembershipTiers from "@/components/membership-tiers";
+import StartTrialCta from "@/components/start-trial-cta";
 import Testimonials from "@/components/Testimonials";
+import TravelSmarter from "@/components/travel-smarter";
 import { Button } from "@/components/ui/button";
 import { membershipBenefits } from "@/lib/data";
 import { Check } from "lucide-react";
@@ -91,26 +93,11 @@ const MembershipPage = () => {
       </section>
 
       <section>
-        <h2 className="mb-2 text-primary font-semibold text-xl">
-          Travel Smarter. Travel Protected.
-        </h2>
-        <p>
-          All memberships come with secure checkout, private dashboards, and our
-          100% satisfaction promise. Flights are ATOL protected.
-        </p>
+        <TravelSmarter />
       </section>
 
-      <section>
-        <div className="flex flex-col items-center justify-center gap-4 text-center bg-gradient-to-r from-green-400 to-blue-300 text-white p-8 rounded-lg shadow-lg">
-          <h2 className="text-primary font-semibold text-xl">
-            Ready to upgrade the way you Travel?
-          </h2>
-          <Button>Start Trial</Button>
-          <p className="text-muted-foreground text-sm">
-            Start with a 7-Day Free Trial. No commitments. Cancel anytime.
-            Travel better from your very first trip.
-          </p>
-        </div>
+      <section className="rounded-lg overflow-hidden">
+        <StartTrialCta />
       </section>
     </div>
   );

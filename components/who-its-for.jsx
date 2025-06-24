@@ -10,9 +10,9 @@ const WhoItsFor = () => {
             Who is This For?
           </h2>
         </div>
-        <ul className="">
+        <ul className="list-disc list-inside text-gray-600 text-lg">
           {whoItsFor.map((text, index) => (
-            <li>{text.title}</li>
+            <li className="pl-2">{text.title}</li>
           ))}
         </ul>
       </div>

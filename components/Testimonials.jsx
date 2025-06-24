@@ -34,7 +34,7 @@ const Testimonials = () => {
   }, []);
 
   return (
-    <div className="w-full py-12 bg-primary-foreground">
+    <div className="w-full py-12 bg-gray-50">
       <div className="container mx-auto px-4 md:px-8 lg:px-12 text-center">
         <div className="grid lg:grid-cols-2">
           <div className="relative p-2 hidden bg-white rounded-lg shadow lg:flex items-center justify-center">

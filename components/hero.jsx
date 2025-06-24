@@ -5,8 +5,8 @@ import Image from "next/image";
 const Hero = () => {
   return (
     <div>
-      <div className="container mx-auto flex justify-between gap-6 h-full">
-        <div className="w-1/2 py-12">
+      <div className="container mx-auto md:flex justify-between gap-6 h-full">
+        <div className="w-full md:w-1/2 py-12">
           <h1 className="text-4xl font-bold text-primary mb-4">
             Unlock Luxury Travel. Exclusive Perks. Members-Only Prices.
           </h1>
@@ -22,7 +22,7 @@ const Hero = () => {
             Join Now & Save on Your Next Trip
           </Button>
         </div>
-        <div className="w-1/2 py-8 rounded overflow-hidden">
+        <div className="w-full md:w-1/2 py-8 rounded overflow-hidden">
           <Image
             src="/images/happy-black-woman-laughing-on-street.jpg"
             alt="Travel Hero"
