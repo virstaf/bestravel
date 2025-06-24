@@ -1,7 +1,10 @@
 import Hero from "@/components/hero";
 import ProblemSection from "@/components/problem";
 import SolutionSection from "@/components/solution";
+import BenefitSection from "@/components/benefit";
 import React from "react";
+import WhoItsFor from "@/components/who-its-for";
+import Process from "@/components/process";
 
 const HomePage = () => {
   return (
@@ -16,9 +19,16 @@ const HomePage = () => {
         <section>
           <SolutionSection />
         </section>
-        <section>Services</section>
-        <section>Benefit</section>
-        <section>Process</section>
+        {/* <section>Services</section> */}
+        <section>
+          <BenefitSection />
+        </section>
+        <section>
+          <WhoItsFor />
+        </section>
+        <section>
+          <Process />
+        </section>
         <section>Testimonial</section>
         <section>Feature</section>
         <section>FAQ</section>

@@ -11,11 +11,11 @@ const MembershipPage = () => {
         Virstravel Club Membership
       </h1>
 
-      <section>
+      <section className="bg-white py-12 px-4 sm:px-6 lg:px-8">
         <h2 className="mb-2 text-primary font-semibold text-xl">
           Why Become a Member?
         </h2>
-        <p>
+        <p className="text-gray-600">
           At Virstravel Club, we believe travel should be rewarding, effortless,
           and cost-effective—no matter your budget or how often you fly. With
           our tiered membership options, you gain access to real value and
