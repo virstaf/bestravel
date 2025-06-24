@@ -34,7 +34,7 @@ const WelcomeEmail = ({ fullname, membershipId }) => {
             {/* Hero Banner */}
             <Container className="w-full h-15 px-30 my-8 mx-auto">
               <Img
-                src="/images/bali.jpg"
+                src="https://drive.usercontent.google.com/download?id=1b7OpxCqizKN66SkcQ5kE6ec9MK9MJHlW&export=view&authuser=0"
                 alt="Welcome to Virstravel"
                 width="800"
                 height="300"
@@ -146,9 +146,11 @@ const WelcomeEmail = ({ fullname, membershipId }) => {
                   }}
                 >
                   <Img
-                    src={logoSrc}
+                    src="https://drive.google.com/file/d/1F9maBcRC_-WP5ZWOfP6B3xuN9mbn_Ffg/preview"
                     width="120"
                     height="50"
+                    // width="640"
+                    // height="480"
                     alt="Virstravel"
                     className="w-[120px] sm:mb-0"
                   />
