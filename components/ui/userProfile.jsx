@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Button } from "./button";
 import { usePathname } from "next/navigation";
 
-const UserProfile = () => {
+const UserProfile = ({ className }) => {
   const [logoutOpen, setLogoutOpen] = useState(false);
   const email = useCurrentUserEmail();
   const pathname = usePathname();
@@ -16,7 +16,7 @@ const UserProfile = () => {
   return (
     <div
       onClick={() => setLogoutOpen((prev) => !prev)}
-      className="flex user-group gap-2 items-center justify-center cursor-pointer relative"
+      className={`${className} flex user-group gap-2 items-center justify-center cursor-pointer relative`}
     >
       <span className="text-sm text-muted-foreground user-group-hover:text-green-500">
         {/* {email} */}

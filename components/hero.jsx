@@ -5,7 +5,7 @@ import Image from "next/image";
 const Hero = () => {
   return (
     <div>
-      <div className="container mx-auto md:flex justify-between gap-6 h-full">
+      <div className="container px-4 mx-auto md:flex justify-between gap-6 h-full">
         <div className="w-full md:w-1/2 py-12">
           <h1 className="text-4xl font-bold text-primary mb-4">
             Unlock Luxury Travel. Exclusive Perks. Members-Only Prices.
@@ -17,7 +17,7 @@ const Hero = () => {
           </p>
           <Button
             variant="outline"
-            className="bg-gradient-to-br from-primary to-green-400 px-12 py-6 cursor-pointer hover:bg-primary text-white transition duration-300"
+            className="bg-gradient-to-br from-primary to-green-400 px-12 py-6 cursor-pointer hover:bg-primary text-white transition duration-300 w-full md:w-auto"
           >
             Join Now & Save on Your Next Trip
           </Button>

@@ -1,4 +1,5 @@
 import Footer from "@/components/Footer";
+import NavBar from "@/components/nav-bar";
 import NavSection from "@/components/NavSection";
 
 export const metadata = {
@@ -9,7 +10,8 @@ export const metadata = {
 export default function MembershipLayout({ children }) {
   return (
     <>
-      <NavSection />
+      {/* <NavSection /> */}
+      <NavBar />
       <main className="w-full min-h-screen bg-primary-500 flex items-center justify-center">
         {children}
       </main>
