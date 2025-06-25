@@ -20,9 +20,7 @@ const HomePage = () => {
         <section>
           <ProblemSection />
         </section>
-        <section>
-          <SolutionSection />
-        </section>
+        {/* <section><SolutionSection /></section> */}
         {/* <section>Services</section> */}
         <section>
           <BenefitSection />

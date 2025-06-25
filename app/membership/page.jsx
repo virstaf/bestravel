@@ -31,11 +31,11 @@ const MembershipPage = () => {
           Memberships Include the following depending on tier:
         </h2>
         <div className="flex w-full h-full items-center justify-center">
-          <div className="grid grid-cols-1 md:grid-cols-3 items-center justify-center my-6 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 items-center justify-center my-6 gap-4">
             {membershipBenefits.map((benefit, index) => (
               <div
                 key={index}
-                className="flex items-start justify-between flex-col gap-3 w-full min-h-[308px] max-w-[250px] bg-white p-4 rounded-2xl shadow-lg"
+                className="flex items-start justify-between flex-col gap-3 w-full min-h-[308px] max-w-[430px] min-w-[250px] bg-white p-4 rounded-2xl shadow-lg"
               >
                 <span className="mr-2 text-secondary w-full h-10 flex items-center justify-center">
                   {<benefit.icon className="w-10 h-10" />}
