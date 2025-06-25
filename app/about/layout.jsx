@@ -2,15 +2,16 @@ import LandingFooter from "@/components/LandingFooter";
 import NavBar from "@/components/nav-bar";
 
 export const metadata = {
-  title: "Membership Page",
-  description: "Membership Packages on Virstravel",
+  title: "About Virstravel Club",
+  description: "Get to know us",
 };
 
-export default function MembershipLayout({ children }) {
+export default function AboutpageLayout({ children }) {
   return (
     <>
+      {/* <NavSection /> */}
       <NavBar />
-      <main className="w-full min-h-screen bg-primary-500 flex items-center justify-center">
+      <main className="w-full mt-16 bg-white h-full min-h-screen">
         {children}
       </main>
       <LandingFooter />

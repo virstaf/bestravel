@@ -1,10 +1,56 @@
-import LandingPage from "@/components/LandingPage";
+import Hero from "@/components/hero";
+import ProblemSection from "@/components/problem";
+import SolutionSection from "@/components/solution";
+import BenefitSection from "@/components/benefit";
+import React from "react";
+import WhoItsFor from "@/components/who-its-for";
+import Process from "@/components/process";
+import Testimonials from "@/components/Testimonials";
+import FAQSection from "@/components/FAQSection";
+import TravelSmarter from "@/components/travel-smarter";
+import StartTrialCta from "@/components/start-trial-cta";
+import NavBar from "@/components/nav-bar";
+import LandingFooter from "@/components/LandingFooter";
 
-export default function Home() {
-  // const oldStyle = "grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]";
+const HomePage = () => {
   return (
-    <div className="grid items-center justify-items-center mt-16 min-h-screen">
-      <LandingPage />
+    <div className="w-full bg-white min-h-screen">
+      <NavBar />
+      <div className="w-full h-full flex flex-col mt-16">
+        <section className="w-full h-full">
+          <Hero />
+        </section>
+        <section>
+          <ProblemSection />
+        </section>
+        {/* <section><SolutionSection /></section> */}
+        {/* <section>Services</section> */}
+        <section>
+          <BenefitSection />
+        </section>
+        <section>
+          <WhoItsFor />
+        </section>
+        <section>
+          <Process />
+        </section>
+        <section>
+          <FAQSection />
+        </section>
+        {/* <section>Feature</section> */}
+        <section>
+          <Testimonials />
+        </section>
+        <section className="container mx-auto px-4 my-12">
+          <TravelSmarter />
+        </section>
+        <section className="">
+          <StartTrialCta />
+        </section>
+      </div>
+      <LandingFooter />
     </div>
   );
-}
+};
+
+export default HomePage;

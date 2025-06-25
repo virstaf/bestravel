@@ -5,19 +5,19 @@ import Image from "next/image";
 const Hero = () => {
   return (
     <div>
-      <div className="container px-4 mx-auto md:flex justify-between gap-6 h-full">
+      <div className="container px-4 mx-auto flex flex-col-reverse md:flex-row justify-between gap-6 h-full">
         <div className="w-full md:w-1/2 py-12">
           <h1 className="text-4xl font-bold text-primary mb-4">
             Unlock Luxury Travel. Exclusive Perks. Members-Only Prices.
           </h1>
-          <p className="text-lg mb-6">
+          <p className="text-lg mb-6 mt-4 text-gray-600 max-w-3xl mx-auto">
             Tired of spending hours looking for deals and overpaying for
             comfort? Virstravel Club unlocks premium travel experiences without
             the premium price tag and stress.
           </p>
           <Button
             variant="outline"
-            className="bg-gradient-to-br from-primary to-green-400 px-12 py-6 cursor-pointer hover:bg-primary text-white transition duration-300 w-full md:w-auto"
+            className="bg-gradient-to-br from-primary to-secondary px-12 py-6 cursor-pointer hover:bg-primary text-white transition duration-300 w-full md:w-auto"
           >
             Join Now & Save on Your Next Trip
           </Button>

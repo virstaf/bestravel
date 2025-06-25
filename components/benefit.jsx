@@ -7,7 +7,7 @@ const BenefitSection = () => {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-primary">
-            Benefit Section
+            Benefits Members Get
           </h2>
           <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
             When You Join Virstravel Club, You Unlock Real Travel Perks and
