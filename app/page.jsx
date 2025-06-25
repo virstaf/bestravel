@@ -1,6 +1,5 @@
 import Hero from "@/components/hero";
 import ProblemSection from "@/components/problem";
-import SolutionSection from "@/components/solution";
 import BenefitSection from "@/components/benefit";
 import React from "react";
 import WhoItsFor from "@/components/who-its-for";
@@ -11,6 +10,8 @@ import TravelSmarter from "@/components/travel-smarter";
 import StartTrialCta from "@/components/start-trial-cta";
 import NavBar from "@/components/nav-bar";
 import LandingFooter from "@/components/LandingFooter";
+import GetInTouch from "@/components/GetInTouch";
+import Newsletter from "@/components/Newsletter";
 
 const HomePage = () => {
   return (
@@ -46,6 +47,12 @@ const HomePage = () => {
         </section>
         <section className="">
           <StartTrialCta />
+        </section>
+        <section>
+          <GetInTouch />
+        </section>
+        <section>
+          <Newsletter />
         </section>
       </div>
       <LandingFooter />

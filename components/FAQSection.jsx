@@ -7,12 +7,14 @@ const FAQSection = () => {
   return (
     <div className="w-full py-12 " id="faq-section">
       <div className="container mx-auto px-4 md:px-8 lg:px-12 ">
+        <div className="text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-primary">
+            Frequently Asked Questions (FAQ
+            <span className="lowercase">s</span>)
+          </h2>
+        </div>
         <div className="grid lg:grid-cols-2">
-          <div className="">
-            <h2 className="text-sm uppercase font-bold text-center mb-6">
-              ❓ Frequently Asked Questions (FAQ
-              <span className="lowercase">s</span>)
-            </h2>
+          <div>
             <div className="faq bg-white p-6 rounded-md shadow max-w-[400px] mx-auto">
               {faqs.map((item, idx) => (
                 <Faq

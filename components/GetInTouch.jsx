@@ -4,12 +4,19 @@ import { Button } from "./ui/button";
 
 const GetInTouch = () => {
   return (
-    <div className="w-full py-12 bg-primary-foreground">
+    <div className="w-full py-12 bg-gray-50">
       <div className="container px-4 mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-6">Get in Touch!</h2>
+        <div className="text-center mb-12">
+          <h2 className="text-2xl sm:text-3xl font-bold text-primary">
+            Get in Touch!
+          </h2>
+          <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
+            Our support team is available around the clock to help you.
+          </p>
+        </div>
         <div className="grid xl:grid-cols-2 gap-8 justify-center">
-          <div className="flex flex-col gap-4 max-w-[750px] py-6 mx-auto">
-            <p>
+          <div className="flex flex-col gap-4 max-w-[750px] py-6 text-gray-600 mx-auto">
+            <p className="mt-4 ">
               Have questions? Need help with your membership? Fill out the form
               below, and our travel experts will get back to you ASAP!
             </p>

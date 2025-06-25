@@ -6,7 +6,7 @@ const Newsletter = () => {
     <div className="w-full py-12 border border-x-0 bg-gradient-to-r from-blue-500 to-teal-400">
       <div className="container mx-auto px-4 md:px-8 lg:px-12">
         <h2 className="text-3xl font-bold text-white text-center mb-6">
-          Catch the latest on Travel News!
+          Be first to Catch the sweetest Travel deals!
         </h2>
         <div className="grid justify-evenly items-center">
           <p className="text-center text-lg text-white md:text-left">
