@@ -3,7 +3,7 @@ import { tierTableHeaders, tierTableData } from "@/lib/data";
 
 const MembershipTiers = () => {
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-4 my-8">
       <h2 className="mb-4 text-primary font-semibold text-xl text-center md:text-left">
         Membership Tiers at a Glance
       </h2>

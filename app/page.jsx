@@ -35,23 +35,23 @@ const HomePage = () => {
         <section>
           <Process />
         </section>
-        <section>
+        <section className="w-full max-w-7xl mx-auto my-8 px-4">
           <FAQSection />
         </section>
         {/* <section>Feature</section> */}
-        <section>
+        <section className="w-full max-w-7xl mx-auto my-8 px-4">
           <Testimonials />
         </section>
-        <section className="container mx-auto px-4 my-12">
+        <section className="w-full max-w-7xl mx-auto px-4 my-12">
           <TravelSmarter />
         </section>
         <section className="">
           <StartTrialCta />
         </section>
-        <section>
+        <section className="w-full max-w-7xl mx-auto px-4">
           <GetInTouch />
         </section>
-        <section>
+        <section className="w-full">
           <Newsletter />
         </section>
       </div>

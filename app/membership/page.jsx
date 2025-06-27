@@ -8,16 +8,16 @@ import { Check } from "lucide-react";
 
 const MembershipPage = () => {
   return (
-    <div className="container h-full flex flex-col gap-8 mx-auto mt-16 px-4 my-12">
-      <h1 className="text-primary text-2xl font-bold text-center">
+    <div className="max-w-7xl h-full flex flex-col gap-8 mx-auto mt-16 px-4 my-12">
+      <h1 className="text-4xl font-bold text-primary text-center my-12">
         Virstravel Club Membership
       </h1>
 
-      <section className="bg-white py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-2 text-primary font-semibold text-xl">
+      <section className="bg-white mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <h2 className="text-3xl font-bold mb-4 text-primary text-center">
           Why Become a Member?
         </h2>
-        <p className="text-gray-600">
+        <p className="text-gray-600 text-lg mb-4">
           At Virstravel Club, we believe travel should be rewarding, effortless,
           and cost-effective—no matter your budget or how often you fly. With
           our tiered membership options, you gain access to real value and
@@ -27,7 +27,7 @@ const MembershipPage = () => {
       </section>
 
       <section>
-        <h2 className="mb-2 text-primary font-semibold text-xl">
+        <h2 className="max-w-7xl mx-auto mb-2 text-primary font-semibold text-xl">
           Memberships include the following depending on tier:
         </h2>
         <div className="flex w-full h-full items-center justify-center">
@@ -66,26 +66,28 @@ const MembershipPage = () => {
 
       <MembershipTiers />
 
-      <section>
-        <h2 className="mb-2 text-primary font-semibold text-xl">
-          Need Help Choosing?
-        </h2>
-        <p>Here's a quick guide:</p>
-        <ul className=" pl-6 my-4">
-          <li>
-            <strong>🧳 Silver:</strong> Ideal for casual travelers or those
-            planning 1–2 trips per year
-          </li>
-          <li>
-            <strong>🌍 Gold:</strong> Perfect for families or professionals who
-            travel regularly
-          </li>
-          <li>
-            <strong>🛫 Platinum:</strong> Built for frequent flyers, luxury
-            lovers, and business travelers
-          </li>
-        </ul>
-        <p>More benefits added regularly just for your convenience.</p>
+      <section className="">
+        <div className="w-full">
+          <h2 className="mb-2 text-primary font-semibold text-xl">
+            Need Help Choosing?
+          </h2>
+          <p>Here's a quick guide:</p>
+          <ul className=" pl-6 my-4">
+            <li>
+              <strong>🧳 Silver:</strong> Ideal for casual travelers or those
+              planning 1–2 trips per year
+            </li>
+            <li>
+              <strong>🌍 Gold:</strong> Perfect for families or professionals
+              who travel regularly
+            </li>
+            <li>
+              <strong>🛫 Platinum:</strong> Built for frequent flyers, luxury
+              lovers, and business travelers
+            </li>
+          </ul>
+          <p>More benefits added regularly just for your convenience.</p>
+        </div>
       </section>
 
       <section className="rounded-lg overflow-hidden shadow-lg">

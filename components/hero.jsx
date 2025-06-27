@@ -5,7 +5,7 @@ import Image from "next/image";
 const Hero = () => {
   return (
     <div>
-      <div className="container px-4 mx-auto flex flex-col-reverse md:flex-row justify-between gap-6 h-full">
+      <div className="max-w-7xl px-4 mx-auto flex flex-col-reverse md:flex-row justify-between gap-6 h-full">
         <div className="w-full md:w-1/2 py-12">
           <h1 className="text-4xl font-bold text-primary mb-4">
             Unlock Luxury Travel. Exclusive Perks. Members-Only Prices.

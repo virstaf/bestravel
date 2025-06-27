@@ -10,7 +10,7 @@ export default function MembershipLayout({ children }) {
   return (
     <>
       <NavBar />
-      <main className="w-full min-h-screen bg-primary-500 flex items-center justify-center">
+      <main className="w-full min-h-screen bg-white flex items-center justify-center">
         {children}
       </main>
       <LandingFooter />
