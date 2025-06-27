@@ -28,7 +28,7 @@ const MembershipPage = () => {
 
       <section>
         <h2 className="mb-2 text-primary font-semibold text-xl">
-          Memberships Include the following depending on tier:
+          Memberships include the following depending on tier:
         </h2>
         <div className="flex w-full h-full items-center justify-center">
           <div className="grid grid-cols-1 lg:grid-cols-3 items-center justify-center my-6 gap-4">

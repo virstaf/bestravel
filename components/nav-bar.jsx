@@ -41,7 +41,7 @@ const NavBar = () => {
       className={`bg-none backdrop-blur-sm transition-transform duration-300 ease-in-out fixed w-full top-0 z-50 h-16 ${menuOpen ? "bg-white shadow h-screen md:h-16 rounded-b-2xl" : ""}`}
     >
       <div
-        className={`relative container mx-auto px-4 flex items-center justify-between h-full  ${menuOpen ? "flex-col justify-between gap-16 py-8" : ""}`}
+        className={`relative max-w-7xl mx-auto px-4 flex items-center justify-between h-full  ${menuOpen ? "flex-col justify-between gap-16 py-8" : ""}`}
       >
         <div className={`logo ${menuOpen ? "mt-16" : ""}`}>
           <Link
