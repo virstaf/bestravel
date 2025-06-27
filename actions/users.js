@@ -31,7 +31,7 @@ export const loginAction = async (email, password) => {
       const response = await supabase.from("profiles").insert({
         id: userId,
         email,
-        username: data.user?.user_metadata?.username || email.split("@")[0],
+        fullname: data.user?.user_metadata?.fullname || email.split("@")[0],
         full_name: data.user?.user_metadata?.full_name || "",
         customer_id: customerId,
         role: "USER",
@@ -43,7 +43,7 @@ export const loginAction = async (email, password) => {
         console.log("Profile created successfully:", response.data);
         const sendNotification = await resendEmail(
           {
-            fullname: data.user?.user_metadata?.username || email.split("@")[0],
+            fullname: data.user?.user_metadata?.fullname || email.split("@")[0],
             membershipId: customerId,
             email,
           },
@@ -77,7 +77,7 @@ export const logoutAction = async () => {
   }
 };
 
-export const signupAction = async (email, password, username) => {
+export const signupAction = async (email, password, fullname) => {
   try {
     const { auth } = await createClient();
     const { data, error } = await auth.signUp({
@@ -85,7 +85,7 @@ export const signupAction = async (email, password, username) => {
       password,
       options: {
         data: {
-          display_name: username,
+          display_name: fullname,
         },
       },
     });
@@ -100,10 +100,10 @@ export const signupAction = async (email, password, username) => {
     // const userId = data.user?.id;
 
     // // 3. Send welcome email
-    // // console.log("before sending welcome email", username, customerId, email);
+    // // console.log("before sending welcome email", fullname, customerId, email);
     // const sendNotification = await resendEmail(
     //   {
-    //     fullname: username,
+    //     fullname: fullname,
     //     membershipId: customerId,
     //     email,
     //   },
@@ -121,8 +121,8 @@ export const signupAction = async (email, password, username) => {
     // const response = await supabase.from("profiles").insert({
     //   id: userId,
     //   email,
-    //   username: username.toLowerCase().replace(/\s+/g, "_"),
-    //   full_name: username,
+    //   fullname: fullname.toLowerCase().replace(/\s+/g, "_"),
+    //   full_name: fullname,
     //   customer_id: customerId,
     //   role: "USER",
     // });

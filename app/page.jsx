@@ -39,7 +39,7 @@ const HomePage = () => {
           <FAQSection />
         </section>
         {/* <section>Feature</section> */}
-        <section className="w-full max-w-7xl mx-auto my-8 px-4">
+        <section className="w-full bg-gray-50">
           <Testimonials />
         </section>
         <section className="w-full max-w-7xl mx-auto px-4 my-12">
@@ -48,7 +48,7 @@ const HomePage = () => {
         <section className="">
           <StartTrialCta />
         </section>
-        <section className="w-full max-w-7xl mx-auto px-4">
+        <section className="w-full bg-gray-50">
           <GetInTouch />
         </section>
         <section className="w-full">

@@ -8,10 +8,10 @@ const Hero = () => {
       <div className="max-w-7xl px-4 mx-auto flex flex-col-reverse md:flex-row justify-between gap-6 h-full">
         <div className="w-full md:w-1/2 py-12">
           <h1 className="text-4xl font-bold text-primary mb-4">
-            Unlock Luxury Travel. Exclusive Perks. Members-Only Prices.
+            Unlock Luxury Travel. Exclusive Travel Perks. Members-Only Prices.
           </h1>
           <p className="text-lg mb-6 mt-4 text-gray-600 max-w-3xl mx-auto">
-            Tired of spending hours looking for deals and overpaying for
+            Tired of spending hours looking for travel deals and overpaying for
             comfort? Virstravel Club unlocks premium travel experiences without
             the premium price tag and stress.
           </p>

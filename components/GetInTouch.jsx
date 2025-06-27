@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 
 const GetInTouch = () => {
   return (
-    <div className="w-full py-12 bg-gray-50">
+    <div className="max-w-7xl mx-auto px-4 py-12 bg-gray-50">
       <div className="container px-4 mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-primary">
@@ -21,11 +21,11 @@ const GetInTouch = () => {
               below, and our travel experts will get back to you ASAP!
             </p>
             <ul className="mb-6">
-              <li>📞 Call Us: +44 7940 517222</li>
-              <li>📧 Email Us: devtech@virstaf.com</li>
+              <li>📞 Call Us: +440 126 452 7030 </li>
+              <li>📧 Email Us: info@virstravelclub.com</li>
             </ul>
             <div className="button">
-              <Button asChild>
+              <Button asChild className="w-full md:w-auto text-white">
                 <Link
                   href="/docs/Virstravel_Club_Top_10_Perk_eBook.pdf"
                   download="Virstravel_Perk_eBook"

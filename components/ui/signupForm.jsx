@@ -24,10 +24,10 @@ import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
 
 const formSchema = z.object({
-  username: z
+  fullname: z
     .string()
     .min(3, {
-      message: "Username must be at least 3 characters",
+      message: "Fullname must be at least 3 characters",
     })
     .max(40),
   email: z.string().email({ message: "Invalid email address" }),
@@ -70,13 +70,13 @@ const SignupForm = () => {
     startTransition(async () => {
       const { email } = values;
 
-      const { username } = values;
+      const { fullname } = values;
 
       let errorMessage;
       let title;
       let description;
 
-      errorMessage = (await signupAction(email, password, username))
+      errorMessage = (await signupAction(email, password, fullname))
         .errorMessage;
       title = "Signup successful";
       description = "Check email to complete account creation";
@@ -102,7 +102,7 @@ const SignupForm = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      fullname: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -123,12 +123,12 @@ const SignupForm = () => {
           </div>
           <FormField
             control={form.control}
-            name="username"
+            name="fullname"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username</FormLabel>
+                <FormLabel>Fullname</FormLabel>
                 <FormControl>
-                  <Input placeholder="username" {...field} />
+                  <Input placeholder="fullname" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
