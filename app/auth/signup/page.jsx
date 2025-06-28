@@ -33,13 +33,13 @@ const SignupPage = () => {
           {/* <Button variant="secondary">Login</Button> */}
         </Link>
       </div>
-      <div className="w-full h-full hidden bg-primary lg:block overflow-hidden">
+      <div className="w-full h-full hidden bg-gray-500 lg:block overflow-hidden">
         <Image
           className="w-full h-full object-cover"
           src="/images/horses-in-cappadocia-under-sunlit-sky.jpg"
           width="3648"
           height="5472"
-          alt="login_split_image"
+          alt="nature"
         />
       </div>
       <div className="form flex items-center justify-center w-full h-full">

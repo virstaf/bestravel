@@ -31,7 +31,6 @@ export const loginAction = async (email, password) => {
       const response = await supabase.from("profiles").insert({
         id: userId,
         email,
-        fullname: data.user?.user_metadata?.fullname || email.split("@")[0],
         full_name: data.user?.user_metadata?.full_name || "",
         customer_id: customerId,
         role: "USER",

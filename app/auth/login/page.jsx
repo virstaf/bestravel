@@ -34,7 +34,7 @@ const LoginPage = () => {
           {/* <Button variant="secondary"></Button> */}
         </Link>
       </div>
-      <div className="w-full h-full hidden bg-primary lg:block overflow-hidden">
+      <div className="w-full h-full hidden bg-gray-500 lg:block overflow-hidden">
         <Image
           className="w-full h-full object-cover"
           src="/images/travel_portrait.jpg"
@@ -42,7 +42,7 @@ const LoginPage = () => {
           width="2624"
           height="3280"
           optimize="true"
-          alt="login_split_image"
+          alt="travel is good for the soul"
         />
       </div>
       <div className="form flex items-center justify-center w-full h-full">
