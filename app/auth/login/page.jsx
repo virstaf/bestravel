@@ -34,13 +34,14 @@ const LoginPage = () => {
           {/* <Button variant="secondary"></Button> */}
         </Link>
       </div>
-      <div className="w-full h-full hidden lg:block overflow-hidden">
+      <div className="w-full h-full hidden bg-primary lg:block overflow-hidden">
         <Image
           className="w-full h-full object-cover"
           src="/images/travel_portrait.jpg"
           // src="https://drive.google.com/uc?export=view&id=1b7OpxCqizKN66SkcQ5kE6ec9MK9MJHlW"
           width="2624"
           height="3280"
+          optimize="true"
           alt="login_split_image"
         />
       </div>

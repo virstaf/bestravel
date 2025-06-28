@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import NavSection from "@/components/NavSection";
 
 export const metadata = {
-  title: "Pricacy Policy",
+  title: "Privacy Policy",
   description: "Travel made easy",
 };
 

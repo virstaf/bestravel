@@ -33,7 +33,7 @@ const SignupPage = () => {
           {/* <Button variant="secondary">Login</Button> */}
         </Link>
       </div>
-      <div className="w-full h-full hidden lg:block overflow-hidden">
+      <div className="w-full h-full hidden bg-primary lg:block overflow-hidden">
         <Image
           className="w-full h-full object-cover"
           src="/images/horses-in-cappadocia-under-sunlit-sky.jpg"
