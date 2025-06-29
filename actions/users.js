@@ -16,7 +16,10 @@ export const loginAction = async (email, password) => {
     });
     if (error) throw error;
     const userId = data.user?.id;
+    const { full_name, username, public_email } =
+      data.user?.user_metadata || {};
 
+    console.log("data::", data);
     const profile = await supabase
       .from("profiles")
       .select("*")
@@ -31,7 +34,9 @@ export const loginAction = async (email, password) => {
       const response = await supabase.from("profiles").insert({
         id: userId,
         email,
-        full_name: data.user?.user_metadata?.full_name || "",
+        full_name,
+        username,
+        public_email,
         customer_id: customerId,
         role: "USER",
       });
@@ -85,6 +90,9 @@ export const signupAction = async (email, password, fullname) => {
       options: {
         data: {
           display_name: fullname,
+          username: fullname.split(" ").join("_").toLowerCase(),
+          full_name: fullname,
+          public_email: email,
         },
       },
     });
