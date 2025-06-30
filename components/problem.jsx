@@ -1,6 +1,7 @@
 import React from "react";
 // import { FaMoneyBillWave, FaClock, FaGift, FaSearch, FaUmbrellaBeach } from "react-icons/fa";
 import { Landmark, Clock, Gift, Search, Castle } from "lucide-react";
+import Image from "next/image";
 
 export default function ProblemSection() {
   return (
@@ -113,9 +114,16 @@ export default function ProblemSection() {
           <div className="relative">
             {/* Replace with your image/illustration */}
             <div className="bg-gray-200 rounded-xl overflow-hidden aspect-video flex items-center justify-center">
-              <span className="text-gray-500">
+              {/* <span className="text-gray-500">
                 (Image: Stressed traveler at airport)
-              </span>
+              </span> */}
+              <Image
+                src="/images/frustrated-woman.jpg"
+                alt="Stressed traveler"
+                layout="fill"
+                objectFit="cover"
+                className="overflow-hidden rounded-xl"
+              />
             </div>
             {/* Optional: Animated decorative element */}
             <div className="absolute -top-6 -right-6 w-24 h-24 bg-red-100 rounded-full opacity-20 animate-pulse"></div>
