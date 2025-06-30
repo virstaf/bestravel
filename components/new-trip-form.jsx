@@ -15,6 +15,7 @@ import {
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
+import AddressInput from "./ui/addressInput";
 
 const NewTripForm = () => {
   const router = useRouter();
@@ -91,13 +92,18 @@ const NewTripForm = () => {
         <Label className="mb-1" htmlFor="destination">
           From
         </Label>
-        <Input
+        {/* <Input
           id="destination"
           value={formData.location}
           onChange={(e) =>
             setFormData({ ...formData, location: e.target.value })
           }
           required
+        /> */}
+        <AddressInput
+          placeholder="Enter city..."
+          value={formData.location}
+          onChange={(value) => setFormData({ ...formData, location: value })}
         />
       </div>
 
@@ -105,13 +111,18 @@ const NewTripForm = () => {
         <Label className="mb-1" htmlFor="destination">
           Destination
         </Label>
-        <Input
+        {/* <Input
           id="destination"
           value={formData.destination}
           onChange={(e) =>
             setFormData({ ...formData, destination: e.target.value })
           }
           required
+        /> */}
+        <AddressInput
+          placeholder="Enter destination..."
+          value={formData.destination}
+          onChange={(value) => setFormData({ ...formData, destination: value })}
         />
       </div>
 

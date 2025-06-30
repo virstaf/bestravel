@@ -67,7 +67,7 @@ export default function ReservationWizard({ trip, userId }) {
   };
 
   return (
-    <div className="p-4 pb-6 bg-white mx-auto max-w-[750px] rounded-lg shadow-md">
+    <div className="p-4 pb-6 bg-white mx-auto w-full max-w-[750px] rounded-lg shadow-md">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="hotel">Hotel</TabsTrigger>

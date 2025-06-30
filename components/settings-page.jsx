@@ -1,7 +1,7 @@
 import { createClient, getUser } from "@/lib/supabase/server";
 import ProfileForm from "@/components/profile-form";
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
-import { Skeleton } from "./ui/skeleton";
+// import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
+// import { Skeleton } from "./ui/skeleton";
 
 const Settings = async () => {
   const { email } = await getUser();

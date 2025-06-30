@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Label } from "./ui/label";
+import AddressInput from "./ui/addressInput";
 
 const ProfileForm = ({ profile }) => {
   const [formData, setFormData] = useState({
@@ -82,7 +83,9 @@ const ProfileForm = ({ profile }) => {
       <div className="flex items-center gap-6">
         <Avatar className="h-20 w-20">
           <AvatarImage src={formData.avatar_url} />
-          <AvatarFallback>{profile?.username?.charAt(0) || "U"}</AvatarFallback>
+          <AvatarFallback>
+            {profile?.username?.charAt(0).toUpperCase() || "?"}
+          </AvatarFallback>
         </Avatar>
         <div>
           <label htmlFor="avatar" className="block text-sm font-medium mb-2">
@@ -173,13 +176,19 @@ const ProfileForm = ({ profile }) => {
         <Label htmlFor="country" className="mb-1">
           Country
         </Label>
-        <Input
+        {/* <Input
           id="country"
           type="country"
           value={formData.country}
           onChange={(e) =>
             setFormData({ ...formData, country: e.target.value })
           }
+        /> */}
+        <AddressInput
+          id="country"
+          placeholder="Enter your country..."
+          value={formData.country}
+          onChange={(value) => setFormData({ ...formData, country: value })}
         />
       </div>
 

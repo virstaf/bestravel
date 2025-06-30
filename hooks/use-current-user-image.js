@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
+import { getUser } from "@/lib/supabase/server";
 import { useEffect, useState } from "react";
 
 export const useCurrentUserImage = () => {
@@ -6,12 +7,20 @@ export const useCurrentUserImage = () => {
 
   useEffect(() => {
     const fetchUserImage = async () => {
-      const { data, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error(error);
-      }
+      const { email } = await getUser();
 
-      setImage(data.session?.user.user_metadata.avatar_url ?? null);
+      const { data: profile, error: userError } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("email", email.trim().toLowerCase()) // Add normalization
+        .maybeSingle();
+
+      const userImage =
+        profile?.avatar_url || profile?.user_metadata?.avatar_url;
+
+      console.log("profile:::", profile, userImage);
+
+      setImage(userImage ?? null);
     };
     fetchUserImage();
   }, []);
