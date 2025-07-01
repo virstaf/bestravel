@@ -1,5 +1,5 @@
-import Footer from "@/components/Footer";
-import NavSection from "@/components/NavSection";
+import LandingFooter from "@/components/LandingFooter";
+import NavBar from "@/components/nav-bar";
 
 export const metadata = {
   title: "Terms of Service",
@@ -9,11 +9,11 @@ export const metadata = {
 export default function TermsOfServiceLayout({ children }) {
   return (
     <>
-      <NavSection />
+      <NavBar />
       <main className="w-full h-full flex items-center justify-center">
         {children}
       </main>
-      <Footer />
+      <LandingFooter />
     </>
   );
 }
