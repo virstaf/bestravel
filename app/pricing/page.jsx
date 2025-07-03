@@ -1,4 +1,5 @@
 import { StripePricingTable } from "@/components/StripePricingTable";
+import Pricing from "@/components/ui/pricing";
 import Image from "next/image";
 
 const PricingPage = () => {
@@ -31,6 +32,9 @@ const PricingPage = () => {
         </div>
       </section>
       <StripePricingTable />
+      <section className="w-full container mx-auto my-12">
+        <Pricing />
+      </section>
     </div>
   );
 };
