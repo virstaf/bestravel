@@ -31,7 +31,7 @@ const PricingPage = () => {
           </p>
         </div>
       </section>
-      <StripePricingTable />
+      {/* <StripePricingTable /> */}
       <section className="w-full container mx-auto my-12">
         <Pricing />
       </section>
