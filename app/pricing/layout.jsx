@@ -10,7 +10,7 @@ export default function PricingLayout({ children }) {
   return (
     <>
       <NavBar />
-      <main className="w-full min-h-screen mt-16 bg-gray-50">{children}</main>
+      <main className="w-full min-h-screen mt-16 bg-white">{children}</main>
       <LandingFooter />
     </>
   );
