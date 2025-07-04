@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { plans } from "@/lib/data";
 import { getUser } from "@/lib/supabase/server";
 import { pricingPlans } from "@/lib/constants";
 import { Button } from "./button";
@@ -81,23 +80,6 @@ const Pricing = () => {
             </ul>
           </div>
         ))}
-      </div>
-
-      <div>
-        {/* <h1>Pricing</h1>
-        <ul>
-          {plans.map((plan) => (
-            <li key={plan.name}>
-              <h2>{plan.name}</h2>
-              <p>{plan.price}</p>
-              <ul>
-                {plan.features.map((feature) => (
-                  <li key={feature}>{feature}</li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul> */}
       </div>
     </div>
   );

@@ -98,6 +98,8 @@ export const signupAction = async (email, password, fullname) => {
     });
 
     if (error) {
+      console.error("Error signing up:", error);
+
       return handleError(error.message);
     }
 
