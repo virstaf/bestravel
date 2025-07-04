@@ -59,9 +59,11 @@ const Pricing = () => {
             <Button className="my-4 py-5 w-full text-white text-[16px]">
               <Link
                 href={
-                  duration === "monthly"
-                    ? plan.link[0] + prefilledLink
-                    : plan.link[1] + prefilledLink
+                  !userEmail
+                    ? "/auth/login"
+                    : duration === "monthly"
+                      ? plan.link[0] + prefilledLink
+                      : plan.link[1] + prefilledLink
                 }
                 target="_blank"
               >
