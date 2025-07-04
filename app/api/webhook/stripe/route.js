@@ -28,12 +28,15 @@ export async function POST(req) {
 
   let event;
   const user = await getUser();
+  console.log("User:", user);
 
   try {
     event = stripe.webhooks.constructEvent(
       rawBody,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET
+      process.env.NODE_ENV === "development"
+        ? process.env.STRIPE_WEBHOOK_SECRET_TEST
+        : process.env.STRIPE_WEBHOOK_SECRET
     );
     console.log("Webhook event constructed successfully:", event.type);
   } catch (err) {
