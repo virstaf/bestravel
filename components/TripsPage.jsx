@@ -8,6 +8,12 @@ export default async function Trips() {
   const supabase = await createClient();
   const user = await supabase.auth.getUser();
 
+  const { data: isSubscribed } = await supabase
+    .from("profiles")
+    .select("is_subscribed")
+    .eq("email", user.data.user?.email.trim().toLowerCase())
+    .maybeSingle();
+
   let trips = [];
   if (user.data.user) {
     const { data } = await supabase
@@ -22,7 +28,13 @@ export default async function Trips() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-md font-bold uppercase text-primary">My Trips</h1>
-        <Link href="/dashboard/trips/new">
+        <Link
+          href={
+            isSubscribed.data?.is_subscribed
+              ? "/dashboard/trips/new"
+              : "/pricing"
+          }
+        >
           <Button>New Trip</Button>
         </Link>
       </div>

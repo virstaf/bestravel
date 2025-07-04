@@ -14,11 +14,13 @@ import Link from "next/link";
 import { Calendar } from "lucide-react";
 import { MapPin } from "lucide-react";
 import { UsersIcon } from "lucide-react";
+import { getUser } from "@/lib/supabase/server";
 
 const TripsList = ({ initialTrips = [], limit }) => {
   const [trips, setTrips] = useState(initialTrips);
   const [loading, setLoading] = useState(!initialTrips.length);
   const [error, setError] = useState(null);
+  const [tripLink, setTripLink] = useState("");
 
   // Optional: Fetch trips client-side if needed
   useEffect(() => {
@@ -87,6 +89,30 @@ const TripsList = ({ initialTrips = [], limit }) => {
     };
   }, []);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const { email } = await getUser();
+        const isSubscribed = await supabase
+          .from("profiles")
+          .select("is_subscribed")
+          .eq("email", email)
+          .maybeSingle();
+        console.log("User subscription status:", isSubscribed);
+
+        if (isSubscribed.data?.is_subscribed) {
+          setTripLink("/dashboard/trips/new");
+        } else {
+          setTripLink("/pricing");
+        }
+      } catch (err) {
+        console.error("Error fetching user:", err);
+        setTripLink("/pricing");
+      }
+    };
+    fetchUser();
+  }, []);
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -106,7 +132,7 @@ const TripsList = ({ initialTrips = [], limit }) => {
         <p className="text-muted-foreground">
           Start planning your next adventure
         </p>
-        <Link href="/dashboard/trips/new">
+        <Link href={tripLink}>
           <Button>Create New Trip</Button>
         </Link>
       </div>
@@ -142,8 +168,8 @@ const TripsList = ({ initialTrips = [], limit }) => {
                   trip.status === "completed"
                     ? "bg-green-100 text-green-800"
                     : trip.status === "cancelled"
-                    ? "bg-red-100 text-red-800"
-                    : "bg-blue-100 text-blue-800"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-blue-100 text-blue-800"
                 }`}
               >
                 {trip.status.replace("_", " ")}
