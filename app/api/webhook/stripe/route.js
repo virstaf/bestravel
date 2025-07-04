@@ -2,7 +2,6 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
-import { getUser } from "@/lib/supabase/server";
 // import { buffer } from "micro";
 
 // Set this to the same version you're using on the server
@@ -14,6 +13,13 @@ const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY // must be service role for admin updates
 );
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
+
+const { user } = await supabase.auth.getUser();
 
 // Required to read raw body
 export const config = {
@@ -27,8 +33,6 @@ export async function POST(req) {
   const sig = req.headers.get("stripe-signature") || "";
 
   let event;
-  const user = await getUser();
-  console.log("User:", user);
 
   try {
     event = stripe.webhooks.constructEvent(
