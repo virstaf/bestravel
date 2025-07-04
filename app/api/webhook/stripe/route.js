@@ -7,7 +7,7 @@ import { getUser } from "@/lib/supabase/server";
 
 // Set this to the same version you're using on the server
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2023-06-30.basil",
+  apiVersion: "2020-08-27",
 });
 
 const supabaseAdmin = createClient(
