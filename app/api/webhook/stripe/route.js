@@ -76,7 +76,11 @@ export async function POST(req) {
       if (customer) {
         await supabaseAdmin
           .from("profiles")
-          .update({ is_subscribed: false })
+          .update({
+            is_subscribed: false,
+            subscription_status: session.status,
+            subscription_end: new Date(Date.now()),
+          })
           .eq("email", customer);
       }
       break;
