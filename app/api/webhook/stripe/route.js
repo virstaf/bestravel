@@ -27,7 +27,7 @@ export async function POST(req) {
   const sig = req.headers.get("stripe-signature") || "";
 
   let event;
-  //   const { email: userEmail } = await getUser();
+  const user = await getUser();
 
   try {
     event = stripe.webhooks.constructEvent(
@@ -60,7 +60,7 @@ export async function POST(req) {
         .eq("email", session.customer_email);
 
       await supabaseAdmin.from("subscriptions").insert({
-        user_id: userId,
+        user_id: user.id,
         user_email: session.customer_email,
         stripe_subscription_id: session.id,
         status: session.status,
