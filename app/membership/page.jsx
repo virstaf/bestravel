@@ -5,6 +5,7 @@ import TravelSmarter from "@/components/travel-smarter";
 import { Button } from "@/components/ui/button";
 import { membershipBenefits } from "@/lib/data";
 import { Check } from "lucide-react";
+import Image from "next/image";
 
 const MembershipPage = () => {
   return (
@@ -13,11 +14,21 @@ const MembershipPage = () => {
         Virstravel Club Membership
       </h1>
 
-      <section className="bg-white mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-bold mb-4 text-primary text-center">
-          Why Become a Member?
-        </h2>
-        <p className="text-gray-600 text-lg mb-4">
+      <section className="bg-white container mx-auto py-1 mb-4 px-4 sm:px-6 lg:px-8">
+        <div className="relative h-96 bg-gray-900">
+          <Image
+            src="/images/lady_beach.jpg"
+            alt="Membership Background"
+            fill
+            style={{ objectFit: "cover", opacity: 0.7 }}
+          />
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center text-center px-4">
+          <h2 className="text-4xl font-bold mb-4 text-white text-center">
+            Why Become a Member?
+          </h2>
+        </div>
+        <p className="text-gray-600 text-lg mt-8 mb-4">
           At Virstravel Club, we believe travel should be rewarding, effortless,
           and cost-effective—no matter your budget or how often you fly. With
           our tiered membership options, you gain access to real value and
@@ -26,7 +37,7 @@ const MembershipPage = () => {
         </p>
       </section>
 
-      <section>
+      <section className="max-w-7xl mx-auto px-4">
         <h2 className="max-w-7xl mx-auto mb-2 text-primary font-semibold text-xl">
           Memberships include the following depending on tier:
         </h2>
