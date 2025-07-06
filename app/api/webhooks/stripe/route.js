@@ -6,14 +6,9 @@ import { revalidatePath } from "next/cache";
 // import { buffer } from "micro";
 
 // Set this to the same version you're using on the server
-const stripe = new Stripe(
-  process.env.NODE_ENV === "development"
-    ? process.env.STRIPE_SECRET_KEY_TEST
-    : process.env.STRIPE_SECRET_KEY,
-  {
-    apiVersion: "2020-08-27",
-  }
-);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2025-06-30.basil",
+});
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -30,10 +25,7 @@ export const POST = async (req) => {
     event = stripe.webhooks.constructEvent(
       rawBody,
       sig,
-      process.env.STRIPE_SIGNING_SECRET
-      // process.env.NODE_ENV === "development"
-      //   ? process.env.STRIPE_WEBHOOK_SIGNING_SECRET
-      //   : process.env.STRIPE_WEBHOOK_SECRET
+      process.env.STRIPE_SIGNING_SECRET || process.env.STRIPE_WEBHOOK_SECRET
     );
     console.log("Webhook event constructed successfully:", event.type);
   } catch (err) {
