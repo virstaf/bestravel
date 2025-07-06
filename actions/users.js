@@ -19,14 +19,12 @@ export const loginAction = async (email, password) => {
     const { full_name, username, public_email } =
       data.user?.user_metadata || {};
 
-    console.log("data::", data);
     const profile = await supabase
       .from("profiles")
       .select("*")
       .eq("email", email)
       .single();
 
-    console.log("profile::", profile);
     if (!profile.data) {
       // 1. Generate unique customer ID
       const customerId = generateCustomerId();

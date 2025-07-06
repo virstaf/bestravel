@@ -1,26 +1,40 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { getUser } from "@/lib/supabase/server";
 import { pricingPlans } from "@/lib/constants";
 import { Button } from "./button";
-import Link from "next/link";
+import { subscribeAction } from "@/actions/stripe";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const Pricing = () => {
   const [duration, setDuration] = useState("monthly");
-  const [userEmail, setUserEmail] = useState(null);
+  const [user, setUser] = useState(null);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
       const user = await getUser();
       if (user) {
-        setUserEmail(user.email);
+        setUser(user);
       }
     };
     fetchUser();
   }, []);
 
-  const prefilledLink = `?prefilled_email=${userEmail || ""}`;
+  const handleSubscribeClick = async (priceId) => {
+    startTransition(async () => {
+      const url = await subscribeAction(user, priceId);
+      if (url) {
+        router.push(url);
+      } else {
+        toast.error("Subscription failed. Please try again.");
+        console.error("Subscription failed");
+      }
+    });
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 bg-white rounded-lg shadow-xl">
@@ -56,19 +70,18 @@ const Pricing = () => {
                 month
               </span>
             </div>
-            <Button className="my-4 py-5 w-full text-white text-[16px]">
-              <Link
-                href={
-                  !userEmail
-                    ? "/auth/login"
-                    : duration === "monthly"
-                      ? plan.link[0] + prefilledLink
-                      : plan.link[1] + prefilledLink
-                }
-                target="_blank"
-              >
-                Subscribe
-              </Link>
+            <Button
+              className={`my-4 py-5 w-full text-white text-[16px] ${
+                isPending ? "bg-gray-400 cursor-not-allowed" : ""
+              }`}
+              onClick={() =>
+                handleSubscribeClick(
+                  duration === "monthly" ? plan.priceId[0] : plan.priceId[1]
+                )
+              }
+              disabled={isPending}
+            >
+              {isPending ? "Processing..." : "Subscribe"}
             </Button>
             <ul className="pl-5 text-[14px] text-gray-600">
               {plan.features.map((feature) => (
