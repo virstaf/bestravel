@@ -12,9 +12,12 @@ export const subscribeAction = async (user, priceId) => {
         quantity: 1,
       },
     ],
-    metadata: {
-      userId: user?.id,
-      email: user?.email,
+    subscription_data: {
+      trial_period_days: 7, // Optional: Set a trial period
+      metadata: {
+        userId: user?.id,
+        email: user?.email,
+      },
     },
     customer_email: user?.email,
     success_url: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard`,

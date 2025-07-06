@@ -25,6 +25,10 @@ const Pricing = () => {
   }, []);
 
   const handleSubscribeClick = async (priceId) => {
+    if (!user) {
+      toast.error("You must be logged in to subscribe.");
+      return;
+    }
     startTransition(async () => {
       const url = await subscribeAction(user, priceId);
       if (url) {
