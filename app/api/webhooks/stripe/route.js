@@ -14,10 +14,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-06-30.basil",
 });
 
-// const supabaseAdmin = createClient(
-//   process.env.NEXT_PUBLIC_SUPABASE_URL,
-//   process.env.SUPABASE_SERVICE_KEY // must be service role for admin updates
-// );
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY // must be service role for admin updates
+);
 
 export const POST = async (req) => {
   const rawBody = await req.text(); // if using App Router
@@ -38,55 +38,55 @@ export const POST = async (req) => {
   }
 
   // Handle events
-  // const session = event.data.object;
-  // const customerId = session?.customer;
-  // // const customer = await stripe.customers.retrieve(customerId);
+  const session = event.data.object;
+  const customerId = session?.customer;
+  // const customer = await stripe.customers.retrieve(customerId);
 
-  // switch (event.type) {
-  //   case "checkout.session.completed":
-  //   case "invoice.payment_succeeded":
-  //     await supabaseAdmin
-  //       .from("profiles")
-  //       .update({
-  //         is_subscribed: true,
-  //         stripe_customer_id: session.customer,
-  //         subscription_status: session.status,
-  //         subscription_end: new Date(session.period_end * 1000),
-  //       })
-  //       .eq("email", session.customer_email);
+  switch (event.type) {
+    case "checkout.session.completed":
+    case "invoice.payment_succeeded":
+      await supabaseAdmin
+        .from("profiles")
+        .update({
+          is_subscribed: true,
+          stripe_customer_id: session.customer,
+          subscription_status: session.status,
+          subscription_end: new Date(session.period_end * 1000),
+        })
+        .eq("email", session.customer_email);
 
-  //     revalidatePath("/dashboard");
+      revalidatePath("/dashboard");
 
-  //   await supabaseAdmin.from("subscriptions").insert({
-  //     user_id: user.id,
-  //     user_email: session.customer_email,
-  //     stripe_subscription_id: session.id,
-  //     status: session.status,
-  //     current_period_start: new Date(session.current_period_start * 1000),
-  //     current_period_end: new Date(session.current_period_end * 1000),
-  //   });
+      // await supabaseAdmin.from("subscriptions").insert({
+      //   user_id: user.id,
+      //   user_email: session.customer_email,
+      //   stripe_subscription_id: session.id,
+      //   status: session.status,
+      //   current_period_start: new Date(session.current_period_start * 1000),
+      //   current_period_end: new Date(session.current_period_end * 1000),
+      // });
 
-  // break;
+      break;
 
-  //   case "customer.subscription.deleted":
-  //     // Handle cancellations or end of trial
-  //     const customer = session.customer_email;
-  //     if (customer) {
-  //       await supabaseAdmin
-  //         .from("profiles")
-  //         .update({
-  //           is_subscribed: false,
-  //           subscription_status: session.status,
-  //           subscription_end: new Date(Date.now()),
-  //         })
-  //         .eq("email", customer);
-  //     }
-  //     revalidatePath("/dashboard");
-  //     break;
+    case "customer.subscription.deleted":
+      // Handle cancellations or end of trial
+      const customer = session.customer_email;
+      if (customer) {
+        await supabaseAdmin
+          .from("profiles")
+          .update({
+            is_subscribed: false,
+            subscription_status: session.status,
+            subscription_end: new Date(Date.now()),
+          })
+          .eq("email", customer);
+      }
+      revalidatePath("/dashboard");
+      break;
 
-  //   default:
-  //     console.log(`Unhandled event type ${event.type}`);
-  // }
+    default:
+      console.log(`Unhandled event type ${event.type}`);
+  }
 
   return NextResponse.json({ received: true });
 };
