@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
   Html,
   Body,
@@ -6,9 +7,10 @@ import {
   Text,
   Img,
   Tailwind,
+  Link,
 } from "@react-email/components";
 
-const ContactEmail = ({ fullname }) => {
+const TripConfirmationEmail = ({ fullname, tripName, tripLink }) => {
   return (
     <Html>
       <Tailwind>
@@ -26,9 +28,23 @@ const ContactEmail = ({ fullname }) => {
                 Hi {fullname} 👋,
               </Heading>
               <Text className="mb-4">
-                Thank you for reaching out to us! We have received your message
-                and will get back to you shortly.
+                Wohooo! Your trip{" "}
+                <span className="font-semibold">{tripName}</span>, has been
+                confirmed.
               </Text>
+              <Text className="mb-4">
+                You can view your trip details and itinerary by clicking the
+                button below:
+              </Text>
+              <Container className="text-center my-8">
+                <Link
+                  target="_blank"
+                  href={tripLink}
+                  className="bg-primary text-white px-6 py-3 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary/50"
+                >
+                  View Trip Details
+                </Link>
+              </Container>
               <Text className="mb-4">
                 Best regards,
                 <br />
@@ -46,4 +62,4 @@ const ContactEmail = ({ fullname }) => {
   );
 };
 
-export default ContactEmail;
+export default TripConfirmationEmail;
