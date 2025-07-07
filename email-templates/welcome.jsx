@@ -1,4 +1,3 @@
-import react from "react";
 import {
   Html,
   Head,
@@ -11,18 +10,6 @@ import {
   Img,
   Tailwind,
 } from "@react-email/components";
-
-let logoSrc;
-
-const baseUrl = process.env.NEXT_PUBLIC_BASEURL
-  ? `https://${process.env.NEXT_PUBLIC_BASEURL}`
-  : "";
-
-if (baseUrl && !baseUrl.startsWith("https://")) {
-  logoSrc = `${baseUrl}/static/virstravel.png`;
-} else {
-  logoSrc = `/virstravel.png`;
-}
 
 const WelcomeEmail = ({ fullname, membershipId }) => {
   return (

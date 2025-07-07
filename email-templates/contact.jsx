@@ -9,18 +9,6 @@ import {
   Tailwind,
 } from "@react-email/components";
 
-let logoSrc;
-
-const baseUrl = process.env.NEXT_PUBLIC_BASEURL
-  ? `https://${process.env.NEXT_PUBLIC_BASEURL}`
-  : "";
-
-if (baseUrl && !baseUrl.startsWith("https://")) {
-  logoSrc = `${baseUrl}/static/virstravel.png`;
-} else {
-  logoSrc = `/virstravel.png`;
-}
-
 const ContactEmail = ({ fullname }) => {
   return (
     <Html>
@@ -29,7 +17,7 @@ const ContactEmail = ({ fullname }) => {
           <Container className="p-45 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
             <Container className="mx-auto mt-12 mb-12">
               <Img
-                src={logoSrc}
+                src="https://ylpkcsmbsnowmbyxhbzw.supabase.co/storage/v1/object/public/static//virstravel.png"
                 width="184"
                 height="75"
                 alt="Virstravel"

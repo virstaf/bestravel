@@ -4,8 +4,8 @@ import WelcomeEmail from "@/email-templates/welcome";
 const ContactEmailPage = ({ name = "Nyla" }) => {
   return (
     <>
-      {/* <ContactEmail fullname={name} /> */}
-      <WelcomeEmail fullname={name} membershipId="V120809801" />
+      <ContactEmail fullname={name} />
+      {/* <WelcomeEmail fullname={name} membershipId="V120809801" /> */}
     </>
   );
 };
