@@ -13,7 +13,7 @@ export const generateCustomerId = () => {
 
 export const handleError = (error: unknown) => {
   if (error instanceof Error) {
-    console.error("error plenty:::", error);
+    console.error("error handler:::", error);
 
     return { errorMessage: error.message };
   } else {
