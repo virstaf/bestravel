@@ -18,7 +18,7 @@ const AboutPage = () => {
           <h1 className="text-4xl font-bold text-primary text-center my-12">
             About Virstravel Club
           </h1>
-          <div className="relative h-96 bg-gray-900">
+          <div className="relative h-96 bg-gray-900 rounded-lg overflow-hidden">
             <Image
               src="/images/lady_beach.jpg"
               alt="Our team"
@@ -166,7 +166,7 @@ const AboutPage = () => {
           </div> */}
         </section>
 
-        <section className="w-full max-w-7xl mx-auto pb-8 px-4">
+        <section className="w-full container mx-auto pb-8 px-4">
           <div className="bg-gradient-to-r from-primary to-secondary rounded-xl p-8 text-center text-white my-12">
             <h2 className="text-3xl font-bold mb-4">Want to Know More?</h2>
             <p className="text-lg text-white mb-4">

@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
 import AddressInput from "./ui/addressInput";
+import { resendEmail } from "@/actions/resendEmail";
 
 const NewTripForm = () => {
   const router = useRouter();
@@ -55,8 +56,23 @@ const NewTripForm = () => {
         toast.error("Error creating trip. Please try again.");
         throw error;
       }
-
       toast.success("Trip created successfully!");
+
+      const sendNotification = await resendEmail(
+        {
+          fullname: user.user_metadata.full_name || user.email.split("@")[0],
+          tripName: formData.title,
+          email: user.email,
+        },
+        "confirm-trip"
+      );
+      if (!sendNotification.success) {
+        console.error(
+          "Error sending confirmation email:",
+          sendNotification.message
+        );
+        return handleError(sendNotification.message);
+      }
 
       router.push("/dashboard/trips");
       router.refresh();

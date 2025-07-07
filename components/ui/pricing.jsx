@@ -71,7 +71,7 @@ const Pricing = () => {
               </p>
               <span className="text-gray-500 font-light leading-4">
                 per <br />
-                month
+                {duration === "monthly" ? "month" : "year"}
               </span>
             </div>
             <Button

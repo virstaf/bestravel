@@ -36,6 +36,30 @@ export const resendEmail = async (values, type) => {
     }
   }
 
+  if (type === "confirm-trip") {
+    const { fullname, tripName, email } = values;
+
+    emailTemplate = (
+      <ConfirmTripEmail
+        fullname={fullname}
+        tripName={tripName}
+        tripLink={tripLink}
+      />
+    );
+    subject = "Your trip is confirmed!";
+    receivingEmail = email;
+
+    if (!fullname || !tripName || !tripLink || !email) {
+      console.error("Missing required fields");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  // if (!receivingEmail || !emailTemplate || !subject) {
+  //   console.error("Missing required parameters for email sending");
+  //   return { success: false, message: "Missing required parameters" };
+  // }
+
   const resend = new Resend(process.env.RESEND_API_KEY);
   if (!resend) {
     console.error("Resend client could not be initialized");

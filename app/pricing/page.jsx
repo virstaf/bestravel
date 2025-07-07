@@ -6,7 +6,7 @@ const PricingPage = () => {
   return (
     <div className="h-full md:py-12">
       <section className="w-full container h-full mx-auto">
-        <div className="relative h-96 bg-gray-900 rounded overflow-hidden">
+        <div className="relative h-96 bg-gray-900 rounded-lg overflow-hidden">
           <Image
             src="/images/desk_passport.jpg"
             alt="Our team"

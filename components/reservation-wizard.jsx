@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { getUser } from "@/lib/supabase/server";
 import { supabase } from "@/lib/supabase/client";
+import { resendEmail } from "@/actions/resendEmail";
 
 export default function ReservationWizard({ trip, userId }) {
   const [activeTab, setActiveTab] = useState("hotel");
@@ -54,6 +55,22 @@ export default function ReservationWizard({ trip, userId }) {
           type.charAt(0).toUpperCase() + type.slice(1)
         } reservation submitted successfully!`
       );
+
+      const sendNotification = await resendEmail(
+        {
+          fullname: user.user_metadata.full_name || user.email.split("@")[0],
+          link: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard/reservations`,
+          type,
+        },
+        "confirm-reservation"
+      );
+
+      if (!sendNotification.success) {
+        console.error(
+          "Error sending reservation confirmation email:",
+          sendNotification.message
+        );
+      }
 
       router.refresh();
     } catch (error) {

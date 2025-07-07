@@ -10,7 +10,11 @@ import {
   Link,
 } from "@react-email/components";
 
-const TripConfirmationEmail = ({ fullname, tripName, tripLink }) => {
+const TripConfirmationEmail = ({
+  fullname,
+  tripName,
+  tripLink = process.env.NEXT_PUBLIC_BASEURL + "/dashboard/trips",
+}) => {
   return (
     <Html>
       <Tailwind>
