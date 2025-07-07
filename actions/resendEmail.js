@@ -1,5 +1,7 @@
 "use server";
 
+import ReservationConfirmationEmail from "@/email-templates/confirm-reservation";
+import TripConfirmationEmail from "@/email-templates/confirm-trip";
 // import { render } from "@react-email/components";
 import ContactEmail from "@/email-templates/contact";
 import WelcomeEmail from "@/email-templates/welcome";
@@ -23,7 +25,6 @@ export const resendEmail = async (values, type) => {
 
   if (type === "welcome") {
     const { fullname, membershipId, email } = values;
-    console.log("Welcome email values:", values);
     emailTemplate = (
       <WelcomeEmail fullname={fullname} membershipId={membershipId} />
     );
@@ -37,10 +38,11 @@ export const resendEmail = async (values, type) => {
   }
 
   if (type === "confirm-trip") {
-    const { fullname, tripName, email } = values;
+    const { fullname, tripName, email, tripLink } = values;
+    console.log("values:::", values);
 
     emailTemplate = (
-      <ConfirmTripEmail
+      <TripConfirmationEmail
         fullname={fullname}
         tripName={tripName}
         tripLink={tripLink}
@@ -50,6 +52,21 @@ export const resendEmail = async (values, type) => {
     receivingEmail = email;
 
     if (!fullname || !tripName || !tripLink || !email) {
+      console.error("Missing required fields");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "confirm-reservation") {
+    const { fullname, link, email } = values;
+
+    emailTemplate = (
+      <ReservationConfirmationEmail fullname={fullname} link={link} />
+    );
+    subject = `Your reservation is received!`;
+    receivingEmail = email;
+
+    if (!fullname || !email) {
       console.error("Missing required fields");
       return { success: false, message: "All fields are required" };
     }

@@ -16,7 +16,7 @@ const ContactEmailPage = ({ name = "Nyla" }) => {
       <ReservationConfirmationEmail
         fullname={name}
         link={"https://virstravel.com/reservation/12345"}
-        type={"flight"}
+        type={"hotel"}
       />
     </>
   );

@@ -60,7 +60,8 @@ export default function ReservationWizard({ trip, userId }) {
         {
           fullname: user.user_metadata.full_name || user.email.split("@")[0],
           link: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard/reservations`,
-          type,
+          type: "confirm-reservation",
+          email: user.email,
         },
         "confirm-reservation"
       );

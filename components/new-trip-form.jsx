@@ -17,6 +17,7 @@ import { CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
 import AddressInput from "./ui/addressInput";
 import { resendEmail } from "@/actions/resendEmail";
+import { handleError } from "@/lib/utils";
 
 const NewTripForm = () => {
   const router = useRouter();
