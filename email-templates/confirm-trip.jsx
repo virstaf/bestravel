@@ -1,13 +1,12 @@
-import { Button } from "@/components/ui/button";
 import {
   Html,
   Body,
   Container,
+  Button,
   Heading,
   Text,
   Img,
   Tailwind,
-  Link,
 } from "@react-email/components";
 
 const TripConfirmationEmail = ({
@@ -41,13 +40,13 @@ const TripConfirmationEmail = ({
                 button below:
               </Text>
               <Container className="text-center my-8">
-                <Link
+                <Button
                   target="_blank"
                   href={tripLink}
                   className="bg-primary text-white px-6 py-3 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary/50"
                 >
                   View Trip Details
-                </Link>
+                </Button>
               </Container>
               <Text className="mb-4">
                 Best regards,
