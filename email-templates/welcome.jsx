@@ -102,7 +102,7 @@ const WelcomeEmail = ({ fullname, membershipId }) => {
                   </Text>
                   <Container className="text-center">
                     <Button
-                      href="#"
+                      href="https://virstravelclub.com/dashboard/deals"
                       className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700"
                     >
                       Start Exploring Now

@@ -3,6 +3,7 @@
 import { stripe } from "@/lib/stripe";
 import { createClient } from "@supabase/supabase-js";
 import { sub } from "date-fns";
+import { resendEmail } from "./resendEmail";
 
 export const subscribeAction = async (user, priceId) => {
   // console.log("Subscribing user:", user, "with priceId:", priceId);
@@ -52,6 +53,22 @@ export const trialAction = async (user) => {
     .single();
 
   if (!error) {
+    const sendNotification = await resendEmail(
+      {
+        email: user.email,
+        fullname: user.user_metadata?.full_name || user.email.split("@")[0],
+        trialEndsAt: new Date(
+          Date.now() + 7 * 24 * 60 * 60 * 1000
+        ).toISOString(),
+      },
+      "confirm-trial"
+    );
+    if (!sendNotification.success) {
+      console.error(
+        "Error sending trial confirmation email:",
+        sendNotification.message
+      );
+    }
   }
 
   return { data, error };

@@ -1,7 +1,6 @@
 "use server";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/supabase/server";
-import { handleError } from "@/lib/utils";
 
 export const fetchTrips = async () => {
   try {

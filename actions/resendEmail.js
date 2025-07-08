@@ -4,6 +4,7 @@ import ReservationConfirmationEmail from "@/email-templates/confirm-reservation"
 import TripConfirmationEmail from "@/email-templates/confirm-trip";
 // import { render } from "@react-email/components";
 import ContactEmail from "@/email-templates/contact";
+import TrialConfirmationEmail from "@/email-templates/trial";
 import WelcomeEmail from "@/email-templates/welcome";
 import { Resend } from "resend";
 
@@ -39,7 +40,6 @@ export const resendEmail = async (values, type) => {
 
   if (type === "confirm-trip") {
     const { fullname, tripName, email, tripLink } = values;
-    console.log("values:::", values);
 
     emailTemplate = (
       <TripConfirmationEmail
@@ -67,6 +67,21 @@ export const resendEmail = async (values, type) => {
     receivingEmail = email;
 
     if (!fullname || !email) {
+      console.error("Missing required fields");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "confirm-trial") {
+    const { fullname, trialEndsAt, email } = values;
+
+    emailTemplate = (
+      <TrialConfirmationEmail fullname={fullname} trialEndsAt={trialEndsAt} />
+    );
+    subject = "Your trial is confirmed!";
+    receivingEmail = email;
+
+    if (!fullname || !trialEndsAt || !email) {
       console.error("Missing required fields");
       return { success: false, message: "All fields are required" };
     }
