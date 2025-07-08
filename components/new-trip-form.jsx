@@ -39,8 +39,6 @@ const NewTripForm = () => {
     setLoading(true);
     setError(null);
 
-    console.log(formData);
-
     try {
       const {
         data: { user },

@@ -39,7 +39,8 @@ export const resendEmail = async (values, type) => {
   }
 
   if (type === "confirm-trip") {
-    const { fullname, tripName, email, tripLink } = values;
+    const { fullname, tripName, email } = values;
+    const tripLink = "https://virstravelclub.com/dashboard/trips";
 
     emailTemplate = (
       <TripConfirmationEmail
@@ -50,6 +51,8 @@ export const resendEmail = async (values, type) => {
     );
     subject = "Your trip is confirmed!";
     receivingEmail = email;
+
+    console.log("values", values);
 
     if (!fullname || !tripName || !tripLink || !email) {
       console.error("Missing required fields");
