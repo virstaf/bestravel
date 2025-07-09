@@ -1,3 +1,4 @@
+import ChoosingHelp from "@/components/choosing-help";
 import MembershipTiers from "@/components/membership-tiers";
 import StartTrialCta from "@/components/start-trial-cta";
 import Testimonials from "@/components/Testimonials";
@@ -81,27 +82,7 @@ const MembershipPage = () => {
       <MembershipTiers />
 
       <section className="max-w-7xl mx-auto px-4 my-8">
-        <div className="w-full">
-          <h2 className="mb-2 text-primary font-semibold text-xl">
-            Need Help Choosing?
-          </h2>
-          <p>Here's a quick guide:</p>
-          <ul className=" pl-6 my-4">
-            <li>
-              <strong>🧳 Silver:</strong> Ideal for casual travelers or those
-              planning 1–2 trips per year
-            </li>
-            <li>
-              <strong>🌍 Gold:</strong> Perfect for families or professionals
-              who travel regularly
-            </li>
-            <li>
-              <strong>🛫 Platinum:</strong> Built for frequent flyers, luxury
-              lovers, and business travelers
-            </li>
-          </ul>
-          <p>More benefits added regularly just for your convenience.</p>
-        </div>
+        <ChoosingHelp />
       </section>
 
       <section className="">

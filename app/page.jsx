@@ -12,6 +12,7 @@ import NavBar from "@/components/nav-bar";
 import LandingFooter from "@/components/LandingFooter";
 import GetInTouch from "@/components/GetInTouch";
 import Newsletter from "@/components/Newsletter";
+import TrialCTA from "@/components/trial-cta";
 
 const HomePage = () => {
   return (
@@ -25,9 +26,11 @@ const HomePage = () => {
           <ProblemSection />
         </section>
         {/* <section><SolutionSection /></section> */}
-        {/* <section>Services</section> */}
         <section>
           <BenefitSection />
+        </section>
+        <section className="w-full max-w-7xl mx-auto px-4 my-8">
+          <TrialCTA />
         </section>
         <section>
           <WhoItsFor />

@@ -7,6 +7,8 @@ import { Button } from "./button";
 import { subscribeAction, trialAction } from "@/actions/stripe";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import ChoosingHelp from "../choosing-help";
+import TrialCTA from "../trial-cta";
 
 const Pricing = () => {
   const [duration, setDuration] = useState("monthly");
@@ -36,27 +38,6 @@ const Pricing = () => {
       } else {
         toast.error("Subscription failed. Please try again.");
         console.error("Subscription failed");
-      }
-    });
-  };
-
-  const handleStartTrialClick = async () => {
-    if (!user) {
-      toast.error("You must be logged in to start a trial.");
-      return;
-    }
-    startTransition(async () => {
-      const { data, error } = await trialAction(user);
-      if (error) {
-        toast.error("Trial start failed. Please try again.");
-        console.error("Trial start error:", error);
-        return;
-      }
-      if (data) {
-        router.push("dashboard");
-      } else {
-        toast.error("Trial start failed. Please try again.");
-        console.error("Trial start failed");
       }
     });
   };
@@ -127,18 +108,10 @@ const Pricing = () => {
         </div>
       </div>
       <section className="w-full container mx-auto pb-8 px-4">
-        <div className="bg-gradient-to-r from-primary to-secondary rounded-xl p-8 text-center text-white my-12">
-          <h2 className="text-3xl font-bold mb-4">Want to try it out?</h2>
-          <div className="text-lg text-primary mb-4">
-            <Button
-              variant="outline"
-              className="cursor-pointer mt-5 hover:scale-105 transition-transform"
-              onClick={handleStartTrialClick}
-            >
-              Start Free 7-Day Trial
-            </Button>
-          </div>
-        </div>
+        <TrialCTA />
+      </section>
+      <section className="max-w-7xl mx-auto px-4 my-8">
+        <ChoosingHelp />
       </section>
     </>
   );
