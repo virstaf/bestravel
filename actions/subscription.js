@@ -1,34 +1,39 @@
-// // "use server";
+"use server";
 
-// import { createClient } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 
-// // import { revalidatePath } from "next/cache";
+// import { revalidatePath } from "next/cache";
 
-// export const supabaseAdmin = createClient(
-//   process.env.NEXT_PUBLIC_SUPABASE_URL,
-//   process.env.SUPABASE_SERVICE_KEY
-// );
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_KEY;
 
-// export const getUserSubscription = async (userId) => {
-//   //   try {
-//   //     const {
-//   //       data: { subscription_plan },
-//   //       error,
-//   //     } = await supabaseAdmin
-//   //       .from("profiles")
-//   //       .select("subscription_plan")
-//   //       .eq("id", userId)
-//   //       .maybeSingle(); //
+if (!supabaseUrl || !supabaseKey) {
+  console.error("Supabase URL or Key is missing in environment variables");
+}
 
-//   //     if (error) {
-//   //       return "inactive";
-//   //     } else {
-//   //       return subscription_plan;
-//   //     }
-//   //   } catch (error) {
-//   //     console.error("Failed to fetch subscription:", error.message);
-//   //     return "inactive"; // Default on error
-//   //   }
+const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
 
-//   return "inactive"; // Default value, replace with actual logic if needed
-// };
+export const getUserSubscription = async (userId) => {
+  console.log("user id from action", userId);
+  try {
+    const {
+      data: { subscription_plan },
+      error,
+    } = await supabaseAdmin
+      .from("profiles")
+      .select("subscription_plan")
+      .eq("id", userId)
+      .maybeSingle(); //
+
+    if (error) {
+      return "inactive";
+    } else {
+      return subscription_plan;
+    }
+  } catch (error) {
+    console.error("Failed to fetch subscription:", error.message);
+    return "inactive"; // Default on error
+  }
+
+  //   return "inactive"; // Default value, replace with actual logic if needed
+};
