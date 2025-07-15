@@ -141,3 +141,32 @@ export const googleAuthAction = async () => {
   }
   return { errorMessage: null };
 };
+
+export const deleteAccountAction = async () => {
+  try {
+    const supabase = await createClient();
+    const { auth } = supabase;
+    const { user, error: userError } = await auth.getUser();
+
+    if (userError) {
+      console.error("Error fetching user:", userError);
+      return handleError(userError.message);
+    }
+
+    if (!user) {
+      return handleError("No user is currently logged in.");
+    }
+
+    const { error: deleteError } = await supabase.auth.admin.deleteUser(
+      user.id
+    );
+    if (deleteError) {
+      console.error("Error deleting user:", deleteError);
+      return handleError(deleteError.message);
+    }
+
+    return { errorMessage: null };
+  } catch (error) {
+    return handleError(error);
+  }
+};

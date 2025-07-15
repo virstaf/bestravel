@@ -4,20 +4,25 @@ import { useTransition } from "react";
 import { Button } from "./ui/button";
 import { trialAction } from "@/actions/stripe";
 import { getUser } from "@/lib/supabase/server";
+import { toast } from "sonner";
+import { Loader2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useProfileContext } from "@/contexts/profile";
 
 const TrialCTA = () => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const { profile, isLoading } = useProfileContext();
 
   const handleStartTrialClick = async () => {
-    const user = await getUser();
-    if (!user) {
-      toast.error("You must be logged in to start a trial.");
+    if (isLoading) return;
+    if (profile.is_subscribed) {
+      toast.error("You are already subscribed.");
       return;
     }
+
     startTransition(async () => {
-      const { data, error } = await trialAction(user);
+      const { data, error } = await trialAction(profile);
       if (error) {
         toast.error("Trial start failed. Please try again.");
         console.error("Trial start error:", error);

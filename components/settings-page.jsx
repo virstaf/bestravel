@@ -7,6 +7,7 @@ import { Skeleton } from "./ui/skeleton";
 import { getProfileAction } from "@/actions/profiles";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import Pricing from "./ui/pricing";
+import { LoaderIcon } from "lucide-react";
 
 const Settings = () => {
   const [profile, setProfile] = useState(null);
@@ -31,20 +32,12 @@ const Settings = () => {
   if (!profile && loading) {
     return (
       <div className="container py-8 px-8 mx-auto w-full h-full">
-        <Card className="max-w-3xl mx-auto">
-          <CardHeader>
-            <Skeleton className="h-6 w-1/2" />
-          </CardHeader>
-          <CardContent>
-            <Skeleton className="h-4 w-full mb-2" />
-            <Skeleton className="h-4 w-full mb-2" />
-            <Skeleton className="h-4 w-full mb-2" />
-          </CardContent>
-          <CardFooter>
-            <Skeleton className="h-10 w-full" />
-          </CardFooter>
-        </Card>
-        {/* <div className="text-center text-gray-500">Loading profile...</div> */}
+        <div className="text-center text-gray-500">
+          Loading profile...
+          <div className="text-center w-full flex justify-center mt-4">
+            <LoaderIcon className="inline-block animate-spin" />
+          </div>
+        </div>
       </div>
     );
   }

@@ -13,10 +13,10 @@ export const useSubscription = () => {
 
       switch (subscriptionPlan) {
         case "inactive":
-          setPlan({ plan: "inactive", badge: "‼️", icon: "🚫" });
+          setPlan({ plan: "inactive", badge: "‼️No Plan", icon: "🚫" });
           break;
         case "trial":
-          setPlan({ plan: "trial", badge: "Free", icon: "🆓" });
+          setPlan({ plan: "trial", badge: "Free Trial", icon: "🆓" });
           break;
         case "silver":
           setPlan({ plan: "silver", badge: "Silver", icon: "🥈" });

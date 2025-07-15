@@ -5,11 +5,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const Faq = ({ question, answer, number }) => {
+const Faq = ({ question, answer, number, className }) => {
   return (
-    <Accordion type="single" collapsible>
+    <Accordion type="single" collapsible className={className}>
       <AccordionItem value={number}>
-        <AccordionTrigger>{question}</AccordionTrigger>
+        <AccordionTrigger className="text-lg">{question}</AccordionTrigger>
         <AccordionContent>{answer}</AccordionContent>
       </AccordionItem>
     </Accordion>

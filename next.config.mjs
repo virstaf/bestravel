@@ -1,4 +1,5 @@
 const nextConfig = {
+  // reactStrictMode: false, // Disables double-rendering in development
   // output: "export",
   // images: {
   //   unoptimized: true, // required for `next export`

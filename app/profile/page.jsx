@@ -1,20 +1,23 @@
 "use client";
 
 import { useProfileContext } from "@/contexts/profile";
+import { Loader2Icon } from "lucide-react";
 
 const ProfilePage = () => {
-  const profile = useProfileContext();
-  console.log("Profile context:", profile);
+  const { profile, isLoading } = useProfileContext();
+
   return (
     <div>
       <h1>Profile Page</h1>
-      {profile ? (
+      {!isLoading && profile ? (
         <div>
-          <h2>{profile.name}</h2>
+          <h2>{profile.full_name}</h2>
           <p>{profile.email}</p>
         </div>
       ) : (
-        <p>Loading...</p>
+        <p>
+          <Loader2Icon className="animate-spin" />
+        </p>
       )}
     </div>
   );

@@ -6,10 +6,14 @@ import { useCurrentUserName } from "@/hooks/use-current-user-name";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSubscription } from "@/hooks/use-subscription";
 import { LoaderIcon } from "lucide-react";
-import { LoaderCircle } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const CurrentUserAvatar = () => {
-  const { icon } = useSubscription();
+  const { icon, badge } = useSubscription();
   const profileImage = useCurrentUserImage();
   const name = useCurrentUserName();
   const initials = name
@@ -26,7 +30,14 @@ const CurrentUserAvatar = () => {
       </Avatar>
       <div className="absolute -bottom-1 -right-2 text-xs">
         {icon ? (
-          icon
+          <Tooltip>
+            <TooltipTrigger>
+              <span className="text-primary">{icon}</span>
+            </TooltipTrigger>
+            <TooltipContent>
+              <span className="text-white">{badge}</span>
+            </TooltipContent>
+          </Tooltip>
         ) : (
           <span className="animate-spin text-primary text-xs">
             <LoaderIcon className="animate-spin w-3 h-3" />

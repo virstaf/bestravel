@@ -13,11 +13,12 @@ const FAQSection = () => {
             <span className="lowercase">s</span>)
           </h2>
         </div>
-        <div className="grid lg:grid-cols-2">
+        <div className="w-full mx-auto">
           <div>
-            <div className="faq bg-white p-6 rounded-md shadow max-w-[400px] mx-auto">
+            <div className="faq bg-white p-6 rounded-md shadow w-full mx-auto">
               {faqs.map((item, idx) => (
                 <Faq
+                  className="mb-4 border-b last:border-0 text-gray-600"
                   question={item.question}
                   answer={item.answer}
                   number={idx + 1}
@@ -29,7 +30,7 @@ const FAQSection = () => {
               </p>
             </div>
           </div>
-          <div className="relative hidden my-5 p-2 bg-white rounded-lg shadow lg:flex items-center justify-center">
+          {/* <div className="relative hidden my-5 p-2 bg-white rounded-lg shadow lg:flex items-center justify-center">
             <Image
               className="p-2 bg-white rounded-lg hover:scale-105 transform transition duration-300 ease-in-out"
               src="/images/hotels/2018_Pres_Suites_1.jpg"
@@ -38,7 +39,7 @@ const FAQSection = () => {
               // height={500}
               fill
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
