@@ -2,10 +2,16 @@
 
 import { useTransition } from "react";
 import { Button } from "./ui/button";
+import { trialAction } from "@/actions/stripe";
+import { getUser } from "@/lib/supabase/server";
+import { useRouter } from "next/navigation";
 
 const TrialCTA = () => {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
   const handleStartTrialClick = async () => {
+    const user = await getUser();
     if (!user) {
       toast.error("You must be logged in to start a trial.");
       return;
@@ -18,6 +24,7 @@ const TrialCTA = () => {
         return;
       }
       if (data) {
+        console.log("Trial started successfully:", data);
         router.push("dashboard");
       } else {
         toast.error("Trial start failed. Please try again.");
@@ -36,7 +43,7 @@ const TrialCTA = () => {
           onClick={handleStartTrialClick}
           disabled={isPending}
         >
-          Start Free 7-Day Trial
+          {isPending ? "Starting Trial..." : "Start Free 7-Day Trial"}
         </Button>
       </div>
     </div>

@@ -7,17 +7,20 @@ import { Button } from "./button";
 import { subscribeAction, trialAction } from "@/actions/stripe";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import ChoosingHelp from "../choosing-help";
-import TrialCTA from "../trial-cta";
+import { getUserSubscription } from "@/actions/subscription";
 
 const Pricing = () => {
   const [duration, setDuration] = useState("monthly");
   const [user, setUser] = useState(null);
   const [isPending, startTransition] = useTransition();
+  const [plan, setPlan] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
+      const data = await getUserSubscription();
+      console.log("sub data::", data);
+      setPlan(data.plan);
       const user = await getUser();
       if (user) {
         setUser(user);
@@ -46,6 +49,7 @@ const Pricing = () => {
     <>
       <div className="max-w-7xl mx-auto px-4 py-8 bg-white rounded-lg shadow-xl">
         <div className="w-[200px] mx-auto my-8">
+          <div className="plan">{plan}</div>
           <div className="duration-toggle bg-gray-200 border border-gray-300 rounded-md p-0.5 ">
             <Button
               className="font-medium w-1/2"
@@ -64,8 +68,8 @@ const Pricing = () => {
           </div>
         </div>
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-3 items-start justify-center py-8 p-4">
-          {pricingPlans.map((plan) => (
-            <div key={plan.id} className=" p-6 w-full max-w-sm">
+          {pricingPlans.map((plan, index) => (
+            <div key={index} className=" p-6 w-full max-w-sm">
               <h2 className="text-xl font-semibold mb-6">{plan.name}</h2>
               <div className="flex gap-1 items-center h-full mb-6">
                 <p className="text-3xl font-bold">
@@ -107,12 +111,6 @@ const Pricing = () => {
           ))}
         </div>
       </div>
-      <section className="w-full container mx-auto pb-8 px-4">
-        <TrialCTA />
-      </section>
-      <section className="max-w-7xl mx-auto px-4 my-8">
-        <ChoosingHelp />
-      </section>
     </>
   );
 };

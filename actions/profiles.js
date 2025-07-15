@@ -4,7 +4,7 @@ import { createClient, getUser } from "@/lib/supabase/server";
 
 export const getProfileAction = async () => {
   const { email } = await getUser();
-  console.log("Fetching profile for email:", email);
+  // console.log("Fetching profile for email:", email);
 
   const supabase = await createClient();
   const { data: profile, error } = await supabase
@@ -17,7 +17,7 @@ export const getProfileAction = async () => {
     console.error("Error fetching profile:", error);
     return { success: false, error: error.message };
   }
-  console.log("Profile fetched successfully:", profile);
+  // console.log("Profile fetched successfully:", profile);
 
   return { success: true, profile };
 };

@@ -4,8 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 const dashSecNav = [
-  { name: "Support", path: "/#contact" },
-  { name: "Account", path: "/dashboard/settings" },
+  { name: "Subscription", path: "/dashboard/settings/#subscription-settings" },
+  { name: "Account", path: "/dashboard/settings/#account-settings" },
 ];
 
 const DashNav = () => {

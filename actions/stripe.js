@@ -2,7 +2,6 @@
 
 import { stripe } from "@/lib/stripe";
 import { createClient } from "@supabase/supabase-js";
-import { sub } from "date-fns";
 import { resendEmail } from "./resendEmail";
 
 export const subscribeAction = async (user, priceId) => {
@@ -34,6 +33,10 @@ export const subscribeAction = async (user, priceId) => {
 };
 
 export const trialAction = async (user) => {
+  const hasTrial = user?.trial_start && user?.trial_ends_at;
+  if (hasTrial) {
+    return { error: "User already has an active trial." };
+  }
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.SUPABASE_SERVICE_KEY

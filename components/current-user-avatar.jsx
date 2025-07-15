@@ -5,6 +5,8 @@ import { useCurrentUserName } from "@/hooks/use-current-user-name";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSubscription } from "@/hooks/use-subscription";
+import { LoaderIcon } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 
 const CurrentUserAvatar = () => {
   const { icon } = useSubscription();
@@ -22,7 +24,15 @@ const CurrentUserAvatar = () => {
         {profileImage && <AvatarImage src={profileImage} alt={initials} />}
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
-      <span className="absolute -bottom-1 -right-2 text-xs">{icon}</span>
+      <div className="absolute -bottom-1 -right-2 text-xs">
+        {icon ? (
+          icon
+        ) : (
+          <span className="animate-spin text-primary text-xs">
+            <LoaderIcon className="animate-spin w-3 h-3" />
+          </span>
+        )}
+      </div>
     </div>
   );
 };

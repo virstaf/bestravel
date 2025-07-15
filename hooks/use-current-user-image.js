@@ -18,8 +18,6 @@ export const useCurrentUserImage = () => {
       const userImage =
         profile?.avatar_url || profile?.user_metadata?.avatar_url;
 
-      console.log("profile:::", profile, userImage);
-
       setImage(userImage ?? null);
     };
     fetchUserImage();

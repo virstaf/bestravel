@@ -9,7 +9,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Label } from "./ui/label";
 import AddressInput from "./ui/addressInput";
 
-const ProfileForm = ({ profile }) => {
+const ProfileForm = ({ profile, className }) => {
   const [formData, setFormData] = useState({
     full_name: profile?.full_name || "",
     username: profile?.username || "",
@@ -79,7 +79,10 @@ const ProfileForm = ({ profile }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+    <form
+      onSubmit={handleSubmit}
+      className={`${className} space-y-6 max-w-2xl`}
+    >
       <div className="flex items-center gap-6">
         <Avatar className="h-20 w-20">
           <AvatarImage src={formData.avatar_url} />

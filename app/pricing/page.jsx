@@ -1,4 +1,6 @@
+import ChoosingHelp from "@/components/choosing-help";
 import { StripePricingTable } from "@/components/StripePricingTable";
+import TrialCTA from "@/components/trial-cta";
 import Pricing from "@/components/ui/pricing";
 import Image from "next/image";
 
@@ -34,6 +36,12 @@ const PricingPage = () => {
       {/* <StripePricingTable /> */}
       <section className="w-full container mx-auto my-12">
         <Pricing />
+        <section className="w-full container mx-auto pb-8 px-4">
+          <TrialCTA />
+        </section>
+        <section className="max-w-7xl mx-auto px-4 my-8">
+          <ChoosingHelp />
+        </section>
       </section>
     </div>
   );
