@@ -1,15 +1,16 @@
-import { getUserSubscription } from "@/actions/subscription";
-import { getUser } from "@/lib/supabase/server";
+import { useProfileContext } from "@/contexts/profile";
 import { useState, useEffect } from "react";
 
 export const useSubscription = () => {
   const [plan, setPlan] = useState({ plan: null, badge: null, icon: null });
+  const { profile, isLoading } = useProfileContext();
 
   useEffect(() => {
     const fetchSubscriptionPlan = async () => {
-      const user = await getUser();
-      const userId = user?.id; // Replace with actual user ID logic
-      const subscriptionPlan = await getUserSubscription(userId);
+      if (isLoading) {
+        return { plan: "loading", badge: "Loading...", icon: "⏳" };
+      }
+      const subscriptionPlan = profile.subscription_plan || "inactive";
 
       switch (subscriptionPlan) {
         case "inactive":

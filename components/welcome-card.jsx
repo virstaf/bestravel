@@ -3,9 +3,32 @@
 import { useCurrentUserName } from "@/hooks/use-current-user-name";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { useProfileContext } from "@/contexts/profile";
+import { useEffect, useState } from "react";
 
 const WelcomeCard = () => {
-  const userName = useCurrentUserName();
+  const [userName, setUserName] = useState(null);
+  const { profile, isLoading } = useProfileContext();
+
+  // if (isLoading) {
+  //   setUserName("Loading...");
+  //   return (
+  //     <div className="flex items-center justify-center h-full">
+  //       <span className="text-sm text-muted-foreground">Loading...</span>
+  //     </div>
+  //   );
+  // }
+
+  useEffect(() => {
+    if (isLoading) {
+      setUserName("user");
+      return;
+    }
+    if (profile) {
+      setUserName(profile?.username || "No name found");
+    }
+  }, [profile]);
+
   return (
     <div className="flex flex-col relative items-start justify-center w-full h-full bg-white rounded-2xl overflow-hidden shadow-lg p-6">
       <div className="absolute top-0 bottom-0 right-0 left-0 clipPath heroBg overflow-hidden"></div>

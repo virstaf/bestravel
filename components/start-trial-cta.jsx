@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useTransition } from "react";
+import { useTransition } from "react";
 import { Button } from "./ui/button";
 import { useProfileContext } from "@/contexts/profile";
 import { Loader2Icon } from "lucide-react";

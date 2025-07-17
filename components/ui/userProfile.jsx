@@ -1,17 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CurrentUserAvatar from "../current-user-avatar";
 import LogoutButton from "./logout-button";
-import { useCurrentUserEmail } from "@/hooks/use-current-user-email";
 import Link from "next/link";
 import { Button } from "./button";
 import { usePathname } from "next/navigation";
+import { useProfileContext } from "@/contexts/profile";
 
 const UserProfile = ({ className }) => {
   const [logoutOpen, setLogoutOpen] = useState(false);
-  const email = useCurrentUserEmail();
+  const [email, setEmail] = useState(null);
+  const { profile, isLoading } = useProfileContext();
   const pathname = usePathname();
+
+  useEffect(() => {
+    const fetchEmail = async () => {
+      if (isLoading) {
+        setEmail("Loading...");
+        return;
+      }
+      if (profile) {
+        setEmail(profile.email || "No email found");
+      }
+    };
+    fetchEmail();
+  }, [profile]);
 
   return (
     <div

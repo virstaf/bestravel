@@ -2,34 +2,16 @@
 
 import ProfileForm from "@/components/profile-form";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardFooter, CardHeader } from "./ui/card";
-import { Skeleton } from "./ui/skeleton";
-import { getProfileAction } from "@/actions/profiles";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import Pricing from "./ui/pricing";
 import { LoaderIcon } from "lucide-react";
+import { useProfileContext } from "@/contexts/profile";
 
 const Settings = () => {
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("general");
+  const { profile, isLoading } = useProfileContext();
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      setLoading(true);
-      const { profile: profileData, error } = await getProfileAction();
-
-      if (error) {
-        console.error("Error fetching profile:", error);
-        setLoading(false);
-        return;
-      }
-      setProfile(profileData);
-      setLoading(false);
-    };
-    fetchProfile();
-  }, []);
-  if (!profile && loading) {
+  if (isLoading) {
     return (
       <div className="container py-8 px-8 mx-auto w-full h-full">
         <div className="text-center text-gray-500">
@@ -41,6 +23,7 @@ const Settings = () => {
       </div>
     );
   }
+
   return (
     <div className="container py-8 px-8 mx-auto w-full h-full">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -54,11 +37,11 @@ const Settings = () => {
           <h1 className="text-3xl font-bold mb-6 text-center">
             General Settings
           </h1>
-          {!loading && profile && (
-            <ProfileForm profile={profile} className=" p-4 max-w-3xl mx-auto" />
-          )}
-          {!loading && !profile && (
+          {!profile && (
             <div className="text-red-500">Failed to load profile data.</div>
+          )}
+          {profile && (
+            <ProfileForm profile={profile} className=" p-4 max-w-3xl mx-auto" />
           )}
         </TabsContent>
         <TabsContent value="account" id="account-settings">

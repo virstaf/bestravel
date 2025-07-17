@@ -1,4 +1,5 @@
-import React from "react";
+// "use client";
+
 import UserProfile from "./ui/userProfile";
 import Link from "next/link";
 import Image from "next/image";
@@ -8,7 +9,7 @@ const dashSecNav = [
   { name: "Account", path: "/dashboard/settings/#account-settings" },
 ];
 
-const DashNav = () => {
+const DashNav = async () => {
   return (
     <div className="dark:bg-black/50 backdrop-blur-sm fixed top-0 container z-50">
       <div className="h-16 px-4 flex justify-between items-center relative">

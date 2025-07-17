@@ -1,17 +1,20 @@
-import { supabase } from "@/lib/supabase/client";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
+// import { useProfileContext } from "@/contexts/profile";
 
-export const useCurrentUserEmail = () => {
-  const [email, setEmail] = useState(null);
-  useEffect(() => {
-    const fetchUserEmail = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (error) {
-        console.error(error);
-      }
-      setEmail(data.user?.email);
-    };
-    fetchUserEmail();
-  }, []);
-  return email;
-};
+// export const useCurrentUserEmail = () => {
+//   const [email, setEmail] = useState(null);
+//   const { profile, isLoading } = useProfileContext();
+
+//   useEffect(() => {
+//     const fetchUserEmail = async () => {
+//       if (isLoading || !profile) return;
+
+//       const userEmail = profile.email;
+//       setEmail(userEmail);
+//     };
+
+//     fetchUserEmail();
+//   }, [profile]);
+
+//   return email;
+// };
