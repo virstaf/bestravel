@@ -3,17 +3,19 @@
 import { useEffect, useState, useTransition } from "react";
 import { getUser } from "@/lib/supabase/server";
 import { pricingPlans } from "@/lib/constants";
-import { Button } from "./button";
 import { subscribeAction, trialAction } from "@/actions/stripe";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getUserSubscription } from "@/actions/subscription";
+import { Button } from "./ui/button";
+import { useProfileContext } from "@/contexts/profile";
 
-const Pricing = () => {
+const UpgradeSubscription = () => {
   const [duration, setDuration] = useState("monthly");
   const [user, setUser] = useState(null);
   const [isPending, startTransition] = useTransition();
   const [plan, setPlan] = useState(null);
+  const { profile, isLoading } = useProfileContext();
   const router = useRouter();
 
   useEffect(() => {
@@ -46,7 +48,7 @@ const Pricing = () => {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 py-8 bg-white rounded-lg shadow-xl">
+      <div className="max-w-7xl mx-auto px-4 py-8 rounded-lg">
         <div className="w-[200px] mx-auto my-8">
           <div className="plan">{plan}</div>
           <div className="duration-toggle bg-gray-200 border border-gray-300 rounded-md p-0.5 ">
@@ -91,7 +93,7 @@ const Pricing = () => {
                 }
                 disabled={isPending}
               >
-                {isPending ? "Processing..." : "Subscribe"}
+                {isPending ? "Processing..." : "Upgrade"}
               </Button>
               <ul className="pl-5 text-[14px] text-gray-600">
                 {plan.features.map((feature) => (
@@ -114,4 +116,4 @@ const Pricing = () => {
   );
 };
 
-export default Pricing;
+export default UpgradeSubscription;

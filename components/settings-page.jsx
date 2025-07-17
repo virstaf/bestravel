@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import Pricing from "./ui/pricing";
 import { LoaderIcon } from "lucide-react";
 import { useProfileContext } from "@/contexts/profile";
+import SubscriptionSettings from "./subscription-settings";
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState("general");
@@ -54,8 +55,10 @@ const Settings = () => {
           <h1 className="text-3xl font-bold mb-6 text-center">
             Subscription Settings
           </h1>
-          {/* Subscription settings content goes here */}
-          <Pricing />
+          <section>
+            <SubscriptionSettings />
+          </section>
+          {/* <Pricing /> */}
         </TabsContent>
       </Tabs>
     </div>

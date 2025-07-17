@@ -1,11 +1,17 @@
 "use server";
 
-import { stripe } from "@/lib/stripe";
+import { stripe } from "@/lib/stripe"; // Your configured Stripe instance
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { resendEmail } from "./resendEmail";
 
 export const subscribeAction = async (user, priceId) => {
   // console.log("Subscribing user:", user, "with priceId:", priceId);
+  const is_silver =
+    priceId === "price_1RfmqFLAxh7V2BxLt2hMnLTc" ||
+    priceId === "price_1Ri3nrLAxh7V2BxLaSLg2HDF"; // Example price ID for silver plan
+
   const { url } = await stripe.checkout.sessions.create({
     mode: "subscription",
     line_items: [
@@ -14,20 +20,22 @@ export const subscribeAction = async (user, priceId) => {
         quantity: 1,
       },
     ],
-    // subscription_data: {
-    //   trial_period_days: 7, // Optional: Set a trial period
-    //   metadata: {
-    //     userId: user?.id,
-    //     email: user?.email,
-    //   },
-    // },
-    metadata: {
-      userId: user?.id,
-      email: user?.email,
+    subscription_data: {
+      ...(is_silver && { trial_period_days: 7 }), // Set a trial period of 7 days for silver plan
+      metadata: {
+        userId: user?.id,
+        email: user?.email,
+      },
     },
+    // metadata: {
+    //   userId: user?.id,
+    //   email: user?.email,
+    // },
+    payment_method_collection: "if_required",
     customer_email: user?.email,
     success_url: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard`,
     cancel_url: `${process.env.NEXT_PUBLIC_BASEURL}`,
+    allow_promotion_codes: true,
   });
   return url;
 };
@@ -79,4 +87,53 @@ export const trialAction = async (user) => {
   }
 
   return { data, error };
+};
+
+export async function createPortalSession(customerId) {
+  if (!customerId) throw new Error("Missing customer ID");
+
+  try {
+    const session = await stripe.billingPortal.sessions.create({
+      customer: customerId,
+      return_url: `${headers().get("origin")}/settings`,
+    });
+
+    redirect(session.url);
+  } catch (error) {
+    console.error("Portal session error:", error);
+    throw new Error("Could not create billing portal session");
+  }
+}
+
+export const upgradeSubscription = async (user, priceId) => {
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  const supabaseAdmin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_KEY
+  );
+
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("profiles")
+      .update({
+        subscription_plan: priceId,
+        is_subscribed: true,
+        subscription_status: "active",
+      })
+      .eq("id", user.id)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update subscription: ${error.message}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Upgrade subscription error:", error);
+    throw new Error("Could not upgrade subscription");
+  }
 };
