@@ -1,7 +1,7 @@
 import { getFeaturedDealsAction } from "@/actions/deals";
 import DealsList from "@/components/deals-list";
 
-const Deals = async ({ featuredDeals, allDeals }) => {
+const Deals = ({ featuredDeals, allDeals }) => {
   return (
     <div className="space-y-12">
       <div className="space-y-4">

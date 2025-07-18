@@ -11,10 +11,9 @@ if (!supabaseUrl || !supabaseKey) {
   console.error("Supabase URL or Key is missing in environment variables");
 }
 
-const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
-
 export const getUserSubscription = async (userId) => {
-  console.log("user id from action", userId);
+  const supabaseAdmin = createClient(supabaseUrl, supabaseKey);
+  // console.log("user id from action", userId);
   try {
     const {
       data: { subscription_plan },

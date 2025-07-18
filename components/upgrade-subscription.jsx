@@ -20,7 +20,7 @@ const UpgradeSubscription = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const data = await getUserSubscription();
+      const data = await getUserSubscription(profile.id);
       setPlan(data.plan);
       const user = await getUser();
       if (user) {

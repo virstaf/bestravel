@@ -55,16 +55,16 @@ export const POST = async (req) => {
         })
         .eq("email", session.customer_email);
 
-      revalidatePath("/dashboard");
+      await supabaseAdmin.from("subscriptions").insert({
+        user_id: user.id,
+        user_email: session.customer_email,
+        stripe_subscription_id: session.id,
+        status: session.status,
+        current_period_start: new Date(session.current_period_start * 1000),
+        current_period_end: new Date(session.current_period_end * 1000),
+      });
 
-      // await supabaseAdmin.from("subscriptions").insert({
-      //   user_id: user.id,
-      //   user_email: session.customer_email,
-      //   stripe_subscription_id: session.id,
-      //   status: session.status,
-      //   current_period_start: new Date(session.current_period_start * 1000),
-      //   current_period_end: new Date(session.current_period_end * 1000),
-      // });
+      revalidatePath("/dashboard");
 
       break;
 

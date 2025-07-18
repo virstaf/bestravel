@@ -1,22 +1,8 @@
-// import { createClient } from "@/lib/supabase/server";
 import React from "react";
 import { Button } from "./ui/button";
-import { getUser } from "@/lib/supabase/server";
 import Link from "next/link";
 
-const Flights = async ({ myFlights }) => {
-  // const user = getUser();
-
-  // let flights = [];
-  // if (user.data.user) {
-  //   const { data } = await supabase
-  //     .from("flights")
-  //     .select("*")
-  //     .eq("user_id", user.data.user.id)
-  //     .order("start_date", { ascending: true });
-  //   flights = data || [];
-  // }
-
+const Flights = () => {
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 items-center">
