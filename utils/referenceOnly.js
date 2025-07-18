@@ -53,7 +53,41 @@ const stripe_event_session = {
   latest_revision: null,
   lines: {
     object: "list",
-    data: [[Object]],
+    data: [
+      {
+        id: "il_1RmGthLAxh7V2BxL2TVulafD",
+        object: "line_item",
+        amount: 0,
+        currency: "gbp",
+        description: "Trial period for Silver",
+        discount_amounts: [],
+        discountable: true,
+        discounts: [],
+        invoice: "in_1RmGthLAxh7V2BxLqSneJD3Y",
+        livemode: false,
+        metadata: {
+          email: "nored17748@lhory.com",
+          userId: "c22c785d-c8be-43dd-96bc-f6ae9d66ca1d",
+        },
+        parent: {
+          invoice_item_details: null,
+          subscription_item_details: [Object],
+          type: "subscription_item_details",
+        },
+        period: { end: 1753459953, start: 1752855153 },
+        pretax_credit_amounts: [],
+        pricing: {
+          price_details: {
+            price: "price_1RfmqFLAxh7V2BxLt2hMnLTc",
+            product: "prod_Sayn8WtloqIH6C",
+          },
+          type: "price_details",
+          unit_amount_decimal: "0",
+        },
+        quantity: 1,
+        taxes: [],
+      },
+    ],
     has_more: false,
     total_count: 1,
     url: "/v1/invoices/in_1RmBv2LAxh7V2BxLsfP3aody/lines",

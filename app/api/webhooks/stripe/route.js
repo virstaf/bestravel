@@ -3,9 +3,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
-import { supabase } from "@/lib/supabase/client";
-import { metadata } from "@/app/layout";
-// import { buffer } from "micro";
+// import { resendEmail } from "@/actions/resendEmail";
 
 export const GET = async () => {
   return NextResponse.json({ message: "Webhook endpoint is active" });
@@ -41,10 +39,13 @@ export const POST = async (req) => {
 
   // Handle events
   const session = event.data.object;
-  const customerId = session?.customer;
+  // const customerId = session?.customer;
   // const customer = await stripe.customers.retrieve(customerId);
 
-  console.log("event session:::", session?.parent?.subscription_details);
+  console.log(
+    "event session:::",
+    session?.lines?.data[0]?.parent?.subscription_item_details
+  );
 
   const isTrial = session?.amount_due === 0;
 
@@ -59,36 +60,61 @@ export const POST = async (req) => {
           subscription_status: isTrial ? "trialing" : "active",
           subscription_plan: isTrial ? "trial" : "paid_plan",
           ...(isTrial && {
-            trial_start: new Date(session.created * 1000).toISOString(),
+            trial_start: new Date(
+              session.lines?.data[0]?.period?.start * 1000
+            ).toISOString(),
             trial_ends_at: new Date(
-              (session.created + 7 * 24 * 60 * 60) * 1000
+              session.lines?.data[0]?.period?.end * 1000
             ).toISOString(),
           }),
           subscription_plan_id:
             session.parent?.subscription_details?.subscription,
-          subscription_end: new Date(session.period_end * 1000),
+          subscription_end: new Date(
+            session.lines?.data[0]?.period?.end * 1000
+          ),
         })
         .eq("email", session.customer_email);
 
       // Update the subscription in the database
 
       if (session) {
-        const { data: subData, error: subError } = await supabaseAdmin
+        const { error: subError } = await supabaseAdmin
           .from("subscriptions")
-          .upsert({
-            id: session.id,
-            user_id: session.parent?.subscription_details?.metadata.userId,
-            plan_id: session.parent?.subscription_details?.subscription,
-            user_email: session.customer_email,
-            status: isTrial ? "trialing" : "active",
-            current_period_start: new Date(session.period_start * 1000),
-            current_period_end: new Date(session.period_end * 1000),
-          });
+          .upsert(
+            {
+              id: session.id,
+              user_id: session.parent?.subscription_details?.metadata.userId,
+              plan_id: session.parent?.subscription_details?.subscription,
+              user_email: session.customer_email,
+              status: isTrial ? "trialing" : "active",
+              description: session.lines?.data[0]?.description,
+              current_period_start: new Date(
+                session.lines?.data[0]?.period?.start * 1000
+              ),
+              current_period_end: new Date(
+                session.lines?.data[0]?.period?.end * 1000
+              ),
+            },
+            {
+              onConflict: "user_id",
+            }
+          );
 
         if (subError) {
-          console.error("Error updating subscription:", subError);
+          // console.error("Error updating subscription:", subError);
           // return NextResponse.json({ error: "Subscription update failed" }, { status: 500 });
         }
+
+        // const sendNotification = await resendEmail(
+        //   {
+        //     email: session.customer_email,
+        //     fullname: session.customer_name || session.customer_email.split("@")[0],
+        //     trialEndsAt: isTrial
+        //       ? new Date(session.lines?.data[0]?.period?.end * 1000).toISOString()
+        //       : null,
+        //   },
+        //   isTrial ? "confirm-trial" : "confirm-subscription"
+        // );
       }
 
       revalidatePath("/dashboard");

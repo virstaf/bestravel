@@ -83,7 +83,7 @@ const UpgradeSubscription = () => {
             </Button>
           </div>
         </div>
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-3 items-start justify-center py-8 p-4">
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-3 items-start justify-center py-8 p-4">
           {pricingPlans.map((plan, index) => (
             <div key={index} className=" p-6 w-full max-w-sm">
               <h2 className="text-xl font-semibold mb-6">{plan.name}</h2>

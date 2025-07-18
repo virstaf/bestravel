@@ -21,7 +21,7 @@ const WelcomeCard = () => {
 
   useEffect(() => {
     if (isLoading) {
-      setUserName("user");
+      setUserName("!");
       return;
     }
     if (profile) {
@@ -32,9 +32,9 @@ const WelcomeCard = () => {
   return (
     <div className="flex flex-col relative items-start justify-center w-full h-full bg-white rounded-2xl overflow-hidden shadow-lg p-6">
       <div className="absolute top-0 bottom-0 right-0 left-0 clipPath heroBg overflow-hidden"></div>
-      <h1 className="text-3xl text-left font-bold py-1 mb-2 backdrop-blur-3xl pr-2 rounded z-10">
+      <p className="text-3xl text-gray-600 italic text-left py-1 mb-2 backdrop-blur-3xl pr-2 rounded z-10">
         Howdy {userName}!
-      </h1>
+      </p>
       <p className="text-gray-600 py-2 mb-2 backdrop-blur-3xl pr-2 rounded z-10">
         Checkout the latest travel deals and offers
       </p>
