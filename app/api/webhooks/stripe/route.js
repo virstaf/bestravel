@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { supabase } from "@/lib/supabase/client";
+import { metadata } from "@/app/layout";
 // import { buffer } from "micro";
 
 export const GET = async () => {
@@ -42,6 +44,10 @@ export const POST = async (req) => {
   const customerId = session?.customer;
   // const customer = await stripe.customers.retrieve(customerId);
 
+  console.log("event session:::", session?.parent?.subscription_details);
+
+  const isTrial = session?.amount_due === 0;
+
   switch (event.type) {
     case "checkout.session.completed":
     case "invoice.payment_succeeded":
@@ -50,19 +56,40 @@ export const POST = async (req) => {
         .update({
           is_subscribed: true,
           stripe_customer_id: session.customer,
-          subscription_status: session.status,
+          subscription_status: isTrial ? "trialing" : "active",
+          subscription_plan: isTrial ? "trial" : "paid_plan",
+          ...(isTrial && {
+            trial_start: new Date(session.created * 1000).toISOString(),
+            trial_ends_at: new Date(
+              (session.created + 7 * 24 * 60 * 60) * 1000
+            ).toISOString(),
+          }),
+          subscription_plan_id:
+            session.parent?.subscription_details?.subscription,
           subscription_end: new Date(session.period_end * 1000),
         })
         .eq("email", session.customer_email);
 
-      await supabaseAdmin.from("subscriptions").insert({
-        user_id: user.id,
-        user_email: session.customer_email,
-        stripe_subscription_id: session.id,
-        status: session.status,
-        current_period_start: new Date(session.current_period_start * 1000),
-        current_period_end: new Date(session.current_period_end * 1000),
-      });
+      // Update the subscription in the database
+
+      if (session) {
+        const { data: subData, error: subError } = await supabaseAdmin
+          .from("subscriptions")
+          .upsert({
+            id: session.id,
+            user_id: session.parent?.subscription_details?.metadata.userId,
+            plan_id: session.parent?.subscription_details?.subscription,
+            user_email: session.customer_email,
+            status: isTrial ? "trialing" : "active",
+            current_period_start: new Date(session.period_start * 1000),
+            current_period_end: new Date(session.period_end * 1000),
+          });
+
+        if (subError) {
+          console.error("Error updating subscription:", subError);
+          // return NextResponse.json({ error: "Subscription update failed" }, { status: 500 });
+        }
+      }
 
       revalidatePath("/dashboard");
 

@@ -8,6 +8,7 @@ import { subscribeAction, trialAction } from "@/actions/stripe";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getUserSubscription } from "@/actions/subscription";
+import { useProfileContext } from "@/contexts/profile";
 
 const Pricing = () => {
   const [duration, setDuration] = useState("monthly");
@@ -15,10 +16,12 @@ const Pricing = () => {
   const [isPending, startTransition] = useTransition();
   const [plan, setPlan] = useState(null);
   const router = useRouter();
+  const { profile, isLoading } = useProfileContext();
 
   useEffect(() => {
+    if (isLoading) return;
     const fetchUser = async () => {
-      const data = await getUserSubscription();
+      const data = await getUserSubscription(profile.id);
       setPlan(data.plan);
       const user = await getUser();
       if (user) {
@@ -26,7 +29,7 @@ const Pricing = () => {
       }
     };
     fetchUser();
-  }, []);
+  }, [profile.id, isLoading]);
 
   const handleSubscribeClick = async (priceId) => {
     if (!user) {

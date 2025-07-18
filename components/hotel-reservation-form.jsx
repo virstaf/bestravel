@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import Link from "next/link";
 import AddressInput from "./ui/addressInput";
+import { HotelAutocomplete } from "./hotel-autocomplete";
 
 const HotelReservationForm = ({ trip, onSubmit, loading }) => {
   const [formData, setFormData] = useState({
@@ -59,6 +60,12 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
           <Label className="mb-1" htmlFor="preferredHotel">
             Preferred Hotel
           </Label>
+          {/* <HotelAutocomplete
+          // value={formData.preferredHotel}
+          // onChange={(value) =>
+          //   setFormData({ ...formData, preferredHotel: value })
+          // }
+          /> */}
           <Input
             id="preferredHotel"
             value={formData.preferredHotel}
