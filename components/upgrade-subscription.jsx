@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { getUserSubscription } from "@/actions/subscription";
 import { Button } from "./ui/button";
 import { useProfileContext } from "@/contexts/profile";
+import { LoaderIcon } from "lucide-react";
 
 const UpgradeSubscription = () => {
   const [duration, setDuration] = useState("monthly");
@@ -18,10 +19,24 @@ const UpgradeSubscription = () => {
   const { profile, isLoading } = useProfileContext();
   const router = useRouter();
 
+  if (isLoading) {
+    return (
+      <div className="container py-8 px-8 mx-auto w-full h-full">
+        <div className="text-center text-gray-500">
+          Loading subscription...
+          <div className="text-center w-full flex justify-center mt-4">
+            <LoaderIcon className="inline-block animate-spin" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   useEffect(() => {
     const fetchUser = async () => {
       const data = await getUserSubscription(profile.id);
-      setPlan(data.plan);
+      // console.log("data::", data);
+      setPlan(data);
       const user = await getUser();
       if (user) {
         setUser(user);

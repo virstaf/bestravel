@@ -1,9 +1,8 @@
 "use client";
 
 import ProfileForm from "@/components/profile-form";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import Pricing from "./ui/pricing";
 import { LoaderIcon } from "lucide-react";
 import { useProfileContext } from "@/contexts/profile";
 import SubscriptionSettings from "./subscription-settings";

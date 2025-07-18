@@ -14,9 +14,9 @@ const Flights = () => {
         </p>
         <div className="w-full flex flex-col items-center justify-center p-4 border border-dashed rounded-lg bg-muted">
           <span>Add Trips and see Flights here</span>
-          <Link href="/dashboard/trips/new" className="text-white">
+          {/* <Link href="/dashboard/trips/new" className="text-white">
             <Button asChild>Add Trip</Button>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>

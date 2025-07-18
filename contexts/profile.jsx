@@ -2,8 +2,8 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { getProfileAction } from "@/actions/profiles";
-import Cookies from "js-cookie";
-import CryptoJS from "crypto-js";
+// import Cookies from "js-cookie";
+// import CryptoJS from "crypto-js";
 
 export const ProfileContext = createContext(null);
 
