@@ -43,7 +43,7 @@ export const POST = async (req) => {
   // const customerId = session?.customer;
   // const customer = await stripe.customers.retrieve(customerId);
 
-  console.log("event session:::", session?.parent);
+  // console.log("event session:::", session?.parent);
 
   const isTrial = session?.amount_due === 0;
 
@@ -119,7 +119,7 @@ export const POST = async (req) => {
           },
           isTrial ? "confirm-trial" : "confirm-subscription"
         );
-        // console.log("sendNotification:::", sendNotification);
+        console.log("sendNotification:::", sendNotification);
       }
 
       revalidatePath("/dashboard");

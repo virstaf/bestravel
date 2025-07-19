@@ -10,7 +10,7 @@ import WelcomeEmail from "@/email-templates/welcome";
 import { Resend } from "resend";
 
 export const resendEmail = async (values, type) => {
-  const adminEmail = "noreply@virstravelclub.com";
+  let adminEmail = "noreply@virstravelclub.com";
   let receivingEmail, emailTemplate, subject;
 
   if (type === "contact") {
@@ -18,6 +18,7 @@ export const resendEmail = async (values, type) => {
     emailTemplate = <ContactEmail fullname={fullname} />;
     subject = "We've got your message";
     receivingEmail = email;
+    adminEmail = "info@virstravelclub.com";
 
     if (!fullname || !email || !message) {
       console.error("Missing required fields");
@@ -32,6 +33,7 @@ export const resendEmail = async (values, type) => {
     );
     subject = "Welcome to Virstravel Club";
     receivingEmail = email;
+    adminEmail = "membership@virstravelclub.com";
 
     if (!fullname || !membershipId || !email) {
       console.error("Missing required fields");
@@ -52,6 +54,7 @@ export const resendEmail = async (values, type) => {
     );
     subject = "Your trip is confirmed!";
     receivingEmail = email;
+    adminEmail = "bookings@virstravelclub.com";
 
     console.log("values", values);
 
@@ -69,6 +72,7 @@ export const resendEmail = async (values, type) => {
     );
     subject = `Your reservation is received!`;
     receivingEmail = email;
+    adminEmail = "bookings@virstravelclub.com";
 
     if (!fullname || !email) {
       console.error("Missing required fields");
@@ -84,6 +88,7 @@ export const resendEmail = async (values, type) => {
     );
     subject = "Your trial is confirmed!";
     receivingEmail = email;
+    adminEmail = "membership@virstravelclub.com";
 
     if (!fullname || !trialEndsAt || !email) {
       console.error("Missing required fields");
