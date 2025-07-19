@@ -71,7 +71,13 @@ const stripe_event_session = {
         },
         parent: {
           invoice_item_details: null,
-          subscription_item_details: [Object],
+          subscription_item_details: {
+            invoice_item: null,
+            proration: false,
+            proration_details: { credited_items: null },
+            subscription: "sub_1RmaN3LAxh7V2BxL2Xm6XsqS",
+            subscription_item: "si_Si0NonL2bUFv9y",
+          },
           type: "subscription_item_details",
         },
         period: { end: 1753459953, start: 1752855153 },
@@ -100,7 +106,10 @@ const stripe_event_session = {
   parent: {
     quote_details: null,
     subscription_details: {
-      metadata: [Object],
+      metadata: {
+        email: "kedaki1034@dosonex.com",
+        userId: "093670a8-6fdb-47f4-92da-21b832d11013",
+      },
       subscription: "sub_1RmBv2LAxh7V2BxLZ40pW0La",
     },
     type: "subscription_details",

@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
+import { resendEmail } from "@/actions/resendEmail";
 // import { resendEmail } from "@/actions/resendEmail";
 
 export const GET = async () => {
@@ -42,10 +43,7 @@ export const POST = async (req) => {
   // const customerId = session?.customer;
   // const customer = await stripe.customers.retrieve(customerId);
 
-  console.log(
-    "event session:::",
-    session?.lines?.data[0]?.parent?.subscription_item_details
-  );
+  console.log("event session:::", session?.parent);
 
   const isTrial = session?.amount_due === 0;
 
@@ -105,16 +103,23 @@ export const POST = async (req) => {
           // return NextResponse.json({ error: "Subscription update failed" }, { status: 500 });
         }
 
-        // const sendNotification = await resendEmail(
-        //   {
-        //     email: session.customer_email,
-        //     fullname: session.customer_name || session.customer_email.split("@")[0],
-        //     trialEndsAt: isTrial
-        //       ? new Date(session.lines?.data[0]?.period?.end * 1000).toISOString()
-        //       : null,
-        //   },
-        //   isTrial ? "confirm-trial" : "confirm-subscription"
-        // );
+        const sendNotification = await resendEmail(
+          {
+            email: session.customer_email,
+            fullname:
+              session.customer_name || session.customer_email.split("@")[0],
+            plan: isTrial
+              ? "trial"
+              : session.parent?.subscription_details?.plan_name || "silver",
+            trialEndsAt: isTrial
+              ? new Date(
+                  session.lines?.data[0]?.period?.end * 1000
+                ).toISOString()
+              : null,
+          },
+          isTrial ? "confirm-trial" : "confirm-subscription"
+        );
+        // console.log("sendNotification:::", sendNotification);
       }
 
       revalidatePath("/dashboard");

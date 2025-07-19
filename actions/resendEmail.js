@@ -1,6 +1,7 @@
 "use server";
 
 import ReservationConfirmationEmail from "@/email-templates/confirm-reservation";
+import SubscriptionEmail from "@/email-templates/confirm-subscription";
 import TripConfirmationEmail from "@/email-templates/confirm-trip";
 // import { render } from "@react-email/components";
 import ContactEmail from "@/email-templates/contact";
@@ -94,6 +95,21 @@ export const resendEmail = async (values, type) => {
   //   console.error("Missing required parameters for email sending");
   //   return { success: false, message: "Missing required parameters" };
   // }
+
+  if (type === "confirm-subscription") {
+    const { fullname, link, plan, email } = values;
+
+    emailTemplate = (
+      <SubscriptionEmail fullname={fullname} link={link} plan={plan} />
+    );
+    subject = `Your ${plan} subscription is confirmed!`;
+    receivingEmail = email;
+
+    if (!fullname || !link || !plan || !email) {
+      console.error("Missing required fields");
+      return { success: false, message: "All fields are required" };
+    }
+  }
 
   const resend = new Resend(process.env.RESEND_API_KEY);
   if (!resend) {
