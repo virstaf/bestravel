@@ -20,22 +20,46 @@ export default function ReservationWizard({ trip, userId }) {
     // console.log("reservation:::", trip, details);
 
     const user = await getUser();
+    console.log(user);
     setLoading(true);
     try {
-      const { error } = await axios.post("/api/reservation", {
-        trip_id: trip.id,
-        user_id: userId,
-        type,
-        details,
-        start_date: trip.start_date,
-        end_date: trip.end_date,
-        email: user.email,
-      });
+      // const { error } = await axios.post("/api/reservation", {
+      //   trip_id: trip.id,
+      //   user_id: user.userId,
+      //   fullname: user.user_metadata.full_name || user.email.split("@")[0],
+      //   type,
+      //   details,
+      //   start_date: trip.start_date,
+      //   end_date: trip.end_date,
+      //   email: user.email,
+      // });
 
-      if (error) {
-        toast.error("Error submitting reservation. Please try again.");
-        throw error;
-      }
+      // if (error) {
+      //   toast.error("Error submitting reservation. Please try again.");
+      //   throw error;
+      // }
+
+      const emailUser = await resendEmail(
+        {
+          fullname: user.user_metadata.full_name || user.email.split("@")[0],
+          email: user.email,
+          details,
+          type,
+        },
+        type
+      );
+
+      const emailAdmin = await resendEmail(
+        {
+          email: "info@virstravelclub.com",
+          details,
+          type,
+        },
+        "admin-" + type
+      );
+
+      console.log("user:::", emailUser);
+      console.log("admin:::", emailAdmin);
 
       const { dbError } = await supabase.from("reservations").insert({
         trip_id: trip.id,
@@ -56,15 +80,15 @@ export default function ReservationWizard({ trip, userId }) {
         } reservation submitted successfully!`
       );
 
-      const sendNotification = await resendEmail(
-        {
-          fullname: user.user_metadata.full_name || user.email.split("@")[0],
-          link: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard/reservations`,
-          type: "confirm-reservation",
-          email: user.email,
-        },
-        "confirm-reservation"
-      );
+      // const sendNotification = await resendEmail(
+      //   {
+      //     fullname: user.user_metadata.full_name || user.email.split("@")[0],
+      //     link: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard/reservations`,
+      //     type: "confirm-reservation",
+      //     email: user.email,
+      //   },
+      //   "confirm-reservation"
+      // );
 
       if (!sendNotification.success) {
         console.error(

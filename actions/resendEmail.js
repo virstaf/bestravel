@@ -3,8 +3,9 @@
 import ReservationConfirmationEmail from "@/email-templates/confirm-reservation";
 import SubscriptionEmail from "@/email-templates/confirm-subscription";
 import TripConfirmationEmail from "@/email-templates/confirm-trip";
-// import { render } from "@react-email/components";
 import ContactEmail from "@/email-templates/contact";
+import ReservationAdminEmail from "@/email-templates/reservation-admin";
+import ReservationEmail from "@/email-templates/reservation-email";
 import TrialConfirmationEmail from "@/email-templates/trial";
 import WelcomeEmail from "@/email-templates/welcome";
 import { Resend } from "resend";
@@ -112,6 +113,48 @@ export const resendEmail = async (values, type) => {
 
     if (!fullname || !link || !plan || !email) {
       console.error("Missing required fields");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "hotel" || type === "transfer" || type === "flight") {
+    const { fullname, email, details } = values;
+    console.log("fullname:", fullname);
+    console.log("email:", email);
+    console.log("details:", details);
+
+    emailTemplate = (
+      <ReservationEmail fullname={fullname} email={email} details={details} />
+    );
+    subject = `Your ${type} reservation has been received!`;
+    receivingEmail = email;
+    adminEmail = "bookings@virstravelclub.com";
+
+    if (!fullname || !email || !details) {
+      console.error("Missing required fields");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+  if (!receivingEmail || !emailTemplate || !subject) {
+    console.error("Missing required parameters for email sending");
+    return { success: false, message: "Missing required parameters" };
+  }
+
+  if (
+    type === "admin-flight" ||
+    type === "admin-hotel" ||
+    type === "admin-transfer"
+  ) {
+    console.log("admin details:", details);
+
+    emailTemplate = (
+      <ReservationAdminEmail details={details} type={type.split("-")[1]} />
+    );
+    subject = `New ${type.split("-")[1]} reservation received`;
+    receivingEmail = "info@virstravelclub.com";
+    adminEmail = "bookings@virstravelclub.com";
+    if (!details) {
+      console.error("Missing required fields for admin email");
       return { success: false, message: "All fields are required" };
     }
   }
