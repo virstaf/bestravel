@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 const Hero = () => {
   return (
@@ -17,9 +18,12 @@ const Hero = () => {
           </p>
           <Button
             variant="outline"
-            className="bg-gradient-to-br from-primary to-secondary px-12 py-6 cursor-pointer hover:bg-primary text-white transition duration-300 w-full md:w-auto"
+            asChild
+            className="bg-gradient-to-br from-primary to-secondary px-12 py-6 cursor-pointer !hover:bg-primary text-white transition duration-300 w-full md:w-auto"
           >
-            Join Now & Save on Your Next Trip
+            <Link href="/auth/signup" className="hover:text-primary">
+              Join Now & Save on Your Next Trip
+            </Link>
           </Button>
         </div>
         <div className="w-full md:w-1/2 py-8 rounded overflow-hidden">

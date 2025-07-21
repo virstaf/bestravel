@@ -26,7 +26,7 @@ const HomePage = () => {
           <ProblemSection />
         </section>
         {/* <section><SolutionSection /></section> */}
-        <section>
+        <section id="benefit-section">
           <BenefitSection />
         </section>
         <section className="w-full max-w-7xl mx-auto px-4 my-8">

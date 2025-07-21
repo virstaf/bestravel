@@ -2,6 +2,7 @@ import React from "react";
 // import { FaMoneyBillWave, FaClock, FaGift, FaSearch, FaUmbrellaBeach } from "react-icons/fa";
 import { Landmark, Clock, Gift, Search, Castle } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function ProblemSection() {
   return (
@@ -101,12 +102,12 @@ export default function ProblemSection() {
 
             {/* CTA Button */}
             <div className="pt-6">
-              <a
-                href="#solution" // Link to your solution section
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-blue-700 transition-colors duration-200"
+              <Link
+                href="#benefit-section" // Link to your solution section
+                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary/80 transition-colors duration-200"
               >
                 There’s a Better Way →
-              </a>
+              </Link>
             </div>
           </div>
 
