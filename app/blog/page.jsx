@@ -1,3 +1,4 @@
+import Posts from "@/components/Posts";
 import { Button } from "@/components/ui/button";
 import { howMembersSave } from "@/lib/data";
 import Link from "next/link";
@@ -5,9 +6,11 @@ import React from "react";
 
 const BlogPage = () => {
   return (
-    <>
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <Posts />
+      <>
+        {/* <h1 className="text-6xl font-bold mb-8">
       <section className="text-center my-8 px-4 py-8 min-h-[450px] flex flex-col items-center justify-center">
-        <h1 className="text-6xl font-bold mb-8">
           Unlock the World with Virstravel Club
         </h1>
         <h2 className="text-4xl font-semibold">
@@ -55,8 +58,9 @@ const BlogPage = () => {
         <Button className="bg-white text-primary hover:text-primary hover:scale-105 transition-all duration-300">
           <Link href="/membership">Become a Member</Link>
         </Button>
-      </div>
-    </>
+      </div> */}
+      </>
+    </div>
   );
 };
 
