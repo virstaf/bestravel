@@ -1,6 +1,6 @@
 ---
 title: "Introducing Virstravel Club: Your Gateway to Exclusive Travel Perks"
-date: "2023-11-15"
+date: "2025-07-21"
 ---
 
 # Introducing Virstravel Club: Your Gateway to Exclusive Travel Perks
