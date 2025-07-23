@@ -1,5 +1,7 @@
+import { Button } from "@/components/ui/button";
 import { getFormattedDate } from "@/lib/getFormattedDate";
 import { getPostData, getSortedPostsData } from "@/lib/posts";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
@@ -37,20 +39,23 @@ const PostPage = async ({ params }) => {
   const { title, date, content } = await getPostData(postId);
   const pubDate = getFormattedDate(date);
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-3xl mx-auto px-4 py-8">
       <h1 className="text-3xl text-primary mb-0">{title}</h1>
       <p className="text-gray-600 mb-2">{pubDate}</p>
 
-      <article>
+      <article className="">
         <section
-          className="text-gray-600 mb-6"
+          className="article text-gray-600 mb-6"
           dangerouslySetInnerHTML={{ __html: content }}
         />
-        <p>
+        <Button asChild>
           <Link href="/blog" className="text-primary hover:underline">
+            <span>
+              <ArrowLeft />
+            </span>
             Back to posts
           </Link>
-        </p>
+        </Button>
       </article>
     </div>
   );

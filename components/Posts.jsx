@@ -5,7 +5,7 @@ const Posts = () => {
   const allPosts = getSortedPostsData();
   console.log("post::", allPosts);
   return (
-    <section>
+    <section className="article">
       <h2 className="text-center text-primary text-3xl font-bold mb-4">
         Blogs
       </h2>
