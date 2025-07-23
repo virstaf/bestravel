@@ -45,7 +45,7 @@ const HomePage = () => {
         <section className="w-full bg-gray-50">
           <Testimonials />
         </section>
-        <section className="article w-full max-w-7xl mx-auto px-4 my-12">
+        <section className="">
           <TravelSmarter />
         </section>
         <section className="">

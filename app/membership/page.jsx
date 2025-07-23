@@ -85,11 +85,11 @@ const MembershipPage = () => {
         <ChoosingHelp />
       </section>
 
-      <section className="">
+      <section className="bg-gray-50">
         <Testimonials />
       </section>
 
-      <section className="max-w-7xl mx-auto px-4 my-8">
+      <section className="">
         <TravelSmarter />
       </section>
 

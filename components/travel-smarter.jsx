@@ -3,7 +3,7 @@ import React from "react";
 
 const TravelSmarter = () => {
   return (
-    <>
+    <section className="article">
       <h2 className="mb-2 text-primary font-semibold text-xl">
         Travel Smarter. Travel Protected.
       </h2>
@@ -19,7 +19,7 @@ const TravelSmarter = () => {
         </Link>{" "}
         protected.
       </p>
-    </>
+    </section>
   );
 };
 
