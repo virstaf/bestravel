@@ -8,7 +8,7 @@ const SlidingCard = ({ message, author, stars }) => {
     .join("");
 
   return (
-    <div className="slider-content p-8 shadow rounded-2xl bg-white max-w-[400px] mx-auto mt-8">
+    <div className="p-8 min-h-[225px] flex flex-col justify-evenly shadow rounded-2xl bg-white mx-auto mt-8">
       <p>{message}</p>
       <div className="flex justify-between gap-4">
         <div style={{ color: "gold" }}>

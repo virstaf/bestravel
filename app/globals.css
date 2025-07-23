@@ -316,7 +316,7 @@
 }
 
 .article {
-  @apply max-w-3xl mx-auto px-4 py-8;
+  @apply max-w-7xl mx-auto px-4 py-8;
   font-family:
     "Inter",
     -apple-system,

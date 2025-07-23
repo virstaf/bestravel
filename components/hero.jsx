@@ -6,8 +6,8 @@ import Link from "next/link";
 const Hero = () => {
   return (
     <div>
-      <div className="max-w-7xl px-4 mx-auto flex flex-col-reverse md:flex-row justify-between gap-6 h-full">
-        <div className="w-full md:w-1/2 py-12">
+      <div className="max-w-7xl px-4 mx-auto my-12 flex flex-col-reverse md:flex-row justify-between gap-6 h-full">
+        <div className="w-full md:w-1/2 py-12 my-12">
           <h1 className="text-4xl font-bold text-primary mb-4">
             Unlock Luxury Travel. Exclusive Travel Perks. Members-Only Prices.
           </h1>

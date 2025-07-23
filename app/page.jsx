@@ -22,7 +22,7 @@ const HomePage = () => {
         <section className="w-full h-full">
           <Hero />
         </section>
-        <section>
+        <section className="">
           <ProblemSection />
         </section>
         {/* <section><SolutionSection /></section> */}
@@ -45,7 +45,7 @@ const HomePage = () => {
         <section className="w-full bg-gray-50">
           <Testimonials />
         </section>
-        <section className="w-full max-w-7xl mx-auto px-4 my-12">
+        <section className="article w-full max-w-7xl mx-auto px-4 my-12">
           <TravelSmarter />
         </section>
         <section className="">
