@@ -4,7 +4,7 @@ import { sidebarNav } from "@/lib/data";
 import { AlignLeftIcon, AlignRightIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -14,11 +14,6 @@ import {
 const SideBar = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    // setActiveTab(pathname.split("/")[1]);
-    console.log("pathname::", pathname);
-  }, [pathname]);
 
   return (
     <div
@@ -37,8 +32,10 @@ const SideBar = () => {
           <li key={idx}>
             <Link
               href={item.path}
-              className={`flex flex-col items-center  sm:flex-row gap-3 hover:text-gray-300 p-2 rounded-md ${
-                item.path === pathname ? "bg-black/40" : ""
+              className={`flex flex-col items-center  sm:flex-row gap-3 hover:text-gray-300 p-2 rounded-md ${item.path.length < 11 && item.path === pathname ? "bg-black/40" : ""} ${
+                item.path !== "/dashboard" && pathname.startsWith(item.path)
+                  ? "bg-black/40"
+                  : ""
               }`}
             >
               <Tooltip>

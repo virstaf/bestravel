@@ -10,7 +10,9 @@ const Faq = ({ question, answer, number, className }) => {
     <Accordion type="single" collapsible className={className}>
       <AccordionItem value={number}>
         <AccordionTrigger className="text-lg">{question}</AccordionTrigger>
-        <AccordionContent>{answer}</AccordionContent>
+        <AccordionContent className="text-gray-600 text-lg">
+          {answer}
+        </AccordionContent>
       </AccordionItem>
     </Accordion>
   );

@@ -8,7 +8,7 @@ const ListItem = ({ post }) => {
 
   return (
     <li className="mb-4 text-xl">
-      <Link href={`/posts/${id}`} className="text-primary hover:underline">
+      <Link href={`/blogs/${id}`} className="text-primary hover:underline">
         {title ? title : "Untitled Post"}
       </Link>
       <p className="text-gray-600 text-sm"> - {formattedDate}</p>

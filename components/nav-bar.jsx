@@ -65,7 +65,11 @@ const NavBar = () => {
             <Link
               key={link.name}
               href={link.path}
-              className={`text-gray-900 hover:text-gray-600 ${pathname === link.path ? "font-bold text-primary" : ""}`}
+              className={`text-gray-900 hover:text-gray-600 ${link.path.length < 2 && link.path === pathname ? "font-bold text-primary" : ""} ${
+                link.path !== "/" && pathname.startsWith(link.path)
+                  ? "font-bold text-primary"
+                  : ""
+              }`}
             >
               {link.name}
             </Link>

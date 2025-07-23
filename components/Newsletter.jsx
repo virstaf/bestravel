@@ -1,5 +1,6 @@
 import React from "react";
 import SubscribeForm from "./ui/subscribe";
+import { Lightbulb } from "lucide-react";
 
 const Newsletter = () => {
   return (
@@ -9,10 +10,13 @@ const Newsletter = () => {
           Be first to Catch the sweetest Travel deals!
         </h2>
         <div className="grid justify-evenly items-center">
-          <p className="text-center text-lg text-white md:text-left">
-            💡 Get exclusive deals, travel tips, and insider discounts straight
-            to your inbox!
-          </p>
+          <div className="flex items-center gap-3 text-center text-lg text-white md:text-left">
+            <span>
+              <Lightbulb className="text-yellow-300" />
+            </span>
+            Get exclusive deals, travel tips, and insider discounts straight to
+            your inbox!
+          </div>
           <div className="relative my-6 max-w-[300px] mx-auto rounded-full overflow-hidden shadow">
             <SubscribeForm />
           </div>

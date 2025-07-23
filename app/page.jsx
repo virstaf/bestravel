@@ -38,7 +38,7 @@ const HomePage = () => {
         <section>
           <Process />
         </section>
-        <section className="w-full max-w-7xl mx-auto my-8 px-4">
+        <section className="w-full max-w-5xl mx-auto my-8 px-4">
           <FAQSection />
         </section>
         {/* <section>Feature</section> */}
