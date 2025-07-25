@@ -6,8 +6,33 @@ import { headers } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { resendEmail } from "./resendEmail";
 
+export const upgradePlanAction = async (user, priceId, customerId) => {
+  console.log("upgradING:::");
+  const { url } = await stripe.checkout.sessions.create({
+    customer: customerId,
+    mode: "subscription",
+    line_items: [
+      {
+        price: priceId,
+        quantity: 1,
+      },
+    ],
+    subscription_data: {
+      metadata: {
+        userId: user?.id,
+        // email: user?.email,
+      },
+    },
+    // customer_email: user?.email,
+    success_url: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard`,
+    cancel_url: `${process.env.NEXT_PUBLIC_BASEURL}`,
+    allow_promotion_codes: true,
+  });
+  return url;
+};
+
 export const subscribeAction = async (user, priceId) => {
-  // console.log("Subscribing user:", user, "with priceId:", priceId);
+  console.log("subscribe parameters:::", user?.id, priceId);
   const is_silver =
     priceId === "price_1RfmqFLAxh7V2BxLt2hMnLTc" ||
     priceId === "price_1Ri3nrLAxh7V2BxLaSLg2HDF"; // Example price ID for silver plan
@@ -27,10 +52,6 @@ export const subscribeAction = async (user, priceId) => {
         email: user?.email,
       },
     },
-    // metadata: {
-    //   userId: user?.id,
-    //   email: user?.email,
-    // },
     payment_method_collection: "if_required",
     customer_email: user?.email,
     success_url: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard`,
@@ -41,9 +62,9 @@ export const subscribeAction = async (user, priceId) => {
 };
 
 export const trialAction = async (user) => {
-  const hasTrial = user?.trial_start && user?.trial_ends_at;
+  const hasTrial = user?.trial_start;
   if (hasTrial) {
-    return { error: "User already has an active trial." };
+    return { error: "You have already started a trial." };
   }
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import SubscriptionStatus from "./subscription-status";
 import BillingHistory from "./billing-history";
 import UpgradeSubscription from "./upgrade-subscription";
+import Pricing from "./ui/pricing";
 
 const SubscriptionSettings = () => {
   return (
@@ -18,10 +19,11 @@ const SubscriptionSettings = () => {
 
       <Card className="bg-white">
         <CardHeader>
-          <CardTitle>Upgrade Plan</CardTitle>
+          <CardTitle>Manage Plan</CardTitle>
         </CardHeader>
         <CardContent>
-          <UpgradeSubscription />
+          {/* <UpgradeSubscription /> */}
+          <Pricing />
         </CardContent>
       </Card>
 

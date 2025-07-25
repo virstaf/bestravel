@@ -11,9 +11,9 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useEffect, useState } from "react";
 
 const CurrentUserAvatar = () => {
-  const { icon, badge } = useSubscription();
   const profileImage = useCurrentUserImage();
   const name = useCurrentUserName();
   const initials = name
@@ -22,6 +22,19 @@ const CurrentUserAvatar = () => {
     ?.join("")
     ?.toUpperCase();
 
+  const [planIcon, setPlanIcon] = useState(null);
+  const [planBadge, setPlanBadge] = useState(null);
+  const { icon, badge } = useSubscription();
+
+  useEffect(() => {
+    if (icon) {
+      setPlanIcon(icon);
+    }
+    if (badge) {
+      setPlanBadge(badge);
+    }
+  }, [icon, badge]);
+
   return (
     <div className="relative w-full h-full">
       <Avatar className="">
@@ -29,13 +42,13 @@ const CurrentUserAvatar = () => {
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
       <div className="absolute -bottom-1 -right-2 text-xs">
-        {icon ? (
+        {planIcon ? (
           <Tooltip>
             <TooltipTrigger>
-              <span className="text-primary">{icon}</span>
+              <span className="text-primary">{planIcon}</span>
             </TooltipTrigger>
             <TooltipContent>
-              <span className="text-white">{badge}</span>
+              <span className="text-white">{planBadge}</span>
             </TooltipContent>
           </Tooltip>
         ) : (

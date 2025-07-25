@@ -4,13 +4,13 @@ import { useEffect, useState, useTransition } from "react";
 import { getUser } from "@/lib/supabase/server";
 import { pricingPlans } from "@/lib/constants";
 import { Button } from "./button";
-import { subscribeAction, trialAction } from "@/actions/stripe";
+import { subscribeAction, upgradePlanAction } from "@/actions/stripe";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getUserSubscription } from "@/actions/subscription";
 import { useProfileContext } from "@/contexts/profile";
 
-const Pricing = () => {
+const Pricing = ({ className }) => {
   const [duration, setDuration] = useState("monthly");
   const [user, setUser] = useState(null);
   const [isPending, startTransition] = useTransition();
@@ -36,6 +36,26 @@ const Pricing = () => {
       toast.error("You must be logged in to subscribe.");
       return;
     }
+
+    // console.log("profile.stripe_customer_id::", profile?.stripe_customer_id);
+
+    if (profile?.stripe_customer_id) {
+      startTransition(async () => {
+        const url = await upgradePlanAction(
+          user,
+          priceId,
+          profile?.stripe_customer_id
+        );
+        if (url) {
+          router.push(url);
+        } else {
+          toast.error("Subscription failed. Please try again.");
+          console.error("Subscription failed");
+        }
+      });
+      return;
+    }
+
     startTransition(async () => {
       const url = await subscribeAction(user, priceId);
       if (url) {
@@ -49,7 +69,7 @@ const Pricing = () => {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 py-8 bg-white rounded-lg shadow-xl">
+      <div className={className}>
         <div className="w-[200px] mx-auto my-8">
           <div className="plan">{plan}</div>
           <div className="duration-toggle bg-gray-200 border border-gray-300 rounded-md p-0.5 ">
