@@ -8,6 +8,7 @@ import { resendEmail } from "./resendEmail";
 
 export const upgradePlanAction = async (user, priceId, customerId) => {
   console.log("upgradING:::");
+  // const
   const { url } = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
@@ -33,6 +34,15 @@ export const upgradePlanAction = async (user, priceId, customerId) => {
 
 export const subscribeAction = async (user, priceId) => {
   console.log("subscribe parameters:::", user?.id, priceId);
+  const isExistingCustomer = await stripe.customers.list({
+    email: user?.email,
+    limit: 1,
+  });
+  if (isExistingCustomer.data.length > 0) {
+    console.log("Existing customer found:", isExistingCustomer.data[0].id);
+    let customerId = isExistingCustomer.data[0].id;
+    return upgradePlanAction(user, priceId, customerId);
+  }
   const is_silver =
     priceId === "price_1RfmqFLAxh7V2BxLt2hMnLTc" ||
     priceId === "price_1Ri3nrLAxh7V2BxLaSLg2HDF"; // Example price ID for silver plan

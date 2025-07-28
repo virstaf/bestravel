@@ -60,6 +60,11 @@ export const createCustomerAction = async (session) => {
 };
 
 export const createSubscriptionAction = async (session) => {
+  const customerId = session?.customer || session?.customer_details?.id;
+  const customer = await stripe.customers.retrieve(customerId);
+  const priceId = session?.line_items?.data[0]?.price?.id || session?.price?.id;
+  const metadata = session?.metadata || {};
+
   const isTrial = session?.amount_due === 0;
   console.log("Creating subscription action with session:", session);
 

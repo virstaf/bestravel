@@ -1,9 +1,8 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import SubscriptionStatus from "./subscription-status";
-import BillingHistory from "./billing-history";
-import UpgradeSubscription from "./upgrade-subscription";
 import Pricing from "./ui/pricing";
+import EditBillingDetails from "./ui/EditBillingDetails";
 
 const SubscriptionSettings = () => {
   return (
@@ -27,12 +26,12 @@ const SubscriptionSettings = () => {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="bg-white">
         <CardHeader>
-          <CardTitle>Billing History</CardTitle>
+          <CardTitle>Payment Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <BillingHistory />
+          <EditBillingDetails />
         </CardContent>
       </Card>
     </div>

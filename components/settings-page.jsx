@@ -26,8 +26,8 @@ const Settings = () => {
 
   return (
     <div className="container py-8 px-8 mx-auto w-full h-full">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="bg-gray-200 border border-gray-300 rounded-lg p-0.5 grid w-full grid-cols-2 mb-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full ">
+        <TabsList className="max-w-4xl mx-auto bg-gray-200 border border-gray-300 rounded-lg p-0.5 grid w-full grid-cols-2 mb-4">
           {/* <TabsTrigger value="general">General</TabsTrigger> */}
           <TabsTrigger value="account">My Account</TabsTrigger>
           <TabsTrigger value="subscription">My Subscription</TabsTrigger>

@@ -2,13 +2,13 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { getUser } from "@/lib/supabase/server";
-import { pricingPlans } from "@/lib/constants";
 import { Button } from "./button";
 import { subscribeAction, upgradePlanAction } from "@/actions/stripe";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { getUserSubscription } from "@/actions/subscription";
 import { useProfileContext } from "@/contexts/profile";
+import { pricingPlans } from "@/lib/constants";
 
 const Pricing = ({ className }) => {
   const [duration, setDuration] = useState("monthly");

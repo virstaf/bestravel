@@ -34,7 +34,7 @@ const PostPage = async ({ params }) => {
     return <div>Post not found</div>;
   }
 
-  console.log("Post data:", post);
+  // console.log("Post data:", post);
 
   const { title, date, content } = await getPostData(postId);
   const pubDate = getFormattedDate(date);
