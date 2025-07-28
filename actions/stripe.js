@@ -2,7 +2,6 @@
 
 import { stripe } from "@/lib/stripe"; // Your configured Stripe instance
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
 import { resendEmail } from "./resendEmail";
 
@@ -120,16 +119,20 @@ export const trialAction = async (user) => {
   return { data, error };
 };
 
-export async function createPortalSession(customerId) {
+export async function createPortalSessionAction(customerId) {
   if (!customerId) throw new Error("Missing customer ID");
+  // console.log("Creating portal session for customer:", customerId);
 
   try {
     const session = await stripe.billingPortal.sessions.create({
       customer: customerId,
-      return_url: `${headers().get("origin")}/settings`,
+      return_url: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard/settings`,
     });
 
-    redirect(session.url);
+    if (session.url) {
+      // redirect(session.url); // Redirect to the portal session URL
+      return session.url;
+    }
   } catch (error) {
     console.error("Portal session error:", error);
     throw new Error("Could not create billing portal session");
