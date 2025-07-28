@@ -49,7 +49,7 @@ const PostPage = async ({ params }) => {
           dangerouslySetInnerHTML={{ __html: content }}
         />
         <Button asChild>
-          <Link href="/blog" className="text-primary hover:underline">
+          <Link href="/blogs" className="text-primary hover:underline">
             <span>
               <ArrowLeft />
             </span>
