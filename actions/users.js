@@ -27,7 +27,9 @@ export const loginAction = async (email, password) => {
 
     if (!profile.data) {
       // 1. Generate unique customer ID
-      const customerId = generateCustomerId();
+      const isAdmin = email.endsWith("@virstravelclub.com");
+      const role = isAdmin ? "ADMIN" : "USER";
+      const customerId = generateCustomerId(role);
       // 2. Create profile if it doesn't exist
       const response = await supabase.from("profiles").insert({
         id: userId,
@@ -36,7 +38,7 @@ export const loginAction = async (email, password) => {
         username,
         public_email,
         customer_id: customerId,
-        role: "USER",
+        role,
       });
       if (response.error) {
         console.error("Error creating profile:", response.error);
@@ -80,6 +82,7 @@ export const logoutAction = async () => {
 };
 
 export const signupAction = async (email, password, fullname) => {
+  const isAdmin = email.endsWith("@virstravelclub.com");
   try {
     const { auth } = await createClient();
     const { error } = await auth.signUp({
@@ -91,6 +94,7 @@ export const signupAction = async (email, password, fullname) => {
           username: fullname.split(" ").join("_").toLowerCase(),
           full_name: fullname,
           public_email: email,
+          ...(isAdmin && { role: "ADMIN" }),
         },
       },
     });

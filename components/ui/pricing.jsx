@@ -6,7 +6,6 @@ import { Button } from "./button";
 import { subscribeAction, upgradePlanAction } from "@/actions/stripe";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { getUserSubscription } from "@/actions/subscription";
 import { useProfileContext } from "@/contexts/profile";
 import { pricingPlans } from "@/lib/constants";
 
@@ -15,14 +14,13 @@ const Pricing = ({ className }) => {
   const [user, setUser] = useState(null);
   const [isPending, startTransition] = useTransition();
   const [plan, setPlan] = useState(null);
-  const router = useRouter();
   const { profile, isLoading } = useProfileContext();
+  const router = useRouter();
 
   useEffect(() => {
     if (isLoading) return;
     const fetchUser = async () => {
-      const data = await getUserSubscription(profile.id);
-      setPlan(data.plan);
+      setPlan(profile?.subscription_plan || "Free");
       const user = await getUser();
       if (user) {
         setUser(user);
@@ -71,7 +69,7 @@ const Pricing = ({ className }) => {
     <>
       <div className={className}>
         <div className="w-[200px] mx-auto my-8">
-          <div className="plan">{plan}</div>
+          {/* <div className="plan">{plan}</div> */}
           <div className="duration-toggle bg-gray-200 border border-gray-300 rounded-md p-0.5 ">
             <Button
               className="font-medium w-1/2"

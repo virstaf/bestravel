@@ -5,8 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const generateCustomerId = () => {
-  const prefix = "V";
+export const generateCustomerId = (role = "USER") => {
+  const prefix = role === "ADMIN" ? "A" : "V";
   const randomNum = Math.floor(100000 + Math.random() * 900000);
   return `${prefix}${randomNum}`;
 };

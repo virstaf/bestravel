@@ -2,7 +2,7 @@
 
 import { stripe } from "@/lib/stripe";
 import { createClient } from "@supabase/supabase-js";
-import { pricingPlans } from "@/lib/constants";
+import { findPlanByPriceId, pricingPlans } from "@/lib/constants";
 import { resendEmail } from "../resendEmail";
 // import Stripe from "stripe";
 
@@ -62,73 +62,95 @@ export const createCustomerAction = async (session) => {
 export const createSubscriptionAction = async (session) => {
   const customerId = session?.customer || session?.customer_details?.id;
   const customer = await stripe.customers.retrieve(customerId);
-  const priceId = session?.line_items?.data[0]?.price?.id || session?.price?.id;
+  const description = session.lines?.data[0]?.description;
+  const priceId = session.lines?.data[0]?.pricing?.price_details.price;
   const metadata = session?.metadata || {};
 
+  console.log("customerId:::", customerId);
+  // console.log("customer:::", customer);
+  console.log("priceId:::", priceId);
+  console.log("metadata:::", metadata);
+
+  let plan;
+  if (priceId) {
+    plan = findPlanByPriceId(priceId);
+  }
+  console.log("priceId:::", priceId);
+  console.log("plan:::", plan);
+
   const isTrial = session?.amount_due === 0;
-  console.log("Creating subscription action with session:", session);
+  // console.log("Creating subscription action with session:", session);
 
-  const { error: profileError } = await supabaseAdmin
-    .from("profiles")
-    .update({
-      is_subscribed: true,
-      stripe_customer_id: session.customer,
-      subscription_status: isTrial ? "trialing" : "active",
-      subscription_plan: isTrial ? "trial" : "paid_plan",
-      ...(isTrial && {
-        trial_start: new Date(
-          session.lines?.data[0]?.period?.start * 1000
-        ).toISOString(),
-        trial_ends_at: new Date(
-          session.lines?.data[0]?.period?.end * 1000
-        ).toISOString(),
-      }),
-      subscription_plan_id: session.parent?.subscription_details?.subscription,
-      subscription_end: new Date(session.lines?.data[0]?.period?.end * 1000),
-    })
-    .eq("email", session.customer_email);
+  if (metadata?.userId && plan) {
+    const { error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .update({
+        is_subscribed: true,
+        stripe_customer_id: customerId,
+        subscription_status: isTrial ? "trialing" : "active",
+        subscription_plan: isTrial ? "trial" : plan,
+        ...(isTrial && {
+          trial_start: new Date(
+            session.lines?.data[0]?.period?.start * 1000
+          ).toISOString(),
+          trial_ends_at: new Date(
+            session.lines?.data[0]?.period?.end * 1000
+          ).toISOString(),
+        }),
+        subscription_plan_id:
+          session.parent?.subscription_details?.subscription,
+        subscription_end: new Date(session.lines?.data[0]?.period?.end * 1000),
+      })
+      .eq("email", session.customer_email);
 
-  if (profileError) {
-    console.error("Error updating profile:", profileError);
-  }
-
-  const { error: subError } = await supabaseAdmin.from("subscriptions").upsert(
-    {
-      id: session.id,
-      user_id: session.parent?.subscription_details?.metadata.userId,
-      plan_id: session.parent?.subscription_details?.subscription,
-      user_email: session.customer_email,
-      status: isTrial ? "trialing" : "active",
-      description: session.lines?.data[0]?.description,
-      current_period_start: new Date(
-        session.lines?.data[0]?.period?.start * 1000
-      ),
-      current_period_end: new Date(session.lines?.data[0]?.period?.end * 1000),
-    },
-    {
-      onConflict: "user_id",
+    if (profileError) {
+      console.error("Error updating profile:", profileError);
     }
-  );
-
-  if (subError) {
-    console.error("Error updating subscription:", subError);
   }
 
-  const sendNotification = await resendEmail(
-    {
-      email: session?.customer_email,
-      fullname:
-        session?.customer_name || session?.customer_email?.split("@")[0],
-      plan: isTrial
-        ? "trial"
-        : session.parent?.subscription_details?.plan_name || "silver",
-      trialEndsAt: isTrial
-        ? new Date(session.lines?.data[0]?.period?.end * 1000).toISOString()
-        : null,
-    },
-    isTrial ? "confirm-trial" : "confirm-subscription"
-  );
-  console.log("sendNotification:::", sendNotification);
+  // let subError;
+  if (metadata?.userId && plan) {
+    const { error: subError } = await supabaseAdmin
+      .from("subscriptions")
+      .upsert(
+        {
+          id: session.id,
+          //   user_id: session.parent?.subscription_details?.metadata.userId,
+          user_id: metadata?.userId,
+          plan,
+          user_email: metadata?.email,
+          status: isTrial ? "trialing" : "active",
+          description,
+          current_period_start: new Date(
+            session.lines?.data[0]?.period?.start * 1000
+          ),
+          current_period_end: new Date(
+            session.lines?.data[0]?.period?.end * 1000
+          ),
+        },
+        {
+          onConflict: "user_id",
+        }
+      );
+    if (subError) {
+      console.error("Error updating subscription:", subError);
+    }
+  }
+
+  if (session.lines?.data[0]?.period?.end && plan) {
+    const sendNotification = await resendEmail(
+      {
+        email: metadata?.email,
+        fullname: customer.name,
+        plan: isTrial ? "trial" : plan,
+        trialEndsAt: isTrial
+          ? new Date(session.lines?.data[0]?.period?.end * 1000).toISOString()
+          : null,
+      },
+      isTrial ? "confirm-trial" : "confirm-subscription"
+    );
+    console.log("sendNotification:::", sendNotification);
+  }
 };
 
 // Update the old subscriptions
@@ -148,7 +170,7 @@ export const updateSubscriptionAction = async (session) => {
 
 //handle subscription cancellation
 export const deleteSubscriptionAction = async (session) => {
-  console.log("Deleting subscription:", session);
+  console.log("Deleting subscription");
   const { error: profileError } = await supabaseAdmin
     .from("profiles")
     .update({

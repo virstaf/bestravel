@@ -110,8 +110,9 @@ export const resendEmail = async (values, type) => {
     );
     subject = `Your ${plan} subscription is confirmed!`;
     receivingEmail = email;
+    adminEmail = "membership@virstravelclub.com";
 
-    if (!fullname || !link || !plan || !email) {
+    if (!fullname || !plan || !email) {
       console.error("Missing required fields");
       return { success: false, message: "All fields are required" };
     }

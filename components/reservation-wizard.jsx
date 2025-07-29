@@ -6,7 +6,6 @@ import HotelReservationForm from "./hotel-reservation-form";
 import TransferReservationForm from "./transfer-reservation-form";
 import FlightReservationForm from "./flight-reservation-form";
 import { toast } from "sonner";
-import axios from "axios";
 import { getUser } from "@/lib/supabase/server";
 import { supabase } from "@/lib/supabase/client";
 import { resendEmail } from "@/actions/resendEmail";
@@ -23,22 +22,6 @@ export default function ReservationWizard({ trip, userId }) {
     console.log(user);
     setLoading(true);
     try {
-      // const { error } = await axios.post("/api/reservation", {
-      //   trip_id: trip.id,
-      //   user_id: user.userId,
-      //   fullname: user.user_metadata.full_name || user.email.split("@")[0],
-      //   type,
-      //   details,
-      //   start_date: trip.start_date,
-      //   end_date: trip.end_date,
-      //   email: user.email,
-      // });
-
-      // if (error) {
-      //   toast.error("Error submitting reservation. Please try again.");
-      //   throw error;
-      // }
-
       const emailUser = await resendEmail(
         {
           fullname: user.user_metadata.full_name || user.email.split("@")[0],
@@ -61,7 +44,9 @@ export default function ReservationWizard({ trip, userId }) {
       console.log("user:::", emailUser);
       console.log("admin:::", emailAdmin);
 
-      const { dbError } = await supabase.from("reservations").insert({
+      // createCl
+
+      const { error: dbError } = await supabase.from("reservations").insert({
         trip_id: trip.id,
         user_id: userId,
         type,
