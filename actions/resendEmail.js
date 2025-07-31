@@ -53,29 +53,13 @@ export const resendEmail = async (values, type) => {
         tripLink={tripLink}
       />
     );
-    subject = "Your trip is confirmed!";
+    subject = "Your trip is added!";
     receivingEmail = email;
     adminEmail = "bookings@virstravelclub.com";
 
-    console.log("values", values);
+    // console.log("values", values);
 
     if (!fullname || !tripName || !tripLink || !email) {
-      console.error("Missing required fields");
-      return { success: false, message: "All fields are required" };
-    }
-  }
-
-  if (type === "confirm-reservation") {
-    const { fullname, link, email } = values;
-
-    emailTemplate = (
-      <ReservationConfirmationEmail fullname={fullname} link={link} />
-    );
-    subject = `Your reservation is received!`;
-    receivingEmail = email;
-    adminEmail = "bookings@virstravelclub.com";
-
-    if (!fullname || !email) {
       console.error("Missing required fields");
       return { success: false, message: "All fields are required" };
     }
@@ -97,11 +81,6 @@ export const resendEmail = async (values, type) => {
     }
   }
 
-  // if (!receivingEmail || !emailTemplate || !subject) {
-  //   console.error("Missing required parameters for email sending");
-  //   return { success: false, message: "Missing required parameters" };
-  // }
-
   if (type === "confirm-subscription") {
     const { fullname, link, plan, email } = values;
 
@@ -120,12 +99,9 @@ export const resendEmail = async (values, type) => {
 
   if (type === "hotel" || type === "transfer" || type === "flight") {
     const { fullname, email, details } = values;
-    console.log("fullname:", fullname);
-    console.log("email:", email);
-    console.log("details:", details);
 
     emailTemplate = (
-      <ReservationEmail fullname={fullname} email={email} details={details} />
+      <ReservationEmail fullname={fullname} details={details} type={type} />
     );
     subject = `Your ${type} reservation has been received!`;
     receivingEmail = email;
@@ -136,29 +112,32 @@ export const resendEmail = async (values, type) => {
       return { success: false, message: "All fields are required" };
     }
   }
-  if (!receivingEmail || !emailTemplate || !subject) {
-    console.error("Missing required parameters for email sending");
-    return { success: false, message: "Missing required parameters" };
-  }
-
   if (
     type === "admin-flight" ||
     type === "admin-hotel" ||
     type === "admin-transfer"
   ) {
-    console.log("admin details:", details);
+    const { fullname, email, details, user } = values;
 
     emailTemplate = (
-      <ReservationAdminEmail details={details} type={type.split("-")[1]} />
+      <ReservationAdminEmail
+        fullname={fullname}
+        details={details}
+        user={user}
+        type={type}
+      />
     );
-    subject = `New ${type.split("-")[1]} reservation received`;
-    receivingEmail = "info@virstravelclub.com";
+    subject = `New ${type.replace("admin-", "")} reservation received!`;
+    receivingEmail = email;
     adminEmail = "bookings@virstravelclub.com";
-    if (!details) {
-      console.error("Missing required fields for admin email");
-      return { success: false, message: "All fields are required" };
+
+    if (!receivingEmail || !emailTemplate || !subject) {
+      console.error("Missing required parameters for admin email");
+      return { success: false, message: "Missing required parameters" };
     }
   }
+
+  // Initialize Resend client
 
   const resend = new Resend(process.env.RESEND_API_KEY);
   if (!resend) {

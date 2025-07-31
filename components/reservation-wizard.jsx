@@ -19,9 +19,26 @@ export default function ReservationWizard({ trip, userId }) {
     // console.log("reservation:::", trip, details);
 
     const user = await getUser();
-    console.log(user);
+    // console.log(user);
     setLoading(true);
+    const adminType = "admin-" + type;
+    console.log("adminType:::", adminType);
+
     try {
+      const emailAdmin = await resendEmail(
+        {
+          email: "info@virstravelclub.com",
+          details,
+          type,
+          user: {
+            fullname: user.user_metadata.full_name,
+            email: user.email,
+            userId: user.id,
+          },
+        },
+        adminType
+      );
+
       const emailUser = await resendEmail(
         {
           fullname: user.user_metadata.full_name || user.email.split("@")[0],
@@ -32,17 +49,8 @@ export default function ReservationWizard({ trip, userId }) {
         type
       );
 
-      const emailAdmin = await resendEmail(
-        {
-          email: "info@virstravelclub.com",
-          details,
-          type,
-        },
-        "admin-" + type
-      );
-
-      console.log("user:::", emailUser);
       console.log("admin:::", emailAdmin);
+      console.log("user:::", emailUser);
 
       // createCl
 
@@ -75,12 +83,12 @@ export default function ReservationWizard({ trip, userId }) {
       //   "confirm-reservation"
       // );
 
-      if (!sendNotification.success) {
-        console.error(
-          "Error sending reservation confirmation email:",
-          sendNotification.message
-        );
-      }
+      // if (!sendNotification.success) {
+      //   console.error(
+      //     "Error sending reservation confirmation email:",
+      //     sendNotification.message
+      //   );
+      // }
 
       router.refresh();
     } catch (error) {

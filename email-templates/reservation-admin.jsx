@@ -3,16 +3,18 @@ import {
   Body,
   Container,
   Heading,
+  Head,
   Text,
   Img,
   Tailwind,
   Button,
 } from "@react-email/components";
 
-const ReservationAdminEmail = ({ details, type }) => {
+const ReservationAdminEmail = ({ details, type, user }) => {
   return (
     <Html>
       <Tailwind>
+        <Head />
         <Body className="bg-gray-100 text-gray-900 mx-auto font-sans my-12">
           <Container className="p-45 bg-white rounded-lg shadow-md max-w-2xl mx-auto">
             <Container className="mx-auto mt-12 mb-12">
@@ -28,15 +30,25 @@ const ReservationAdminEmail = ({ details, type }) => {
                 Received
               </Heading>
               <Text className="mb-4">Details: </Text>
-              <Container>
-                {Object.entries(details).map(([key, value]) => (
-                  <Text key={key} className="mb-2">
-                    <strong>
-                      {key.charAt(0).toUpperCase() + key.slice(1)}:
-                    </strong>{" "}
-                    {value}
-                  </Text>
-                ))}
+              <Container className="dark:bg-slate-800 dark:text-gray-50 bg-gray-50 p-6 rounded-lg">
+                <Container className="dark:bg-slate-800 dark:text-gray-50 bg-gray-50 m-6 rounded-lg">
+                  {Object.entries(user).map(([key, value]) => (
+                    <Text key={key} className="mb-2">
+                      <strong>
+                        {key.charAt(0).toUpperCase() + key.slice(1)}:
+                      </strong>{" "}
+                      {value}
+                    </Text>
+                  ))}
+                  {Object.entries(details).map(([key, value]) => (
+                    <Text key={key} className="mb-2">
+                      <strong>
+                        {key.charAt(0).toUpperCase() + key.slice(1)}:
+                      </strong>{" "}
+                      {value}
+                    </Text>
+                  ))}
+                </Container>
               </Container>
               <Text className="mb-4">
                 You can view your request details and itinerary by clicking the
@@ -45,8 +57,8 @@ const ReservationAdminEmail = ({ details, type }) => {
               <Container className="text-center my-8">
                 <Button
                   target="_blank"
-                  href={details.link}
-                  className="bg-primary text-white px-6 py-3 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  href="https://virstravelclub.com/admin/"
+                  className="bg-blue-500 px-6 py-3 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 >
                   View Reservation Details
                 </Button>

@@ -119,13 +119,13 @@ export const trialAction = async (user) => {
   return { data, error };
 };
 
-export async function createPortalSessionAction(customerId) {
-  if (!customerId) throw new Error("Missing customer ID");
+export async function createPortalSessionAction(customer) {
+  if (!customer) throw new Error("Missing customer ID");
   // console.log("Creating portal session for customer:", customerId);
 
   try {
     const session = await stripe.billingPortal.sessions.create({
-      customer: customerId,
+      customer,
       return_url: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard/settings`,
     });
 

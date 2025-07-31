@@ -111,7 +111,7 @@ const ProfileForm = ({ profile, className }) => {
 
       <div>
         <label htmlFor="customer_id" className="block text-sm font-medium mb-1">
-          Your Customer ID
+          Your Membership ID
         </label>
         <Input
           id="customer_id"
@@ -130,9 +130,11 @@ const ProfileForm = ({ profile, className }) => {
         </Label>
         <Input
           id="username"
-          value={profile?.username}
-          readOnly
-          className="bg-gray-100 cursor-not-allowed"
+          value={formData.username}
+          onChange={(e) =>
+            setFormData({ ...formData, username: e.target.value })
+          }
+          // className="bg-gray-100 cursor-not-allowed"
         />
       </div>
 

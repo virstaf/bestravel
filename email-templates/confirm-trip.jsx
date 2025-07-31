@@ -33,7 +33,7 @@ const TripConfirmationEmail = ({
               <Text className="mb-4">
                 Wohooo! Your trip{" "}
                 <span className="font-semibold">{tripName}</span>, has been
-                confirmed.
+                added.
               </Text>
               <Text className="mb-4">
                 You can view your trip details and itinerary by clicking the
