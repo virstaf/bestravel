@@ -42,6 +42,10 @@ const EditBillingDetails = () => {
 
     startTransition(async () => {
       try {
+        if (process.env.NODE_ENV === "production") {
+          router.push(process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL);
+          return;
+        }
         const url = await createPortalSessionAction(
           userProfile.stripe_customer_id
         );
