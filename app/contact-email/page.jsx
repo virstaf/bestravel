@@ -44,7 +44,7 @@ const ContactEmailPage = ({ name = "Nyla" }) => {
         }}
         type={"flight"}
       /> */}
-      <ReservationAdminEmail
+      {/* <ReservationAdminEmail
         details={{
           fullname: name,
           name: "Hotel California",
@@ -53,7 +53,7 @@ const ContactEmailPage = ({ name = "Nyla" }) => {
           link: "https://virstravel.com/reservation/12345",
         }}
         type={"flight"}
-      />
+      /> */}
     </>
   );
 };
