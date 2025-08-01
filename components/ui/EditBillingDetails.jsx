@@ -45,6 +45,9 @@ const EditBillingDetails = () => {
         const url = await createPortalSessionAction(
           userProfile.stripe_customer_id
         );
+        if (!url) {
+          router.push(process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL);
+        }
         // console.log("Portal session created:", url);
         router.push(url);
       } catch (error) {
