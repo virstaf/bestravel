@@ -370,9 +370,9 @@
   @apply mb-6 pl-6;
 }
 
-.article ul {
-  list-style-type: disc;
-}
+/* .article ul { */
+/* list-style-type: disc; */
+/* } */
 
 .article ol {
   list-style-type: decimal;

@@ -161,6 +161,9 @@ importers:
       remark-html:
         specifier: ^16.0.1
         version: 16.0.1
+      remark-strip-html:
+        specifier: ^1.0.2
+        version: 1.0.2
       resend:
         specifier: ^4.5.2
         version: 4.5.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -3247,6 +3250,9 @@ packages:
 
   remark-stringify@11.0.0:
     resolution: {integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==}
+
+  remark-strip-html@1.0.2:
+    resolution: {integrity: sha512-lzOlh4gp/sd9qYVUO0QNNQbUIDYM35XhBZnvp4S4bkM3OCfrvd2GQlQVPAuneeI/K5jbxTfCGDvb9UT9IEPIwA==}
 
   remark@15.0.1:
     resolution: {integrity: sha512-Eht5w30ruCXgFmxVUSlNWQ9iiimq07URKeFS3hNc8cUWy1llX4KDWfyEDZRycMc+znsN9Ux5/tJ/BFdgdOwA3A==}
@@ -6689,6 +6695,8 @@ snapshots:
       '@types/mdast': 4.0.4
       mdast-util-to-markdown: 2.1.2
       unified: 11.0.5
+
+  remark-strip-html@1.0.2: {}
 
   remark@15.0.1:
     dependencies:
