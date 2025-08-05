@@ -50,8 +50,8 @@ export const POST = async (req) => {
       break;
 
     // Handle New subscription started
+    // case "customer.subscription.created":
     case "invoice.payment_succeeded":
-    case "customer.subscription.created":
       await createSubscriptionAction(session);
 
       break;

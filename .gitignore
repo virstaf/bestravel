@@ -42,4 +42,17 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Ignore JetBrains IDE files
+.idea/
+.idea/*
+
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
 

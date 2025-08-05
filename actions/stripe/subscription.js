@@ -12,7 +12,7 @@ const supabaseAdmin = createClient(
 );
 
 export const createCustomerAction = async (session) => {
-  console.log("Creating customer action with session:", session);
+  // console.log("Creating customer action with session:", session);
 
   const { data: profile } = await supabaseAdmin
     .from("profiles")
@@ -64,24 +64,23 @@ export const createSubscriptionAction = async (session) => {
   const customer = await stripe.customers.retrieve(customerId);
   const description = session.lines?.data[0]?.description;
   const priceId = session.lines?.data[0]?.pricing?.price_details.price;
-  const metadata = session?.metadata || {};
+  const userEmail = customer?.email || session?.customer_email;
+  const userId = customer?.metadata?.userId || session?.metadata?.userId;
+  const period = session.lines?.data[0]?.period;
 
-  console.log("customerId:::", customerId);
-  // console.log("customer:::", customer);
-  console.log("priceId:::", priceId);
-  console.log("metadata:::", metadata);
+  // console.log("customerId:::", customerId);
+  // console.log("priceId:::", priceId);
+  // console.log("userEmail:::", userEmail);
+  // console.log("userId:::", userId);
 
   let plan;
   if (priceId) {
     plan = findPlanByPriceId(priceId);
   }
-  console.log("priceId:::", priceId);
-  console.log("plan:::", plan);
 
   const isTrial = session?.amount_due === 0;
-  // console.log("Creating subscription action with session:", session);
 
-  if (metadata?.userId && plan) {
+  if (userId && plan) {
     const { error: profileError } = await supabaseAdmin
       .from("profiles")
       .update({
@@ -90,43 +89,31 @@ export const createSubscriptionAction = async (session) => {
         subscription_status: isTrial ? "trialing" : "active",
         subscription_plan: isTrial ? "trial" : plan,
         ...(isTrial && {
-          trial_start: new Date(
-            session.lines?.data[0]?.period?.start * 1000
-          ).toISOString(),
-          trial_ends_at: new Date(
-            session.lines?.data[0]?.period?.end * 1000
-          ).toISOString(),
+          trial_start: new Date(period.start * 1000).toISOString(),
+          trial_ends_at: new Date(period.end * 1000).toISOString(),
         }),
         subscription_plan_id:
           session.parent?.subscription_details?.subscription,
-        subscription_end: new Date(session.lines?.data[0]?.period?.end * 1000),
+        subscription_end: new Date(period.end * 1000),
       })
       .eq("email", session.customer_email);
 
     if (profileError) {
       console.error("Error updating profile:", profileError);
     }
-  }
 
-  // let subError;
-  if (metadata?.userId && plan) {
     const { error: subError } = await supabaseAdmin
       .from("subscriptions")
       .upsert(
         {
           id: session.id,
-          //   user_id: session.parent?.subscription_details?.metadata.userId,
-          user_id: metadata?.userId,
+          user_id: userId,
           plan,
-          user_email: metadata?.email,
+          user_email: userEmail,
           status: isTrial ? "trialing" : "active",
           description,
-          current_period_start: new Date(
-            session.lines?.data[0]?.period?.start * 1000
-          ),
-          current_period_end: new Date(
-            session.lines?.data[0]?.period?.end * 1000
-          ),
+          current_period_start: new Date(period.start * 1000),
+          current_period_end: new Date(period.end * 1000),
         },
         {
           onConflict: "user_id",
@@ -137,15 +124,13 @@ export const createSubscriptionAction = async (session) => {
     }
   }
 
-  if (session.lines?.data[0]?.period?.end && plan) {
+  if (period.end && plan) {
     const sendNotification = await resendEmail(
       {
-        email: metadata?.email,
+        email: userEmail,
         fullname: customer.name,
         plan: isTrial ? "trial" : plan,
-        trialEndsAt: isTrial
-          ? new Date(session.lines?.data[0]?.period?.end * 1000).toISOString()
-          : null,
+        trialEndsAt: isTrial ? new Date(period.end * 1000).toISOString() : null,
       },
       isTrial ? "confirm-trial" : "confirm-subscription"
     );
@@ -155,7 +140,6 @@ export const createSubscriptionAction = async (session) => {
 
 // Update the old subscriptions
 export const updateSubscriptionAction = async (session) => {
-  // const isTrial = session?.amount_due === 0;
   console.log("Updating subscription:", session);
 
   // find the user by stripe_customer_id

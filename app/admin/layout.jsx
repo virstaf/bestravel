@@ -1,9 +1,14 @@
-import React from "react";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
 
 export default function AdminLayout({ children }) {
-  return (
-    <div className="bg-slate-900 h-screen text-white">
-      <main>{children}</main>
-    </div>
-  );
+    return (
+        <SidebarProvider>
+            <AppSidebar />
+            <main>
+                <SidebarTrigger />
+                {children}
+            </main>
+        </SidebarProvider>
+    )
 }

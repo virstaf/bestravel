@@ -15,6 +15,8 @@ export const ProfileProvider = ({ children }) => {
     name: "",
     email: "",
     is_subscribed: null,
+    plan: null,
+    customer_id: null,
     trialActive: false,
     trialEndDate: null,
   });

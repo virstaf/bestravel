@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server.js";
 import { generateCustomerId, handleError } from "../lib/utils.ts";
 import { redirect } from "next/navigation.js";
 import { resendEmail } from "./resendEmail.js";
+import { getProfileAction } from "./profiles.js";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASEURL || "https://virstravelclub.com";
 
@@ -62,6 +63,8 @@ export const loginAction = async (email, password) => {
         }
       }
     }
+
+    // await getProfileAction();
 
     return { errorMessage: null };
   } catch (error) {
