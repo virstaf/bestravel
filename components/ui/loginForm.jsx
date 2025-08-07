@@ -22,6 +22,7 @@ import { getUser } from "@/lib/supabase/server";
 import Image from "next/image";
 import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
+import useUserStore from "@/user.store";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -56,11 +57,14 @@ const LoginForm = () => {
       let title;
       let description;
 
-      errorMessage = (await loginAction(email, password)).errorMessage;
+      const response = await loginAction(email, password);
+      errorMessage = response.errorMessage;
       title = "Login successful";
       description = "Welcome back";
 
       if (!errorMessage) {
+        const { token, user } = response;
+        useUserStore.setState({ token, isAuthenticated: true, user });
         toast.success(title, { description: description });
         router.replace("/dashboard");
       } else {

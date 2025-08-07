@@ -1,23 +1,21 @@
 "use server";
 import { createClient } from "@/lib/supabase/server";
-import { getUser } from "@/lib/supabase/server";
 
-export const fetchTrips = async () => {
+export const fetchTrips = async (userId) => {
   try {
-    const supabase = createClient();
-    const user = await getUser();
-
+    // console.log(`Server action trips for user::: ${userId}`);
+    const supabase = await createClient();
     const { data, error } = await supabase
       .from("trips")
       .select("*")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .order("start_date", { ascending: true });
 
     if (error) throw error;
-
+    // console.log("Fetched trips:::", data);
     return data || [];
   } catch (err) {
-    console.error("Error fetching trips:", err);
+    console.error("Error fetching trips:::", err);
   }
 };
 

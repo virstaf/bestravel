@@ -7,25 +7,22 @@ import Link from "next/link";
 import { Button } from "./button";
 import { usePathname } from "next/navigation";
 import { useProfileContext } from "@/contexts/profile";
+import useUserStore from "@/user.store";
+import { Loader } from "lucide-react";
 
 const UserProfile = ({ className }) => {
   const [logoutOpen, setLogoutOpen] = useState(false);
-  const [email, setEmail] = useState(null);
-  const { profile, isLoading } = useProfileContext();
+  // const { profile, isLoading } = useProfileContext();
   const pathname = usePathname();
 
+  const { fetchUser, isLoading, isAuthenticated, user } = useUserStore();
   useEffect(() => {
-    const fetchEmail = async () => {
-      if (isLoading) {
-        setEmail("Loading...");
-        return;
-      }
-      if (profile) {
-        setEmail(profile.email || "No email found");
-      }
-    };
-    fetchEmail();
-  }, [profile]);
+    fetchUser();
+  }, []);
+
+  if (isLoading) {
+    return <Loader className="animate-spin h-6 w-6 text-gray-500" />;
+  }
 
   return (
     <div
@@ -41,7 +38,9 @@ const UserProfile = ({ className }) => {
           logoutOpen ? "flex" : "hidden"
         } flex-col items-center gap-2 backdrop-blur-xs bg-white p-6 rounded-2xl shadow absolute top-10 right-0`}
       >
-        <span className="text-muted-foreground">{email}</span>
+        {isAuthenticated && (
+          <span className="text-muted-foreground">{user.email}</span>
+        )}
         {!pathname.includes("dashboard") && (
           <Button asChild>
             <Link href="/dashboard">Dashboard</Link>

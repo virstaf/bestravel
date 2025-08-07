@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server.js";
 import { generateCustomerId, handleError } from "../lib/utils.ts";
 import { redirect } from "next/navigation.js";
 import { resendEmail } from "./resendEmail.js";
-import { getProfileAction } from "./profiles.js";
+import useUserStore from "@/user.store.js";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASEURL || "https://virstravelclub.com";
 
@@ -16,6 +16,14 @@ export const loginAction = async (email, password) => {
       password,
     });
     if (error) throw error;
+
+    const token = data.session?.access_token;
+    const user = data.user;
+    if (!token || !user) {
+      return handleError("Login failed. Please check your credentials.");
+    }
+    // useStore.setState({ login: { token, isAuthenticated: true, user } });
+
     const userId = data.user?.id;
     const { full_name, username, public_email } =
       data.user?.user_metadata || {};
@@ -64,9 +72,7 @@ export const loginAction = async (email, password) => {
       }
     }
 
-    // await getProfileAction();
-
-    return { errorMessage: null };
+    return { errorMessage: null, token, user };
   } catch (error) {
     return handleError(error);
   }
@@ -138,6 +144,8 @@ export const googleAuthAction = async () => {
       },
     },
   });
+
+  useUserStore.setState({ isAuthenticated: true });
 
   if (data.url) {
     redirect(data.url); // use the redirect API for your server framework

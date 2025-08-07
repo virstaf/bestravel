@@ -6,11 +6,10 @@ import Image from "next/image";
 import Logo from "./ui/logo";
 
 const dashSecNav = [
-  // { name: "Subscription", path: "/dashboard/settings/#subscription-settings" },
   { name: "Account", path: "/dashboard/settings/#account-settings" },
 ];
 
-const DashNav = async () => {
+const DashNav = () => {
   return (
     <div className="dark:bg-black/50 backdrop-blur-sm fixed top-0 container z-50">
       <div className="h-16 px-4 flex justify-between items-center relative">

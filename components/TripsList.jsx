@@ -1,7 +1,6 @@
-// components/TripsList.js
 "use client";
+
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase/client";
 import {
   Card,
   CardHeader,
@@ -14,104 +13,46 @@ import Link from "next/link";
 import { Calendar } from "lucide-react";
 import { MapPin } from "lucide-react";
 import { UsersIcon } from "lucide-react";
-import { getUser } from "@/lib/supabase/server";
+import useUserStore from "@/user.store";
+import { fetchTrips } from "@/actions/trips";
 
 const TripsList = ({ initialTrips = [], limit }) => {
   const [trips, setTrips] = useState(initialTrips);
-  const [loading, setLoading] = useState(!initialTrips.length);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [tripLink, setTripLink] = useState("");
+  const [tripLink, setTripLink] = useState("/pricing");
+  const { user, isSubscribed } = useUserStore.getState();
 
-  // Optional: Fetch trips client-side if needed
+  // useEffect(() => {
+  //   const loadUser = async () => {
+  //     await fetchUser();
+  //   };
+  //   loadUser();
+  // }, []);
+
   useEffect(() => {
-    if (initialTrips.length) return;
-
-    const fetchTrips = async () => {
+    const getTrips = async () => {
       try {
         setLoading(true);
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-
-        if (!user) throw new Error("Not authenticated");
-
-        const { data, error } = await supabase
-          .from("trips")
-          .select("*")
-          .eq("user_id", user.id)
-          .order("start_date", { ascending: true });
-
-        if (error) throw error;
-
+        const data = await fetchTrips(user?.id);
         setTrips(data || []);
-      } catch (err) {
-        setError(err.message);
+      } catch (error) {
+        console.error("Error fetching trips:", error);
+        setError(error.message);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchTrips();
-  }, [initialTrips.length]);
-
-  // Optional: Real-time updates
-  useEffect(() => {
-    const channel = supabase
-      .channel("trips_changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "trips",
-        },
-        (payload) => {
-          setTrips((current) => {
-            const newTrips = [...current];
-            const index = newTrips.findIndex((t) => t.id === payload.new.id);
-
-            if (payload.eventType === "DELETE") {
-              if (index >= 0) newTrips.splice(index, 1);
-            } else if (index >= 0) {
-              newTrips[index] = payload.new;
-            } else {
-              newTrips.push(payload.new);
-            }
-
-            return newTrips;
-          });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    getTrips();
   }, []);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const { email } = await getUser();
-        const isSubscribed = await supabase
-          .from("profiles")
-          .select("is_subscribed")
-          .eq("email", email)
-          .maybeSingle();
-        console.log("User subscription status:", isSubscribed);
-
-        if (isSubscribed.data?.is_subscribed) {
-          setTripLink("/dashboard/trips/new");
-        } else {
-          setTripLink("/pricing");
-        }
-      } catch (err) {
-        console.error("Error fetching user:", err);
-        setTripLink("/pricing");
-      }
-    };
-    fetchUser();
-  }, []);
+    if (isSubscribed) {
+      setTripLink("/dashboard/trips/new");
+    } else {
+      setTripLink("/pricing");
+    }
+  }, [isSubscribed]);
 
   if (loading) {
     return (
