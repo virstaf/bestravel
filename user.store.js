@@ -57,6 +57,7 @@ const useUserStore = create(
           });
           set({ isLoading: false });
         }
+        set({ isLoading: false });
       },
     }),
     {
