@@ -1,6 +1,6 @@
 import React from "react";
 
-const ReservationPage = () => {
+const AdminReservationPage = () => {
   return (
     <div className="reservation-page">
       <h1>Reservation Page</h1>
@@ -8,4 +8,4 @@ const ReservationPage = () => {
   );
 };
 
-export default ReservationPage;
+export default AdminReservationPage;

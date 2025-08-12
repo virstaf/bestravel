@@ -44,22 +44,22 @@ const data = {
     },
     {
       title: "Reservations",
-      url: "/reservation",
+      url: "/admin/reservation",
       icon: IconListDetails,
     },
     {
       title: "Deals & Offers",
-      url: "#",
+      url: "/admin/deals",
       icon: IconChartBar,
     },
     {
       title: "User Management",
-      url: "#",
+      url: "/admin/users",
       icon: IconFolder,
     },
     {
       title: "Partners",
-      url: "#",
+      url: "/admin/partners",
       icon: IconUsers,
     },
   ],
