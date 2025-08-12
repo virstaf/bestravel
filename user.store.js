@@ -26,7 +26,10 @@ const useUserStore = create(
           const { profile: userProfile } = await getProfileAction(authUser?.id);
 
           if (authUser && userProfile) {
-            const plan = userProfile.subscription_plan || null;
+            const plan =
+              userProfile.subscription_plan !== "inactive"
+                ? userProfile.subscription_plan
+                : null;
             const expiresAt = getFormattedDateTime(
               userProfile.subscription_end || userProfile.trial_ends_at
             );

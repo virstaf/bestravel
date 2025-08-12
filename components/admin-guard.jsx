@@ -1,10 +1,7 @@
-// "use client";
-
 import useUserStore from "@/user.store";
 import { redirect } from "next/navigation";
 
-export const AuthGuard = async ({ children }) => {
-  // const user = await getUser();
+export const AdminGuard = async ({ children }) => {
   const { isLoading, fetchUser, user } = useUserStore.getState();
 
   await fetchUser();
@@ -18,15 +15,17 @@ export const AuthGuard = async ({ children }) => {
   }
 
   if (!isLoading && !user) {
-    console.error("Not authenticated!");
+    console.error("auth err!");
     redirect("/auth/login");
   }
 
-  if (user?.role === "ADMIN") {
-    redirect("/admin");
+  if (user && user?.role !== "ADMIN") {
+    redirect("/dashboard"); // Redirect to home or an error page
   }
 
   if (user) {
     return <>{children}</>;
   }
+
+  //   return <>{children}</>;
 };

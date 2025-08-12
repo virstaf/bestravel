@@ -6,9 +6,6 @@ import {
   IconChartBar,
   IconDashboard,
   IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
   IconFolder,
   IconHelp,
   IconInnerShadowTop,
@@ -47,7 +44,7 @@ const data = {
     },
     {
       title: "Reservations",
-      url: "#",
+      url: "/reservation",
       icon: IconListDetails,
     },
     {

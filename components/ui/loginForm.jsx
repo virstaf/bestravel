@@ -18,7 +18,6 @@ import { googleAuthAction, loginAction } from "@/actions/users";
 import { useEffect, useState, useTransition } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { getUser } from "@/lib/supabase/server";
 import Image from "next/image";
 import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
@@ -35,17 +34,26 @@ const formSchema = z.object({
 const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
+  const { user, isAuthenticated, fetchUser } = useUserStore();
   const router = useRouter();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const userObject = await getUser();
+    const getUser = async () => {
+      await fetchUser();
+      if (isAuthenticated) {
+        const isAdmin = user?.role === "ADMIN";
+        const isUser = user?.role === "USER";
 
-      if (userObject) {
-        redirect("/dashboard");
+        if (isAdmin) {
+          redirect("/admin");
+        }
+
+        if (isUser) {
+          redirect("/dashboard");
+        }
       }
     };
-    fetchUser();
+    getUser();
   }, []);
 
   async function onSubmit(values) {
@@ -63,10 +71,24 @@ const LoginForm = () => {
       description = "Welcome back";
 
       if (!errorMessage) {
-        const { token, user } = response;
-        useUserStore.setState({ token, isAuthenticated: true, user });
+        // const { token, user } = response;
+        // useUserStore.setState({ token, isAuthenticated: true, user });
         toast.success(title, { description: description });
-        router.replace("/dashboard");
+        await fetchUser();
+        if (isAuthenticated) {
+          const isAdmin = user?.role === "ADMIN";
+          const isUser = user?.role === "USER";
+
+          if (isAdmin) {
+            router.replace("/admin");
+          }
+
+          if (isUser) {
+            router.replace("/dashboard");
+          }
+        }
+
+        // router.replace("/dashboard");
       } else {
         toast.error("Error", { description: errorMessage });
       }

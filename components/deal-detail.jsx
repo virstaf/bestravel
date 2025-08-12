@@ -20,7 +20,7 @@ export default function DealDetail({ deal }) {
     <div className="space-y-6">
       <div>
         <Button variant="outline" asChild>
-          <Link href="/deals" className="flex items-center">
+          <Link href="/dashboard/deals" className="flex items-center">
             <ArrowLeftIcon className="h-4 w-4 mr-2" />
             Back to Deals
           </Link>

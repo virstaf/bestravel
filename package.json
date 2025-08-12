@@ -53,7 +53,6 @@
     "next": "15.2.1",
     "next-themes": "^0.4.6",
     "nodemailer": "^6.10.1",
-    "prettier": "^3.5.3",
     "react": "^19.0.0",
     "react-day-picker": "8.10.1",
     "react-dom": "^19.0.0",
@@ -78,6 +77,7 @@
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
+    "prettier": "^3.5.3",
     "tailwindcss": "^4"
   }
 }

@@ -6,13 +6,11 @@ import LogoutButton from "./logout-button";
 import Link from "next/link";
 import { Button } from "./button";
 import { usePathname } from "next/navigation";
-import { useProfileContext } from "@/contexts/profile";
 import useUserStore from "@/user.store";
 import { Loader } from "lucide-react";
 
 const UserProfile = ({ className }) => {
   const [logoutOpen, setLogoutOpen] = useState(false);
-  // const { profile, isLoading } = useProfileContext();
   const pathname = usePathname();
 
   const { fetchUser, isLoading, isAuthenticated, user } = useUserStore();

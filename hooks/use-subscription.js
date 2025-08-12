@@ -1,9 +1,11 @@
 import { useProfileContext } from "@/contexts/profile";
+import useUserStore from "@/user.store";
 import { useState, useEffect } from "react";
 
 export const useSubscription = () => {
   const [plan, setPlan] = useState({ plan: null, badge: null, icon: null });
-  const { profile, isLoading } = useProfileContext();
+  // const { profile, isLoading } = useProfileContext();
+  const { user: profile, isLoading } = useUserStore.getState();
 
   useEffect(() => {
     const fetchSubscriptionPlan = async () => {
