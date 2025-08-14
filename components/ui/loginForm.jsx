@@ -75,18 +75,16 @@ const LoginForm = () => {
         // useUserStore.setState({ token, isAuthenticated: true, user });
         toast.success(title, { description: description });
         await fetchUser();
-        if (isAuthenticated) {
-          const isAdmin = user?.role === "ADMIN";
-          const isUser = user?.role === "USER";
+        // if (isAuthenticated) {
+        const isAdmin = user?.role === "ADMIN";
+        // const isUser = user?.role === "USER";
 
-          if (isAdmin) {
-            router.replace("/admin");
-          }
-
-          if (isUser) {
-            router.replace("/dashboard");
-          }
+        if (isAdmin) {
+          router.replace("/admin");
+        } else {
+          router.replace("/dashboard");
         }
+        // }
 
         // router.replace("/dashboard");
       } else {

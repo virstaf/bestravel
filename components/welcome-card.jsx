@@ -25,7 +25,7 @@ const WelcomeCard = () => {
       return;
     }
     if (profile) {
-      setUserName(profile?.username || "No name found");
+      setUserName(profile?.full_name.split(" ")[0] || "!");
     }
   }, [profile]);
 

@@ -56,7 +56,7 @@ export const loginAction = async (email, password) => {
         console.log("Profile created successfully:", response.data);
         const sendNotification = await resendEmail(
           {
-            fullname: data.user?.user_metadata?.fullname || email.split("@")[0],
+            fullname: full_name.split(" ")[0] || email.split("@")[0],
             membershipId: customerId,
             email,
           },
