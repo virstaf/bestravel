@@ -1,5 +1,5 @@
 ---
-title: "Introducing Virstravel Club: Why Smart Travellers Are Joining Travel Clubs Like Virstravel"
+title: "Travel Smart: Why Smart Travellers Are Joining Travel Clubs Like Virstravel"
 date: "2025-08-15"
 ---
 
