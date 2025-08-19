@@ -37,12 +37,24 @@ Access unpublished rates you won't find on public booking sites:
 
 Your key to **all travel needs**:
 
-| Perk              | Benefit                                |
+<!-- | Perk              | Benefit                                |
 | ----------------- | -------------------------------------- |
 | **eSIMs**         | Instant connectivity in 190+ countries |
 | **Lounge Access** | 1,300+ airports worldwide              |
 | **Cruise Deals**  | Member-only pricing                    |
-| **Concierge**     | 24/7 trip planning support             |
+| **Concierge**     | 24/7 trip planning support             | -->
+
+**eSIMs**  
+Instant connectivity in 190+ countries
+
+**Lounge Access**
+1,300+ airports worldwide
+
+**Cruise Deals**
+Member-only pricing
+
+**Concierge**  
+24/7 trip planning support
 
 ---
 
