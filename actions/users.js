@@ -123,7 +123,23 @@ export const signupAction = async (email, password, fullname) => {
 export const resetPasswordAction = async (email) => {
   try {
     const { auth } = await createClient();
-    const { error } = await auth.resetPasswordForEmail(email);
+    const { error } = await auth.resetPasswordForEmail(email, {
+      redirectTo: `${baseUrl}/auth/reset-password`,
+    });
+
+    if (error) throw error;
+    return { errorMessage: null };
+  } catch (err) {
+    return handleError(err);
+  }
+};
+
+export const updatePasswordAction = async (password) => {
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.auth.updateUser({
+      password: password,
+    });
 
     if (error) throw error;
     return { errorMessage: null };

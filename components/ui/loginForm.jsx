@@ -22,6 +22,7 @@ import Image from "next/image";
 import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
 import useUserStore from "@/user.store";
+import Link from "next/link";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -158,6 +159,15 @@ const LoginForm = () => {
             </div>
           </div>
 
+          <div className="flex justify-end -mt-6">
+            <Link
+              href="/auth/forgot-password"
+              className="text-sm text-muted-foreground hover:text-primary underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
           <div className="grid w-full gap-3">
             <Button type="submit" disabled={isPending}>
               {isPending ? <Loader2 className="animate-spin" /> : "Login"}
@@ -185,8 +195,21 @@ const LoginForm = () => {
           </div>
           <div className="-mt-4 max-w-[280px] mx-auto">
             <p className="text-muted-foreground text-sm text-center ">
-              By clicking continue, you agree to our Terms of Service and
-              Privacy Policy.
+              By clicking continue, you agree to our{" "}
+              <Link
+                href="/terms-of-service"
+                className="text-muted-foreground hover:text-primary underline"
+              >
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/privacy-policy"
+                className="text-muted-foreground hover:text-primary underline"
+              >
+                Privacy Policy
+              </Link>
+              .
             </p>
           </div>
         </form>
