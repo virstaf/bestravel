@@ -112,7 +112,7 @@ In an era of price fluctuations and booking fatigue, Virstravel Club helps you:
 
 Whether you're a solo adventurer or family planner, enjoy **premium travel at non-premium prices**.
 
-👉 [Join Virstravel Club Today](#) and unlock smarter travel for life.
+👉 [Join Virstravel Club Today](https://virstravelclub.com/auth/signup) and unlock smarter travel for life.
 
 **Tags**:  
 travel club, flight deals, hotel discounts, VIP travel, Virstravel Club, travel membership
