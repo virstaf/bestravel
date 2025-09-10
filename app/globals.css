@@ -423,3 +423,28 @@
 .article .callout {
   @apply bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500 my-6;
 }
+
+/* Metric Card */
+.metric-card-success {
+  @apply bg-green-50 border-l-4 border-green-500 md:min-w-[350px] hover:scale-105 transition-transform;
+
+  .icon {
+    @apply text-green-500 w-12 h-12;
+  }
+}
+
+.metric-card-warning {
+  @apply bg-yellow-50 border-l-4 border-yellow-500 md:min-w-[350px] hover:scale-105 transition-transform;
+
+  .icon {
+    @apply text-yellow-500 w-12 h-12;
+  }
+}
+
+.metric-card-error {
+  @apply bg-red-50 border-l-4 border-red-500 md:min-w-[350px] hover:scale-105 transition-transform;
+
+  .icon {
+    @apply text-red-500 w-12 h-12;
+  }
+}
