@@ -22,7 +22,7 @@ const getPageTitle = (page) => {
   }
 };
 
-const AdminNav = async () => {
+const AdminNav = () => {
   const pathname = usePathname();
   const page = pathname.split("/admin/").pop();
   const title = getPageTitle(page);

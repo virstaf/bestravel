@@ -3,7 +3,7 @@ import MetricCard from "./metric-card";
 
 const MetricList = ({ metrics }) => {
   return (
-    <section className="w-full h-full flex flex-col mb-8">
+    <section className="w-full flex flex-col mb-8">
       <h2 className="mb-4 text-sm uppercase font-bold text-muted-foreground hidden">
         Summary
       </h2>
