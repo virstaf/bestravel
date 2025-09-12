@@ -48,6 +48,7 @@ export const subscribeAction = async (user, priceId) => {
 
   const { url } = await stripe.checkout.sessions.create({
     mode: "subscription",
+    payment_method_types: ["card", "klarna", "revolut_pay", "link"],
     line_items: [
       {
         price: priceId,
