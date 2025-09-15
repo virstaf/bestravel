@@ -7,7 +7,7 @@ export const getAllReservations = async () => {
     const supabase = await createAdminClient();
     const { reservations, error } = await supabase.from("reservations").select("*");
     // const { users } = await supabase.from("users").select("*");
-    // const { trips } = await supabase.from("trips").select("*");
+    // const { trips } = await supabase.from("trips").select("*"); 
 
     if (error) {
       throw new Error("Error fetching reservations");
