@@ -1,32 +1,17 @@
-// "use client";
+// app/protected/AuthGuard.js (server component)
+import { redirect } from 'next/navigation';
+import { getUser } from '@/lib/supabase/server';
 
-import useUserStore from "@/user.store";
-import { redirect } from "next/navigation";
+export default async function AuthGuard({ children }) {
+  const user = await getUser();
 
-export const AuthGuard = async ({ children }) => {
-  // const user = await getUser();
-  const { isLoading, fetchUser, user } = useUserStore.getState();
-
-  await fetchUser();
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    ); // or a spinner component
+  if (!user) {
+    redirect('/auth/login');
   }
 
-  if (!isLoading && !user) {
-    console.error("Not authenticated!");
-    redirect("/auth/login");
+  if (user?.role === 'ADMIN') {
+    redirect('/admin');
   }
 
-  if (user?.role === "ADMIN") {
-    redirect("/admin");
-  }
-
-  if (user) {
-    return <>{children}</>;
-  }
-};
+  return <>{children}</>;
+}
