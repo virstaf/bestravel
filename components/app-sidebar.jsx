@@ -44,7 +44,7 @@ const data = {
     },
     {
       title: "Reservations",
-      url: "/admin/reservation",
+      url: "/admin/reservations",
       icon: IconListDetails,
     },
     {

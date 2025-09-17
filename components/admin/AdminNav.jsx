@@ -28,9 +28,13 @@ const AdminNav = () => {
   const title = getPageTitle(page);
 
   return (
-    <div className="admin-navbar min-w-full h-16 backdrop-blur-md text-primary border-b flex items-center px-4">
-      <SidebarTrigger className="mr-4" />
-      <h1 className="text-lg font-semibold">{title}</h1>
+    <div className="admin-navbar min-w-full h-16 backdrop-blur-md text-primary border-b flex items-center justify-between px-4">
+      <div className="flex items-center">
+        <SidebarTrigger className="mr-4" />
+
+        <h1 className="text-lg font-semibold">{title}</h1>
+      </div>
+      <div className="pr-8 text-small text-gray-600 font-mono uppercase">Admin</div>
     </div>
   );
 };

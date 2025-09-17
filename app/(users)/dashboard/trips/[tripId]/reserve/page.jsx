@@ -9,7 +9,7 @@ import { fetchTrip } from "@/actions/trips";
 const page = async ({ params }) => {
   const { tripId } = await params;
 
-  const user = await getUser();
+
   if (!user) redirect("/auth/login");
 
   const { data: trip, error } = await fetchTrip(tripId, user.id);
