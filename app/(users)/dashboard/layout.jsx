@@ -1,4 +1,5 @@
-import { AuthGuard } from "@/components/auth";
+import AuthGuard from "@/components/auth";
+import ClientLayout from "@/components/ClientLayout";
 import DashNav from "@/components/dash-nav";
 import LandingFooter from "@/components/LandingFooter";
 import SideBar from "@/components/SideBar";
