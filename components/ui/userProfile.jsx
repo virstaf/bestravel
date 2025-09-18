@@ -6,39 +6,41 @@ import LogoutButton from "./logout-button";
 import Link from "next/link";
 import { Button } from "./button";
 import { usePathname } from "next/navigation";
-import useUserStore from "@/user.store";
-import { Loader } from "lucide-react";
+import { getProfileAction } from "@/actions/profiles";
 
 const UserProfile = ({ className }) => {
+  const [loading, setLoading] = useState(true);
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const pathname = usePathname();
 
-  const { fetchUser, isLoading, isAuthenticated, user } = useUserStore();
   useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const {profile} = await getProfileAction();
+        setUser(profile);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchUser();
   }, []);
-
-  if (isLoading) {
-    return <Loader className="animate-spin h-6 w-6 text-gray-500" />;
-  }
 
   return (
     <div
       onClick={() => setLogoutOpen((prev) => !prev)}
       className={`${className} flex user-group gap-2 items-center justify-center cursor-pointer relative`}
     >
-      <span className="text-sm text-muted-foreground user-group-hover:text-green-500">
-        {/* {email} */}
-      </span>
-      <CurrentUserAvatar />
+      <CurrentUserAvatar user={user} />
       <div
         className={`${
           logoutOpen ? "flex" : "hidden"
         } flex-col items-center gap-2 backdrop-blur-xs bg-white p-6 rounded-2xl shadow absolute top-10 right-0`}
       >
-        {isAuthenticated && (
-          <span className="text-muted-foreground">{user.email}</span>
-        )}
+        <span className="text-muted-foreground">{user?.email}</span>
         {!pathname.includes("dashboard") && (
           <Button asChild>
             <Link href="/dashboard">Dashboard</Link>

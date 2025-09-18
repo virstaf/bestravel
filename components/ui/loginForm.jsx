@@ -23,6 +23,7 @@ import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
 import useUserStore from "@/user.store";
 import Link from "next/link";
+import { getUser } from "@/lib/supabase/server";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -35,26 +36,18 @@ const formSchema = z.object({
 const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
-  const { user, isAuthenticated, fetchUser } = useUserStore();
   const router = useRouter();
 
   useEffect(() => {
-    const getUser = async () => {
-      await fetchUser();
-      if (isAuthenticated) {
-        const isAdmin = user?.role === "ADMIN";
-        const isUser = user?.role === "USER";
-
-        if (isAdmin) {
-          redirect("/admin");
-        }
-
-        if (isUser) {
-          redirect("/dashboard");
-        }
+    const checkUser = async () => {
+      const user = await getUser();
+      if (user && user.role === "ADMIN") {
+        router.replace("/admin");
+      } else if (user) {
+        router.replace("/dashboard");
       }
     };
-    getUser();
+    checkUser();
   }, []);
 
   async function onSubmit(values) {
@@ -72,22 +65,15 @@ const LoginForm = () => {
       description = "Welcome back";
 
       if (!errorMessage) {
-        // const { token, user } = response;
-        // useUserStore.setState({ token, isAuthenticated: true, user });
         toast.success(title, { description: description });
         await fetchUser();
-        // if (isAuthenticated) {
         const isAdmin = user?.role === "ADMIN";
-        // const isUser = user?.role === "USER";
 
         if (isAdmin) {
           router.replace("/admin");
         } else {
           router.replace("/dashboard");
         }
-        // }
-
-        // router.replace("/dashboard");
       } else {
         toast.error("Error", { description: errorMessage });
       }

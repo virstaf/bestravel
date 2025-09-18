@@ -1,7 +1,7 @@
 import React from 'react'
 
-const ReservationDetailPage = ({ params}) => {
-    const { ref_id } = params;
+const ReservationDetailPage = async ({ params}) => {
+    const { ref_id } = await params;
   return (
     <main>ReservationDetailPage {ref_id}</main>
   )

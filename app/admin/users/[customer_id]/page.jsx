@@ -1,6 +1,7 @@
 import React from 'react'
 
-const UserDetailPage = ({ params: { customer_id } }) => {
+const UserDetailPage = async ({ params }) => {
+  const { customer_id } = await params;
   return (
     <main>UserDetailPage {customer_id}</main>
   )

@@ -3,11 +3,18 @@ import DashNav from "@/components/dash-nav";
 import LandingFooter from "@/components/LandingFooter";
 import SideBar from "@/components/SideBar";
 import { SubscribeGuard } from "@/components/ui/subscription-guard";
+import { getUser } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function DashboardLayout({ children }) {
+export default async function DashboardLayout({ children }) {
+  const user = await getUser();
+
+  if (!user) {
+    redirect("/auth/login");
+  }
+
   return (
-    <AuthGuard>
-      {/* <SubscribeGuard> */}
+    <>
       <div className="min-h-screen relative overflow-hidden mb-[100px] sm:mb-0">
         <main className="container mx-auto">
           <div className="flex flex-col w-full">
@@ -22,7 +29,6 @@ export default function DashboardLayout({ children }) {
         </main>
         <LandingFooter />
       </div>
-      {/* </SubscribeGuard> */}
-    </AuthGuard>
+    </>
   );
 }
