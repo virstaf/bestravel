@@ -35,10 +35,7 @@ const CurrentUserAvatar = ({ user }) => {
               <span className="text-primary">{icon}</span>
             </TooltipTrigger>
             <TooltipContent>
-              <span className="text-white">
-                {plan}
-                {badge}
-              </span>
+              <span className="text-white">{badge}</span>
             </TooltipContent>
           </Tooltip>
         ) : (
