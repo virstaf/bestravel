@@ -13,9 +13,9 @@ export const generateStaticParams = () => {
   }));
 };
 
-export const generateMetadata = ({ params }) => {
+export const generateMetadata = async ({ params }) => {
   const posts = getSortedPostsData();
-  const postId = params.postId;
+  const postId = await params?.postId;
   const post = posts.find((p) => p.id === postId);
   if (!post) {
     return <div>Post not found</div>;
@@ -28,7 +28,7 @@ export const generateMetadata = ({ params }) => {
 
 const PostPage = async ({ params }) => {
   const posts = getSortedPostsData();
-  const postId = params.postId;
+  const postId = await params?.postId;
   const post = posts.find((p) => p.id === postId);
   if (!post) {
     return <div>Post not found</div>;

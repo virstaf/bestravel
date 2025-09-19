@@ -71,7 +71,7 @@ export async function getPostExcerpt(id, title) {
   const excerptWords = words.slice(0, 50);
 
   // Add ellipsis if we cut off the text
-  const excerpt = excerptWords.join(" ") + (words.length > 50 ? "..." : "");
+  const excerpt = excerptWords.join(" ") + (words.length > 50 ? "... " : "");
 
   return excerpt;
 }
