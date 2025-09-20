@@ -128,17 +128,23 @@ export function AppSidebar({ ...props }) {
   useEffect(() => {
     const fetchUser = async () => {
       const { profile } = await getProfileAction();
+      const initials = profile?.full_name
+        .split(" ")
+        .map((n) => n[0])
+        .join("");
+      // console.log("initials:::", initials);
       setUser(() => {
         return {
           name: profile?.full_name,
           email: profile?.email,
           avatar: profile?.avatar_url || "",
+          initials: initials,
         };
       });
     };
     fetchUser();
   }, []);
-  console.log("user state:::", user);
+  // console.log("user state:::", user);
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -146,7 +152,7 @@ export function AppSidebar({ ...props }) {
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5 bg-primary"
+              className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <Logo href="/admin" />
             </SidebarMenuButton>
