@@ -1,17 +1,11 @@
 "use client";
 
-import * as React from "react";
+// import * as React from "react";
 import {
-  IconCamera,
   IconChartBar,
   IconDashboard,
-  IconDatabase,
   IconFolder,
-  IconHelp,
-  IconInnerShadowTop,
   IconListDetails,
-  IconReport,
-  IconSearch,
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react";
@@ -29,6 +23,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Logo from "./ui/logo";
+import { getProfileAction } from "@/actions/profiles";
+import { useEffect, useState } from "react";
 
 const data = {
   user: {
@@ -55,12 +51,12 @@ const data = {
     {
       title: "User Management",
       url: "/admin/users",
-      icon: IconFolder,
+      icon: IconUsers,
     },
     {
       title: "Partners",
       url: "/admin/partners",
-      icon: IconUsers,
+      icon: IconFolder,
     },
   ],
   // navClouds: [
@@ -128,14 +124,29 @@ const data = {
 };
 
 export function AppSidebar({ ...props }) {
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { profile } = await getProfileAction();
+      setUser(() => {
+        return {
+          name: profile?.full_name,
+          email: profile?.email,
+          avatar: profile?.avatar_url || "",
+        };
+      });
+    };
+    fetchUser();
+  }, []);
+  console.log("user state:::", user);
   return (
-    <Sidebar collapsible="offcanvas" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              className="data-[slot=sidebar-menu-button]:!p-1.5 bg-primary"
             >
               <Logo href="/admin" />
             </SidebarMenuButton>
@@ -148,7 +159,7 @@ export function AppSidebar({ ...props }) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );

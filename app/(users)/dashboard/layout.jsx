@@ -1,9 +1,7 @@
-import AuthGuard from "@/components/auth";
-import ClientLayout from "@/components/ClientLayout";
+import { getProfileAction } from "@/actions/profiles";
 import DashNav from "@/components/dash-nav";
 import LandingFooter from "@/components/LandingFooter";
 import SideBar from "@/components/SideBar";
-import { SubscribeGuard } from "@/components/ui/subscription-guard";
 import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -13,6 +11,14 @@ export default async function DashboardLayout({ children }) {
   if (!user) {
     redirect("/auth/login");
   }
+
+  const {profile} = await getProfileAction();
+
+  if (profile?.role === "ADMIN") {
+    redirect("/admin");
+  }
+
+
 
   return (
     <>

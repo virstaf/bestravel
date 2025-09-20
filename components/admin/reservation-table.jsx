@@ -1,7 +1,7 @@
 "use client";
 
 // pages/index.js
-import { useState, useMemo } from 'react';
+import { useState, useMemo } from "react";
 import Table from "../Table/Table";
 import { getFormattedDateTime } from "@/lib/getFormattedDate";
 import { redirect } from "next/navigation";
@@ -11,6 +11,7 @@ import { UserCheck } from "lucide-react";
 import { Eye } from "lucide-react";
 import { Mail } from "lucide-react";
 import { Trash2 } from "lucide-react";
+import { set } from "date-fns";
 
 const ReservationTable = ({ title, reservations }) => {
   if (!reservations || reservations.length === 0) {
@@ -21,14 +22,6 @@ const ReservationTable = ({ title, reservations }) => {
       </div>
     );
   }
-
-  // State to track which row's menu is open
-  const [openMenuId, setOpenMenuId] = useState(null);
-
-  // Function to close menu when clicking outside
-  const handleClickOutside = () => {
-    setOpenMenuId(null);
-  };
 
   const columns = [
     { key: "srNo", header: "S/N", sortable: true, align: "center" },
@@ -70,6 +63,13 @@ const ReservationTable = ({ title, reservations }) => {
       header: "Actions",
       align: "center",
       render: (_, row) => {
+        // State to track which row's menu is open
+        const [openMenuId, setOpenMenuId] = useState(null);
+
+        // Function to close menu when clicking outside
+        const handleClickOutside = () => {
+          setOpenMenuId(null);
+        };
         const isOpen = openMenuId === row.id;
 
         const handleViewDetails = () => {
@@ -100,15 +100,23 @@ const ReservationTable = ({ title, reservations }) => {
 
         return (
           <div className="flex justify-center relative">
-            <button
-              onClick={(e) => {
+            <div
+              onMouseEnter={(e) => {
                 e.stopPropagation();
-                setOpenMenuId(isOpen ? null : row.id);
+                setTimeout(() => {
+                  setOpenMenuId(isOpen ? null : row.id);
+                }, 1000);
               }}
-              className="text-gray-500 hover:text-blue-600 p-1 rounded-full hover:bg-gray-100"
+              onMouseLeave={(e) => {
+                e.stopPropagation();
+                setTimeout(() => {
+                  setOpenMenuId(null);
+                }, 5000);
+              }}
+              className="text-gray-500 hover:text-primary p-1 rounded-full hover:bg-gray-100 cursor-pointer"
             >
               <List className="h-4 w-4" />
-            </button>
+            </div>
 
             {isOpen && (
               <>
