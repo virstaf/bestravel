@@ -1,11 +1,23 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { AdminGuard } from "@/components/admin-guard";
 import AdminNav from "@/components/admin/AdminNav";
+import { getUser } from "@/lib/supabase/server";
+import { getProfileAction } from "@/actions/profiles";
+import { redirect } from "next/navigation";
 
-export default function AdminLayout({ children }) {
+export default async function AdminLayout({ children }) {
+  const user = await getUser();
+
+  if (!user) {
+    redirect("/auth/login");
+  }
+
+  const { profile } = await getProfileAction();
+
+  if (profile?.role === "USER") {
+    redirect("/dashboard");
+  }
   return (
-    // <AdminGuard>
     <SidebarProvider>
       <AppSidebar />
       <main className="relative w-full min-h-screen flex flex-col">
@@ -14,6 +26,5 @@ export default function AdminLayout({ children }) {
         {children}
       </main>
     </SidebarProvider>
-    // </AdminGuard>
   );
 }

@@ -5,6 +5,7 @@ import { generateCustomerId, handleError } from "../lib/utils.ts";
 import { redirect } from "next/navigation.js";
 import { resendEmail } from "./resendEmail.js";
 import useUserStore from "@/user.store.js";
+import { revalidatePath } from "next/cache.js";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASEURL || "https://virstravelclub.com";
 
@@ -71,6 +72,8 @@ export const loginAction = async (email, password) => {
         }
       }
     }
+
+    // revalidatePath("/", "layout");
 
     return { errorMessage: null, token, user };
   } catch (error) {

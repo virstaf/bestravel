@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 
 export async function middleware(request) {
+  // console.log("middleware running!!");
   return await updateSession(request);
 }
 

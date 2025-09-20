@@ -1,17 +1,18 @@
-// app/protected/AuthGuard.js (server component)
-import { redirect } from 'next/navigation';
-import { getUser } from '@/lib/supabase/server';
+import { getUser } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default async function AuthGuard({ children }) {
+export const AuthGuard = async ({ children }) => {
   const user = await getUser();
 
   if (!user) {
-    redirect('/auth/login');
+    redirect("/auth/login");
   }
 
-  if (user?.role === 'ADMIN') {
-    redirect('/admin');
+  if (user?.role === "ADMIN") {
+    redirect("/admin");
   }
 
-  return <>{children}</>;
-}
+  if (user) {
+    return <>{children}</>;
+  }
+};

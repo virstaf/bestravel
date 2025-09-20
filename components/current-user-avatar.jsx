@@ -1,39 +1,26 @@
-"use client";
-
-import { useCurrentUserImage } from "@/hooks/use-current-user-image";
-import { useCurrentUserName } from "@/hooks/use-current-user-name";
+// "use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSubscription } from "@/hooks/use-subscription";
 import { LoaderIcon } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useEffect, useState } from "react";
+import determineSubscriptionPlan from "@/utils/determineSubscription";
 
-const CurrentUserAvatar = () => {
-  const profileImage = useCurrentUserImage();
-  const name = useCurrentUserName();
+const CurrentUserAvatar = ({ user }) => {
+  const profileImage = user?.avatar_url;
+  const name = user?.full_name;
   const initials = name
     ?.split(" ")
     ?.map((word) => word[0])
     ?.join("")
     ?.toUpperCase();
 
-  const [planIcon, setPlanIcon] = useState(null);
-  const [planBadge, setPlanBadge] = useState(null);
-  const { icon, badge } = useSubscription();
-
-  useEffect(() => {
-    if (icon) {
-      setPlanIcon(icon);
-    }
-    if (badge) {
-      setPlanBadge(badge);
-    }
-  }, [icon, badge]);
+  const { plan, icon, badge } = determineSubscriptionPlan(
+    user?.subscription_plan
+  );
 
   return (
     <div className="relative w-full h-full">
@@ -42,13 +29,13 @@ const CurrentUserAvatar = () => {
         <AvatarFallback>{initials}</AvatarFallback>
       </Avatar>
       <div className="absolute -bottom-1 -right-2 text-xs">
-        {planIcon ? (
+        {icon ? (
           <Tooltip>
             <TooltipTrigger>
-              <span className="text-primary">{planIcon}</span>
+              <span className="text-primary">{icon}</span>
             </TooltipTrigger>
             <TooltipContent>
-              <span className="text-white">{planBadge}</span>
+              <span className="text-white">{badge}</span>
             </TooltipContent>
           </Tooltip>
         ) : (

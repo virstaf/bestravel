@@ -1,9 +1,10 @@
 import { useProfileContext } from "@/contexts/profile";
-import { useSubscription } from "@/hooks/use-subscription";
+import determineSubscriptionPlan from "@/utils/determineSubscription";
 
 const SubscriptionStatus = () => {
   const { profile, isLoading } = useProfileContext();
-  const { plan, icon, expiry } = useSubscription();
+  const { plan, icon } = determineSubscriptionPlan(profile?.subscription_plan);
+  const expiry = profile?.subscription_end;
 
   const formattedExpiry = expiry
     ? new Date(expiry).toLocaleDateString("en-US", {

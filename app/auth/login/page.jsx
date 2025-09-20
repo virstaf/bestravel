@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import LoginForm from "@/components/ui/loginForm";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,26 +18,19 @@ const LoginPage = () => {
           />
         </Link>
       </div>
-      <div className="absolute bottom-10 left-10 hidden lg:block max-w-[450px]">
-        {/* <p className="text-white text-xl">
-          "Virstravel Perks Club helped me save hundreds on my dream vacation!"
-        </p>
-        <p className="text-amber-100 text-lg">- Jessica M.</p> */}
-      </div>
+      <div className="absolute bottom-10 left-10 hidden lg:block max-w-[450px]"></div>
       <div className="absolute right-10 top-5">
         <Link
           href="/auth/signup"
           className="text-sm !underline hover:text-green-500"
         >
           Sign up?
-          {/* <Button variant="secondary"></Button> */}
         </Link>
       </div>
       <div className="w-full h-full hidden bg-gray-500 lg:block overflow-hidden">
         <Image
           className="w-full h-full object-cover"
           src="/images/travel_portrait.jpg"
-          // src="https://drive.google.com/uc?export=view&id=1b7OpxCqizKN66SkcQ5kE6ec9MK9MJHlW"
           width="2624"
           height="3280"
           optimize="true"

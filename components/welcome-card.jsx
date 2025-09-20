@@ -1,6 +1,5 @@
 "use client";
 
-import { useCurrentUserName } from "@/hooks/use-current-user-name";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { useProfileContext } from "@/contexts/profile";
@@ -9,15 +8,6 @@ import { useEffect, useState } from "react";
 const WelcomeCard = () => {
   const [userName, setUserName] = useState(null);
   const { profile, isLoading } = useProfileContext();
-
-  // if (isLoading) {
-  //   setUserName("Loading...");
-  //   return (
-  //     <div className="flex items-center justify-center h-full">
-  //       <span className="text-sm text-muted-foreground">Loading...</span>
-  //     </div>
-  //   );
-  // }
 
   useEffect(() => {
     if (isLoading) {
