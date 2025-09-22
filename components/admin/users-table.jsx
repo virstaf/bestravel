@@ -3,6 +3,9 @@
 import React from "react";
 import Table from "../Table/Table";
 import { redirect } from "next/navigation";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
+import { Button } from "../ui/button";
+import { MoreHorizontal } from "lucide-react";
 
 const UsersTable = ({ title, users }) => {
   if (!users || users.length === 0) {
@@ -52,10 +55,21 @@ const UsersTable = ({ title, users }) => {
       header: "Actions",
       align: "center",
       render: (_, row) => (
-        <div className="flex space-x-2 justify-center">
-          <button className="text-blue-600 hover:text-blue-800">Edit</button>
-          <button className="text-red-600 hover:text-red-800">Delete</button>
-        </div>
+        <HoverCard>
+          <HoverCardTrigger asChild>
+            <Button variant="link">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent
+            side="top"
+            align="center"
+            className="w-48 p-0 bg-transparent shadow-none border-0"
+          >
+            {/* <ReservationActions row={row} setData={() => {}} /> */}
+            <div>Just something...</div>
+          </HoverCardContent>
+        </HoverCard>
       ),
     },
   ];

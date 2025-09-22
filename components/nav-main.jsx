@@ -15,7 +15,8 @@ import { usePathname } from "next/navigation";
 
 export function NavMain({ items }) {
   const pathname = usePathname();
-  const currentPath = pathname.split("/")[2];
+  const currentPath = pathname.split("/")[2] || pathname.split("/")[1];
+  // console.log("Current Path:", currentPath);
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
