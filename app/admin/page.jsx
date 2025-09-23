@@ -1,9 +1,14 @@
+import { getAllReservations } from "@/actions/admin/reservation";
+import { getAllUsers } from "@/actions/admin/users";
 import MetricList from "@/components/admin/metric-list";
-import PendingRequestsTable from "@/components/admin/pending-requests-table";
+import ReservationTable from "@/components/admin/reservation-table";
+import UsersTable from "@/components/admin/users-table";
 import { summaryMetrics } from "@/lib/admin/dummy-data";
 import React from "react";
 
-const AdminHome = () => {
+const AdminHome = async () => {
+  const reservations = await getAllReservations();
+  const users = await getAllUsers();
   return (
     <div className="p-4 md:p-8">
       <MetricList metrics={summaryMetrics} />
@@ -12,7 +17,14 @@ const AdminHome = () => {
         <h2 className=" text-sm uppercase font-bold text-gray-500 ">
           Requires Attention
         </h2>
-        <PendingRequestsTable title={"Pending Requests"} />
+        <div className="">
+          <ReservationTable
+            title={"Recent Reservations"}
+            reservations={reservations}
+            limit={5}
+          />
+          <UsersTable title={"Recent Users"} users={users} limit={5} />
+        </div>
       </section>
 
       <section className="mt-8">

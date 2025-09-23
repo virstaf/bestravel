@@ -3,8 +3,9 @@
 // pages/index.js
 import React from "react";
 import Table from "../Table/Table";
+import { getFormattedDateTime } from "@/lib/getFormattedDate";
 
-const PendingRequestsTable = ({title}) => {
+const PendingRequestsTable = ({ title, reservations }) => {
   const columns = [
     {
       key: "id",
@@ -51,46 +52,16 @@ const PendingRequestsTable = ({title}) => {
     },
   ];
 
-  const data = [
-    { id: 1, name: "John Doe", email: "john@example.com", status: "active" },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane@example.com",
-      status: "inactive",
-    },
-    { id: 3, name: "Bob Johnson", email: "bob@example.com", status: "active" },
-    {
-      id: 4,
-      name: "Alice Brown",
-      email: "alice@example.com",
-      status: "active",
-    },
-    {
-      id: 5,
-      name: "Charlie Wilson",
-      email: "charlie@example.com",
-      status: "inactive",
-    },
-    {
-      id: 6,
-      name: "Diana Prince",
-      email: "diana@example.com",
-      status: "active",
-    },
-    {
-      id: 7,
-      name: "Edward Davis",
-      email: "edward@example.com",
-      status: "inactive",
-    },
-    {
-      id: 8,
-      name: "Fiona Miller",
-      email: "fiona@example.com",
-      status: "active",
-    },
-  ];
+  const data = reservations.map((res, index) => ({
+    srNo: index + 1,
+    ref_id: "REQ-00" + res.ref_id,
+    user: res.user.name,
+    plan: res.user.plan,
+    trip: res.trip.name,
+    type: res.type,
+    submitted: getFormattedDateTime(res.created_at),
+    status: res.status,
+  }));
 
   const handleRowClick = (row) => {
     console.log("Row clicked:", row);
@@ -98,7 +69,9 @@ const PendingRequestsTable = ({title}) => {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-2xl text-muted-foreground px-4 font-semibold mb-6">{title}</h1>
+      <h1 className="text-2xl text-muted-foreground px-4 font-semibold mb-6">
+        {title}
+      </h1>
 
       <Table
         columns={columns}

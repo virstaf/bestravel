@@ -9,7 +9,7 @@ import { HoverCard, HoverCardContent } from "../ui/hover-card";
 import { HoverCardTrigger } from "@radix-ui/react-hover-card";
 import ReservationActions from "./reservation-actions";
 
-const ReservationTable = ({ title, reservations }) => {
+const ReservationTable = ({ title, reservations, limit }) => {
   if (!reservations || reservations.length === 0) {
     return (
       <div className="p-4">
@@ -105,7 +105,7 @@ const ReservationTable = ({ title, reservations }) => {
         striped={true}
         hover={true}
         pagination={true}
-        pageSize={5}
+        pageSize={limit ||10}
         onRowClick={handleRowClick}
         className="mb-8"
       />
