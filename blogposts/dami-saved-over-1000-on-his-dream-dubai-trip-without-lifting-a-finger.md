@@ -64,5 +64,5 @@ Whether you're planning an anniversary, birthday, honeymoon, or solo reset, our 
 **Have questions?**  
 📧 Speak to a Travel Assistant now at [bookings@virstravelclub.com](mailto:bookings@virstravelclub.com)
 
-**Tags**:  
-travel savings, Dubai trip, luxury travel, travel assistant, Virstravel Club, hotel discounts
+<!-- **Tags**:
+travel savings, Dubai trip, luxury travel, travel assistant, Virstravel Club, hotel discounts -->
