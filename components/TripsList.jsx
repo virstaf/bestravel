@@ -13,46 +13,12 @@ import Link from "next/link";
 import { Calendar } from "lucide-react";
 import { MapPin } from "lucide-react";
 import { UsersIcon } from "lucide-react";
-import { fetchTrips } from "@/actions/trips";
-import { getProfileAction } from "@/actions/profiles";
 
-const TripsList = ({ initialTrips = [], limit }) => {
-  const [trips, setTrips] = useState(initialTrips);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+const TripsList = ({ profile, trips , limit }) => {
   const [tripLink, setTripLink] = useState("/pricing");
-  // const { user, isSubscribed } = useUserStore.getState();
-  const [user, setUser] = useState(null);
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const isSubscribed = profile?.is_subscribed;
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      const { profile } = await getProfileAction();
-      setUser(profile);
-      setIsSubscribed(profile?.is_subscribed);
-    };
-    fetchUserProfile();
-  }, []);
-
-  // console.log("User:", user);
-  // console.log("Is Subscribed:", isSubscribed);
-
-  useEffect(() => {
-    const getTrips = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchTrips(user?.id);
-        setTrips(data || []);
-      } catch (error) {
-        console.error("Error fetching trips:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getTrips();
-  }, []);
-
+  
   useEffect(() => {
     if (isSubscribed) {
       setTripLink("/dashboard/trips/new");
@@ -61,19 +27,8 @@ const TripsList = ({ initialTrips = [], limit }) => {
     }
   }, [isSubscribed]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
 
-  if (error) {
-    return <div className="p-4 text-center text-red-500">Error: {error}</div>;
-  }
-
-  if (!trips.length) {
+  if (!trips || trips.length === 0) {
     return (
       <div className="text-center py-12 space-y-4">
         <h3 className="text-lg font-medium">No trips planned yet</h3>

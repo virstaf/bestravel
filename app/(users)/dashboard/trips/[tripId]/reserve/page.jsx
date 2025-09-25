@@ -1,25 +1,22 @@
 import DashHeader from "@/components/dash-header";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import ReservationWizard from "@/components/reservation-wizard";
 import { getUser } from "@/lib/supabase/server";
 import { fetchTrip } from "@/actions/trips";
 
 const page = async ({ params }) => {
   const { tripId } = await params;
+  const user = await getUser();
 
 
-  if (!user) redirect("/auth/login");
-
-  const { data: trip, error } = await fetchTrip(tripId, user.id);
+  const { data: trip, error } = await fetchTrip(tripId);
 
   if (error) {
     console.error("Error fetching trip:", error);
     notFound();
   }
-
-  // if (!trip) notFound();
 
   return (
     <div className="container mx-auto px-4 w-full h-full">
