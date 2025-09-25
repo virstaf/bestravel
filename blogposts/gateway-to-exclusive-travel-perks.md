@@ -83,5 +83,5 @@ With travel costs rising, Virstravel Club delivers **value, convenience, and con
 **Why pay more when you can travel smarter?**  
 👉 [Join Virstravel Club Today](/auth/signup) and unlock a world of travel perks.
 
-**Tags:**  
-travel membership, discounted flights, hotel deals, airport lounge, eSIM, travel perks, Virstravel Club
+<!-- **Tags:**  
+travel membership, discounted flights, hotel deals, airport lounge, eSIM, travel perks, Virstravel Club -->

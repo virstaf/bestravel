@@ -4,10 +4,7 @@ import React from "react";
 
 const UsersPage = async () => {
   const users = await getAllUsers();
-  // console.log(
-  //   "Users data:::",
-  //   (users && users[0]) || "No users found"
-  // );
+  
     return (
     <div className="p-4 md:p-8">
       <h1 className="text-2xl font-bold text-muted-foreground hidden">

@@ -2,12 +2,7 @@
 
 // import * as React from "react";
 import {
-  IconChartBar,
-  IconDashboard,
-  IconFolder,
-  IconListDetails,
   IconSettings,
-  IconUsers,
 } from "@tabler/icons-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -25,6 +20,7 @@ import {
 import Logo from "./ui/logo";
 import { getProfileAction } from "@/actions/profiles";
 import { useEffect, useState } from "react";
+import { adminNavLinks } from "@/lib/admin/dummy-data";
 
 const data = {
   user: {
@@ -32,33 +28,7 @@ const data = {
     email: "nyla@virstravelclub.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/admin",
-      icon: IconDashboard,
-    },
-    {
-      title: "Reservations",
-      url: "/admin/reservations",
-      icon: IconListDetails,
-    },
-    {
-      title: "Deals & Offers",
-      url: "/admin/deals",
-      icon: IconChartBar,
-    },
-    {
-      title: "User Management",
-      url: "/admin/users",
-      icon: IconUsers,
-    },
-    {
-      title: "Partners",
-      url: "/admin/partners",
-      icon: IconFolder,
-    },
-  ],
+  navMain: adminNavLinks,
   // navClouds: [
   //   {
   //     title: "Capture",

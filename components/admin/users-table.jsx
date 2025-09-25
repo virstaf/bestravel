@@ -3,8 +3,16 @@
 import React from "react";
 import Table from "../Table/Table";
 import { redirect } from "next/navigation";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
+import { Button } from "../ui/button";
+import { MoreHorizontal } from "lucide-react";
+import UserActions from "./user-actions";
 
-const UsersTable = ({ title, users }) => {
+const UsersTable = ({ title, users, limit }) => {
   if (!users || users.length === 0) {
     return (
       <div className="p-4">
@@ -52,10 +60,21 @@ const UsersTable = ({ title, users }) => {
       header: "Actions",
       align: "center",
       render: (_, row) => (
-        <div className="flex space-x-2 justify-center">
-          <button className="text-blue-600 hover:text-blue-800">Edit</button>
-          <button className="text-red-600 hover:text-red-800">Delete</button>
-        </div>
+        <HoverCard>
+          <HoverCardTrigger asChild>
+            <Button variant="link">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </HoverCardTrigger>
+          <HoverCardContent
+            side="top"
+            align="center"
+            className="w-48 p-0 bg-transparent shadow-none border-0"
+          >
+            <UserActions row={row} />
+            {/* <div>Just something...</div> */}
+          </HoverCardContent>
+        </HoverCard>
       ),
     },
   ];
@@ -73,7 +92,7 @@ const UsersTable = ({ title, users }) => {
 
   const handleRowClick = (row) => {
     console.log("Row clicked:", row);
-    redirect(`/admin/users/${row.id}`);
+    // redirect(`/admin/users/${row.id}`);
   };
 
   return (
@@ -88,7 +107,7 @@ const UsersTable = ({ title, users }) => {
         striped={true}
         hover={true}
         pagination={true}
-        pageSize={10}
+        pageSize={limit || 10}
         onRowClick={handleRowClick}
         className="mb-8"
       />

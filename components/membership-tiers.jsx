@@ -1,13 +1,14 @@
+import TiersTable from "./tiers-table";
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "./ui/table";
 import { tierTableHeaders, tierTableData } from "@/lib/data";
 
 const MembershipTiers = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 my-8">
-      <h2 className="mb-4 text-primary font-semibold text-xl text-center md:text-left">
+      {/* <h2 className="mb-4 text-primary font-semibold text-xl text-center md:text-left">
         Membership Tiers at a Glance
-      </h2>
-      <Table className="shadow-md px-4 bg-white rounded-lg overflow-hidden">
+      </h2> */}
+      {/* <Table className="shadow-md px-4 bg-white rounded-lg overflow-hidden">
         <TableHeader>
           <TableRow className="bg-white ">
             {tierTableHeaders.map((header) => (
@@ -27,7 +28,8 @@ const MembershipTiers = () => {
             </TableRow>
           ))}
         </TableBody>
-      </Table>
+      </Table> */}
+      <TiersTable title={"Membership Tiers at a Glance"}/>
     </div>
   );
 };
