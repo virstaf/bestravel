@@ -73,6 +73,36 @@ export const getDealsAction = async (limit) => {
 
     return data;
   } catch (error) {
-    return { errorMessage: error.message };
+    // throw error;
+    console.error(error);
+    return [];
   }
 };
+
+
+export const getDealByIdAction = async (dealId) => {
+  try {
+    const supabase = await createClient();
+    const { data: deal, error } = await supabase
+      .from("deals")
+      .select(
+        `
+        *,
+        partners:partner_id (
+          name,
+          type,
+          location,
+          is_featured
+        )
+      `
+      )
+      .eq("id", dealId)
+      .single();
+
+    if (error) throw error;
+
+    return deal;
+   } catch (error) {
+    return { errorMessage: error.message };
+  }
+}

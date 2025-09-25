@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,82 +11,11 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { CalendarIcon, StarIcon, MapPinIcon } from "lucide-react";
-import { getFeaturedDealsAction } from "@/actions/deals";
 
-export default function DealsList({
-  initialDeals = [],
-  featuredOnly = false,
-  limit = null,
-}) {
-  const [deals, setDeals] = useState(initialDeals);
-  const [partner, setPartner] = useState([]);
-  const [loading, setLoading] = useState(!initialDeals.length);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (initialDeals.length) return;
-
-    const fetchDeals = async () => {
-      try {
-        setLoading(true);
-        let url = "/api/deals?";
-
-        if (featuredOnly) {
-          const data = await getFeaturedDealsAction(3);
-          if (!data) throw new Error("Failed to fetch deals");
-          setDeals(data);
-          setPartner(() => data.map((deal) => deal.partner));
-        } else {
-          const response = await fetch(url);
-          if (!response.ok) throw new Error("Failed to fetch deals");
-          const data = await response.json();
-          setDeals(data);
-          setPartner(() => data.map((deal) => deal.partner));
-        }
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDeals();
-  }, [featuredOnly, limit, initialDeals.length]);
-
-  if (loading) {
-    return (
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {[...Array(limit || 3)].map((_, i) => (
-          <Card key={i}>
-            <CardHeader>
-              <Skeleton className="h-6 w-3/4" />
-              <Skeleton className="h-4 w-1/2 mt-2" />
-            </CardHeader>
-            <CardContent>
-              <Skeleton className="h-4 w-full mt-2" />
-              <Skeleton className="h-4 w-4/5 mt-2" />
-              <Skeleton className="h-4 w-3/5 mt-2" />
-            </CardContent>
-            <CardFooter>
-              <Skeleton className="h-10 w-full" />
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-4 text-center text-red-500">
-        Error loading deals: {error}
-      </div>
-    );
-  }
-
-  if (!deals.length) {
+export default function DealsList({ initialDeals: deals }) {
+  console.log("deals:", deals);
+  if (deals?.length === 0) {
     return (
       <div className="text-center py-12 space-y-4">
         <h3 className="text-lg font-medium">No current deals available</h3>
@@ -106,23 +34,19 @@ export default function DealsList({
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle>{deal.title}</CardTitle>
-                <CardDescription>
-                  {deal.partners?.name || partner[index]?.name}
-                </CardDescription>
+                <CardDescription>{deal.partners?.name}</CardDescription>
               </div>
-              {(deal.partners?.is_featured || partner[index]?.is_featured) && (
-                <Badge variant="secondary" className="flex items-center">
-                  <StarIcon className="h-3 w-3 mr-1" /> Featured
-                </Badge>
-              )}
+              {/* {(deal.partners?.is_featured || partner[index]?.is_featured) && ( */}
+              <Badge variant="secondary" className="flex items-center">
+                <StarIcon className="h-3 w-3 mr-1" /> Featured
+              </Badge>
+              {/* )} */}
             </div>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center">
               <MapPinIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-              <span>
-                {deals.partners?.location || partner[index]?.location}
-              </span>
+              <span>{deal.partners?.location}</span>
             </div>
 
             <div className="flex items-center">
@@ -163,9 +87,5 @@ export default function DealsList({
         </Card>
       ))}
     </div>
-
-    // <div className="troubleshoot">
-    //   <span>troubleshooting</span>
-    // </div>
   );
 }

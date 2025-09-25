@@ -1,34 +1,18 @@
-// app/deals/[dealId]/page.js
-import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import DealDetail from "@/components/deal-detail";
+import { getDealByIdAction } from "@/actions/deals";
 
 export default async function DealDetailPage({ params }) {
-  const supabase = await createClient();
+  const { dealId } = await params;
+  const deal = await getDealByIdAction(dealId);
 
-  const { data: deal } = await supabase
-    .from("deals")
-    .select(
-      `
-      *,
-      partners:partner_id (
-        name,
-        type,
-        location,
-        description,
-        images,
-        amenities,
-        contact_email,
-        website_url
-      )
-    `
-    )
-    .eq("id", params.dealId)
-    .single();
-
-  if (!deal) {
-    notFound();
+  if (deal.length === 0) {
+    return notFound;
   }
 
-  return <DealDetail deal={deal} />;
+  return (
+    <div className="w-full min-h-[85vh] py-8">
+      <DealDetail deal={deal} />
+    </div>
+  );
 }
