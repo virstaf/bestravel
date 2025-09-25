@@ -13,22 +13,29 @@ import Link from "next/link";
 import { Calendar } from "lucide-react";
 import { MapPin } from "lucide-react";
 import { UsersIcon } from "lucide-react";
-import useUserStore from "@/user.store";
 import { fetchTrips } from "@/actions/trips";
+import { getProfileAction } from "@/actions/profiles";
 
 const TripsList = ({ initialTrips = [], limit }) => {
   const [trips, setTrips] = useState(initialTrips);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [tripLink, setTripLink] = useState("/pricing");
-  const { user, isSubscribed } = useUserStore.getState();
+  // const { user, isSubscribed } = useUserStore.getState();
+  const [user, setUser] = useState(null);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
-  // useEffect(() => {
-  //   const loadUser = async () => {
-  //     await fetchUser();
-  //   };
-  //   loadUser();
-  // }, []);
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const { profile } = await getProfileAction();
+      setUser(profile);
+      setIsSubscribed(profile?.is_subscribed);
+    };
+    fetchUserProfile();
+  }, []);
+
+  // console.log("User:", user);
+  // console.log("Is Subscribed:", isSubscribed);
 
   useEffect(() => {
     const getTrips = async () => {
