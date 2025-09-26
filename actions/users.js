@@ -85,6 +85,7 @@ export const logoutAction = async () => {
   try {
     const { auth } = await createClient();
     const { error } = await auth.signOut();
+    revalidatePath("/");
     if (error) throw error;
 
     return { errorMessage: null };

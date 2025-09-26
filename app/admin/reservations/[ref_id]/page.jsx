@@ -31,6 +31,7 @@ const ReservationDetailPage = async ({ params }) => {
 
 export default ReservationDetailPage;
 
+
 const ReservationCard = ({
   reservation: { status, full_name, trip_name, dates },
 }) => {
