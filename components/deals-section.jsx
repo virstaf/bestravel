@@ -1,7 +1,7 @@
 import { getDealsAction } from "@/actions/deals";
 import DealsList from "./deals-list";
 
-const DealsSection = async ({}) => {
+const DealsSection = async () => {
   const deals = await getDealsAction();
   const featuredDeals = deals
     .filter((deal) => deal.partners.is_featured)
@@ -11,7 +11,7 @@ const DealsSection = async ({}) => {
       <h2 className="text-md font-bold uppercase text-primary mb-4">
         Deals for you
       </h2>
-      <DealsList deals={featuredDeals} />
+      <DealsList initialDeals={featuredDeals} />
     </div>
   );
 };

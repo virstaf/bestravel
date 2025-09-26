@@ -3,7 +3,7 @@ import DashHeader from "@/components/dash-header";
 import Deals from "@/components/DealsPage";
 
 const DealsPage = async () => {
-  const deals = await getDealsAction();
+  const deals = (await getDealsAction()) || [];
   const featuredDeals = deals
     .filter((deal) => deal.partners.is_featured)
     .slice(0, 3);

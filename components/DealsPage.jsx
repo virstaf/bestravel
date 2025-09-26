@@ -1,6 +1,6 @@
 import DealsList from "@/components/deals-list";
 
-const Deals = ({ featuredDeals, deals }) => {
+const Deals = ({ featuredDeals = [], deals = [] }) => {
   return (
     <div className="space-y-12">
       <div className="space-y-4">

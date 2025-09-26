@@ -3,7 +3,7 @@ import DealsSection from "@/components/deals-section";
 import HotelCard from "@/components/ui/hotelCard";
 import TripsSection from "@/components/trips-section";
 import WelcomeCard from "@/components/welcome-card";
-import { hotDeals, hotels } from "@/lib/data";
+import { hotels } from "@/lib/data";
 
 const page = () => {
   return (
