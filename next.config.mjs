@@ -5,7 +5,11 @@ const nextConfig = {
   //   unoptimized: true, // required for `next export`
   // },
   images: {
-    domains: ["drive.google.com", "images.unsplash.com"],
+    domains: [
+      "drive.google.com",
+      "images.unsplash.com",
+      "ylpkcsmbsnowmbyxhbzw.supabase.co",
+    ],
   },
 };
 

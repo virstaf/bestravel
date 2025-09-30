@@ -22,3 +22,27 @@ export const getAllUsers = async () => {
     throw error;
   }
 };
+
+export const getUserById = async (customer_id) => {
+  try {
+    const supabase = await createAdminClient();
+    const { data: user } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("customer_id", customer_id)
+      .single();
+    if (user) return user;
+    else {
+      const { data: profile, err } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", customer_id)
+        .single();
+      if (profile) return profile;
+      if (err) throw err;
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    throw error;
+  }
+};
