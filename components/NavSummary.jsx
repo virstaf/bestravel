@@ -14,7 +14,7 @@ import { Fragment } from "react";
 const NavSummary = ({ pathname, className }) => {
   const pathParts = pathname.split("/").filter((part) => part);
   const backLink = getBackLink(pathname);
-  
+
   return (
     <div
       className={`w-full flex items-center justify-between mb-4 ${className}`}
