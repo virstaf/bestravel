@@ -1,5 +1,6 @@
 "use server";
 import { createAdminClient } from "@/lib/supabase/admin/server";
+import { getUserTrips } from "./trips";
 
 export const getAllReservations = async () => {
   try {
@@ -74,5 +75,36 @@ export const getReservation = async (ref_id) => {
   } catch (error) {
     console.error("getReservation error:::", error);
     return null;
+  }
+};
+
+export const getUserReservations = async (userId) => {
+  try {
+    const supabase = await createAdminClient();
+    const { data: reservations, error } = await supabase
+      .from("reservations")
+      .select("*")
+      .eq("user_id", userId);
+
+    if (error) {
+      throw new Error("Error fetching user reservations");
+    }
+
+    const userTrips = await getUserTrips(userId);
+
+    const reducedReservations = reservations.map((res) => {
+      const trip = userTrips.find((t) => t.id === res.trip_id);
+      const tripName = trip ? trip?.title : "Unknown Trip";
+
+      return {
+        ...res,
+        trip: { name: tripName },
+      };
+    });
+
+    return reducedReservations;
+  } catch (error) {
+    console.error("getUserReservations error:::", error);
+    return [];
   }
 };

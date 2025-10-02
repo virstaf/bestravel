@@ -48,9 +48,9 @@ const NoteTextBox = () => {
       if (!data.success) {
         toast.error(message || "Failed to load note");
       }
-      if (data.success) {
-        toast.success(message || "Note loaded successfully");
-      }
+      // if (data.success) {
+      //   toast.success(message || "Note loaded successfully");
+      // }
     } catch (error) {
       console.error("Error loading notes:", error);
     }
@@ -84,7 +84,7 @@ const NoteTextBox = () => {
   return (
     <div className="max-w-md">
       <Textarea
-        className="w-full h-[180px] p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full h-[180px] p-4 border border-gray-300 rounded-md text-gray-700 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
         rows="4"
         placeholder="Enter your notes here..."
         value={note}

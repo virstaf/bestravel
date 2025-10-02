@@ -15,17 +15,32 @@ const UserTripsTable = ({ trips, title }) => {
     { key: "srNo", header: "S/N", sortable: true, align: "center" },
     { key: "title", header: "Trip Name", sortable: true },
     { key: "destination", header: "Destination", sortable: true },
-    { key: "start_date", header: "Start Date", sortable: true, align: "center" },
+    {
+      key: "start_date",
+      header: "Start Date",
+      sortable: true,
+      align: "center",
+    },
     { key: "end_date", header: "End Date", sortable: true, align: "center" },
     { key: "status", header: "Status", align: "center", sortable: true },
   ];
+
+  const data = trips.map((trip) => ({
+    srNo: trips.indexOf(trip) + 1,
+    title: trip.title,
+    destination: trip.destination,
+    start_date: trip.start_date,
+    end_date: trip.end_date,
+    status: trip.status,
+  }));
+
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto py-6">
       <h1 className="text-2xl text-muted-foreground px-4 font-semibold mb-6">
         {title}
       </h1>
 
-      <Table columns={columns} data={trips} />
+      <Table columns={columns} data={data} />
     </div>
   );
 };

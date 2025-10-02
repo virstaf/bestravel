@@ -4,16 +4,20 @@ import Table from "../Table/Table";
 import { getFormattedDateTime } from "@/lib/getFormattedDate";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "../ui/button";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
 import ReservationActions from "./reservation-actions";
 import Status from "../ui/status";
 
-const ReservationTable = ({ title, reservations, limit }) => {
+const UserReservationsTable = ({ reservations, title, limit }) => {
   if (!reservations || reservations.length === 0) {
     return (
-      <div className="p-4">
-        <p className="text-muted-foreground">No reservations available!</p>
-        <p>Reservations will appear here.</p>
+      <div>
+        <h2>{title}</h2>
+        <p>No reservations found.</p>
       </div>
     );
   }
@@ -21,8 +25,6 @@ const ReservationTable = ({ title, reservations, limit }) => {
   const columns = [
     { key: "srNo", header: "S/N", sortable: true, align: "center" },
     { key: "ref_id", header: "REF ID", sortable: true, align: "center" },
-    { key: "user", header: "User", sortable: true },
-    { key: "plan", header: "Plan", sortable: true, align: "center" },
     { key: "trip", header: "Trip", sortable: true },
     { key: "type", header: "Type", sortable: true },
     { key: "submitted", header: "Submitted", sortable: true },
@@ -59,8 +61,6 @@ const ReservationTable = ({ title, reservations, limit }) => {
   const data = reservations.map((res) => ({
     srNo: reservations.indexOf(res) + 1,
     ref_id: "REQ-00" + res.ref_id,
-    user: res.user.name,
-    plan: res.user.plan,
     trip: res.trip.name,
     type: res.type,
     submitted: getFormattedDateTime(res.created_at),
@@ -69,7 +69,6 @@ const ReservationTable = ({ title, reservations, limit }) => {
 
   const handleRowClick = (row) => {
     console.log("Row clicked:", row);
-    // redirect(`/admin/reservations/${row.ref_id}`);
   };
 
   return (
@@ -92,4 +91,4 @@ const ReservationTable = ({ title, reservations, limit }) => {
   );
 };
 
-export default ReservationTable;
+export default UserReservationsTable;
