@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import { HoverCard, HoverCardContent } from "../ui/hover-card";
 import { HoverCardTrigger } from "@radix-ui/react-hover-card";
 import ReservationActions from "./reservation-actions";
+import Status from "../ui/status";
 
 const ReservationTable = ({ title, reservations, limit }) => {
   if (!reservations || reservations.length === 0) {
@@ -32,27 +33,7 @@ const ReservationTable = ({ title, reservations, limit }) => {
       key: "status",
       header: "Status",
       align: "center",
-      render: (value) => (
-        <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
-            value === "confirmed"
-              ? "bg-green-100 text-green-800"
-              : value === "pending"
-                ? "bg-orange-100 text-orange-800"
-                : value === "rejected"
-                  ? "bg-red-100 text-red-800"
-                  : value === "cancelled"
-                    ? "bg-gray-100 text-gray-800"
-                    : value === "in review"
-                      ? "bg-blue-100 text-blue-800"
-                      : value === "expired"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
-          }`}
-        >
-          {value}
-        </span>
-      ),
+      render: (value) => <Status value={value} />,
     },
     {
       key: "actions",
@@ -105,7 +86,7 @@ const ReservationTable = ({ title, reservations, limit }) => {
         striped={true}
         hover={true}
         pagination={true}
-        pageSize={limit ||10}
+        pageSize={limit || 10}
         onRowClick={handleRowClick}
         className="mb-8"
       />

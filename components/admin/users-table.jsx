@@ -11,6 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
 import UserActions from "./user-actions";
+import Status from "../ui/status"
 
 const UsersTable = ({ title, users, limit }) => {
   if (!users || users.length === 0) {
@@ -34,25 +35,7 @@ const UsersTable = ({ title, users, limit }) => {
       header: "Status",
       align: "center",
       render: (value) => (
-        <span
-          className={`px-2 py-1 rounded-full text-xs font-medium ${
-            value === "active"
-              ? "bg-green-100 text-green-800"
-              : value === "pending"
-                ? "bg-orange-100 text-orange-800"
-                : value === "rejected"
-                  ? "bg-red-100 text-red-800"
-                  : value === "cancelled"
-                    ? "bg-gray-100 text-gray-800"
-                    : value === "in review"
-                      ? "bg-blue-100 text-blue-800"
-                      : value === "expired"
-                        ? "bg-yellow-100 text-yellow-800"
-                        : "bg-red-100 text-red-800"
-          }`}
-        >
-          {value}
-        </span>
+       <Status value={value} />
       ),
     },
     {

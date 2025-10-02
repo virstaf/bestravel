@@ -1,4 +1,5 @@
 "use server";
+
 import { createAdminClient } from "@/lib/supabase/admin/server";
 
 export const getTripById = async (id) => {

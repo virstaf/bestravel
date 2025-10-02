@@ -7,6 +7,7 @@ import {
   TransferDetailCard,
 } from "@/components/admin/ReservationCard";
 import { UserCard } from "@/components/admin/UserCard";
+import NoteTextBox from "@/components/ui/NoteTextBox";
 import NavSummary from "@/components/NavSummary";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -74,7 +75,7 @@ const ReservationDetailPage = async ({ params }) => {
             </div>
           </div>
         )}
-
+        <NoteTextBox />
         {/* <pre className="mt-20">{JSON.stringify(reducedData, null, 2)}</pre> */}
         {/* <pre className="mt-20">{JSON.stringify(data, null, 2)}</pre> */}
       </div>

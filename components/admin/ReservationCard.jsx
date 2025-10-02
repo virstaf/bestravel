@@ -1,5 +1,6 @@
-import { getFormattedDate } from '@/lib/getFormattedDate';
-import React from 'react'
+import { getFormattedDate } from "@/lib/getFormattedDate";
+import React from "react";
+import Status from "../ui/status";
 
 export const ReservationCard = ({
   reservation: { status, full_name, trip_name, dates, type },
@@ -7,7 +8,14 @@ export const ReservationCard = ({
   return (
     <div className="border rounded-lg p-4 max-w-md">
       <h2 className="text-lg font-semibold text-primary mb-4">Trip Details</h2>
-      <DataRow label="Status" value={status} />
+      <DataRow
+        label="Status"
+        value={
+          <div className="inline-block">
+            <Status value={status} />
+          </div>
+        }
+      />
       <DataRow label="Full Name" value={full_name} />
       <DataRow label="Trip Name" value={trip_name} />
       <DataRow
