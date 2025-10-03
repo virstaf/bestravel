@@ -11,6 +11,11 @@ import NoteTextBox from "@/components/ui/NoteTextBox";
 import NavSummary from "@/components/NavSummary";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import {
+  flightSearchOptions,
+  hotelSearchOptions,
+  transferSearchOptions,
+} from "@/lib/admin/dummy-data";
 
 const ReservationDetailPage = async ({ params }) => {
   const { ref_id } = await params;
@@ -41,37 +46,60 @@ const ReservationDetailPage = async ({ params }) => {
         {reducedData.type === "hotel" && (
           <div className="mt-8">
             <HotelDetailCard hotel={reducedData.details} />
-            <div className="grid grid-cols-2 gap-2 mt-4">
-              <Button asChild variant="outline">
+            <h3 className="text-xl text-muted-foreground mt-8">
+              Search Hotels on:
+            </h3>
+            <div className="flex gap-3 mt-4">
+              {hotelSearchOptions.map((option) => (
                 <Link
-                  href={`/admin/hotels/search?location=${reducedData.details.city}`}
+                  key={option.name}
+                  href={option.url}
+                  target="_blank"
+                  className="border p-2 rounded-md hover:bg-muted"
                 >
-                  Search Hotel
+                  {option.name}
                 </Link>
-              </Button>
-              <Button className="">Generate Quote</Button>
+              ))}
             </div>
           </div>
         )}
         {reducedData.type === "flight" && (
           <div className="mt-8">
             <FlightDetailCard flight={reducedData.details} />
-            <div className="flex gap-2 mt-4">
-              <Button>Search Flight</Button>
-              <Button className="" variant="secondary">
-                View Flight Options
-              </Button>
+            <h3 className="text-xl text-muted-foreground mt-8">
+              Search Flights on:
+            </h3>
+            <div className="flex gap-3 mt-4">
+              {flightSearchOptions.map((option) => (
+                <Link
+                  key={option.name}
+                  href={option.url}
+                  target="_blank"
+                  className="border p-2 rounded-md hover:bg-muted"
+                >
+                  {option.name}
+                </Link>
+              ))}
             </div>
           </div>
         )}
         {reducedData.type === "transfer" && (
           <div className="mt-8">
             <TransferDetailCard transfer={reducedData.details} />
-            <div className="flex gap-2 mt-4">
-              <Button>Search Transfer</Button>
-              <Button className="" variant="secondary">
-                View Transfer Options
-              </Button>
+            <h3 className="text-xl text-muted-foreground mt-8">
+              Search Transfers on:
+            </h3>
+            <div className="flex gap-3 mt-4">
+              {transferSearchOptions.map((option) => (
+                <Link
+                  key={option.name}
+                  href={option.url}
+                  target="_blank"
+                  className="border p-2 rounded-md hover:bg-muted"
+                >
+                  {option.name}
+                </Link>
+              ))}
             </div>
           </div>
         )}

@@ -7,6 +7,7 @@ export const UserCard = ({
   user: {
     full_name,
     email,
+    id,
     subscription_plan: plan,
     subscription_end,
     avatar_url,
@@ -55,7 +56,9 @@ export const UserCard = ({
             Contact User
           </Link>
         </Button>
-        <Button className="">View Activities</Button>
+        <Button asChild className="">
+          <Link href={`/admin/users/${id}`}>View Activities</Link>
+        </Button>
       </div>
     </div>
   );
