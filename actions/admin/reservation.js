@@ -108,3 +108,28 @@ export const getUserReservations = async (userId) => {
     return [];
   }
 };
+
+export const getReservationsByTrip = async (tripId) => {
+  try {
+    const supabase = await createAdminClient();
+    const { data: reservations, error } = await supabase
+      .from("reservations")
+      .select("*")
+      .eq("trip_id", tripId);
+
+    if (error) {
+      throw new Error("Error fetching reservations");
+    }
+
+    const reducedReservations = reservations.map((res) => {
+      return {
+        ...res,
+      };
+    });
+
+    return reducedReservations;
+  } catch (error) {
+    console.error("getReservationsByTrip error:::", error);
+    return [];
+  }
+};

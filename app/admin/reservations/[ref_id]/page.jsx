@@ -34,10 +34,12 @@ const ReservationDetailPage = async ({ params }) => {
     details: data?.details,
   };
 
+  const tripId = data?.trip_id;
+
   return (
     <div className="p-4 md:p-8">
       <NavSummary pathname={pathname} />
-      <div className="grid grid-cols-1 lg:grid-cols-[460px_1fr] gap-4 ">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr] gap-4 ">
         <div className="">{user && <UserCard user={user} />}</div>
         <div>
           <ReservationCard reservation={reducedData} />
@@ -103,7 +105,13 @@ const ReservationDetailPage = async ({ params }) => {
             </div>
           </div>
         )}
-        <NoteTextBox />
+        <div className="space-y-8">
+          <NoteTextBox />
+          <Button variant="secondary" asChild>
+            <Link href={`/admin/quotes/create?trip_id=${tripId}`}>Add Quote</Link>
+          </Button>
+          {/* <AddQuoteForm /> */}
+        </div>
         {/* <pre className="mt-20">{JSON.stringify(reducedData, null, 2)}</pre> */}
         {/* <pre className="mt-20">{JSON.stringify(data, null, 2)}</pre> */}
       </div>

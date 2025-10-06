@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Table from "../Table/Table";
+import Status from "../ui/status";
 
 const UserTripsTable = ({ trips, title }) => {
   if (!trips || trips.length === 0) {
@@ -22,7 +25,13 @@ const UserTripsTable = ({ trips, title }) => {
       align: "center",
     },
     { key: "end_date", header: "End Date", sortable: true, align: "center" },
-    { key: "status", header: "Status", align: "center", sortable: true },
+    {
+      key: "status",
+      header: "Status",
+      align: "center",
+      sortable: true,
+      render: (value) => <Status value={value} />,
+    },
   ];
 
   const data = trips.map((trip) => ({
