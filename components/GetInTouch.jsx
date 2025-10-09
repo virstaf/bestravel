@@ -4,6 +4,8 @@ import { Button } from "./ui/button";
 import { Download } from "lucide-react";
 import { Phone } from "lucide-react";
 import { Mail } from "lucide-react";
+import whatsappIcon from "../public/socials/whatsapp-black.svg";
+import Image from "next/image";
 
 const GetInTouch = () => {
   return (
@@ -23,16 +25,36 @@ const GetInTouch = () => {
               Have questions? Need help with your membership? Fill out the form
               below, and our travel experts will get back to you ASAP!
             </p>
-            <div className="mb-6">
-              <div className="flex items-center gap-4 mb-2">
-                <Phone />
+            <div className="space-y-4 mb-6">
+              <div className="flex items-center gap-4">
+                <Link href="tel:+4401264527030">
+                  <Phone className="text-gray-900 hover:text-gray-600 transition-colors"/>
+                </Link>
                 <span className="text-lg">Call us: +440 126 452 7030</span>
               </div>
               <div className="flex items-center gap-4">
-                <Mail />
+                <Link href="mailto:info@virstravelclub.com">
+                  <Mail className="text-gray-900 hover:text-gray-600 transition-colors" />
+                </Link>
                 <span className="text-lg">
                   Email us: info@virstravelclub.com
                 </span>
+              </div>
+              <div className="flex items-center h-[28px] gap-4">
+                <Link
+                  href="https:/wa.me/447770939627"
+                  target="_blank"
+                  className=""
+                >
+                  <Image
+                    src={whatsappIcon}
+                    alt="WhatsApp"
+                    width={24}
+                    height={24}
+                    className=""
+                  />
+                </Link>
+                <span className="text-lg">WhatsApp: +44 7770 939627</span>
               </div>
             </div>
             <div className="button">
