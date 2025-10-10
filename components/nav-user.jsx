@@ -99,8 +99,6 @@ export function NavUser({ user }) {
                 variant="ghost"
                 className="w-full justify-start text-red-500 focus:text-red-500 hover:text-red-600"
                 onClick={() => {
-                  // Handle logout logic here
-                  console.log("Logging out...");
                   logoutAction();
                   redirect("/auth/login");
                 }}

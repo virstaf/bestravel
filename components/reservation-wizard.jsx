@@ -16,13 +16,10 @@ export default function ReservationWizard({ trip, userId }) {
   const router = useRouter();
 
   const handleSubmit = async (type, details) => {
-    // console.log("reservation:::", trip, details);
 
     const user = await getUser();
-    // console.log(user);
     setLoading(true);
     const adminType = "admin-" + type;
-    console.log("adminType:::", adminType);
 
     try {
       const emailAdmin = await resendEmail(
@@ -48,9 +45,6 @@ export default function ReservationWizard({ trip, userId }) {
         },
         type
       );
-
-      console.log("admin:::", emailAdmin);
-      console.log("user:::", emailUser);
 
       // createCl
 

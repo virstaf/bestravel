@@ -52,12 +52,6 @@ const useUserStore = create(
           console.error("Error fetching user:", error);
           set({ isAuthenticated: false, user: null });
         } finally {
-          console.log("User store fetchUser completed:::", {
-            isAuthenticated: get().isAuthenticated,
-            isSubscribed: get().isSubscribed,
-            subscription: get().subscription,
-            // user: get().user,
-          });
           set({ isLoading: false });
         }
         set({ isLoading: false });

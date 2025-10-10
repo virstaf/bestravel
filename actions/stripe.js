@@ -6,8 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 import { resendEmail } from "./resendEmail";
 
 export const upgradePlanAction = async (user, priceId, customerId) => {
-  console.log("upgradING:::");
-  // const
+  
   const { url } = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: "subscription",

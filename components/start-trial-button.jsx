@@ -29,7 +29,6 @@ const StartTrialButton = ({ className, variant }) => {
         return;
       }
       if (data) {
-        console.log("Trial started successfully:", data);
         router.push("dashboard");
       } else {
         toast.error("Trial start failed. Please try again.");
