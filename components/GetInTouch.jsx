@@ -28,7 +28,7 @@ const GetInTouch = () => {
             <div className="space-y-4 mb-6">
               <div className="flex items-center gap-4">
                 <Link href="tel:+4401264527030">
-                  <Phone className="text-gray-900 hover:text-gray-600 transition-colors"/>
+                  <Phone className="text-gray-900 hover:text-gray-600 transition-colors" />
                 </Link>
                 <span className="text-lg">Call us: +440 126 452 7030</span>
               </div>
@@ -42,7 +42,7 @@ const GetInTouch = () => {
               </div>
               <div className="flex items-center h-[28px] gap-4">
                 <Link
-                  href="https:/wa.me/447770939627"
+                  href="https://wa.me/447770939627"
                   target="_blank"
                   className=""
                 >
