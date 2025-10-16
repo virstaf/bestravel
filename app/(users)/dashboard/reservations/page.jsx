@@ -49,6 +49,7 @@ const ReservationCard = ({ reservation, type, className }) => {
       {type === "flight" && (
         <div>
           <h3 className="text-lg font-semibold mb-2">Flight Reservation</h3>
+          <div className="">
           <p>
             {reservation.details.class.slice(0, 1).toUpperCase() +
               reservation.details.class.slice(1)}{" "}
@@ -58,7 +59,7 @@ const ReservationCard = ({ reservation, type, className }) => {
           <p>To: {reservation.details.arrivalCity}</p>
           <p>
             Departure: {getFormattedDate(reservation.details.departureDate)}
-          </p>
+          </p></div>
           {/* <p>{JSON.stringify(reservation.details, null, 2)}</p> */}
         </div>
       )}
