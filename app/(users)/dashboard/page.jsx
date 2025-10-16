@@ -4,6 +4,7 @@ import HotelCard from "@/components/ui/hotelCard";
 import TripsSection from "@/components/trips-section";
 import WelcomeCard from "@/components/welcome-card";
 import { hotels } from "@/lib/data";
+import ReservationsSection from "@/components/reservations-section";
 
 const page = () => {
   return (
@@ -24,6 +25,10 @@ const page = () => {
 
         <section className="my-12">
           <DealsSection />
+        </section>
+
+        <section className="my-12">
+          <ReservationsSection />
         </section>
 
         <section className="my-12 max-w-full bg-gray-100 rounded-2xl p-4">

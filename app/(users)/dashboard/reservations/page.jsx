@@ -22,20 +22,20 @@ const ReservationsPage = async () => {
         page="My Reservations"
         description="😎 Manage all your reservations"
       />
-      <div className="w-full min-h-[calc(100vh-180px)] mt-4 mb-16  mx-auto flex flex-col justify-center">
-        <div className="mb-6">
+      <div className="w-full min-h-[calc(100vh-180px)] mt-4   mx-auto flex flex-col justify-center">
+        <div className="">
           <h2 className="text-lg font-semibold ml-6">All Reservations</h2>
           {reservations.length === 0 ? (
             <p>No reservations found.</p>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 text-gray-700 tracking-wide">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {reservations.map((reservation) => (
                 <ReservationSummaryCard
                   key={reservation.id}
                   reservation={reservation}
                   tripName={getTripName(reservation.trip_id)}
                   type={reservation?.type}
-                  className="my-8 h-full"
+                  className="my-3"
                 />
               ))}
             </div>

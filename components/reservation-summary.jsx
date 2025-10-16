@@ -12,10 +12,10 @@ export const ReservationSummaryCard = ({
   return (
     // <div className="my-4">
     <div
-      className={`bg-white p-4 rounded-lg shadow hover:shadow-2xl transition-shadow duration-200 ${type === "flight" ? "border-l-4 border-blue-500" : type === "hotel" ? "border-l-4 border-green-500" : "border-l-4 border-yellow-500"} ${className}`}
+      className={`bg-white text-gray-700 tracking-wide p-4 rounded-lg shadow hover:shadow-2xl transition-shadow duration-200 ${type === "flight" ? "border-l-4 border-blue-500" : type === "hotel" ? "border-l-4 border-green-500" : "border-l-4 border-yellow-500"} ${className}`}
     >
       {type === "flight" && (
-        <div className="flex flex-col h-full justify-between">
+        <div className="flex flex-col h-full gap-4 justify-between">
           <h3 className="text-lg font-semibold mb-2">
             🛫 Flight Reservation - <span className="">{tripName}</span>
           </h3>
