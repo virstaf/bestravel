@@ -49,9 +49,9 @@ const HomePage = () => {
         <section className="">
           <TravelSmarter />
         </section>
-        {/* <section className="">
+        <section className="">
           <StartTrialCta />
-        </section> */}
+        </section>
         <section className="w-full bg-gray-50">
           <GetInTouch />
         </section>
