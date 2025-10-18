@@ -1,207 +1,147 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server.js";
-import { generateCustomerId, handleError } from "../lib/utils.ts";
-import { redirect } from "next/navigation.js";
-import { resendEmail } from "./resendEmail.js";
-import useUserStore from "@/user.store.js";
-import { revalidatePath } from "next/cache.js";
+import { cookies } from "next/headers";
+import { encrypt, decrypt } from "@/lib/utils";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASEURL || "https://virstravelclub.com";
+const backendUrl =
+  process.env.BACKEND_URL || "https://virstravelclub.com/v1/app";
 
-export const loginAction = async (email, password) => {
+export const getSession = async () => {
+  const session = cookies().get("session")?.value;
+
+  if (!session) return null;
+
   try {
-    const supabase = await createClient();
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) throw error;
-
-    const token = data.session?.access_token;
-    const user = data.user;
-    if (!token || !user) {
-      return handleError("Login failed. Please check your credentials.");
-    }
-    // useStore.setState({ login: { token, isAuthenticated: true, user } });
-
-    const userId = data.user?.id;
-    const { full_name, username, public_email } =
-      data.user?.user_metadata || {};
-
-    const profile = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("email", email)
-      .single();
-
-    if (!profile.data) {
-      // 1. Generate unique customer ID
-      const isAdmin = email.endsWith("@virstravelclub.com");
-      const role = isAdmin ? "ADMIN" : "USER";
-      const customerId = generateCustomerId(role);
-      // 2. Create profile if it doesn't exist
-      const response = await supabase.from("profiles").insert({
-        id: userId,
-        email,
-        full_name,
-        username,
-        public_email,
-        customer_id: customerId,
-        role,
-      });
-      if (response.error) {
-        console.error("Error creating profile:", response.error);
-        throw handleError(response.error || "Error creating profile");
-      } else {
-        console.log("Profile created successfully:", response.data);
-        const sendNotification = await resendEmail(
-          {
-            fullname: full_name.split(" ")[0] || email.split("@")[0],
-            membershipId: customerId,
-            email,
-          },
-          "welcome"
-        );
-        if (!sendNotification.success) {
-          console.error(
-            "Error sending welcome email:",
-            sendNotification.message
-          );
-          return handleError(sendNotification.message);
-        }
-      }
-    }
-
-    // revalidatePath("/", "layout");
-
-    return { errorMessage: null, token, user };
+    const decrypted = await decrypt(session);
+    return JSON.parse(decrypted);
   } catch (error) {
-    return handleError(error);
+    console.error("Failed to decrypt session:", error);
+    return null;
   }
+};
+
+export const updateSession = async (newData) => {
+  const session = cookies().get("session")?.value;
+
+  if (!session) return null;
+
+  try {
+    const decrypted = await decrypt(session);
+    const updated = { ...JSON.parse(decrypted), ...newData };
+    const encrypted = await encrypt(JSON.stringify(updated));
+    cookies().set("session", encrypted, { httpOnly: true });
+    return updated;
+  } catch (error) {
+    console.error("Failed to update session:", error);
+    return null;
+  }
+};
+
+export const loginAction = async (email, password, device_id, device_type) => {
+  console.log("Login action called with:", {
+    email,
+    password,
+    device_id,
+    device_type,
+  });
+
+  const response = await fetch(`${backendUrl}/login`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password, device_id, device_type }),
+  });
+
+  console.log(response.json());
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  //  create a session
+  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days from now
+  const session = await encrypt(
+    JSON.stringify({
+      email,
+      expires,
+    })
+  );
+
+  cookies().set("session", session, { expires, httpOnly: true });
+
+  return response.json();
 };
 
 export const logoutAction = async () => {
-  try {
-    const { auth } = await createClient();
-    const { error } = await auth.signOut();
-    revalidatePath("/");
-    if (error) throw error;
-
-    return { errorMessage: null };
-  } catch (error) {
-    return handleError(error);
-  }
-};
-
-export const signupAction = async (email, password, fullname) => {
-  const isAdmin = email.endsWith("@virstravelclub.com");
-  try {
-    const { auth } = await createClient();
-    const { error } = await auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          display_name: fullname,
-          username: fullname.split(" ").join("_").toLowerCase(),
-          full_name: fullname,
-          public_email: email,
-          ...(isAdmin && { role: "ADMIN" }),
-        },
-      },
-    });
-
-    if (error) {
-      console.error("Error signing up:", error);
-
-      return handleError(error.message);
-    }
-
-    return { errorMessage: null };
-  } catch (error) {
-    return handleError(error);
-  }
-};
-
-export const resetPasswordAction = async (email) => {
-  try {
-    const { auth } = await createClient();
-    const { error } = await auth.resetPasswordForEmail(email, {
-      redirectTo: `${baseUrl}/auth/reset-password`,
-    });
-
-    if (error) throw error;
-    return { errorMessage: null };
-  } catch (err) {
-    return handleError(err);
-  }
-};
-
-export const updatePasswordAction = async (password) => {
-  try {
-    const supabase = await createClient();
-    const { error } = await supabase.auth.updateUser({
-      password: password,
-    });
-
-    if (error) throw error;
-    return { errorMessage: null };
-  } catch (err) {
-    return handleError(err);
-  }
-};
-
-export const googleAuthAction = async () => {
-  const { auth } = await createClient();
-  const { data, error } = await auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${baseUrl}/dashboard`,
-      queryParams: {
-        access_type: "offline",
-        prompt: "consent",
-      },
+  const response = await fetch(`${backendUrl}/auth/logout`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
   });
 
-  useUserStore.setState({ isAuthenticated: true });
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
 
-  if (data.url) {
-    redirect(data.url); // use the redirect API for your server framework
-  }
-  if (error) {
-    console.error("Error signing in with Google:", error.message);
-    return { errorMessage: error.message };
-  }
-  return { errorMessage: null };
+  return response.json();
 };
 
-export const deleteAccountAction = async () => {
-  try {
-    const supabase = await createClient();
-    const { auth } = supabase;
-    const { user, error: userError } = await auth.getUser();
+export const signupAction = async (email, password, fullname) => {
+  const response = await fetch(`${backendUrl}/auth/signup`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password, fullname }),
+  });
 
-    if (userError) {
-      console.error("Error fetching user:", userError);
-      return handleError(userError.message);
-    }
-
-    if (!user) {
-      return handleError("No user is currently logged in.");
-    }
-
-    const { error: deleteError } = await supabase.auth.admin.deleteUser(
-      user.id
-    );
-    if (deleteError) {
-      console.error("Error deleting user:", deleteError);
-      return handleError(deleteError.message);
-    }
-
-    return { errorMessage: null };
-  } catch (error) {
-    return handleError(error);
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
   }
+
+  return response.json();
 };
+
+export const resetPasswordAction = async (email) => {
+  const response = await fetch(`${backendUrl}/auth/reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+};
+
+export const updatePasswordAction = async (password) => {
+  const response = await fetch(`${backendUrl}/auth/update-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ password }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message);
+  }
+
+  return response.json();
+};
+
+export const googleAuthAction = async () => {};
+
+export const deleteAccountAction = async () => {};

@@ -21,15 +21,15 @@ import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
-import useUserStore from "@/user.store";
 import Link from "next/link";
 import { getUser } from "@/lib/supabase/server";
+import { getDeviceType, getOrCreateDeviceId } from "@/lib/utils";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   password: z
     .string()
-    .min(8, { message: "password must contain at least 8 characters!" })
+    .min(4, { message: "password must contain at least 4 characters!" })
     .max(50),
 });
 
@@ -54,29 +54,33 @@ const LoginForm = () => {
     startTransition(async () => {
       const { email } = values;
       const { password } = values;
+      const deviceId = getOrCreateDeviceId();
+      const deviceType = getDeviceType();
 
       let errorMessage;
       let title;
       let description;
 
-      const response = await loginAction(email, password);
+      const response = await loginAction(email, password, deviceId, deviceType);
       errorMessage = response.errorMessage;
       title = "Login successful";
       description = "Welcome back";
 
-      if (!errorMessage) {
-        toast.success(title, { description: description });
-        await fetchUser();
-        const isAdmin = user?.role === "ADMIN";
+      console.log(response.access_token);
 
-        if (isAdmin) {
-          router.replace("/admin");
-        } else {
-          router.replace("/dashboard");
-        }
-      } else {
-        toast.error("Error", { description: errorMessage });
-      }
+      // if (!errorMessage) {
+      //   toast.success(title, { description: description });
+      //   await fetchUser();
+      //   const isAdmin = user?.role === "ADMIN";
+
+      //   if (isAdmin) {
+      //     router.replace("/admin");
+      //   } else {
+      //     router.replace("/dashboard");
+      //   }
+      // } else {
+      //   toast.error("Error", { description: errorMessage });
+      // }
     });
   }
   const form = useForm({
