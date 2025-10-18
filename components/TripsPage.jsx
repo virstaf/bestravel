@@ -6,8 +6,6 @@ import Link from "next/link";
 export default async function Trips({ trips, profile }) {
   const isSubscribed = profile?.is_subscribed;
 
-  console.log("is subscribed?::", isSubscribed);
-
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center">

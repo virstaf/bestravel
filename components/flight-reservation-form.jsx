@@ -39,7 +39,6 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(formData);
-    console.log(formData);
   };
 
   return (

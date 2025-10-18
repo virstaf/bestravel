@@ -33,8 +33,6 @@ export async function getPostData(id) {
     .use(html)
     .process(matterResult.content);
 
-  // console.log("Processed Content:", processedContent.toString());
-
   return {
     id,
     ...matterResult.data,

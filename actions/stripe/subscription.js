@@ -28,10 +28,7 @@ export const createCustomerAction = async (session) => {
   let customer;
 
   if (profile.stripe_customer_id) {
-    console.log(
-      "Customer already exists, updating:",
-      profile.stripe_customer_id
-    );
+    
     // update the customer in Stripe
     customer = await stripe.customers.update(profile.stripe_customer_id, {
       name: profile.full_name,

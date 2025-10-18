@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarIcon, StarIcon, MapPinIcon } from "lucide-react";
 
 export default function DealsList({ initialDeals: deals }) {
-  console.log("deals:", deals);
+  // console.log("deals:", deals);
   if (deals?.length === 0) {
     return (
       <div className="text-center py-12 space-y-4">

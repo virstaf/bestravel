@@ -7,14 +7,14 @@ const getPageTitle = (page) => {
   switch (page) {
     case "dashboard":
       return "Dashboard";
-    case "reservation":
+    case "reservations":
       return "All Reservations";
     case "users":
       return "User Management";
     case "deals":
       return "Manage Deals";
-    case "partners":
-      return "Our Partners";
+    case "quotes":
+      return "Manage Quotes";
     case "settings":
       return "Settings";
     default:
@@ -24,8 +24,8 @@ const getPageTitle = (page) => {
 
 const AdminNav = () => {
   const pathname = usePathname();
-  const page = pathname.split("/admin/").pop();
-  const title = getPageTitle(page);
+  const currentPath = pathname.split("/")[2] || pathname.split("/")[1];
+  const title = getPageTitle(currentPath);
 
   return (
     <div className="admin-navbar min-w-full h-16 backdrop-blur-md text-primary border-b flex items-center justify-between px-4">
