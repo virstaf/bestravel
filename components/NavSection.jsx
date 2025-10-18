@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NavLinks } from "@/lib/data";
 import UserProfile from "./ui/userProfile";
-import { supabase } from "@/lib/supabase/client";
 import Image from "next/image";
-import { JoinDialog } from "./JoinDialog";
+import { getUser } from "@/lib/supabase/server";
 
 const NavSection = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -19,7 +18,7 @@ const NavSection = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const { data } = await supabase.auth.getUser();
+      const { data } = await getUser();
       setUserData(data.user);
     };
     fetchUserData();
@@ -31,9 +30,7 @@ const NavSection = () => {
   }, [pathname]);
 
   useEffect(() => {
-    if (!menuOpen) {
-      return;
-    }
+    if (!menuOpen) return;
 
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
@@ -48,10 +45,6 @@ const NavSection = () => {
     };
   }, [menuOpen]);
 
-  const toggleMenu = () => {
-    setMenuOpen((prev) => !prev);
-  };
-
   return (
     <div className="dark:bg-black/50 backdrop-blur-sm w-full h-16 fixed top-0 z-50">
       <div className="h-full container mx-auto px-4 flex justify-between items-center relative">
@@ -65,7 +58,6 @@ const NavSection = () => {
               alt="logo"
               width={805}
               height={310}
-              // fill
               className="h-12 w-31 object-fit"
             />
           </div>
@@ -105,7 +97,6 @@ const NavSection = () => {
             })}
           </div>
         )}
-        {/* <JoinDialog ButtonText={"Join VIP Waiting"} /> */}
         {userData ? (
           <UserProfile />
         ) : (

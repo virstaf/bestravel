@@ -6,7 +6,7 @@ import WelcomeCard from "@/components/welcome-card";
 import { hotels } from "@/lib/data";
 import ReservationsSection from "@/components/reservations-section";
 
-const page = () => {
+const DashboardPage = () => {
   return (
     <div className="px-4 h-full w-full sm:w-[calc(100%-100px)]">
       <DashHeader
@@ -48,4 +48,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default DashboardPage;

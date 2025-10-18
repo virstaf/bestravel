@@ -1,7 +1,6 @@
 import { getProfileAction } from "@/actions/profiles";
 import { getUserReservations } from "@/actions/reservations";
 import { fetchTrips } from "@/actions/trips";
-import React from "react";
 import { ReservationSummaryCard } from "./reservation-summary";
 
 const ReservationsSection = async () => {
