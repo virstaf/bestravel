@@ -133,3 +133,57 @@ export const getReservationsByTrip = async (tripId) => {
     return [];
   }
 };
+
+export const pendingRequestsCount = async () => {
+  try {
+    const supabase = await createAdminClient();
+    const { count, error: countError } = await supabase
+      .from("reservations")
+      .select("created_at", { count: "exact" })
+      .eq("status", "pending");
+
+    if (countError) {
+      console.error(countError);
+      return null;
+    }
+    // console.log(count);
+    return count;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
+
+export const reservationsThisMonthCount = async () => {
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth(); // JavaScript months are 0-indexed
+
+  try {
+    const supabase = await createAdminClient();
+
+    const { data, error: countError } = await supabase
+      .from("reservations")
+      .select("created_at", { count: "exact" });
+
+    if (countError) {
+      console.error(countError);
+      return null;
+    }
+    // console.log(data);
+
+    const mainCount = data.filter((item) => {
+      const itemDate = new Date(item.created_at);
+      return (
+        itemDate.getMonth() === currentMonth &&
+        itemDate.getFullYear() === currentYear
+      );
+    });
+
+    // console.log("main count:", mainCount.length);
+
+    return mainCount.length;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};

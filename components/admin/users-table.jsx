@@ -11,7 +11,8 @@ import {
 import { Button } from "../ui/button";
 import { MoreHorizontal } from "lucide-react";
 import UserActions from "./user-actions";
-import Status from "../ui/status"
+import Status from "../ui/status";
+import { getFormattedDateTime } from "@/lib/getFormattedDate";
 
 const UsersTable = ({ title, users, limit }) => {
   if (!users || users.length === 0) {
@@ -34,9 +35,7 @@ const UsersTable = ({ title, users, limit }) => {
       key: "status",
       header: "Status",
       align: "center",
-      render: (value) => (
-       <Status value={value} />
-      ),
+      render: (value) => <Status value={value} />,
     },
     {
       key: "actions",
@@ -67,8 +66,7 @@ const UsersTable = ({ title, users, limit }) => {
     id: user.customer_id,
     name: user.full_name,
     plan: user.subscription_plan || "Free",
-    // "last-active":
-    //   new Date(user.last_active).toLocaleDateString() || "N/A",
+    "last-active": getFormattedDateTime(user.updated_at) || "N/A",
     email: user.email,
     status: user.status || "active",
   }));

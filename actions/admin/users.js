@@ -1,18 +1,30 @@
 "use server";
 import { createAdminClient } from "@/lib/supabase/admin/server";
+import { getThisWeekCount } from "@/lib/utils";
 
 export const getAllUsers = async () => {
   try {
     const supabase = await createAdminClient();
-    const { data: users, error } = await supabase.from("profiles").select("*");
+    const { data: users, error } = await supabase
+      .from("profiles")
+      .select("*")
+      .order("updated_at", {
+        ascending: false,
+      });
     if (error) throw error;
 
+    console.log(
+      "sorted::",
+      users.map((item) => item.updated_at)
+    );
+
     const reducedUsers = users.map(
-      ({ customer_id, email, full_name, avatar_url, plan }) => ({
+      ({ customer_id, email, full_name, avatar_url, plan, updated_at }) => ({
         customer_id,
         email,
         full_name,
         avatar_url,
+        updated_at,
         plan,
       })
     );
@@ -44,5 +56,31 @@ export const getUserById = async (customer_id) => {
   } catch (error) {
     console.error("Error fetching user:", error);
     throw error;
+  }
+};
+
+export const newUsersCount = async () => {
+  try {
+    const supabase = await createAdminClient();
+    const {
+      data: { users },
+      error,
+    } = await supabase.auth.admin.listUsers();
+
+    if (error) {
+      console.error(usersError);
+      return null;
+    }
+
+    const users_created_at = users.map((user) => user.created_at);
+    // console.log("users::: ", users_created_at);
+
+    const thisWeekCount = getThisWeekCount(users_created_at);
+    console.log("this week::: ", thisWeekCount);
+
+    return thisWeekCount;
+  } catch (error) {
+    console.error(error);
+    return null;
   }
 };
