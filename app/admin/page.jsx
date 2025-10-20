@@ -7,10 +7,10 @@ import { getAllUsers, newUsersCount } from "@/actions/admin/users";
 import MetricList from "@/components/admin/metric-list";
 import ReservationTable from "@/components/admin/reservation-table";
 import UsersTable from "@/components/admin/users-table";
-import { Users } from "lucide-react";
-import { MessageSquare } from "lucide-react";
-import { Calendar } from "lucide-react";
-import { Clock } from "lucide-react";
+import { BookOpenTextIcon } from "@/components/ui/BookOpenTextIcon";
+import { FolderIcon } from "@/components/ui/FolderIcon";
+import { MessageCircleIcon } from "@/components/ui/MessageCircleIcon";
+import { UsersRoundIcon } from "@/components/ui/UsersRoundIcon";
 
 const AdminHome = async () => {
   const reservations = await getAllReservations();
@@ -24,35 +24,35 @@ const AdminHome = async () => {
       title: "Total Pending Requests",
       value: pendingRequests,
       description: "Requests that are pending approval",
-      icon: Clock,
+      icon: BookOpenTextIcon,
       status: "warning",
     },
     {
       title: "Reservations this Month",
       value: reservationsThisMonth,
       description: "Total reservations made this month",
-      icon: Calendar,
+      icon: FolderIcon,
       status: "success",
     },
     {
       title: "New Users this Week",
       value: newUsers,
       description: "Total new users registered this week",
-      icon: Users,
+      icon: UsersRoundIcon,
       status: "success",
     },
     {
       title: "Average Response Time",
       value: "4h 30m",
       description: "Current average response time",
-      icon: MessageSquare,
+      icon: MessageCircleIcon,
       status: "error",
     },
   ];
 
-  console.log("pending:: ", pendingRequests);
-  console.log("this month:: ", reservationsThisMonth);
-  console.log("new users:: ", newUsers);
+  // console.log("pending:: ", pendingRequests);
+  // console.log("this month:: ", reservationsThisMonth);
+  // console.log("new users:: ", newUsers);
 
   return (
     <div className="p-4 md:p-8">

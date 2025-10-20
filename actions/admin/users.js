@@ -13,11 +13,6 @@ export const getAllUsers = async () => {
       });
     if (error) throw error;
 
-    console.log(
-      "sorted::",
-      users.map((item) => item.updated_at)
-    );
-
     const reducedUsers = users.map(
       ({ customer_id, email, full_name, avatar_url, plan, updated_at }) => ({
         customer_id,
@@ -73,10 +68,8 @@ export const newUsersCount = async () => {
     }
 
     const users_created_at = users.map((user) => user.created_at);
-    // console.log("users::: ", users_created_at);
 
     const thisWeekCount = getThisWeekCount(users_created_at);
-    console.log("this week::: ", thisWeekCount);
 
     return thisWeekCount;
   } catch (error) {
