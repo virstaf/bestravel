@@ -16,6 +16,7 @@ const MetricList = ({ metrics }) => {
             description={metric.description}
             icon={metric.icon}
             status={metric.status}
+            link={metric.link}
           />
         ))}
       </div>

@@ -26,6 +26,7 @@ const AdminHome = async () => {
       description: "Requests that are pending approval",
       icon: BookOpenTextIcon,
       status: "warning",
+      link: "/admin/reservations",
     },
     {
       title: "Reservations this Month",
@@ -33,6 +34,7 @@ const AdminHome = async () => {
       description: "Total reservations made this month",
       icon: FolderIcon,
       status: "success",
+      link: "/admin/reservations",
     },
     {
       title: "New Users this Week",
@@ -40,6 +42,7 @@ const AdminHome = async () => {
       description: "Total new users registered this week",
       icon: UsersRoundIcon,
       status: "success",
+      link: "/admin/users",
     },
     {
       title: "Average Response Time",
@@ -47,6 +50,7 @@ const AdminHome = async () => {
       description: "Current average response time",
       icon: MessageCircleIcon,
       status: "error",
+      link: "/admin/users",
     },
   ];
 

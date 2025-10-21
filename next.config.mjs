@@ -14,10 +14,28 @@ const nextConfig = {
   // },
 
   images: {
-    domains: [
-      "drive.google.com",
-      "images.unsplash.com",
-      "ylpkcsmbsnowmbyxhbzw.supabase.co",
+    // domains: [
+    //   "drive.google.com",
+    //   "images.unsplash.com",
+    //   "ylpkcsmbsnowmbyxhbzw.supabase.co",
+    // ],
+    remotePatterns: [
+      {
+        protocol: "https", // Specifies the required protocol (e.g., 'https')
+        hostname: "drive.google.com", // Defines the allowed hostname (supports wildcards like '*.example.com')
+        port: "", // Specifies the required port (empty string for default)
+        pathname: "/**", // Defines the allowed path within the hostname (supports wildcards like '/**')
+      },
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "ylpkcsmbsnowmbyxhbzw.supabase.co",
+        pathname: "/**",
+      },
     ],
   },
 };
