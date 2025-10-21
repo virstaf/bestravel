@@ -4,8 +4,9 @@ import HotelCard from "@/components/ui/hotelCard";
 import TripsSection from "@/components/trips-section";
 import WelcomeCard from "@/components/welcome-card";
 import { hotels } from "@/lib/data";
+import ReservationsSection from "@/components/reservations-section";
 
-const page = () => {
+const DashboardPage = () => {
   return (
     <div className="px-4 h-full w-full sm:w-[calc(100%-100px)]">
       <DashHeader
@@ -26,6 +27,10 @@ const page = () => {
           <DealsSection />
         </section>
 
+        <section className="my-12">
+          <ReservationsSection />
+        </section>
+
         <section className="my-12 max-w-full bg-gray-100 rounded-2xl p-4">
           <h2 className="text-md font-bold uppercase text-primary mb-4">
             Hotel Recommendations for You
@@ -43,4 +48,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default DashboardPage;

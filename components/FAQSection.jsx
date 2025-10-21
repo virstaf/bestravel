@@ -2,6 +2,7 @@ import React from "react";
 import Faq from "./ui/faq";
 import { faqs } from "@/lib/data";
 import Image from "next/image";
+import { Accordion } from "./ui/accordion";
 
 const FAQSection = () => {
   return (
@@ -16,6 +17,7 @@ const FAQSection = () => {
         <div className="w-full mx-auto">
           <div>
             <div className="faq bg-white p-6 rounded-md shadow w-full mx-auto">
+              <Accordion collapsible defaultValue={1} className="mb-4 border-b last:border-0 text-gray-600">
               {faqs.map((item, idx) => (
                 <Faq
                   className="mb-4 border-b last:border-0 text-gray-600"
@@ -24,7 +26,7 @@ const FAQSection = () => {
                   number={idx + 1}
                   key={idx}
                 />
-              ))}
+              ))}</Accordion>
               <p className="text-sm text-muted-foreground pt-6">
                 Still have questions? Contact us below!
               </p>

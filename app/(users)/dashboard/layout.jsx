@@ -4,6 +4,7 @@ import LandingFooter from "@/components/LandingFooter";
 import SideBar from "@/components/SideBar";
 import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import DashboardNotFound from "./not-found";
 
 export default async function DashboardLayout({ children }) {
   const user = await getUser();
@@ -12,13 +13,15 @@ export default async function DashboardLayout({ children }) {
     redirect("/auth/login");
   }
 
-  const {profile} = await getProfileAction();
+  const { profile } = await getProfileAction();
 
   if (profile?.role === "ADMIN") {
     redirect("/admin");
   }
 
-
+  if (!children) {
+    return <DashboardNotFound />;
+  }
 
   return (
     <>

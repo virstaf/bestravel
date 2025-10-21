@@ -67,12 +67,37 @@ export const getQuoteById = async (quoteId) => {
       .eq("id", quoteId)
       .single();
     if (quoteError) {
-      console.error("getQuoteById error:::", quoteError);
-      return { success: false, error: quoteError.message };
+      const { data: quote2, error: quoteError2 } = await supabase
+        .from("quotes")
+        .select("*")
+        .eq("quote_number", quoteId)
+        .single();
+      if (quoteError2) {
+        return { success: false, error: quoteError2.message };
+      }
+      return { success: true, data: quote2 };
     }
     return { success: true, data: quote };
   } catch (error) {
     console.error("getQuoteById catch error:::", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getQuoteItems = async (quoteId) => {
+  const supabase = await createAdminClient();
+  try {
+    const { data: items, error: itemsError } = await supabase
+      .from("quote_items")
+      .select("*")
+      .eq("quote_id", quoteId);
+    if (itemsError) {
+      console.error("getQuoteItems error:::", itemsError);
+      return { success: false, error: itemsError.message };
+    }
+    return { success: true, data: items };
+  } catch (error) {
+    console.error("getQuoteItems catch error:::", error);
     return { success: false, error: error.message };
   }
 };
