@@ -8,6 +8,7 @@ import { CopyIcon } from "@/components/ui/CopyIcon";
 import { DownloadIcon } from "@/components/ui/DownloadIcon";
 import Status from "@/components/ui/status";
 import { getFormattedDate } from "@/lib/getFormattedDate";
+// import html2pdf from "html2pdf.js";
 
 const QuoteDetailPage = async ({ params }) => {
   const { quote_number } = await params;
@@ -32,7 +33,12 @@ const QuoteDetailPage = async ({ params }) => {
   const dateIssued = getFormattedDate(quote.created_at);
   const validUntil = quote.valid_until
     ? getFormattedDate(quote.valid_until)
-    : "N/A";
+    : new Date.now() + 1000 * 60 * 60 * 60 * 24 * 7;
+
+  const handleDownload = async () => {
+    // const element = document.getElementById("full_quote");
+    // // await html2pdf(element);
+  };
 
   return (
     <div className="p-4 md:p-8">
@@ -41,7 +47,10 @@ const QuoteDetailPage = async ({ params }) => {
         <h1>{trip.title}</h1>
         <Status value={trip.status} />
       </div>
-      <div className="card p-8 my-4 max-w-5xl mx-auto bg-white shadow rounded-md tracking-wide">
+      <div
+        className="card p-8 my-4 max-w-5xl mx-auto bg-white shadow rounded-md tracking-wide"
+        id="full_quote"
+      >
         <div className="header grid my-6 grid-cols-1 lg:grid-cols-3 space-y-4 ">
           <div className="customer-info">
             {/* <h2>Customer Information</h2> */}

@@ -45,9 +45,9 @@ export function NavMain({ items }) {
               key={item.title}
               className={`${currentPath === item.url.split("/").pop() ? "bg-primary text-primary-foreground" : ""} rounded-r-lg rounded-l-sm`}
             >
-              <SidebarMenuButton asChild tooltip={item.title}>
+              <SidebarMenuButton asChild tooltip={item.title} className="my-1">
                 <Link href={item.url}>
-                  {item.icon && <item.icon />}
+                  {item.icon && <item.icon className="w-6 h-6" />}
                   {item.title}
                 </Link>
               </SidebarMenuButton>

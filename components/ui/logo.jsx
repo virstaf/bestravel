@@ -10,7 +10,7 @@ const Logo = ({ href }) => {
           alt="logo"
           width={805}
           height={310}
-          className="h-12 w-31 object-fit"
+          className="h-12 w-31 object-fit hover:scale-105"
         />
       </div>
     </Link>
