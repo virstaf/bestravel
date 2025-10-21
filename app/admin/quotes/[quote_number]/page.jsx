@@ -140,7 +140,7 @@ const FlightQuoteItem = ({
   <div className="px-6 py-4 bg-white shadow rounded flex gap-6">
     <p>{category[0].toUpperCase() + category.slice(1)}</p>
     <p>{supplier}</p>
-    <p>{`${price} x ${quantity}`}</p>
+    <p>{`$${price} x ${quantity} travellers`}</p>
   </div>
 );
 
@@ -158,6 +158,6 @@ const TransferQuoteItem = ({
   <div className="px-6 py-4 bg-white shadow rounded flex gap-6">
     <p>{category[0].toUpperCase() + category.slice(1)}</p>
     <p>{supplier}</p>
-    <p>{`${price} x ${quantity}`}</p>
+    <p>{`$${price} x ${quantity} ways`}</p>
   </div>
 );

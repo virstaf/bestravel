@@ -8,7 +8,7 @@ const PrivacyPage = () => {
         <div className="flex items-center justify-center">
           <h1 className="text-4xl font-bold">Privacy Policy Page</h1>
         </div>
-        <div className="content bg-white p-6 rounded-lg shadow-md mt-8">
+        <div className="content bg-white p-6 rounded-lg shadow-md mt-8 space-y-4 tracking-wide">
           <p>
             Welcome to Virstravel, operated by Virstaf LTD ("we", "us", "our").
             We are registered in England and Wales with a registered office at
@@ -19,7 +19,7 @@ const PrivacyPage = () => {
             Privacy Policy explains how we collect, use, and safeguard your
             information when you interact with our website and services.
           </p>
-          <ol>
+          <ol className="space-y-2">
             <li>
               <h3>About Virstravel</h3>
               <p>
@@ -116,6 +116,22 @@ const PrivacyPage = () => {
                 We retain your personal data only for as long as necessary to
                 fulfill the purposes outlined above, unless a longer retention
                 period is required or permitted by law.
+              </p>
+            </li>
+            <li>
+              <h3>WhatsApp Messaging</h3>
+              <p>
+                If you choose to receive updates via WhatsApp, Virstravel Club
+                will process your phone number and message content to deliver
+                booking confirmations, reminders, and customer support. We use
+                the WhatsApp Business Platform and may work with a Business
+                Solution Provider as our processor. Messages may be transmitted
+                outside the UK/EU according to WhatsApp’s standard routing; we
+                implement appropriate safeguards and Data Processing Agreements.
+                You can opt out at any time by replying STOP in WhatsApp or by
+                changing your preferences in your account. For marketing
+                messages, we will only contact you if you have given separate
+                marketing consent.
               </p>
             </li>
             <li>
