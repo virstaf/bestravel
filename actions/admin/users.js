@@ -1,6 +1,6 @@
 "use server";
-import { createAdminClient } from "@/lib/supabase/admin/server";
-import { getThisWeekCount } from "@/lib/utils";
+import {createAdminClient} from "@/lib/supabase/admin/server";
+import {getThisWeekCount} from "@/lib/utils";
 
 export const getAllUsers = async () => {
   try {
@@ -69,11 +69,40 @@ export const newUsersCount = async () => {
 
     const users_created_at = users.map((user) => user.created_at);
 
-    const thisWeekCount = getThisWeekCount(users_created_at);
-
-    return thisWeekCount;
+    return getThisWeekCount(users_created_at);
   } catch (error) {
     console.error(error);
     return null;
   }
 };
+
+export const getAuthUsers = async () => {
+    try {
+        const supabase = await createAdminClient();
+        const { data, usersError } = await supabase.auth.admin.listUsers();
+
+        if (usersError) {
+            console.error(usersError)
+            return null;
+        }
+        return data.users;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export const deleteAuthUser = async (id) => {
+    try {
+        const supabase = await createAdminClient();
+        const {error} = await supabase.auth.admin.deleteUser(id);
+        if (error) {
+            console.error(error);
+            return {success: false, error: error};
+        }
+        return {success: true, error: null};
+    } catch (error){
+        console.error(error);
+        return {success: false, error};
+    }
+}
