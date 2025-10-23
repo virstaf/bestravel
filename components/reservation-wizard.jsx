@@ -16,7 +16,6 @@ export default function ReservationWizard({ trip, userId }) {
   const router = useRouter();
 
   const handleSubmit = async (type, details) => {
-
     const user = await getUser();
     setLoading(true);
     const adminType = "admin-" + type;
@@ -86,7 +85,11 @@ export default function ReservationWizard({ trip, userId }) {
 
       router.refresh();
     } catch (error) {
-      console.error(
+      // console.error(
+      // `${type.charAt(0).toUpperCase() + type.slice(1)} reservation error:`,
+      // error
+      // );
+      toast.error(
         `${type.charAt(0).toUpperCase() + type.slice(1)} reservation error:`,
         error
       );
