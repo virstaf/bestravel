@@ -226,6 +226,12 @@
   }
 }
 
+@layer base {
+  img {
+    display: initial;
+  }
+}
+
 .heroBgImage {
   background-image: url("/images/maldives.jpg");
   background-size: cover;

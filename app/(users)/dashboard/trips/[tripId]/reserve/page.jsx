@@ -10,8 +10,8 @@ const page = async ({ params }) => {
   const { tripId } = await params;
   const user = await getUser();
 
-
   const { data: trip, error } = await fetchTrip(tripId);
+  // console.log("trip::: ", trip);
 
   if (error) {
     console.error("Error fetching trip:", error);

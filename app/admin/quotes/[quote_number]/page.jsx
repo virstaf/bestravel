@@ -2,12 +2,13 @@ import { getQuoteById, getQuoteItems } from "@/actions/admin/quotes";
 import { getTripById } from "@/actions/admin/trips";
 import { getUserById } from "@/actions/admin/users";
 import NavSummary from "@/components/NavSummary";
+import QuoteActions from "@/components/QuoteActions";
 import { Button } from "@/components/ui/button";
 import { ChevronRightIcon } from "@/components/ui/ChevronRightIcon";
 import { CopyIcon } from "@/components/ui/CopyIcon";
 import { DownloadIcon } from "@/components/ui/DownloadIcon";
 import Status from "@/components/ui/status";
-import { getFormattedDate } from "@/lib/getFormattedDate";
+import { getFormattedDate, getFormattedDateTime } from "@/lib/getFormattedDate";
 // import html2pdf from "html2pdf.js";
 
 const QuoteDetailPage = async ({ params }) => {
@@ -17,6 +18,9 @@ const QuoteDetailPage = async ({ params }) => {
   const trip = await getTripById(quote.trip_id);
   const customer = await getUserById(trip.user_id);
   const { data: quoteItems } = await getQuoteItems(quote.id);
+  // const now = new Date();
+  // const next7days = getFormattedDateTime(now);
+  // console.log("next 7 days::: ", next7days, now);
 
   const flightQuotes = quoteItems.filter(
     (item) => item.reservation_type === "flight"
@@ -33,12 +37,7 @@ const QuoteDetailPage = async ({ params }) => {
   const dateIssued = getFormattedDate(quote.created_at);
   const validUntil = quote.valid_until
     ? getFormattedDate(quote.valid_until)
-    : new Date.now() + 1000 * 60 * 60 * 60 * 24 * 7;
-
-  const handleDownload = async () => {
-    // const element = document.getElementById("full_quote");
-    // // await html2pdf(element);
-  };
+    : "N/a";
 
   return (
     <div className="p-4 md:p-8">
@@ -119,22 +118,7 @@ const QuoteDetailPage = async ({ params }) => {
           <p>📧 bookings@virstravelclub.com</p>
         </div>
       </div>
-      <div className="btns max-w-5xl mx-auto flex items-center justify-between">
-        <div className="space-x-6">
-          <Button variant="outline">
-            Duplicate Quote
-            <CopyIcon />
-          </Button>
-          <Button className="">
-            Download PDF
-            <DownloadIcon />
-          </Button>
-        </div>
-        <Button variant="outline" className="text-primary">
-          Send to Client
-          <ChevronRightIcon />
-        </Button>
-      </div>
+      <QuoteActions />
       {/* <pre>{JSON.stringify(quote, null, 2)}</pre> */}
       {/* <pre>{JSON.stringify(hotelQuotes, null, 2)}</pre> */}
     </div>
