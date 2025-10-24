@@ -110,3 +110,23 @@ export const deleteAuthUser = async (id) => {
     revalidatePath("/");
   }
 };
+
+export const signInWithEmailOtp = async (email) => {
+  try {
+    const supabase = await createAdminClient();
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email,
+    });
+
+    if (error) {
+      console.error(error);
+      return { success: false, error: error };
+    }
+
+    console.log("with otp:::", data);
+    return { success: true, data: data };
+  } catch (error) {
+    console.error(error);
+    return { success: false, error: error };
+  }
+};

@@ -2,13 +2,23 @@ import { Mail } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { redirect } from "next/navigation";
 import { UserRoundCheckIcon } from "@/components/ui/UserRoundCheckIcon";
-import { deleteAuthUser } from "@/actions/admin/users";
+import { deleteAuthUser, signInWithEmailOtp } from "@/actions/admin/users";
 import { toast } from "sonner";
+import Modal from "../Modal";
 
 const AuthUserActions = ({ row }) => {
-  const handleResendVerification = (row) => {
+  const handleResendVerification = async (row) => {
     console.log("Resend verification email to:", row);
+    const { error, data } = await signInWithEmailOtp(row.email);
     // redirect(`/admin/users/${row.id}`);
+    if (error) {
+      console.error(error);
+      toast.error("Error sending verifcation email");
+      return null;
+    }
+    toast.success("OTP Sent Successfully!", {
+      description: "Check your email for instructions to login",
+    });
   };
 
   const handleSendEmail = (row) => {
@@ -46,13 +56,24 @@ const AuthUserActions = ({ row }) => {
           <Mail className="h-4 w-4 mr-2" />
           Send Email
         </button>
-        <button
+        {/* <button
           onClick={() => handleUserDelete(row)}
           className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
         >
           <Trash2 className="h-4 w-4 mr-2" />
           Delete User
-        </button>
+        </button> */}
+        <Modal
+          trigger={
+            <div className="flex items-center min-w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete User
+            </div>
+          }
+          yes="Continue"
+          no="Cancel"
+          action={() => handleUserDelete(row)}
+        />
       </div>
     </>
   );
