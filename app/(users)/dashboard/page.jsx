@@ -6,6 +6,7 @@ import WelcomeCard from "@/components/welcome-card";
 import { hotels } from "@/lib/data";
 import ReservationsSection from "@/components/reservations-section";
 import WelcomeSection from "@/components/welcome-section";
+import HolidayDestinationsSection from "@/components/holiday-destinations-section";
 
 const DashboardPage = () => {
   return (
@@ -32,7 +33,11 @@ const DashboardPage = () => {
           <ReservationsSection />
         </section>
 
-        <section className="my-12 max-w-full bg-gray-100 rounded-2xl p-4">
+        <div className="my-12">
+          <HolidayDestinationsSection />
+        </div>
+
+        {/* <section className="my-12 max-w-full bg-gray-100 rounded-2xl p-4">
           <h2 className="text-md font-bold uppercase text-primary mb-4">
             Hotel Recommendations for You
           </h2>
@@ -43,7 +48,7 @@ const DashboardPage = () => {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
     </div>
   );
