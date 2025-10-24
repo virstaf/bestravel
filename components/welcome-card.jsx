@@ -1,29 +1,14 @@
-"use client";
-
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { useProfileContext } from "@/contexts/profile";
-import { useEffect, useState } from "react";
 
-const WelcomeCard = () => {
-  const [userName, setUserName] = useState(null);
-  const { profile, isLoading } = useProfileContext();
-
-  useEffect(() => {
-    if (isLoading) {
-      setUserName("!");
-      return;
-    }
-    if (profile) {
-      setUserName(profile?.full_name.split(" ")[0] || "!");
-    }
-  }, [profile]);
+const WelcomeCard = ({ username }) => {
+  console.log("username::", username);
 
   return (
     <div className="flex flex-col relative items-start justify-center w-full h-full bg-white rounded-2xl overflow-hidden shadow-lg p-6">
       <div className="absolute top-0 bottom-0 right-0 left-0 clipPath heroBg overflow-hidden"></div>
       <p className="text-3xl text-gray-600 italic text-left py-1 mb-2 backdrop-blur-3xl pr-2 rounded z-10">
-        Howdy {userName}!
+        Howdy {username}!
       </p>
       <p className="text-gray-600 py-2 mb-2 backdrop-blur-3xl pr-2 rounded z-10">
         Checkout the latest travel deals and offers

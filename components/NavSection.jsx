@@ -46,7 +46,7 @@ const NavSection = () => {
   }, [menuOpen]);
 
   return (
-    <div className="dark:bg-black/50 backdrop-blur-sm w-full h-16 fixed top-0 z-50">
+    <div className="w-full h-16 fixed top-0 z-50 backdrop-blur-2xl bg-white/80 dark:bg-black/50">
       <div className="h-full container mx-auto px-4 flex justify-between items-center relative">
         <Link
           href="/"

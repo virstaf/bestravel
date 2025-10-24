@@ -5,6 +5,7 @@ import TripsSection from "@/components/trips-section";
 import WelcomeCard from "@/components/welcome-card";
 import { hotels } from "@/lib/data";
 import ReservationsSection from "@/components/reservations-section";
+import WelcomeSection from "@/components/welcome-section";
 
 const DashboardPage = () => {
   return (
@@ -16,7 +17,7 @@ const DashboardPage = () => {
       />
       <div className="w-full min-h-[calc(100vh-180px)]">
         <section className="my-12">
-          <WelcomeCard />
+          <WelcomeSection />
         </section>
 
         <section className="my-12">

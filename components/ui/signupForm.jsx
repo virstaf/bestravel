@@ -29,7 +29,16 @@ const formSchema = z.object({
     .min(3, {
       message: "Fullname must be at least 3 characters",
     })
-    .max(40),
+    .max(40)
+    .refine(
+      (value) => {
+        const words = value.trim().split(/\s+/);
+        return words.length >= 2 && words.length <= 3;
+      },
+      {
+        message: "Fullname must contain 2 or 3 words",
+      }
+    ),
   email: z.string().email({ message: "Invalid email address" }),
   password: z
     .string()

@@ -60,7 +60,7 @@ export const ProfileProvider = ({ children }) => {
       // Fetch fresh data
       const { profile, error } = await getProfileAction();
       if (error) {
-        console.error("Error fetching profile:", error);
+        // console.error("Error fetching profile:", error);
         setIsLoading(false);
         return;
       }

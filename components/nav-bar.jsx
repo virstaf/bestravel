@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import Image from "next/image";
 import { getUser } from "@/lib/supabase/server";
 import UserProfile from "./ui/userProfile";
 import { NavLinks } from "@/lib/data";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import { AlignRight } from "lucide-react";
+import Logo from "./ui/logo";
 
 const NavBar = () => {
   const [user, setUser] = useState(null);
@@ -38,25 +38,13 @@ const NavBar = () => {
 
   return (
     <nav
-      className={`bg-none backdrop-blur-sm transition-transform duration-300 ease-in-out fixed w-full top-0 z-50 h-16 ${menuOpen ? "bg-white shadow h-screen md:h-16 rounded-b-2xl" : ""}`}
+      className={`bg-white/80 backdrop-blur-sm transition-transform duration-300 ease-in-out fixed w-full top-0 z-50 h-16 ${menuOpen ? "bg-white shadow h-screen md:h-16 rounded-b-2xl" : ""}`}
     >
       <div
         className={`relative max-w-7xl mx-auto px-4 flex items-center justify-between h-full  ${menuOpen ? "flex-col justify-between gap-16 py-8" : ""}`}
       >
         <div className={`logo ${menuOpen ? "mt-16" : ""}`}>
-          <Link
-            href="/"
-            className="max-h-14 hover:cursor-pointer hover:scale-105"
-          >
-            <Image
-              src="/virstravel.png"
-              alt="Virstravel Club Logo"
-              width={805}
-              height={310}
-              className="h-12 w-31 object-contain"
-              priority
-            />
-          </Link>
+          <Logo href={"/"} />
         </div>
         <div
           className={`flex items-center gap-4 ${menuOpen ? "flex-col" : "hidden md:flex"}`}

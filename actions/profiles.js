@@ -1,10 +1,12 @@
 "use server";
 
 import { createClient, getUser } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 export const getProfileAction = async () => {
   const user = await getUser();
   if (!user) {
+    revalidatePath("/dashboard");
     console.error("No user found.");
     return { success: false, error: "User not authenticated." };
   }
