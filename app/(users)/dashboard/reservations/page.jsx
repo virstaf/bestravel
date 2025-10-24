@@ -4,12 +4,15 @@ import { getProfileAction } from "@/actions/profiles";
 import { getUserReservations } from "@/actions/reservations";
 import { ReservationSummaryCard } from "@/components/reservation-summary";
 import { fetchTrips } from "@/actions/trips";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const ReservationsPage = async () => {
   const { profile } = await getProfileAction();
   const userId = profile?.id;
   const reservations = await getUserReservations(userId);
   const trips = await fetchTrips(userId);
+  const tripLink = profile?.is_subscribed ? "/dashboard/trips/new" : "/pricing";
 
   const getTripName = (tripId) => {
     const trip = trips.find((trip) => trip.id === tripId);
@@ -22,11 +25,19 @@ const ReservationsPage = async () => {
         page="My Reservations"
         description="😎 Manage all your reservations"
       />
-      <div className="w-full min-h-[calc(100vh-180px)] mt-4   mx-auto flex flex-col justify-center">
+      <div className="w-full min-h-[calc(100vh-180px)] mt-4 mx-auto my-12 flex flex-col">
         <div className="">
           <h2 className="text-lg font-semibold ml-6">All Reservations</h2>
           {reservations.length === 0 ? (
-            <p>No reservations found.</p>
+            <div className="text-center py-12 space-y-4">
+              <h3 className="text-lg font-medium">No reservations found</h3>
+              <p className="text-muted-foreground tracking-wide">
+                Start planning your next adventure
+              </p>
+              <Link href={"/dashboard/trips"}>
+                <Button variant="outline">Add a reservation</Button>
+              </Link>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {reservations.map((reservation) => (
@@ -41,9 +52,33 @@ const ReservationsPage = async () => {
             </div>
           )}
         </div>
+        <div className="trips">
+          <h2 className="text-lg font-semibold ml-6">Your Trips</h2>
+          {trips.length === 0 && (
+            <div className="text-center py-12 space-y-4">
+              <h3 className="text-lg font-medium">No trips planned yet</h3>
+              <p className="text-muted-foreground tracking-wide">
+                Plan a trip to Add a reservation
+              </p>
+              <Link href={tripLink}>
+                <Button>Create New Trip</Button>
+              </Link>
+            </div>
+          )}
+          {trips.length !== 0 &&
+            trips.map((trip, index) => (
+              <TripSummaryCard key={index} trip={trip} />
+            ))}
+        </div>
       </div>
     </div>
   );
 };
 
 export default ReservationsPage;
+
+const TripSummaryCard = ({ trip: { title } }) => (
+  <div className="">
+    <h3>{title}</h3>
+  </div>
+);

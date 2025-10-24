@@ -2,6 +2,8 @@ import { getProfileAction } from "@/actions/profiles";
 import { getUserReservations } from "@/actions/reservations";
 import { fetchTrips } from "@/actions/trips";
 import { ReservationSummaryCard } from "./reservation-summary";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 const ReservationsSection = async () => {
   const { profile } = await getProfileAction();
@@ -19,7 +21,15 @@ const ReservationsSection = async () => {
         Recent Reservations
       </h2>
       {reservations.length === 0 ? (
-        <p>No reservations found.</p>
+        <div className="text-center py-12 space-y-4">
+          <h3 className="text-lg font-medium">No reservations found</h3>
+          <p className="text-muted-foreground tracking-wide">
+            Start planning your next adventure
+          </p>
+          <Link href={"/dashboard/reservations"}>
+            <Button variant="outline">Add a reservation</Button>
+          </Link>
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
           {reservations.slice(0, 3).map((reservation) => (
