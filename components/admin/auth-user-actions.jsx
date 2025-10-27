@@ -13,7 +13,7 @@ const AuthUserActions = ({ row }) => {
     // redirect(`/admin/users/${row.id}`);
     if (error) {
       console.error(error);
-      toast.error("Error sending verifcation email");
+      toast.error("Error sending verification email");
       return null;
     }
     toast.success("OTP Sent Successfully!", {

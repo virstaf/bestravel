@@ -16,13 +16,13 @@ const UserActions = ({ row }) => {
   };
 
   const handleSendMessage = () => {
-    console.log("Send message to:", row.id);
-    // redirect(`/admin/users/${row.id}/message`);
+    console.log("Send email to:", row);
+    redirect(`mailto:${row.email}`);
   };
 
   const handleDeactivate = () => {
     console.log("Deactivate user:", row.id);
-    
+
     // setData(data.filter((item) => item.id !== row.id));
   };
 

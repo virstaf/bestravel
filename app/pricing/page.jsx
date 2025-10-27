@@ -4,7 +4,7 @@ import TrialCTA from "@/components/trial-cta";
 import Pricing from "@/components/ui/pricing";
 import Image from "next/image";
 
-const PricingPage = () => {
+const PricingPage = async () => {
   return (
     <div className="h-full md:py-12">
       <section className="w-full container h-full mx-auto">
@@ -16,7 +16,6 @@ const PricingPage = () => {
             className="object-cover opacity-70 rounded"
           />
           <div className="absolute inset-0 flex items-center justify-center text-center  px-4">
-            {/* <h2 className="text-2xl font-bold text-primary/">About Us</h2> */}
             <h1 className="text-4xl font-bold text-white p-3 bg-black/20 rounded-lg ">
               Pricing Plans{" "}
               <span className="text-secondary"> for Every Traveler</span>
