@@ -43,27 +43,15 @@ export default function TripDetail({ trip }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="">
         <h1 className="text-3xl font-bold">{trip.title}</h1>
-        <div className="flex gap-2">
-          <Link href={`/dashboard/trips/${trip.id}/edit`}>
-            <Button variant="outline">Edit</Button>
-          </Link>
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={loading}
-          >
-            {loading ? "Deleting..." : "Delete"}
-          </Button>
-        </div>
       </div>
 
       {error && (
         <div className="p-4 text-red-500 bg-red-50 rounded-md">{error}</div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 lg:grid-cols-3">
         <div className="md:col-span-2 space-y-6">
           <Card className="relative overflow-hidden">
             {!trip.cover_image_url && (
@@ -79,8 +67,8 @@ export default function TripDetail({ trip }) {
                     trip.status === "completed"
                       ? "success"
                       : trip.status === "cancelled"
-                      ? "destructive"
-                      : "default"
+                        ? "destructive"
+                        : "default"
                   }
                 >
                   {trip.status.replace("_", " ")}
@@ -138,12 +126,18 @@ export default function TripDetail({ trip }) {
                   Reserve for Trip
                 </Link>
               </Button>
-              {/* <Button variant="outline" className="w-full">
-                Add Itinerary
-              </Button> */}
-              <Button variant="outline" className="w-full">
-                Invite Friends
-              </Button>
+              <div className="grid grid-cols-2 gap-2">
+                <Button asChild variant="outline">
+                  <Link href={`/dashboard/trips/${trip.id}/edit`}>Edit</Link>
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={handleDelete}
+                  disabled={loading}
+                >
+                  {loading ? "Deleting..." : "Delete"}
+                </Button>
+              </div>
             </CardContent>
           </Card>
 

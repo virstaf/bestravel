@@ -6,13 +6,14 @@ import { getFormattedDate } from "@/lib/getFormattedDate";
 export const ReservationSummaryCard = ({
   reservation,
   tripName,
+  tripId,
   type,
   className,
 }) => {
   return (
     // <div className="my-4">
     <div
-      className={`bg-white text-gray-700 tracking-wide p-4 rounded-lg shadow hover:shadow-2xl transition-shadow duration-200 ${type === "flight" ? "border-l-4 border-blue-500" : type === "hotel" ? "border-l-4 border-green-500" : "border-l-4 border-yellow-500"} ${className}`}
+      className={`bg-white sm:min-w-[400px] max-w-[500px] text-gray-700 tracking-wide p-4 rounded-lg shadow hover:shadow-2xl transition-shadow duration-200 ${type === "flight" ? "border-l-4 border-blue-500" : type === "hotel" ? "border-l-4 border-green-500" : "border-l-4 border-yellow-500"} ${className}`}
     >
       {type === "flight" && (
         <div className="flex flex-col h-full gap-4 justify-between">
@@ -36,25 +37,19 @@ export const ReservationSummaryCard = ({
           </div>
           <div className="grid grid-cols-3 gap-2 mt-4">
             <Button asChild variant="outline">
-              <Link href={`/dashboard/reservations/${reservation.id}`}>
-                View
-              </Link>
+              <Link href={`/dashboard/trips/${tripId}/reserve`}>View</Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href={`/dashboard/reservations/${reservation.id}`}>
-                Edit
-              </Link>
+              <Link href={`/dashboard/trips/${tripId}/reserve`}>Edit</Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href={`/dashboard/reservations/${reservation.id}`}>
-                Cancel
-              </Link>
+              <Link href={`/dashboard/trips/${tripId}/reserve`}>Cancel</Link>
             </Button>
           </div>
         </div>
       )}
       {type === "hotel" && (
-        <div className="flex flex-col h-full justify-between">
+        <div className="sm:min-w-[350px] flex flex-col h-full justify-between">
           <h3 className="text-lg font-semibold mb-2">
             🏠 Hotel Reservation - <span>{tripName}</span>
           </h3>
@@ -91,7 +86,7 @@ export const ReservationSummaryCard = ({
         </div>
       )}
       {type === "transfer" && (
-        <div className="flex flex-col h-full justify-between">
+        <div className="sm:min-w-[350px] flex flex-col h-full justify-between">
           <h3 className="text-lg font-semibold mb-2">
             🚕 Transfer Reservation - <span>{tripName}</span>
           </h3>

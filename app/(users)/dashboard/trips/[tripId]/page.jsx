@@ -33,10 +33,15 @@ const TripDetailPage = async ({ params }) => {
     <div className="container mx-auto px-4 w-full h-full">
       <DashHeader page="View Trip" description="😍 More adventure waiting!" />
       <div className="content min-w-full min-h-[calc(100vh-180px)] my-2">
+        <div className="flex items-center justify-between gap-4 my-4">
+          <Button variant="outline" asChild>
+            <Link href="/dashboard/trips">All Trips</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/dashboard/trips/new">Add New</Link>
+          </Button>
+        </div>
         <TripDetail trip={trip} />
-        <Button asChild className="my-4">
-          <Link href="/dashboard/trips">All Trips</Link>
-        </Button>
       </div>
     </div>
   );
