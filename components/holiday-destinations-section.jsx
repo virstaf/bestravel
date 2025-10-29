@@ -5,7 +5,7 @@ import { destinations } from "@/lib/data";
 
 const HolidayDestinationsSection = () => {
   return (
-    <div className="w-full bg-gradient from-white to-gray-100 py-8 px-4 rounded-2xl">
+    <div className="w-full bg-gradient-to-b from-primary/5 to-gray-white py-8 px-4 rounded-2xl">
       <div className="title flex justify-between">
         <h2 className="text-md font-bold uppercase text-primary mb-6">
           Holiday Destinations worth Exploring

@@ -6,6 +6,7 @@ import { ReservationSummaryCard } from "@/components/reservation-summary";
 import { fetchTrips } from "@/actions/trips";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import TripSummaryCard from "@/components/TripSummaryCard";
 
 const ReservationsPage = async () => {
   const { profile } = await getProfileAction();
@@ -39,12 +40,13 @@ const ReservationsPage = async () => {
               </Link>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-8">
               {reservations.map((reservation) => (
                 <ReservationSummaryCard
                   key={reservation.id}
                   reservation={reservation}
                   tripName={getTripName(reservation.trip_id)}
+                  tripId={reservation.trip_id}
                   type={reservation?.type}
                   className="my-3"
                 />
@@ -52,8 +54,8 @@ const ReservationsPage = async () => {
             </div>
           )}
         </div>
-        <div className="trips">
-          <h2 className="text-lg font-semibold ml-6">Your Trips</h2>
+        <div className="trips my-12">
+          <h2 className="text-lg font-semibold ml-6 my-4">Your Trips</h2>
           {trips.length === 0 && (
             <div className="text-center py-12 space-y-4">
               <h3 className="text-lg font-medium">No trips planned yet</h3>
@@ -65,10 +67,12 @@ const ReservationsPage = async () => {
               </Link>
             </div>
           )}
-          {trips.length !== 0 &&
-            trips.map((trip, index) => (
-              <TripSummaryCard key={index} trip={trip} />
-            ))}
+          <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-8">
+            {trips.length !== 0 &&
+              trips.map((trip, index) => (
+                <TripSummaryCard key={index} trip={trip} />
+              ))}
+          </div>
         </div>
       </div>
     </div>
@@ -77,8 +81,8 @@ const ReservationsPage = async () => {
 
 export default ReservationsPage;
 
-const TripSummaryCard = ({ trip: { title } }) => (
-  <div className="">
-    <h3>{title}</h3>
-  </div>
-);
+// const TripSummaryCard = ({ trip: { title } }) => (
+//   <div className="">
+//     <h3>{title}</h3>
+//   </div>
+// );

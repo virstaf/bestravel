@@ -16,7 +16,7 @@ const ReservationsSection = async () => {
     return trip ? trip.title : "Unknown Trip";
   };
   return (
-    <div className="my-12 max-w-full bg-gradient-to-b from-gray-100 to-white/0 rounded-2xl p-4">
+    <div className="w-full bg-gradient-to-b from-green-500/5 to-gray-white py-8 px-4 rounded-2xl">
       <h2 className="text-md font-bold uppercase text-primary mb-4">
         Recent Reservations
       </h2>
@@ -31,18 +31,27 @@ const ReservationsSection = async () => {
           </Link>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 ">
+        <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-8 ">
           {reservations.slice(0, 3).map((reservation) => (
             <ReservationSummaryCard
               key={reservation.id}
               reservation={reservation}
               tripName={getTripName(reservation.trip_id)}
+              tripId={reservation.trip_id}
               type={reservation?.type}
               className=""
             />
           ))}
         </div>
       )}
+      <div className="flex gap-4 my-4">
+        <Button variant="outline" asChild>
+          <Link href="/dashboard/reservations">View More</Link>
+        </Button>
+        <Button asChild>
+          <Link href="/dashboard/reservations">Add New</Link>
+        </Button>
+      </div>
     </div>
   );
 };
