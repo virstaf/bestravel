@@ -108,7 +108,9 @@ const ReservationDetailPage = async ({ params }) => {
         <div className="space-y-8">
           <NoteTextBox />
           <Button variant="secondary" asChild>
-            <Link href={`/admin/quotes/create?trip_id=${tripId}`}>Add Quote</Link>
+            <Link href={`/admin/quotes/create?trip_id=${tripId}`}>
+              Add Quote
+            </Link>
           </Button>
           {/* <AddQuoteForm /> */}
         </div>

@@ -43,8 +43,8 @@ export const HotelDetailCard = ({ hotel }) => {
     <div className="border rounded-lg p-4 max-w-md">
       <h2 className="text-lg font-semibold text-primary mb-4">Hotel Details</h2>
       <DataRow label="City" value={city} />
-      <DataRow label="Meals" value={meals} />
-      <DataRow label="Rooms" value={rooms} />
+      {/* <DataRow label="Meals" value={meals} /> */}
+      {/* <DataRow label="Rooms" value={rooms} /> */}
       <DataRow label="Star Rating" value={starRating} />
       <DataRow label="Check-In" value={getFormattedDate(checkIn)} />
       <DataRow label="Check-Out" value={getFormattedDate(checkOut)} />
