@@ -59,11 +59,11 @@ export const ReservationSummaryCard = ({
             🏠 Hotel Reservation - <span>{tripName}</span>
           </h3>
           <div className="relative">
-            <p>
+            {/* <p>
               Room type:{" "}
-              {reservation.details.roomType.slice(0, 1).toUpperCase() +
-                reservation.details.roomType.slice(1)}
-            </p>
+              {reservation?.details?.roomType?.slice(0, 1)?.toUpperCase() +
+                reservation?.details?.roomType?.slice(1)}
+            </p> */}
             <p>City: {reservation.details.city}</p>
             <p>Check in: {getFormattedDate(reservation.details.checkIn)}</p>
             <p>Preferred hotel: {reservation.details.preferredHotel}</p>

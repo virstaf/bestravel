@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 
 const WelcomeCard = ({ username }) => {
-  console.log("username::", username);
+  // console.log("username::", username);
 
   return (
     <div className="flex flex-col relative items-start justify-center w-full h-full bg-white rounded-2xl overflow-hidden shadow-lg p-6">

@@ -16,12 +16,11 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { googleAuthAction, loginAction } from "@/actions/users";
 import { useEffect, useState, useTransition } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
-import useUserStore from "@/user.store";
 import Link from "next/link";
 import { getUser } from "@/lib/supabase/server";
 

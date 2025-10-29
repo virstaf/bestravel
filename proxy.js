@@ -1,8 +1,13 @@
 // import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
-export async function middleware(request) {
-  // console.log("middleware running!!");
+// export async function middleware(request) {
+//   // console.log("middleware running!!");
+//   return await updateSession(request);
+// }
+
+export default async function proxy(request) {
+  // return NextResponse.redirect(new URL("/", request.url));
   return await updateSession(request);
 }
 

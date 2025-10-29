@@ -8,8 +8,7 @@ export const fetchAllTrips = async () => {
     if (error) throw error;
     return { success: true, data };
   } catch (err) {
-    console.error("Error fetching all trips:", err);
-    return { success: false, error: err.message, data: [] };
+    throw  err;
   }
 };
 
@@ -28,7 +27,7 @@ export const fetchTrips = async (userId) => {
     // console.log("Fetched trips:::", data);
     return data || [];
   } catch (err) {
-    console.error("Error fetching trips:::", err);
+    throw err;
   }
 };
 
@@ -49,7 +48,7 @@ export const fetchTrip = async (tripId) => {
     }
     return { success: true, data };
   } catch (err) {
-    console.error("Error fetching trip:", err);
+    throw err;
   }
 };
 
