@@ -1,4 +1,5 @@
 "use server";
+
 import { createClient } from "@/lib/supabase/server";
 
 export const fetchAllTrips = async () => {
@@ -8,10 +9,10 @@ export const fetchAllTrips = async () => {
     if (error) throw error;
     return { success: true, data };
   } catch (err) {
-    throw  err;
+    console.error("Error fetching all trips:", err);
+    return { success: false, error: err.message, data: [] };
   }
 };
-
 
 export const fetchTrips = async (userId) => {
   try {
@@ -27,6 +28,7 @@ export const fetchTrips = async (userId) => {
     // console.log("Fetched trips:::", data);
     return data || [];
   } catch (err) {
+    console.error("Error fetching trips:::", err);
     throw err;
   }
 };
@@ -43,12 +45,10 @@ export const fetchTrip = async (tripId) => {
 
     const { data, error } = await response;
 
-    if (error) {
-      return { success: false, error, data: [] };
-    }
+    if (error) throw error;
     return { success: true, data };
   } catch (err) {
-    throw err;
+    return { success: false, errorMessage: err, data: null };
   }
 };
 
@@ -63,7 +63,7 @@ export const createTrip = async (tripData) => {
 
     return data;
   } catch (err) {
-    console.error("Error creating trip:", err);
+    throw err;
   }
 };
 
@@ -79,7 +79,7 @@ export const updateTrip = async (tripId, tripData) => {
 
     return data;
   } catch (err) {
-    console.error("Error updating trip:", err);
+    throw err;
   }
 };
 
@@ -95,6 +95,6 @@ export const deleteTrip = async (tripId) => {
 
     return data;
   } catch (err) {
-    console.error("Error deleting trip:", err);
+    throw err;
   }
 };
