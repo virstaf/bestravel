@@ -21,31 +21,36 @@ export default function ReservationWizard({ trip, userId }) {
     const adminType = "admin-" + type;
 
     try {
-      const emailAdmin = await resendEmail(
-        {
-          email: "info@virstravelclub.com",
-          details,
-          type,
-          user: {
-            fullname: user.user_metadata.full_name,
-            email: user.email,
-            userId: user.id,
+      const { success: emailAdminSuccess, message: adminMessage } =
+        await resendEmail(
+          {
+            email: "info@virstravelclub.com",
+            details,
+            type,
+            user: {
+              fullname: user.user_metadata.full_name,
+              email: user.email,
+              userId: user.id,
+            },
           },
-        },
-        adminType
-      );
+          adminType
+        );
 
-      const emailUser = await resendEmail(
-        {
-          fullname: user.user_metadata.full_name || user.email.split("@")[0],
-          email: user.email,
-          details,
-          type,
-        },
-        type
-      );
+      const { success: emailMemberSuccess, message: memberMessage } =
+        await resendEmail(
+          {
+            fullname: user.user_metadata.full_name || user.email.split("@")[0],
+            email: user.email,
+            details,
+            type,
+          },
+          type
+        );
 
-      // createCl
+      if (!emailAdminSuccess) throw adminMessage;
+      if (!emailMemberSuccess) throw memberMessage;
+
+      console.log("admin msg:", adminMessage, "admin msg:", memberMessage);
 
       const { error: dbError } = await supabase.from("reservations").insert({
         trip_id: trip.id,
@@ -56,32 +61,13 @@ export default function ReservationWizard({ trip, userId }) {
         end_date: trip.end_date,
       });
 
-      if (dbError) {
-        console.error("db error:::", dbError);
-      }
+      if (dbError) throw dbError;
 
       toast.success(
         `${
           type.charAt(0).toUpperCase() + type.slice(1)
         } reservation submitted successfully!`
       );
-
-      // const sendNotification = await resendEmail(
-      //   {
-      //     fullname: user.user_metadata.full_name || user.email.split("@")[0],
-      //     link: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard/reservations`,
-      //     type: "confirm-reservation",
-      //     email: user.email,
-      //   },
-      //   "confirm-reservation"
-      // );
-
-      // if (!sendNotification.success) {
-      //   console.error(
-      //     "Error sending reservation confirmation email:",
-      //     sendNotification.message
-      //   );
-      // }
 
       router.refresh();
     } catch (error) {
