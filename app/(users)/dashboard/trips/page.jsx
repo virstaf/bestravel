@@ -3,8 +3,10 @@ import { fetchTrips } from "@/actions/trips";
 import DashHeader from "@/components/dash-header";
 import Trips from "@/components/TripsPage";
 
+export const dynamic = "force-dynamic";
+
 const TripsPage = async () => {
-  const {profile} = await getProfileAction();
+  const { profile } = await getProfileAction();
   const trips = await fetchTrips(profile?.id);
   return (
     <div className="container mx-auto px-4 w-full h-full">

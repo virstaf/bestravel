@@ -2,6 +2,8 @@ import { getDealsAction } from "@/actions/deals";
 import DashHeader from "@/components/dash-header";
 import Deals from "@/components/DealsPage";
 
+export const dynamic = "force-dynamic";
+
 const DealsPage = async () => {
   const deals = (await getDealsAction()) || [];
   const featuredDeals = deals

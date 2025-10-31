@@ -2,8 +2,10 @@ import { footerLinks, socialLinks } from "@/lib/data";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { getCurrentYear } from "@/lib/utils";
 
 const Footer = () => {
+  // const currentYear = getCurrentYear();
   return (
     <footer className="w-full">
       <div className="w-full py-8 bg-slate-900 text-(--muted)">
@@ -54,9 +56,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="flex bg-slate-900 justify-evenly flex-wrap gap-2 text-white text-sm text-center border border-x-0 border-b-0 px-4 py-1">
-        <p className="">
-          Virstravel &copy; {new Date().getFullYear()} All rights reserved.
-        </p>
+        <p className="">Virstravel &copy; 2025 All rights reserved.</p>
         <Link href="https://uniiktheo.tech" target="_blank">
           <p className="ml-2">Powered by Virstaf</p>
         </Link>

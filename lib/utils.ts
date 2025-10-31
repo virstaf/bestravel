@@ -21,24 +21,26 @@ export const handleError = (error: unknown) => {
   }
 };
 
-export const getThisWeekCount = (dates : []) => {
+export const getThisWeekCount = (dates: []) => {
   const today = new Date();
   const startOfWeek = new Date(today);
   const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
-  
+
   // Calculate start of week (Monday)
   const diff = today.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
   startOfWeek.setDate(diff);
   startOfWeek.setHours(0, 0, 0, 0);
-  
+
   // End of week is start of next week
   const endOfWeek = new Date(startOfWeek);
   endOfWeek.setDate(startOfWeek.getDate() + 7);
-  
-  const thisWeekCount = dates.filter(dateString => {
+
+  const thisWeekCount = dates.filter((dateString) => {
     const date = new Date(dateString);
     return date >= startOfWeek && date < endOfWeek;
   }).length;
-  
+
   return thisWeekCount;
 };
+
+export const getCurrentYear = () => new Date().getFullYear();

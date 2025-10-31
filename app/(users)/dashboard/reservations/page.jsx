@@ -8,6 +8,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import TripSummaryCard from "@/components/TripSummaryCard";
 
+export const dynamic = "force-dynamic";
+
 const ReservationsPage = async () => {
   const { profile } = await getProfileAction();
   const userId = profile?.id;
