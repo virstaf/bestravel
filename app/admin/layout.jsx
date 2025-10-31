@@ -5,6 +5,8 @@ import { getUser } from "@/lib/supabase/server";
 import { getProfileAction } from "@/actions/profiles";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({ children }) {
   const user = await getUser();
 

@@ -50,7 +50,7 @@ export default function ReservationWizard({ trip, userId }) {
       if (!emailAdminSuccess) throw adminMessage;
       if (!emailMemberSuccess) throw memberMessage;
 
-      console.log("admin msg:", adminMessage, "admin msg:", memberMessage);
+      // console.log("admin msg:", adminMessage, "admin msg:", memberMessage);
 
       const { error: dbError } = await supabase.from("reservations").insert({
         trip_id: trip.id,

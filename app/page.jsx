@@ -14,7 +14,6 @@ import GetInTouch from "@/components/GetInTouch";
 import Newsletter from "@/components/Newsletter";
 import TrialCTA from "@/components/trial-cta";
 
-
 const HomePage = () => {
   return (
     <div className="w-full bg-white min-h-screen">

@@ -8,6 +8,8 @@ import ReservationsSection from "@/components/reservations-section";
 import WelcomeSection from "@/components/welcome-section";
 import HolidayDestinationsSection from "@/components/holiday-destinations-section";
 
+export const dynamic = "force-dynamic";
+
 const DashboardPage = () => {
   return (
     <div className="px-4 h-full w-full sm:w-[calc(100%-100px)]">

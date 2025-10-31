@@ -1,7 +1,8 @@
 import { getAllReservations } from "@/actions/admin/reservation";
 import ReservationTable from "@/components/admin/reservation-table";
 import NavSummary from "@/components/NavSummary";
-import React from "react";
+
+export const dynamic = "force-dynamic";
 
 const AdminReservationPage = async () => {
   const reservations = await getAllReservations();
