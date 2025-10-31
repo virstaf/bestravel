@@ -82,9 +82,3 @@ const ReservationsPage = async () => {
 };
 
 export default ReservationsPage;
-
-// const TripSummaryCard = ({ trip: { title } }) => (
-//   <div className="">
-//     <h3>{title}</h3>
-//   </div>
-// );

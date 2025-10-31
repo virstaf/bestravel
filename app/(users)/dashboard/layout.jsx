@@ -33,7 +33,9 @@ export default async function DashboardLayout({ children }) {
               <div className="fixed w-full sm:w-auto bottom-0 sm:top-20 sm:bottom-auto z-50">
                 <SideBar />
               </div>
-              <div className=" sm:ml-24 w-full">{children}</div>
+              <div className=" sm:ml-24 w-full min-h-[calc(100vh-68px)]">
+                {children}
+              </div>
             </div>
           </div>
         </main>

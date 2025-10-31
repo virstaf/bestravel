@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Button } from "./ui/button";
 import Status from "./ui/status";
 import { getFormattedDate } from "@/lib/getFormattedDate";
+import CancelReservationBtn from "./CancelReservationBtn";
 
 export const ReservationSummaryCard = ({
   reservation,
@@ -42,9 +43,7 @@ export const ReservationSummaryCard = ({
             <Button asChild variant="outline">
               <Link href={`/dashboard/trips/${tripId}/reserve`}>Edit</Link>
             </Button>
-            <Button asChild variant="outline">
-              <Link href={`/dashboard/trips/${tripId}/reserve`}>Cancel</Link>
-            </Button>
+            <CancelReservationBtn resId={reservation.id} />
           </div>
         </div>
       )}
@@ -77,11 +76,7 @@ export const ReservationSummaryCard = ({
                 Edit
               </Link>
             </Button>
-            <Button asChild variant="outline">
-              <Link href={`/dashboard/reservations/${reservation.id}`}>
-                Cancel
-              </Link>
-            </Button>
+            <CancelReservationBtn resId={reservation.id} />
           </div>
         </div>
       )}
@@ -116,11 +111,7 @@ export const ReservationSummaryCard = ({
                 Edit
               </Link>
             </Button>
-            <Button asChild variant="outline">
-              <Link href={`/dashboard/reservations/${reservation.id}`}>
-                Cancel
-              </Link>
-            </Button>
+            <CancelReservationBtn resId={reservation.id} />
           </div>
         </div>
       )}
