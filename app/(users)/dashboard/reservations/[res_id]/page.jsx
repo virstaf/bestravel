@@ -4,15 +4,24 @@ import { Button } from "@/components/ui/button";
 import Status from "@/components/ui/status";
 import { getFormattedDate, getFormattedDateTime } from "@/lib/getFormattedDate";
 import { getMealsText, getTransferTypeText, getVehicleIcon } from "@/lib/utils";
+import Link from "next/link";
 
 const ReservationsPage = async ({ params }) => {
   const { res_id } = await params;
   const [reservation] = await getReservation(res_id);
   const type = reservation.type;
   return (
-    <div>
+    <div className="my-8">
+      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
+        <h2 className="text-2xl text-gray-700 capitalize my-6">
+          Reservation Detail
+        </h2>
+        <Button asChild>
+          <Link href="/dashboard/reservations">Back</Link>
+        </Button>
+      </div>
       {type === "flight" && (
-        <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+        <div className="max-w-4xl mx-auto p-6 bg-white sm:rounded-lg sm:shadow-lg">
           <ReservationHeader reservation={reservation} />
           <FlightRoute reservation={reservation} />
           <FlightDetails reservation={reservation} />
@@ -22,7 +31,7 @@ const ReservationsPage = async ({ params }) => {
         </div>
       )}
       {type === "hotel" && (
-        <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+        <div className="max-w-4xl mx-auto p-6 bg-white sm:rounded-lg sm:shadow-lg">
           <ReservationHeader reservation={reservation} />
           {/* <FlightRoute reservation={reservation} /> */}
           <HotelStayDuration reservation={reservation} />
@@ -33,7 +42,7 @@ const ReservationsPage = async ({ params }) => {
         </div>
       )}
       {type === "transfer" && (
-        <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+        <div className="max-w-4xl mx-auto p-6 bg-white sm:rounded-lg sm:shadow-lg">
           <ReservationHeader reservation={reservation} />
           <TransferRoute reservation={reservation} />
           <TransferDetails reservation={reservation} />
@@ -42,7 +51,7 @@ const ReservationsPage = async ({ params }) => {
           <ActionButtons reservation={reservation} />
         </div>
       )}
-      <pre>{JSON.stringify(reservation, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(reservation, null, 2)}</pre> */}
     </div>
   );
 };
@@ -74,7 +83,7 @@ const FlightRoute = ({ reservation: { details } }) => (
         </div>
       </div>
 
-      <div className="flex-1 mx-4">
+      <div className="hidden sm:block flex-1 mx-4">
         <div className="flex items-center justify-center">
           <div className="h-0.5 bg-blue-300 flex-1"></div>
           <div className="mx-2 text-blue-500">
@@ -300,7 +309,7 @@ const HotelStayDuration = ({ reservation: { details } }) => {
           <div className="text-sm text-gray-600 mt-1">Arrival</div>
         </div>
 
-        <div className="flex-1 mx-4">
+        <div className="hidden sm:block flex-1 mx-4">
           <div className="flex items-center justify-center">
             <div className="h-0.5 bg-green-300 flex-1"></div>
             <div className="mx-4 text-center">
@@ -368,7 +377,7 @@ const TransferRoute = ({ reservation: { details } }) => (
         <div className="text-md text-gray-700 mt-1">{details.pickupTime}</div>
       </div>
 
-      <div className="flex-1 mx-4">
+      <div className="hidden sm:block flex-1 mx-4">
         <div className="flex items-center justify-center">
           <div className="h-0.5 bg-purple-300 flex-1"></div>
           <div className="mx-4 text-center">
