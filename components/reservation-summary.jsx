@@ -38,7 +38,9 @@ export const ReservationSummaryCard = ({
           </div>
           <div className="grid grid-cols-3 gap-2 mt-4">
             <Button asChild variant="outline">
-              <Link href={`/dashboard/trips/${tripId}/reserve`}>View</Link>
+              <Link href={`/dashboard/reservations/${reservation.id}`}>
+                View
+              </Link>
             </Button>
             <Button asChild variant="outline">
               <Link href={`/dashboard/trips/${tripId}/reserve`}>Edit</Link>
