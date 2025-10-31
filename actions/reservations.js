@@ -65,7 +65,8 @@ export const getUserReservations = async (userId) => {
   const { data, error } = await supabase
     .from("reservations")
     .select("*")
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
   if (error) {
     throw new Error("Error fetching user reservations");
   }

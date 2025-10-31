@@ -13,7 +13,10 @@ export const dynamic = "force-dynamic";
 const ReservationsPage = async () => {
   const { profile } = await getProfileAction();
   const userId = profile?.id;
-  const reservations = await getUserReservations(userId);
+  const allReservations = await getUserReservations(userId);
+  const reservations = allReservations.filter(
+    (res) => res.status !== "cancelled"
+  );
   const trips = await fetchTrips(userId);
   const tripLink = profile?.is_subscribed ? "/dashboard/trips/new" : "/pricing";
 
@@ -29,6 +32,9 @@ const ReservationsPage = async () => {
         description="😎 Manage all your reservations"
       />
       <div className="w-full min-h-[calc(100vh-180px)] mt-4 mx-auto my-12 flex flex-col">
+        {/* <div className="data">
+          <pre>{JSON.stringify(reducedReservations, null, 2)}</pre>
+        </div> */}
         <div className="">
           <h2 className="text-lg font-semibold ml-6">All Reservations</h2>
           {reservations.length === 0 ? (

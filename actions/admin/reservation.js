@@ -7,7 +7,8 @@ export const getAllReservations = async () => {
     const supabase = await createAdminClient();
     const { data: reservations, error } = await supabase
       .from("reservations")
-      .select("*");
+      .select("*")
+      .order("created_at", { ascending: false });
     const { data: users } = await supabase.from("profiles").select("*");
     const { data: trips } = await supabase.from("trips").select("*");
 

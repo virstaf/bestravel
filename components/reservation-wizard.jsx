@@ -16,39 +16,39 @@ export default function ReservationWizard({ trip, userId }) {
   const router = useRouter();
 
   const handleSubmit = async (type, details) => {
-    const user = await getUser();
+    // const user = await getUser();
     setLoading(true);
     const adminType = "admin-" + type;
 
     try {
-      const { success: emailAdminSuccess, message: adminMessage } =
-        await resendEmail(
-          {
-            email: "info@virstravelclub.com",
-            details,
-            type,
-            user: {
-              fullname: user.user_metadata.full_name,
-              email: user.email,
-              userId: user.id,
-            },
-          },
-          adminType
-        );
+      // const { success: emailAdminSuccess, message: adminMessage } =
+      //   await resendEmail(
+      //     {
+      //       email: "info@virstravelclub.com",
+      //       details,
+      //       type,
+      //       user: {
+      //         fullname: user.user_metadata.full_name,
+      //         email: user.email,
+      //         userId: user.id,
+      //       },
+      //     },
+      //     adminType
+      //   );
 
-      const { success: emailMemberSuccess, message: memberMessage } =
-        await resendEmail(
-          {
-            fullname: user.user_metadata.full_name || user.email.split("@")[0],
-            email: user.email,
-            details,
-            type,
-          },
-          type
-        );
+      // const { success: emailMemberSuccess, message: memberMessage } =
+      //   await resendEmail(
+      //     {
+      //       fullname: user.user_metadata.full_name || user.email.split("@")[0],
+      //       email: user.email,
+      //       details,
+      //       type,
+      //     },
+      //     type
+      //   );
 
-      if (!emailAdminSuccess) throw adminMessage;
-      if (!emailMemberSuccess) throw memberMessage;
+      // if (!emailAdminSuccess) throw adminMessage;
+      // if (!emailMemberSuccess) throw memberMessage;
 
       // console.log("admin msg:", adminMessage, "admin msg:", memberMessage);
 
