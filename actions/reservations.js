@@ -23,16 +23,20 @@ export const deleteReservation = async (reservationId) => {
 };
 
 export const cancelReservation = async (reservationId) => {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("reservations")
-    .update({ status: "cancelled" })
-    .eq("id", reservationId);
-  if (error) {
-    throw new Error("Error deleting reservation");
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase
+      .from("reservations")
+      .update({ status: "cancelled" })
+      .eq("id", reservationId);
+    if (error) {
+      throw error;
+    }
+    revalidatePath("/");
+    return { success: true };
+  } catch (err) {
+    throw err;
   }
-  revalidatePath("/");
-  return { success: true };
 };
 
 export const updateReservation = async (reservationId, data) => {

@@ -44,3 +44,36 @@ export const getThisWeekCount = (dates: []) => {
 };
 
 export const getCurrentYear = () => new Date().getFullYear();
+
+export const getMealsText = (mealsCode) => {
+  const mealsMap = {
+    "no-meals": "No Meals",
+    breakfast: "Breakfast Included",
+    "half-board": "Half Board",
+    "full-board": "Full Board",
+    "all-inclusive": "All Inclusive",
+  };
+  return mealsMap[mealsCode] || mealsCode;
+};
+
+export const getVehicleIcon = (vehicleType) => {
+  const icons = {
+    sedan: "🚗",
+    suv: "🚙",
+    van: "🚐",
+    luxury: "🏎️",
+    bus: "🚌",
+  };
+  return icons[vehicleType] || "🚗";
+};
+
+export const getTransferTypeText = (transferType) => {
+  const types = {
+    airport: "Airport Transfer",
+    hotel: "Hotel Transfer",
+    city: "City Transfer",
+    port: "Port Transfer",
+    custom: "Custom Transfer",
+  };
+  return types[transferType] || transferType;
+};

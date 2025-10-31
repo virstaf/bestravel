@@ -45,7 +45,7 @@ export const ReservationSummaryCard = ({
             <Button asChild variant="outline">
               <Link href={`/dashboard/trips/${tripId}/reserve`}>Edit</Link>
             </Button>
-            <CancelReservationBtn resId={reservation.id} />
+            <CancelReservationBtn resId={reservation.id} variant="outline" />
           </div>
         </div>
       )}
@@ -78,7 +78,7 @@ export const ReservationSummaryCard = ({
                 Edit
               </Link>
             </Button>
-            <CancelReservationBtn resId={reservation.id} />
+            <CancelReservationBtn resId={reservation.id} variant="outline" />
           </div>
         </div>
       )}
@@ -113,7 +113,7 @@ export const ReservationSummaryCard = ({
                 Edit
               </Link>
             </Button>
-            <CancelReservationBtn resId={reservation.id} />
+            <CancelReservationBtn resId={reservation.id} variant="outline" />
           </div>
         </div>
       )}

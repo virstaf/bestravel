@@ -5,20 +5,25 @@ import { Button } from "./ui/button";
 import { cancelReservation } from "@/actions/reservations";
 import { toast } from "sonner";
 
-const CancelReservationBtn = ({ resId }) => {
+const CancelReservationBtn = ({
+  resId,
+  variant = "destructive",
+  text = "Cancel",
+}) => {
   const handleClick = async (resId) => {
-    const data = await cancelReservation(resId);
-    if (data.success) {
-      toast.success("delete: ", { description: resId });
-    } else {
+    try {
+      const { error } = await cancelReservation(resId);
+      if (error) throw data.error;
+      toast.success("Cancelled successfully", { description: resId });
+    } catch (error) {
       toast.error("Cancelling reservation failed!", {
-        description: "Try again",
+        description: "Please try again",
       });
     }
   };
   return (
-    <Button variant="outline" onClick={() => handleClick(resId)}>
-      Cancel
+    <Button variant={variant} onClick={() => handleClick(resId)}>
+      {text}
     </Button>
   );
 };
