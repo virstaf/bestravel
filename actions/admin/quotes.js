@@ -101,3 +101,13 @@ export const getQuoteItems = async (quoteId) => {
     return { success: false, error: error.message };
   }
 };
+
+export const createCustomQuote = async (formData) => {
+  try {
+    const supabase = await createAdminClient();
+    const { data, error } = supabase.from("quotes").insert().select().single();
+  } catch (error) {
+    return { success: false, error };
+  }
+  return { success: true, error: null };
+};

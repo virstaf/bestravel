@@ -83,6 +83,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
     "prettier": "^3.5.3",
+    "supabase": "^2.54.11",
     "tailwindcss": "^4"
   }
 }

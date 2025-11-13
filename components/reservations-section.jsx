@@ -44,13 +44,13 @@ const ReservationsSection = async () => {
           ))}
         </div>
       )}
-      <div className="flex gap-4 my-4">
-        <Button variant="outline" asChild>
-          <Link href="/dashboard/reservations">View More</Link>
-        </Button>
-        <Button asChild>
-          <Link href="/dashboard/reservations">Add New</Link>
-        </Button>
+      <div className="w-full flex justify-end gap-4 my-4">
+        <Link href="/dashboard/reservations">
+          <Button variant="outline">View More</Button>
+        </Link>
+        <Link href="/dashboard/reservations">
+          <Button>Add New</Button>
+        </Link>
       </div>
     </div>
   );

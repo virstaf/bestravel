@@ -20,6 +20,9 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { resendEmail } from "@/actions/resendEmail";
+import Link from "next/link";
+import { Download } from "lucide-react";
+import { DownloadIcon } from "./DownloadIcon";
 
 const formSchema = z.object({
   fullname: z
@@ -71,25 +74,48 @@ const ContactForm = () => {
     },
   });
   return (
-    <div className="w-full max-w-[550px]">
+    <>
+      <div className="download-pdf h-full w-full bg-gray-100 rounded-lg p-6 flex flex-col justify-between">
+        <div className="">
+          <span className="bg-accent mb-3 flex size-12 flex-col items-center justify-center rounded-full">
+            <DownloadIcon className="h-6 w-auto" />
+          </span>
+          <p className="mb-2 text-lg font-semibold">Travel guide</p>
+          <p className="text-muted-foreground mb-3">
+            Get the Latest on travel news
+          </p>
+        </div>
+        <div className="">
+          <Button type="button" asChild className="">
+            <Link
+              href="/docs/Virstravel_Club_Top_10_Perk_eBook.pdf"
+              className="!text-white !no-underline"
+              download="Virstravel_Perk_eBook"
+            >
+              <span>
+                <Download />
+              </span>
+              Download Guide
+            </Link>
+          </Button>
+        </div>
+      </div>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           // action={resendEmail}
-          className="space-y-4 p-6 bg-white rounded-2xl shadow"
+          className="space-y-4 p-6 bg-white rounded-2xl w-full"
         >
-          <h1 className="text-sm uppercase pb-2 font-bold text-center">
-            Leave us a message
-          </h1>
+          <h1 className="pb-2 font-medium text-gray-700">Leave us a message</h1>
           <div className="flex flex-col sm:flex-row gap-2 justify-between">
             <FormField
               control={form.control}
               name="fullname"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Full name</FormLabel>
+                  {/* <FormLabel>Full name</FormLabel> */}
                   <FormControl>
-                    <Input placeholder="John Doe" {...field} />
+                    <Input placeholder="Full Name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -100,7 +126,7 @@ const ContactForm = () => {
               name="email"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Email</FormLabel>
+                  {/* <FormLabel>Email</FormLabel> */}
                   <FormControl>
                     <Input placeholder="example@email.com" {...field} />
                   </FormControl>
@@ -109,22 +135,27 @@ const ContactForm = () => {
               )}
             />
           </div>
-          <FormField
-            control={form.control}
-            name="message"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Message</FormLabel>
-                <FormControl>
-                  <Textarea placeholder="Your message here..." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="flex w-full justify-end">
+          <div className="md:grid items-end grid-cols-[3fr_1fr] space-y-4 md:space-y-0 gap-2">
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  {/* <FormLabel>Message</FormLabel> */}
+                  <FormControl>
+                    <Textarea placeholder="Your message here..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             {/* <span className="text-muted-foreground text-sm">Some text</span> */}
-            <Button type="submit" disabled={isLoading} className="w-24">
+            <Button
+              variant="outline"
+              type="submit"
+              disabled={isLoading}
+              className=""
+            >
               {isLoading ? (
                 <span className="animate-spin">
                   <Loader2 />
@@ -136,7 +167,7 @@ const ContactForm = () => {
           </div>
         </form>
       </Form>
-    </div>
+    </>
   );
 };
 
