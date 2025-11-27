@@ -8,7 +8,7 @@ import { getProfileAction } from "@/actions/profiles";
 export const ProfileContext = createContext(null);
 
 // Encryption key (store this in an environment variable)
-const ENCRYPTION_KEY = process.env.NEXT_PUBLIC_PROFILE_ENCRYPTION_KEY;
+const ENCRYPTION_KEY = process.env.PROFILE_ENCRYPTION_KEY;
 
 export const ProfileProvider = ({ children }) => {
   const [userProfile, setUserProfile] = useState({

@@ -22,7 +22,7 @@ import Image from "next/image";
 import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
 import Link from "next/link";
-import { getUser } from "@/lib/supabase/server";
+import { getProfileAction } from "@/actions/profiles";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -39,10 +39,10 @@ const LoginForm = () => {
 
   useEffect(() => {
     const checkUser = async () => {
-      const user = await getUser();
-      if (user && user.role === "ADMIN") {
+      const { profile } = await getProfileAction();
+      if (profile && profile.role === "ADMIN") {
         router.replace("/admin");
-      } else if (user) {
+      } else if (profile) {
         router.replace("/dashboard");
       }
     };
@@ -65,8 +65,8 @@ const LoginForm = () => {
 
       if (!errorMessage) {
         toast.success(title, { description: description });
-        await fetchUser();
-        const isAdmin = user?.role === "ADMIN";
+        const { profile } = await getProfileAction();
+        const isAdmin = profile?.role === "ADMIN";
 
         if (isAdmin) {
           router.replace("/admin");

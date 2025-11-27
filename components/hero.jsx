@@ -2,6 +2,8 @@ import React from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 
 const Hero = () => {
   return (
@@ -19,9 +21,9 @@ const Hero = () => {
           <Button
             variant="outline"
             asChild
-            className="bg-gradient-to-br from-primary to-secondary px-12 py-6 cursor-pointer !hover:bg-primary text-white transition duration-300 w-full md:w-auto"
+            className="border-none bg-gradient-to-br from-primary to-secondary px-12 py-6 cursor-pointer text-white transition duration-300 w-full md:w-auto"
           >
-            <Link href="/auth/signup" className="hover:text-primary">
+            <Link href="/auth/signup" className="hover:text-gray-300">
               Join Now & Save on Your Next Trip
             </Link>
           </Button>

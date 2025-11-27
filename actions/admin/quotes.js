@@ -1,5 +1,6 @@
 "use server";
 import { createAdminClient } from "@/lib/supabase/admin/server";
+import { inviteUser } from "./users";
 
 export const createQuote = async (quoteData) => {
   const supabase = await createAdminClient();
@@ -103,11 +104,18 @@ export const getQuoteItems = async (quoteId) => {
 };
 
 export const createCustomQuote = async (formData) => {
+  console.log("data::: ", formData);
+  const AdminId = formData.get("AdminId");
+  const email = formData.get("email");
+  const fullname = formData.get("fullname");
+  const phone_number = formData.get("phone_number");
+
   try {
-    const supabase = await createAdminClient();
-    const { data, error } = supabase.from("quotes").insert().select().single();
+    // const supabase = await createAdminClient();
+    const { error } = await inviteUser(email);
+    if (error) throw error;
+    return { success: true, error: null };
   } catch (error) {
     return { success: false, error };
   }
-  return { success: true, error: null };
 };

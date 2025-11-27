@@ -130,3 +130,15 @@ export const signInWithEmailOtp = async (email) => {
     return { success: false, error: error };
   }
 };
+
+export const inviteUser = async (email) => {
+  console.log("invite ", email);
+  const supabase = await createAdminClient();
+  try {
+    const { error } = await supabase.auth.admin.inviteUserByEmail(email);
+    if (error) throw error;
+    return { success: true, error: null };
+  } catch (error) {
+    return { success: false, error };
+  }
+};

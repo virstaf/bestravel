@@ -66,7 +66,6 @@ const resClassOptions = [
 ];
 
 const AddQuoteForm = ({ adminId }) => {
-  const [quoteItems, setQuoteItems] = useState({});
   const [reservationTypes, setReservationTypes] = useState(initialTypes);
 
   const handleAddOption = (reservation) => {
@@ -77,16 +76,6 @@ const AddQuoteForm = ({ adminId }) => {
           : item
       );
     });
-  };
-
-  const handleInputChange = (reservationType, index, field, value) => {
-    setQuoteItems((prev) => ({
-      ...prev,
-      [`${reservationType}-${index}`]: {
-        ...prev[`${reservationType}-${index}`],
-        [field]: value,
-      },
-    }));
   };
 
   const handleAddQuote = async (formData) => {
@@ -171,11 +160,27 @@ const AddQuoteForm = ({ adminId }) => {
             <Input name="country" placeholder="Country" />
           </div>
         </div>
-        <div className="flex justify-end space-x-4">
-          <Button type="button" variant="outlineDestructive">
-            Clear
-          </Button>
-          <Button>Send to Client</Button>
+        <div className="flex justify-between items-end">
+          <div>
+            <label className="block text-sm font-medium mb-2">
+              Quote Valid Until
+            </label>
+            <Input
+              type="date"
+              name="valid_until_date"
+              className="p-2 border rounded"
+            />
+            <p className="text-sm text-gray-600 mt-1">
+              Leave empty if no expiration
+            </p>
+          </div>
+
+          <div className="flex justify-end space-x-4">
+            <Button type="button" variant="outlineDestructive">
+              Clear
+            </Button>
+            <Button>Send to Client</Button>
+          </div>
         </div>
       </form>
     </div>

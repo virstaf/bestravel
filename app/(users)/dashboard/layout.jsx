@@ -7,17 +7,20 @@ import { redirect } from "next/navigation";
 import DashboardNotFound from "./not-found";
 
 export default async function DashboardLayout({ children }) {
-  const user = await getUser();
+  try {
+    const user = await getUser();
+    if (!user) {
+      redirect("/auth/login");
+    }
+  } catch (error) {}
 
-  if (!user) {
-    redirect("/auth/login");
-  }
-
+  // try {
   const { profile } = await getProfileAction();
 
   if (profile?.role === "ADMIN") {
     redirect("/admin");
   }
+  // } catch (error) {}
 
   if (!children) {
     return <DashboardNotFound />;
