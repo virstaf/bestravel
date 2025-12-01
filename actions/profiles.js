@@ -8,7 +8,6 @@ export const getProfileAction = async () => {
     const user = await getUser();
     if (!user) {
       revalidatePath("/dashboard");
-      console.error("No user found.");
       return { success: false, error: "User not authenticated." };
     }
     let email = user.email;

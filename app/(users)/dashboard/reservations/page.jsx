@@ -18,7 +18,6 @@ const ReservationsPage = async () => {
     (res) => res.status !== "cancelled"
   );
   const trips = await fetchTrips(userId);
-  const tripLink = profile?.is_subscribed ? "/dashboard/trips/new" : "/pricing";
 
   const getTripName = (tripId) => {
     const trip = trips.find((trip) => trip.id === tripId);
@@ -70,7 +69,7 @@ const ReservationsPage = async () => {
               <p className="text-muted-foreground tracking-wide">
                 Plan a trip to Add a reservation
               </p>
-              <Link href={tripLink}>
+              <Link href={"/dashboard/trips/new"}>
                 <Button>Create New Trip</Button>
               </Link>
             </div>

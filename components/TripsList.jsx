@@ -1,21 +1,19 @@
-"use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import TripSummaryCard from "./TripSummaryCard";
 
 const TripsList = ({ profile, trips, limit }) => {
-  const [tripLink, setTripLink] = useState("/pricing");
+  // const [tripLink, setTripLink] = useState("/pricing");
   const isSubscribed = profile?.is_subscribed;
 
-  useEffect(() => {
-    if (isSubscribed) {
-      setTripLink("/dashboard/trips/new");
-    } else {
-      setTripLink("/pricing");
-    }
-  }, [isSubscribed]);
+  // useEffect(() => {
+  //   if (isSubscribed) {
+  //     setTripLink("/dashboard/trips/new");
+  //   } else {
+  //     setTripLink("/dashboard/trips/new");
+  //   }
+  // }, [isSubscribed]);
 
   if (!trips || trips.length === 0) {
     return (
@@ -24,7 +22,7 @@ const TripsList = ({ profile, trips, limit }) => {
         <p className="text-muted-foreground">
           Start planning your next adventure
         </p>
-        <Link href={tripLink}>
+        <Link href={"/dashboard/trips/new"}>
           <Button>Create New Trip</Button>
         </Link>
       </div>
