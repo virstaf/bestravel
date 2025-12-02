@@ -15,10 +15,14 @@ export const generateStaticParams = () => {
 
 export const generateMetadata = async ({ params }) => {
   const posts = getSortedPostsData();
-  const postId = await params?.postId;
+  const { postId: rawPostId } = await params;
+  const postId = decodeURIComponent(rawPostId);
   const post = posts.find((p) => p.id === postId);
   if (!post) {
-    return <div>Post not found</div>;
+    return {
+      title: "Post not found",
+      description: "The requested blog post could not be found",
+    };
   }
   return {
     title: post.title,
@@ -28,8 +32,13 @@ export const generateMetadata = async ({ params }) => {
 
 const PostPage = async ({ params }) => {
   const posts = getSortedPostsData();
-  const postId = await params?.postId;
+  
+  // Properly await params and decode the URL parameter
+  const { postId: rawPostId } = await params;
+  const postId = decodeURIComponent(rawPostId);
+  
   const post = posts.find((p) => p.id === postId);
+  
   if (!post) {
     return <div>Post not found</div>;
   }
