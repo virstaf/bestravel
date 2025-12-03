@@ -8,6 +8,7 @@ export const getAllReservations = async () => {
     const { data: reservations, error } = await supabase
       .from("reservations")
       .select("*")
+      .neq("status", "cancelled")
       .order("created_at", { ascending: false });
     const { data: users } = await supabase.from("profiles").select("*");
     const { data: trips } = await supabase.from("trips").select("*");

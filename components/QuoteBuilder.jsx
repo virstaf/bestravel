@@ -217,7 +217,7 @@ const QuoteBuilder = ({
                       {/* Price */}
                       <input
                         type="number"
-                        placeholder="Price"
+                        placeholder="Price (£)"
                         value={item.price}
                         onChange={(e) =>
                           updateQuoteItem(item.id, "price", e.target.value)
@@ -292,10 +292,10 @@ const QuoteBuilder = ({
       </div>
 
       {/* Summary and Actions */}
-      <div className="flex justify-between items-center border-t pt-4">
-        <div className="text-lg font-semibold">
+      <div className="flex justify-end items-center border-t pt-4">
+        {/* <div className="text-lg font-semibold">
           Total: ${calculateTotal().toFixed(2)}
-        </div>
+        </div> */}
         <div className="flex gap-3">
           <button
             onClick={() => saveQuote("draft")}

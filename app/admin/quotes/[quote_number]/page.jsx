@@ -65,7 +65,7 @@ const QuoteDetailPage = async ({ params }) => {
           </div>
           <div className="quote-info">
             <h2>Quotation Details</h2>
-            <p>Amount: ${quote.total_amount}</p>
+            <p>Amount: £{quote.total_amount}</p>
             <p>Status: {quote.status}</p>
           </div>
         </div>
@@ -105,11 +105,10 @@ const QuoteDetailPage = async ({ params }) => {
           <h2 className="font-semibold">Terms & Conditions</h2>
 
           <p>
-            Quotation valid for{" "}
+            Quotation valid until{" "}
             <span className="text-primary font-mono tracking-tighter font-semibold">
-              7 days
-            </span>{" "}
-            from issue date. <br />
+              {validUntil}
+            </span>{"."} <br />
             Subject to availability at the time of booking. <br />
             Cancellation & refund policy applies as per Virstravel Club booking
             terms.
@@ -133,15 +132,16 @@ const FlightQuoteItem = ({
   <div className="px-6 py-4 bg-white shadow rounded flex gap-6">
     <p>{category[0].toUpperCase() + category.slice(1)}</p>
     <p>{supplier}</p>
-    <p>{`$${price} x ${quantity} travellers`}</p>
+    <p>{`£${price}`}</p>
   </div>
 );
 
-const HotelQuoteItem = ({ quote: { category, supplier, price, quantity } }) => (
+const HotelQuoteItem = ({ quote: { category, supplier, price, description } }) => (
   <div className="px-6 py-4 bg-white shadow rounded flex gap-6 ">
     <p>{category[0].toUpperCase() + category.slice(1) + " Room"}</p>
     <p>{supplier}</p>
-    <p>{`$${price} x ${quantity} nights`}</p>
+    <p>{description}</p>
+    <p>{`£${price}`}</p>
   </div>
 );
 
@@ -151,6 +151,6 @@ const TransferQuoteItem = ({
   <div className="px-6 py-4 bg-white shadow rounded flex gap-6">
     <p>{category[0].toUpperCase() + category.slice(1)}</p>
     <p>{supplier}</p>
-    <p>{`$${price} x ${quantity} ways`}</p>
+    <p>{`£${price} `}</p>
   </div>
 );

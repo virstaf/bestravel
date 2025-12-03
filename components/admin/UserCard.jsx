@@ -36,7 +36,7 @@ export const UserCard = ({
         <div className="flex-1 text-sm text-gray-700">
           <p className="font-medium text-primary text-lg">{full_name}</p>
           <p className="italic mb-4">{email}</p>
-          <DataRow label={"Plan"} value={plan?.toUpperCase()} />
+          <DataRow label={"Plan"} value={plan ? plan?.toUpperCase() : "Free"} />
           <DataRow
             label={"Expires"}
             value={getFormattedDateTime(subscription_end)}
