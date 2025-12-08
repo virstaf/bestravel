@@ -10,7 +10,7 @@ export default async function Trips({ trips, profile }) {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-md font-bold uppercase text-primary">My Trips</h1>
-        <Link href={isSubscribed ? "/dashboard/trips/new" : "/pricing"}>
+        <Link href={"/dashboard/trips/new"}>
           <Button>New Trip</Button>
         </Link>
       </div>

@@ -12,9 +12,9 @@ import { getFormattedDate } from "@/lib/getFormattedDate";
 import { MapPinIcon } from "./ui/MapPinIcon";
 import { UsersRoundIcon } from "./ui/UsersRoundIcon";
 
-const TripSummaryCard = ({ trip }) => {
+const TripSummaryCard = ({ trip, variant="full", className }) => {
   return (
-    <Card key={trip.id} className="hover:shadow-lg transition-shadow">
+    <Card key={trip.id} className={`hover:shadow-lg transition-shadow ${className}`}>
       <CardHeader>
         <CardTitle>{trip.title}</CardTitle>
         <CardDescription>{trip.destination}</CardDescription>
@@ -46,7 +46,7 @@ const TripSummaryCard = ({ trip }) => {
           >
             {trip.status.replace("_", " ")}
           </span>
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-4" style={{ display: variant === "full" ? "flex" : "none" }}>
             <Button asChild variant="outline" size="sm">
               <Link href={`/dashboard/trips/${trip.id}`}>View Details</Link>
             </Button>

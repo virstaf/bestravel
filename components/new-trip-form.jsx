@@ -74,7 +74,7 @@ const NewTripForm = () => {
       }
 
       router.push("/dashboard/trips");
-      router.refresh();
+      // router.refresh();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -221,7 +221,7 @@ const NewTripForm = () => {
       </div>
 
       <div className="budget">
-        <Label className="mb-1">Budget ($ USD)</Label>
+        <Label className="mb-1">Budget (£ GBP)</Label>
         <Input
           type="number"
           min="100"

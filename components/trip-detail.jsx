@@ -97,7 +97,7 @@ export default function TripDetail({ trip }) {
               {trip.budget && (
                 <div className="flex items-center">
                   <CircleDollarSign className="h-5 w-5 mr-2 text-muted-foreground" />
-                  <span>Budget: ${trip.budget.toLocaleString()}</span>
+                  <span>Budget: £{trip.budget.toLocaleString()}</span>
                 </div>
               )}
             </CardContent>
