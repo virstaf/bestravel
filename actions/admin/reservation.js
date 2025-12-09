@@ -189,3 +189,31 @@ export const reservationsThisMonthCount = async () => {
     return null;
   }
 };
+
+
+export const modifyReservationStatus = async (reservation_id, status) => {
+    try {
+        const supabase = await createAdminClient();
+        const { error } = await supabase
+            .from("reservations")
+            .update({ status })
+            .eq("id", reservation_id)  // Changed from ref_id to id
+            .single();
+
+        if (error) {
+            return error;
+        }
+    } catch (error) {
+        return error;
+    }
+};
+
+export const modifyReservationsStatus = async (reservation_ids, status) => {
+    try {
+       await Promise.all(
+           reservation_ids.map((id) => modifyReservationStatus(id, status))
+       );
+    } catch (error) {
+        return error;
+    }
+};

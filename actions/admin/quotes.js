@@ -119,3 +119,44 @@ export const createCustomQuote = async (formData) => {
     return { success: false, error };
   }
 };
+
+export const getUserFromTripId = async (tripId) => {
+  const supabase = await createAdminClient();
+  try {
+    // First, get the trip to find the user_id
+    const { data: trip, error: tripError } = await supabase
+      .from("trips")
+      .select("user_id, title")
+      .eq("id", tripId)
+      .single();
+
+    if (tripError) {
+      console.error("getUserFromTripId - trip error:::", tripError);
+      return { success: false, error: tripError.message };
+    }
+
+    // Then, get the user profile
+    const { data: user, error: userError } = await supabase
+      .from("profiles")
+      .select("id, email, full_name")
+      .eq("id", trip.user_id)
+      .single();
+
+    if (userError) {
+      console.error("getUserFromTripId - user error:::", userError);
+      return { success: false, error: userError.message };
+    }
+
+    return {
+      success: true,
+      data: {
+        email: user.email,
+        fullname: user.full_name,
+        tripName: trip.title,
+      },
+    };
+  } catch (error) {
+    console.error("getUserFromTripId catch error:::", error);
+    return { success: false, error: error.message };
+  }
+};

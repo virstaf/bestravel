@@ -25,8 +25,16 @@ export const fetchTrips = async (userId) => {
       .order("start_date", { ascending: true });
 
     if (error) throw error;
+    
+    // Calculate current status for each trip based on dates
+    const { getTripStatus } = await import("@/lib/statusHelpers");
+    const tripsWithStatus = data.map(trip => ({
+      ...trip,
+      currentStatus: getTripStatus(trip),
+    }));
+    
     // console.log("Fetched trips:::", data);
-    return data || [];
+    return tripsWithStatus || [];
   } catch (err) {
     console.error("Error fetching trips:::", err);
     throw err;

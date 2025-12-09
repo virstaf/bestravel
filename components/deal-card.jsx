@@ -56,7 +56,20 @@ export default function DealCard({ deal }) {
 
   // Duration
   const nights = deal.duration_nights || 4;
-  const includesFlight = deal.includes_flight !== false; // Default to true
+  const includesFlight = deal.includes_flight !== false;
+  const includesHotel = deal.includes_hotel !== false;
+  const includesTransfer = deal.includes_transfer || false;
+
+  // Build inclusions text
+  const getInclusionsText = () => {
+    const inclusions = [];
+    if (includesFlight) inclusions.push("Flight");
+    if (includesHotel) inclusions.push(`${nights}-night stay`);
+    if (includesTransfer) inclusions.push("Transfer");
+    
+    if (inclusions.length === 0) return `${nights}-night package`;
+    return inclusions.join(" + ");
+  };
 
   // Format validity date
   const validUntil = new Date(deal.end_date || deal.valid_until);
@@ -80,14 +93,14 @@ export default function DealCard({ deal }) {
         />
         {discountPercentage && (
           <Badge 
-            className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white px-4 py-2 text-base font-bold shadow-lg"
+            className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white px-4 py-1 text-base font-medium shadow-lg"
           >
             {discountPercentage}% OFF
           </Badge>
         )}
       </div>
 
-      <CardContent className="p-6 space-y-3">
+      <CardContent className="px-6 py-0 space-y-3">
         {/* Location */}
         <div className="flex items-center text-sm text-muted-foreground">
           <MapPinIcon className="h-4 w-4 mr-1.5" />
@@ -99,9 +112,9 @@ export default function DealCard({ deal }) {
           {packageType}
         </h3>
 
-        {/* Flight + Night Stay */}
+        {/* Inclusions */}
         <p className="text-sm text-muted-foreground">
-          {includesFlight ? `Flight + ${nights}-night stay` : `${nights}-night stay`}
+          {getInclusionsText()}
         </p>
 
         {/* Validity Date */}
@@ -118,7 +131,7 @@ export default function DealCard({ deal }) {
             </span>
           </div>
           <div className="flex items-baseline justify-between">
-            <div className="flex items-baseline gap-2">
+            <div className="flex flex-col">
               <span className="text-3xl font-bold text-foreground">
                 £{Math.round(discountedPrice)}
               </span>

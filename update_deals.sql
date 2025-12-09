@@ -6,6 +6,8 @@ ALTER TABLE deals ADD COLUMN IF NOT EXISTS image_url TEXT;
 ALTER TABLE deals ADD COLUMN IF NOT EXISTS package_type TEXT;
 ALTER TABLE deals ADD COLUMN IF NOT EXISTS duration_nights INTEGER DEFAULT 4;
 ALTER TABLE deals ADD COLUMN IF NOT EXISTS includes_flight BOOLEAN DEFAULT true;
+ALTER TABLE deals ADD COLUMN IF NOT EXISTS includes_hotel BOOLEAN DEFAULT true;
+ALTER TABLE deals ADD COLUMN IF NOT EXISTS includes_transfer BOOLEAN DEFAULT false;
 ALTER TABLE deals ADD COLUMN IF NOT EXISTS original_price DECIMAL(10,2);
 ALTER TABLE deals ADD COLUMN IF NOT EXISTS location TEXT;
 
@@ -24,8 +26,10 @@ WHERE original_price IS NULL;
 UPDATE deals 
 SET 
   duration_nights = 4,
-  includes_flight = true
-WHERE duration_nights IS NULL OR includes_flight IS NULL;
+  includes_flight = true,
+  includes_hotel = true,
+  includes_transfer = false
+WHERE duration_nights IS NULL OR includes_flight IS NULL OR includes_hotel IS NULL OR includes_transfer IS NULL;
 
 -- Optional: Update specific deals with custom data
 -- Example: Update the first 5 deals with specific package types and locations

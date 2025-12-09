@@ -13,9 +13,15 @@ ADD COLUMN IF NOT EXISTS package_type TEXT;
 ALTER TABLE deals 
 ADD COLUMN IF NOT EXISTS duration_nights INTEGER DEFAULT 4;
 
--- Add includes_flight column to indicate if flights are included
+-- Add inclusion flags for different service types
 ALTER TABLE deals 
 ADD COLUMN IF NOT EXISTS includes_flight BOOLEAN DEFAULT true;
+
+ALTER TABLE deals 
+ADD COLUMN IF NOT EXISTS includes_hotel BOOLEAN DEFAULT true;
+
+ALTER TABLE deals 
+ADD COLUMN IF NOT EXISTS includes_transfer BOOLEAN DEFAULT false;
 
 -- Add original_price column for showing strikethrough pricing
 ALTER TABLE deals 
@@ -46,6 +52,8 @@ COMMENT ON COLUMN deals.image_url IS 'URL to the deal hero image';
 COMMENT ON COLUMN deals.package_type IS 'Type/title of the package (e.g., Romantic Getaway Package)';
 COMMENT ON COLUMN deals.duration_nights IS 'Number of nights included in the deal';
 COMMENT ON COLUMN deals.includes_flight IS 'Whether the deal includes flights';
+COMMENT ON COLUMN deals.includes_hotel IS 'Whether the deal includes hotel accommodation';
+COMMENT ON COLUMN deals.includes_transfer IS 'Whether the deal includes airport/local transfers';
 COMMENT ON COLUMN deals.original_price IS 'Original price before discount for strikethrough display';
 COMMENT ON COLUMN deals.location IS 'Deal-specific location (overrides partner location if set)';
 

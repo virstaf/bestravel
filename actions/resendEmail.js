@@ -8,6 +8,10 @@ import ReservationAdminEmail from "@/email-templates/reservation-admin";
 import ReservationEmail from "@/email-templates/reservation-email";
 import TrialConfirmationEmail from "@/email-templates/trial";
 import WelcomeEmail from "@/email-templates/welcome";
+import QuoteNotificationEmail from "@/email-templates/quote-notification";
+import QuoteAcceptanceEmail from "@/email-templates/quote-acceptance";
+import QuoteRejectionEmail from "@/email-templates/quote-rejection";
+import QuoteAdminNotificationEmail from "@/email-templates/quote-admin-notification";
 import { Resend } from "resend";
 
 export const resendEmail = async (values, type) => {
@@ -134,6 +138,79 @@ export const resendEmail = async (values, type) => {
     if (!receivingEmail || !emailTemplate || !subject) {
       console.error("Missing required parameters for admin email");
       return { success: false, message: "Missing required parameters" };
+    }
+  }
+
+  if (type === "quote-notification") {
+    const { fullname, email, quoteDetails } = values;
+
+    emailTemplate = (
+      <QuoteNotificationEmail fullname={fullname} quoteDetails={quoteDetails} />
+    );
+    subject = "Your quote is ready!";
+    receivingEmail = email;
+    adminEmail = "bookings@virstravelclub.com";
+
+    if (!fullname || !email || !quoteDetails) {
+      console.error("Missing required fields for quote notification");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "quote-acceptance") {
+    const { fullname, email, quoteDetails } = values;
+
+    emailTemplate = (
+      <QuoteAcceptanceEmail fullname={fullname} quoteDetails={quoteDetails} />
+    );
+    subject = "Quote Accepted - Next Steps";
+    receivingEmail = email;
+    adminEmail = "bookings@virstravelclub.com";
+
+    if (!fullname || !email || !quoteDetails) {
+      console.error("Missing required fields for quote acceptance");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "quote-rejection") {
+    const { fullname, email, quoteDetails } = values;
+
+    emailTemplate = (
+      <QuoteRejectionEmail fullname={fullname} quoteDetails={quoteDetails} />
+    );
+    subject = "Quote Response Received";
+    receivingEmail = email;
+    adminEmail = "bookings@virstravelclub.com";
+
+    if (!fullname || !email || !quoteDetails) {
+      console.error("Missing required fields for quote rejection");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "quote-admin-notification") {
+    const {
+      action,
+      quoteDetails,
+      userDetails,
+      adminEmail: targetAdminEmail,
+    } = values;
+
+    emailTemplate = (
+      <QuoteAdminNotificationEmail
+        action={action}
+        quoteDetails={quoteDetails}
+        userDetails={userDetails}
+      />
+    );
+    subject = `Quote ${action === "accepted" ? "Accepted" : "Rejected"} - ${quoteDetails.quoteNumber}`;
+    receivingEmail = targetAdminEmail || "bookings@virstravelclub.com";
+    adminEmail = "noreply@virstravelclub.com";
+
+    if (!action || !quoteDetails || !userDetails) {
+      console.error("Missing required fields for admin notification");
+      return { success: false, message: "All fields are required" };
     }
   }
 

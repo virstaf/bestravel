@@ -74,5 +74,14 @@ export const getUserReservations = async (userId) => {
   if (error) {
     throw new Error("Error fetching user reservations");
   }
-  return data;
+  
+  // Calculate current status for each reservation based on dates
+  const { getReservationStatus } = await import("@/lib/statusHelpers");
+  const reservationsWithStatus = data.map(reservation => ({
+    ...reservation,
+    currentStatus: getReservationStatus(reservation),
+  }));
+  
+  return reservationsWithStatus;
 };
+

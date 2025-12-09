@@ -59,6 +59,8 @@ export default function DealDetail({ deal }) {
   const packageType = deal.package_type || deal.title || "Travel Package";
   const nights = deal.duration_nights || 4;
   const includesFlight = deal.includes_flight !== false;
+  const includesHotel = deal.includes_hotel !== false;
+  const includesTransfer = deal.includes_transfer || false;
 
   return (
     <>
@@ -99,7 +101,11 @@ export default function DealDetail({ deal }) {
                 </div>
                 <CardTitle className="text-3xl">{packageType}</CardTitle>
                 <p className="text-lg text-muted-foreground">
-                  {includesFlight ? `Flight + ${nights}-night stay` : `${nights}-night stay`}
+                  {[
+                    includesFlight && "Flight",
+                    includesHotel && `${nights}-night stay`,
+                    includesTransfer && "Transfer"
+                  ].filter(Boolean).join(" + ")}
                 </p>
               </div>
 
@@ -138,18 +144,24 @@ export default function DealDetail({ deal }) {
                     <span>Round-trip flights</span>
                   </div>
                 )}
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span>{nights}-night accommodation</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span>Daily breakfast</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                  <span>Airport transfers</span>
-                </div>
+                {includesHotel && (
+                  <>
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                      <span>{nights}-night accommodation</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                      <span>Daily breakfast</span>
+                    </div>
+                  </>
+                )}
+                {includesTransfer && (
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                    <span>Airport transfers</span>
+                  </div>
+                )}
               </div>
             </div>
 

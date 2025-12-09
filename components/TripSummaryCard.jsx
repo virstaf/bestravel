@@ -11,8 +11,11 @@ import { Calendar } from "lucide-react";
 import { getFormattedDate } from "@/lib/getFormattedDate";
 import { MapPinIcon } from "./ui/MapPinIcon";
 import { UsersRoundIcon } from "./ui/UsersRoundIcon";
+import { getStatusColor } from "@/lib/statusHelpers";
 
 const TripSummaryCard = ({ trip, variant="full", className }) => {
+  const displayStatus = trip.currentStatus || trip.status;
+  
   return (
     <Card key={trip.id} className={`hover:shadow-lg transition-shadow ${className}`}>
       <CardHeader>
@@ -36,15 +39,9 @@ const TripSummaryCard = ({ trip, variant="full", className }) => {
         </div>
         <div className="flex justify-between items-center pt-4">
           <span
-            className={`px-3 py-1 rounded-full text-xs ${
-              trip.status === "completed"
-                ? "bg-green-100 text-green-800"
-                : trip.status === "cancelled"
-                  ? "bg-red-100 text-red-800"
-                  : "bg-blue-100 text-blue-800"
-            }`}
+            className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(displayStatus)}`}
           >
-            {trip.status.replace("_", " ")}
+            {displayStatus.replace("_", " ")}
           </span>
           <div className="flex items-center justify-between gap-4" style={{ display: variant === "full" ? "flex" : "none" }}>
             <Button asChild variant="outline" size="sm">

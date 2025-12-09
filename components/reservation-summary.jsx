@@ -33,7 +33,7 @@ export const ReservationSummaryCard = ({
             <p>From: {reservation.details.departureCity}</p>
             <p>To: {reservation.details.arrivalCity}</p>
             <div className="absolute right-0 top-0">
-              <Status value={reservation.status} />
+              <Status value={reservation.currentStatus || reservation.status} />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2 mt-4">
@@ -64,7 +64,7 @@ export const ReservationSummaryCard = ({
             <p>Check in: {getFormattedDate(reservation.details.checkIn)}</p>
             <p>Preferred hotel: {reservation.details.preferredHotel}</p>
             <div className="absolute right-0 top-0">
-              <Status value={reservation.status} />
+              <Status value={reservation.currentStatus || reservation.status} />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2 mt-4">
@@ -99,7 +99,7 @@ export const ReservationSummaryCard = ({
                 reservation.details.vehicleType.slice(1)}
             </p>
             <div className="absolute right-0 top-0">
-              <Status value={reservation.status} />
+              <Status value={reservation.currentStatus || reservation.status} />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-2 mt-4">

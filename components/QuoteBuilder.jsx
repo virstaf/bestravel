@@ -1,9 +1,19 @@
 // components/QuoteBuilder.jsx
 "use client";
-import { createQuote, createQuoteItems } from "@/actions/admin/quotes";
+import {
+  createQuote,
+  createQuoteItems,
+  getUserFromTripId,
+} from "@/actions/admin/quotes";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import QuoteItem from "./ui/quote-item";
+import {
+  modifyReservationsStatus,
+  modifyReservationStatus,
+} from "@/actions/admin/reservation";
+import { RESERVATION_STATUS } from "@/lib/constants/statuses";
+import { resendEmail } from "@/actions/resendEmail";
 
 const QuoteBuilder = ({
   tripId,
@@ -71,6 +81,7 @@ const QuoteBuilder = ({
 
     const payload = {
       trip_id: tripId,
+      user_id: trip?.user_id, // Link quote to the trip's user
       status: status,
       admin_notes: formData.admin_notes,
       client_notes: formData.client_notes,
@@ -81,8 +92,15 @@ const QuoteBuilder = ({
 
     try {
       // Create the quote
-      const { data: quote, error: quoteError } = await createQuote(payload);
-      if (quoteError) toast.error("Error creating quote: " + quoteError);
+      const {
+        success: quoteSuccess,
+        data: quote,
+        error: quoteError,
+      } = await createQuote(payload);
+      if (!quoteSuccess || quoteError) {
+        console.log("Error creating quote", quoteError);
+        throw new Error(quoteError || "Error creating quote");
+      }
 
       // Create quote items
       const quoteItemsData = quoteItems.map((item) => ({
@@ -98,9 +116,69 @@ const QuoteBuilder = ({
         sort_order: 0,
       }));
 
-      const { error: itemsError } = await createQuoteItems(quoteItemsData);
+      const reservationIds = quoteItems.map((item) => item.reservation_id);
+      const firstReservationId = reservationIds[0];
+      console.log("reservation Id", firstReservationId);
 
-      if (itemsError) toast.error("Error creating quote items: " + itemsError);
+      const { success: itemsSuccess, error: itemsError } =
+        await createQuoteItems(quoteItemsData);
+      if (!itemsSuccess || itemsError) {
+        console.log("Error creating quote items", itemsError);
+        throw new Error(itemsError || "Error creating quote items");
+      }
+
+      const reservationError = await modifyReservationsStatus(
+        reservationIds,
+        RESERVATION_STATUS.IN_REVIEW
+      );
+      if (reservationError) {
+        console.log("reservationError", reservationError);
+        console.log("Error updating reservation status", reservationError);
+        // throw new Error("Error updating reservation status")
+      }
+
+      // Send email notification only when status is "sent"
+      if (status === "sent") {
+        try {
+          const { success: userSuccess, data: userData } =
+            await getUserFromTripId(tripId);
+
+          if (userSuccess && userData) {
+            const dashboardLink = `${process.env.NEXT_PUBLIC_BASEURL || "https://virstravelclub.com"}/dashboard/bookings`;
+
+            const emailResult = await resendEmail(
+              {
+                fullname: userData.fullname,
+                email: userData.email,
+                quoteDetails: {
+                  quoteNumber: quote.quote_number,
+                  tripName: userData.tripName,
+                  totalAmount: calculateTotal(),
+                  validUntil: formData.valid_until,
+                  clientNotes: formData.client_notes,
+                  dashboardLink: dashboardLink,
+                },
+              },
+              "quote-notification"
+            );
+
+            if (!emailResult.success) {
+              console.error(
+                "Error sending quote notification email:",
+                emailResult.message
+              );
+              // Don't throw error - quote was created successfully
+            }
+          } else {
+            console.error(
+              "Could not fetch user details for email notification"
+            );
+          }
+        } catch (emailError) {
+          console.error("Error in email notification process:", emailError);
+          // Don't throw error - quote was created successfully
+        }
+      }
 
       toast.success(
         `Quote ${status === "draft" ? "saved as draft" : "sent to client"} successfully!`
@@ -112,7 +190,7 @@ const QuoteBuilder = ({
       setFormData({ admin_notes: "", client_notes: "", valid_until: "" });
     } catch (error) {
       console.error("Error saving quote:", error);
-      alert("Error saving quote: " + error.message);
+      toast.error("Error saving quote: ", error);
     } finally {
       setLoading(false);
     }
