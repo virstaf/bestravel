@@ -1,5 +1,6 @@
 // components/DealDetail.js
 "use client";
+import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,142 +8,222 @@ import {
   CardHeader,
   CardTitle,
   CardContent,
-  CardDescription,
-  CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { MapPinIcon, StarIcon } from "lucide-react";
-import { ArrowLeftIcon } from "lucide-react";
+import { MapPinIcon, CalendarIcon, ArrowLeftIcon, CheckCircle2 } from "lucide-react";
+import BookingDialog from "@/components/booking-dialog";
 
 export default function DealDetail({ deal }) {
-  return (
-    <div className="space-y-6">
-      <div>
-        <Button variant="outline" asChild>
-          <Link href="/dashboard/deals" className="flex items-center">
-            <ArrowLeftIcon className="h-4 w-4 mr-2" />
-            Back to Deals
-          </Link>
-        </Button>
-      </div>
+  const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-      <Card>
-        <CardHeader>
-          <div className="flex justify-between items-start">
-            <div>
-              <CardTitle>{deal.title}</CardTitle>
-              <CardDescription>{deal.partners.name}</CardDescription>
-            </div>
-            {deal.partners.is_featured && (
-              <Badge variant="secondary" className="flex items-center">
-                <StarIcon className="h-3 w-3 mr-1" /> Featured Partner
+  // Calculate prices
+  const originalPrice = deal.original_price || 1299;
+  const discountPercentage = deal.discount_percentage || 
+    (deal.discount_amount && originalPrice 
+      ? Math.round((deal.discount_amount / originalPrice) * 100)
+      : 31);
+
+  const discountedPrice = deal.discount_percentage
+    ? originalPrice * (1 - deal.discount_percentage / 100)
+    : deal.discount_amount
+    ? originalPrice - deal.discount_amount
+    : originalPrice * 0.69;
+
+  const savings = originalPrice - discountedPrice;
+
+  // Get image URL
+  const getImageUrl = () => {
+    if (deal.image_url) return deal.image_url;
+    if (deal.partners?.images?.[0]) return deal.partners.images[0];
+    if (deal.partners?.image_url) return deal.partners.image_url;
+    
+    // Use deal ID hash to determine which placeholder image to use (1-5)
+    const hashCode = (str) => {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash;
+      }
+      return Math.abs(hash);
+    };
+    
+    const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
+    return `/images/deals/default-${imageNumber}.jpg`;
+  };
+
+  const imageUrl = getImageUrl();
+
+  const location = deal.location || deal.partners?.location || "Destination";
+  const packageType = deal.package_type || deal.title || "Travel Package";
+  const nights = deal.duration_nights || 4;
+  const includesFlight = deal.includes_flight !== false;
+
+  return (
+    <>
+      <div className="space-y-6 max-w-6xl mx-auto px-4">
+        <div>
+          <Button variant="outline" asChild>
+            <Link href="/dashboard/deals" className="flex items-center">
+              <ArrowLeftIcon className="h-4 w-4 mr-2" />
+              Back to Deals
+            </Link>
+          </Button>
+        </div>
+
+        <Card className="overflow-hidden pt-0">
+          {/* Hero Image */}
+          <div className="relative aspect-[21/9] w-full bg-muted">
+            <Image
+              src={imageUrl}
+              alt={packageType}
+              fill
+              className="object-cover"
+              priority
+              unoptimized={imageUrl.startsWith('http')}
+            />
+            {discountPercentage && (
+              <Badge className="absolute top-6 right-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-xl font-bold shadow-lg">
+                {discountPercentage}% OFF
               </Badge>
             )}
           </div>
-        </CardHeader>
 
-        <CardContent className="space-y-6">
-          {deal.partners.images?.[0] && (
-            <div className="relative aspect-video rounded-md overflow-hidden">
-              <Image
-                src={deal.partners.images[0]}
-                alt={deal.partners.name}
-                fill
-                className="object-cover"
-              />
+          <CardHeader className="space-y-4">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center text-muted-foreground">
+                  <MapPinIcon className="h-5 w-5 mr-2" />
+                  <span className="text-lg">{location}</span>
+                </div>
+                <CardTitle className="text-3xl">{packageType}</CardTitle>
+                <p className="text-lg text-muted-foreground">
+                  {includesFlight ? `Flight + ${nights}-night stay` : `${nights}-night stay`}
+                </p>
+              </div>
+
+              <div className="bg-muted p-6 rounded-lg space-y-2 min-w-[280px]">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm text-muted-foreground line-through">
+                    £{originalPrice.toFixed(0)}
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl font-bold text-foreground">
+                    £{Math.round(discountedPrice)}
+                  </span>
+                  <span className="text-sm text-muted-foreground">per person</span>
+                </div>
+                <div className="text-green-600 font-semibold text-lg">
+                  Save £{Math.round(savings)}
+                </div>
+              </div>
             </div>
-          )}
+          </CardHeader>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <h3 className="font-medium">Deal Details</h3>
-              <div className="flex items-center">
-                {deal.discount_percentage ? (
-                  <Badge className="text-lg mr-3">
-                    {deal.discount_percentage}% OFF
-                  </Badge>
-                ) : (
-                  <Badge className="text-lg mr-3">
-                    ${deal.discount_amount} OFF
-                  </Badge>
+          <CardContent className="space-y-6">
+            <div className="flex items-center text-muted-foreground">
+              <CalendarIcon className="h-5 w-5 mr-2" />
+              <span>Valid until {new Date(deal.end_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
+            </div>
+
+            {/* What's Included */}
+            <div className="space-y-3">
+              <h3 className="text-xl font-semibold">What's Included</h3>
+              <div className="grid md:grid-cols-2 gap-3">
+                {includesFlight && (
+                  <div className="flex items-start gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                    <span>Round-trip flights</span>
+                  </div>
                 )}
-                <span className="text-sm text-muted-foreground">
-                  Valid until {new Date(deal.end_date).toLocaleDateString()}
-                </span>
-              </div>
-
-              {deal.promo_code && (
-                <div>
-                  <p className="text-sm text-muted-foreground">Promo Code:</p>
-                  <code className="bg-muted px-3 py-2 rounded-md text-lg font-mono">
-                    {deal.promo_code}
-                  </code>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span>{nights}-night accommodation</span>
                 </div>
-              )}
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span>Daily breakfast</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
+                  <span>Airport transfers</span>
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <h3 className="font-medium">Partner Information</h3>
-              <div className="flex items-center">
-                <MapPinIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-                <span>{deal.partners.location}</span>
-              </div>
-
-              {deal.partners.website_url && (
-                <div>
-                  <Button variant="link" className="p-0 h-auto" asChild>
-                    <Link href={deal.partners.website_url} target="_blank">
-                      Visit Website
-                    </Link>
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <h3 className="font-medium">About This Deal</h3>
-            <p className="text-muted-foreground">{deal.description}</p>
-          </div>
-
-          {deal.terms_conditions && (
-            <div className="space-y-2">
-              <h3 className="font-medium">Terms & Conditions</h3>
-              <p className="text-sm text-muted-foreground">
-                {deal.terms_conditions}
+            {/* About This Deal */}
+            <div className="space-y-3">
+              <h3 className="text-xl font-semibold">About This Deal</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                {deal.description || `Experience the magic of ${location} with this exclusive travel package. Enjoy comfortable accommodations, convenient flights, and unforgettable memories in one of the world's most beautiful destinations.`}
               </p>
             </div>
-          )}
 
-          {deal.partners.amenities?.length > 0 && (
-            <div className="space-y-2">
-              <h3 className="font-medium">Amenities</h3>
-              <div className="flex flex-wrap gap-2">
-                {deal.partners.amenities.map((amenity, i) => (
-                  <Badge key={i} variant="outline">
-                    {amenity}
-                  </Badge>
-                ))}
+            {/* Partner Information */}
+            {deal.partners && (
+              <div className="space-y-3">
+                <h3 className="text-xl font-semibold">Partner Information</h3>
+                <div className="bg-muted p-4 rounded-lg space-y-2">
+                  <p className="font-medium">{deal.partners.name}</p>
+                  <p className="text-sm text-muted-foreground">{deal.partners.location}</p>
+                  {deal.partners.website_url && (
+                    <Button variant="link" className="p-0 h-auto" asChild>
+                      <Link href={deal.partners.website_url} target="_blank">
+                        Visit Partner Website
+                      </Link>
+                    </Button>
+                  )}
+                </div>
               </div>
+            )}
+
+            {/* Promo Code */}
+            {deal.promo_code && (
+              <div className="space-y-3">
+                <h3 className="text-xl font-semibold">Promo Code</h3>
+                <div className="bg-muted p-4 rounded-lg">
+                  <code className="text-2xl font-mono font-bold">
+                    {deal.promo_code}
+                  </code>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Use this code when booking to receive your discount
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Terms & Conditions */}
+            {deal.terms_conditions && (
+              <div className="space-y-3">
+                <h3 className="text-xl font-semibold">Terms & Conditions</h3>
+                <p className="text-sm text-muted-foreground">
+                  {deal.terms_conditions}
+                </p>
+              </div>
+            )}
+
+            {/* Booking Button */}
+            <div className="pt-4">
+              <Button 
+                onClick={() => setIsBookingOpen(true)}
+                className="w-full bg-[#0a4275] hover:bg-[#083558] text-white font-semibold py-6 text-lg"
+                size="lg"
+              >
+                Book This Deal Now
+              </Button>
             </div>
-          )}
-        </CardContent>
+          </CardContent>
+        </Card>
+      </div>
 
-        <CardFooter className="flex flex-col gap-4">
-          <Button className="w-full" asChild>
-            <Link href={`/book?deal=${deal.id}`}>Book Now</Link>
-          </Button>
-
-          {deal.partners.contact_email && (
-            <Button variant="outline" className="w-full" asChild>
-              <Link href={`mailto:${deal.partners.contact_email}`}>
-                Contact Partner
-              </Link>
-            </Button>
-          )}
-        </CardFooter>
-      </Card>
-    </div>
+      <BookingDialog 
+        deal={deal} 
+        open={isBookingOpen} 
+        onOpenChange={setIsBookingOpen}
+      />
+    </>
   );
 }
+
