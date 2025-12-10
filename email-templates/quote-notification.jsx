@@ -84,7 +84,7 @@ const QuoteNotificationEmail = ({ fullname, quoteDetails }) => {
               <Container className="text-center my-8">
                 <Button
                   target="_blank"
-                  href={dashboardLink}
+                  href={`${dashboardLink}/${quoteNumber}`}
                   className="bg-blue-500 text-white px-6 py-3 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 >
                   View Quote in Dashboard

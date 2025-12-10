@@ -101,6 +101,26 @@ export const resendEmail = async (values, type) => {
     }
   }
 
+  if (type === "confirm-reservation") {
+    const { fullname, link, reservationType, email } = values;
+
+    emailTemplate = (
+      <ReservationConfirmationEmail
+        fullname={fullname}
+        link={link}
+        type={reservationType}
+      />
+    );
+    subject = `Your ${reservationType} reservation is confirmed!`;
+    receivingEmail = email;
+    adminEmail = "bookings@virstravelclub.com";
+
+    if (!fullname || !link || !reservationType || !email) {
+      console.error("Missing required fields for reservation confirmation");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
   if (type === "hotel" || type === "transfer" || type === "flight") {
     const { fullname, email, details } = values;
 

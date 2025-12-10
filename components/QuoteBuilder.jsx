@@ -1,5 +1,5 @@
-// components/QuoteBuilder.jsx
 "use client";
+
 import {
   createQuote,
   createQuoteItems,
@@ -7,6 +7,7 @@ import {
 } from "@/actions/admin/quotes";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import QuoteItem from "./ui/quote-item";
 import {
   modifyReservationsStatus,
@@ -15,14 +16,8 @@ import {
 import { RESERVATION_STATUS } from "@/lib/constants/statuses";
 import { resendEmail } from "@/actions/resendEmail";
 
-const QuoteBuilder = ({
-  tripId,
-  trip,
-  userId,
-  reservations,
-  onQuoteCreated = () => console.log("Quote created"),
-}) => {
-  //   const [reservations, setReservations] = useState([])
+const QuoteBuilder = ({ tripId, trip, userId, reservations }) => {
+  const router = useRouter();
   const [quoteItems, setQuoteItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -183,7 +178,7 @@ const QuoteBuilder = ({
       toast.success(
         `Quote ${status === "draft" ? "saved as draft" : "sent to client"} successfully!`
       );
-      if (onQuoteCreated) onQuoteCreated(quote);
+      router.push("/admin/quotes");
 
       // Reset form
       setQuoteItems([]);

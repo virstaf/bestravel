@@ -13,8 +13,6 @@ const CreateQuotePage = async ({ searchParams }) => {
   const user = await getUser();
   const pathname = "/admin/quotes/create";
 
-//   console.log("reservationData:::", reservationData);
-
   return (
     <div className="p-4 md:p-8 space-y-8">
       <NavSummary pathname={pathname} />
@@ -27,11 +25,8 @@ const CreateQuotePage = async ({ searchParams }) => {
           reservations={reservationData.splice(0, 3)}
           userId={user?.id}
           tripId={tripId}
-          //   onQuoteCreated={onQuoteCreated}
         />
       </div>
-      {/* <pre>{JSON.stringify(tripData, null, 2)}</pre>
-      <pre>{JSON.stringify(reservationData.splice(0, 3), null, 2)}</pre> */}
     </div>
   );
 };
