@@ -87,7 +87,7 @@ It should feel **exciting, safe, and well-guided**.
 
 **SAVE MORE, TRAVEL BETTER.**
 
-👉 [Become a Member Today](#)
+👉 [Become a Member Today](https://virstravelclub.com/auth/signup)
 
 ---
 
@@ -97,8 +97,10 @@ It should feel **exciting, safe, and well-guided**.
 +44 0126 4527 030  
 +233 509170791
 
-**WhatsApp:**  
-+44 7770 939627
+<!-- **WhatsApp:** -->
+<!-- +44 7770 939627 -->
+
+[WhatsApp](https://wa.me/447770939627)
 
 **Email:**  
 [bookings@virstravelclub.com](mailto:bookings@virstravelclub.com)
