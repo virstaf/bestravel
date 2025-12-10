@@ -55,7 +55,7 @@ At **Virstravel Club**, we’re on a mission to make travel **more affordable, s
 
 Join the club that makes travel **cheaper, easier, and more enjoyable**.
 
-👉 **[Become a Member Now](https://vistravelclub.com/auth/signup)**
+👉 **[Become a Member Now](https://virstravelclub.com/auth/signup)**
 
-<!-- **Tags:**  
+<!-- **Tags:**
 discounted flights, cheaper hotels, travel perks membership, airport lounge, free cancellation, eSIMs, travel deals, Virstravel Club -->
