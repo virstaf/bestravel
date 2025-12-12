@@ -1,51 +1,32 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 export const getFeaturedDealsAction = async ({ limit }) => {
   const supabase = await createClient();
 
-  const getDealsWithPartners = async () => {
-    // 1. Fetch deals
-    const { data: deals, error: dealsError } = await supabase
-      .from("deals")
-      .select("*")
-      .eq("is_active", true)
-      .gte("end_date", new Date().toISOString());
+  const { data: deals, error } = await supabase
+    .from("deals")
+    .select(
+      `
+      *,
+      partners:partner_id (
+        name,
+        type,
+        location
+      )
+    `
+    )
+    .eq("is_active", true)
+    .eq("is_featured", true)
+    .gte("end_date", new Date().toISOString())
+    .order("created_at", { ascending: false })
+    .limit(limit);
 
-    if (dealsError) throw dealsError;
+  if (error) throw error;
 
-    // 2. Get unique partner IDs
-    const partnerIds = [
-      ...new Set(deals.map((d) => d.partner_id).filter(Boolean)),
-    ];
-
-    // 3. Fetch partners
-    const { data: partners, error: partnersError } = await supabase
-      .from("partners")
-      .select("*")
-      .in("id", partnerIds);
-
-    if (partnersError) throw partnersError;
-
-    // 4. Combine data with fallbacks
-    return deals.map((deal) => ({
-      ...deal,
-      partner: partners.find((p) => p.id === deal.partner_id) || {
-        name: "Partner Not Found",
-        location: "",
-        is_featured: false,
-        // Add other required partner fields
-      },
-    }));
-  };
-
-  const dealsWithPartners = await getDealsWithPartners();
-  const featuredDeals = dealsWithPartners.filter(
-    (deal) => deal.partner.is_featured
-  );
-  return featuredDeals.slice(0, limit) || featuredDeals || [];
-  // return featuredDeals || [];
+  return deals || [];
 };
 
 export const getDealsAction = async (limit) => {
@@ -53,7 +34,7 @@ export const getDealsAction = async (limit) => {
     const supabase = await createClient();
 
     // Fetch all deals for server-side rendering
-    const { data } = await supabase
+    let query = supabase
       .from("deals")
       .select(
         `
@@ -61,15 +42,17 @@ export const getDealsAction = async (limit) => {
       partners:partner_id (
         name,
         type,
-        location,
-        is_featured
+        location
       )
     `
       )
-      .eq("is_active", true)
-      .gte("end_date", new Date().toISOString())
-      .order("created_at", { ascending: false })
-      .limit(limit);
+      .order("created_at", { ascending: false });
+
+    if (limit) {
+      query = query.limit(limit);
+    }
+
+    const { data } = await query;
 
     return data;
   } catch (error) {
@@ -78,7 +61,6 @@ export const getDealsAction = async (limit) => {
     return [];
   }
 };
-
 
 export const getDealByIdAction = async (dealId) => {
   try {
@@ -91,8 +73,7 @@ export const getDealByIdAction = async (dealId) => {
         partners:partner_id (
           name,
           type,
-          location,
-          is_featured
+          location
         )
       `
       )
@@ -102,7 +83,59 @@ export const getDealByIdAction = async (dealId) => {
     if (error) throw error;
 
     return deal;
-   } catch (error) {
+  } catch (error) {
     return { errorMessage: error.message };
   }
-}
+};
+
+export const getPartnersListAction = async () => {
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("partners")
+      .select("id, name")
+      .order("name", { ascending: true });
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Error fetching partners:", error);
+    return [];
+  }
+};
+
+export const createDealAction = async (dealData) => {
+  try {
+    const supabase = await createClient();
+
+    const { error } = await supabase.from("deals").insert([dealData]);
+
+    if (error) {
+      console.error("Error creating deal:", error);
+      throw new Error(error.message);
+    }
+
+    revalidatePath("/admin/deals");
+    revalidatePath("/dashboard/deals");
+    revalidatePath("/"); // For featured deals
+    return { success: true };
+  } catch (error) {
+    console.error("Server action error:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const deleteDealAction = async (dealId) => {
+  try {
+    const supabase = await createClient();
+    const { error } = await supabase.from("deals").delete().eq("id", dealId);
+
+    if (error) throw error;
+
+    revalidatePath("/admin/deals");
+    revalidatePath("/dashboard/deals");
+    return { success: true };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};

@@ -17,8 +17,7 @@ export async function GET(request) {
         partner:partner_id (
           name,
           type,
-          location,
-          is_featured
+          location
         )
       `
       )
@@ -26,7 +25,7 @@ export async function GET(request) {
       .gte("end_date", new Date().toISOString());
 
     if (featured) {
-      query = query.eq("partner.is_featured", true);
+      query = query.eq("is_featured", true);
     }
 
     query = query.order("created_at", { ascending: false });

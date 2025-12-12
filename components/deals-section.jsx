@@ -3,9 +3,7 @@ import DealsList from "./deals-list";
 
 const DealsSection = async () => {
   const deals = await getDealsAction();
-  const featuredDeals = deals
-    .filter((deal) => deal.partners.is_featured)
-    .slice(0, 3);
+  const featuredDeals = deals.filter((deal) => deal.is_featured).slice(0, 3);
   return (
     <div className="deals w-full bg-gradient-to-b from-secondary/5 to-gray-white py-8 px-4 rounded-2xl">
       <h2 className="text-md font-bold uppercase text-primary mb-4">

@@ -6,9 +6,7 @@ export const dynamic = "force-dynamic";
 
 const DealsPage = async () => {
   const deals = (await getDealsAction()) || [];
-  const featuredDeals = deals
-    .filter((deal) => deal.partners.is_featured)
-    .slice(0, 3);
+  const featuredDeals = deals.filter((deal) => deal.is_featured).slice(0, 3);
   // console.log("Fetched featured deals:", featuredDeals);
 
   return (
