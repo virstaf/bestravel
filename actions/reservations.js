@@ -132,28 +132,52 @@ export const submitReservation = async ({ type, details, tripId, userId }) => {
 
     const supabase = await createClient();
 
-    // We need to fetch the trip to get dates.
-    const { data: trip } = await supabase
+    // Validate inputs
+    if (!tripId) {
+      throw new Error("Trip ID is required");
+    }
+
+    // Check if trip exists
+    const { data: trip, error: tripError } = await supabase
       .from("trips")
       .select("start_date, end_date")
       .eq("id", tripId)
       .single();
+
+    if (tripError || !trip) {
+      console.error("Trip verification failed:", tripError);
+      throw new Error(
+        trip
+          ? "Trip not found"
+          : `Trip not found: ${tripError?.message || "Unknown error"}`
+      );
+    }
 
     const { error: insertError } = await supabase.from("reservations").insert({
       trip_id: tripId,
       user_id: user.id,
       type,
       details,
-      start_date: trip?.start_date,
-      end_date: trip?.end_date,
+      start_date: trip.start_date,
+      end_date: trip.end_date,
     });
 
-    if (insertError) throw insertError;
+    if (insertError) {
+      console.error("Database insertion error:", insertError);
+      throw new Error(
+        `Reservation failed: ${insertError.message || insertError.details || "Database error"}`
+      );
+    }
 
     revalidatePath("/dashboard/reservations");
     return { success: true };
   } catch (error) {
-    console.error("Reservation submission error:", error);
-    return { success: false, message: error.message };
+    console.error("Reservation submission fatal error:", error);
+    // Return the specific error message to the client
+    return {
+      success: false,
+      message:
+        error.message || "An unexpected error occurred. Please try again.",
+    };
   }
 };
