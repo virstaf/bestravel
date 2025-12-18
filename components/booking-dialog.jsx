@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import AddressInput from "@/components/ui/addressInput";
 import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -29,7 +30,8 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
     lastName: "",
     email: "",
     phone: "",
-    checkInDate: null,
+    pickupDate: null,
+    pickupAirport: "",
     numberOfTravelers: 1,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,7 +59,7 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
       lastName: "",
       email: "",
       phone: "",
-      checkInDate: null,
+      pickupDate: null,
       numberOfTravelers: 1,
     });
     onOpenChange(false);
@@ -67,8 +69,8 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
   const discountedPrice = deal?.discount_percentage
     ? originalPrice * (1 - deal.discount_percentage / 100)
     : deal?.discount_amount
-    ? originalPrice - deal.discount_amount
-    : originalPrice * 0.69;
+      ? originalPrice - deal.discount_amount
+      : originalPrice * 0.69;
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -91,9 +93,14 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
                   {deal?.location || deal?.partners?.location}
                 </p>
                 <div className="flex items-baseline gap-2 pt-2">
-                  <span className="text-2xl font-bold">
-                    £{Math.round(discountedPrice)}
-                  </span>
+                  <div className="flex flex-col">
+                    <span className="text-xs text-muted-foreground font-normal">
+                      Starting from
+                    </span>
+                    <span className="text-2xl font-bold">
+                      £{Math.round(discountedPrice)}
+                    </span>
+                  </div>
                   <span className="text-sm text-muted-foreground line-through">
                     £{originalPrice}
                   </span>
@@ -109,9 +116,7 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
                   {deal?.includes_flight !== false && (
                     <li>Round-trip flights</li>
                   )}
-                  <li>
-                    {deal?.duration_nights || 4}-night accommodation
-                  </li>
+                  <li>{deal?.duration_nights || 4}-night accommodation</li>
                   <li>Daily breakfast</li>
                   <li>Airport transfers</li>
                 </ul>
@@ -185,19 +190,19 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
               </div>
 
               <div className="space-y-2">
-                <Label>Check-in Date *</Label>
+                <Label>Travel Date *</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
                       className={cn(
                         "w-full justify-start text-left font-normal",
-                        !formData.checkInDate && "text-muted-foreground"
+                        !formData.pickupDate && "text-muted-foreground"
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {formData.checkInDate ? (
-                        format(formData.checkInDate, "PPP")
+                      {formData.pickupDate ? (
+                        format(formData.pickupDate, "PPP")
                       ) : (
                         <span>Pick a date</span>
                       )}
@@ -206,15 +211,27 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
                   <PopoverContent className="w-auto p-0">
                     <Calendar
                       mode="single"
-                      selected={formData.checkInDate}
+                      selected={formData.pickupDate}
                       onSelect={(date) =>
-                        setFormData((prev) => ({ ...prev, checkInDate: date }))
+                        setFormData((prev) => ({ ...prev, pickupDate: date }))
                       }
                       disabled={(date) => date < new Date()}
                       initialFocus
                     />
                   </PopoverContent>
                 </Popover>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="pickupAirport">Pickup Airport (Optional)</Label>
+                <AddressInput
+                  placeholder="Start typing airport name..."
+                  value={formData.pickupAirport}
+                  onChange={(val) =>
+                    setFormData((prev) => ({ ...prev, pickupAirport: val }))
+                  }
+                  searchOptions={{ types: ["airport"] }}
+                />
               </div>
 
               <div className="space-y-2">
@@ -251,7 +268,9 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
             <DialogHeader>
               <div className="flex flex-col items-center space-y-4 py-6">
                 <CheckCircle2 className="h-16 w-16 text-green-500" />
-                <DialogTitle className="text-2xl">Booking Confirmed!</DialogTitle>
+                <DialogTitle className="text-2xl">
+                  Booking Confirmed!
+                </DialogTitle>
                 <DialogDescription className="text-center">
                   Your booking has been successfully submitted. We've sent a
                   confirmation email to {formData.email}
@@ -270,10 +289,18 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
                   <span className="text-muted-foreground">Email:</span>{" "}
                   {formData.email}
                 </p>
-                {formData.checkInDate && (
+                {formData.pickupDate && (
                   <p>
-                    <span className="text-muted-foreground">Check-in:</span>{" "}
-                    {format(formData.checkInDate, "PPP")}
+                    <span className="text-muted-foreground">Pickup Date:</span>{" "}
+                    {format(formData.pickupDate, "PPP")}
+                  </p>
+                )}
+                {formData.pickupAirport && (
+                  <p>
+                    <span className="text-muted-foreground">
+                      Pickup Airport:
+                    </span>{" "}
+                    {formData.pickupAirport}
                   </p>
                 )}
                 <p>
@@ -281,7 +308,8 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
                   {formData.numberOfTravelers}
                 </p>
                 <p className="font-semibold pt-2">
-                  Total: £{Math.round(discountedPrice * formData.numberOfTravelers)}
+                  Total: £
+                  {Math.round(discountedPrice * formData.numberOfTravelers)}
                 </p>
               </div>
             </div>

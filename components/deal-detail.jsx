@@ -3,15 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { MapPinIcon, CalendarIcon, ArrowLeftIcon, CheckCircle2 } from "lucide-react";
+import {
+  MapPinIcon,
+  CalendarIcon,
+  ArrowLeftIcon,
+  CheckCircle2,
+} from "lucide-react";
 import BookingDialog from "@/components/booking-dialog";
 
 export default function DealDetail({ deal }) {
@@ -19,16 +19,17 @@ export default function DealDetail({ deal }) {
 
   // Calculate prices
   const originalPrice = deal.original_price || 1299;
-  const discountPercentage = deal.discount_percentage || 
-    (deal.discount_amount && originalPrice 
+  const discountPercentage =
+    deal.discount_percentage ||
+    (deal.discount_amount && originalPrice
       ? Math.round((deal.discount_amount / originalPrice) * 100)
       : 31);
 
   const discountedPrice = deal.discount_percentage
     ? originalPrice * (1 - deal.discount_percentage / 100)
     : deal.discount_amount
-    ? originalPrice - deal.discount_amount
-    : originalPrice * 0.69;
+      ? originalPrice - deal.discount_amount
+      : originalPrice * 0.69;
 
   const savings = originalPrice - discountedPrice;
 
@@ -37,18 +38,18 @@ export default function DealDetail({ deal }) {
     if (deal.image_url) return deal.image_url;
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
-    
+
     // Use deal ID hash to determine which placeholder image to use (1-5)
     const hashCode = (str) => {
       let hash = 0;
       for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
+        hash = (hash << 5) - hash + char;
         hash = hash & hash;
       }
       return Math.abs(hash);
     };
-    
+
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
   };
@@ -83,7 +84,7 @@ export default function DealDetail({ deal }) {
               fill
               className="object-cover"
               priority
-              unoptimized={imageUrl.startsWith('http')}
+              unoptimized={imageUrl.startsWith("http")}
             />
             {discountPercentage && (
               <Badge className="absolute top-6 right-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-xl font-bold shadow-lg">
@@ -104,8 +105,10 @@ export default function DealDetail({ deal }) {
                   {[
                     includesFlight && "Flight",
                     includesHotel && `${nights}-night stay`,
-                    includesTransfer && "Transfer"
-                  ].filter(Boolean).join(" + ")}
+                    includesTransfer && "Transfer",
+                  ]
+                    .filter(Boolean)
+                    .join(" + ")}
                 </p>
               </div>
 
@@ -115,11 +118,18 @@ export default function DealDetail({ deal }) {
                     £{originalPrice.toFixed(0)}
                   </span>
                 </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-foreground">
-                    £{Math.round(discountedPrice)}
+                <div className="flex flex-col">
+                  <span className="text-xs text-muted-foreground mb-1">
+                    Starting from
                   </span>
-                  <span className="text-sm text-muted-foreground">per person</span>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-4xl font-bold text-foreground">
+                      £{Math.round(discountedPrice)}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      per person
+                    </span>
+                  </div>
                 </div>
                 <div className="text-green-600 font-semibold text-lg">
                   Save £{Math.round(savings)}
@@ -131,7 +141,14 @@ export default function DealDetail({ deal }) {
           <CardContent className="space-y-6">
             <div className="flex items-center text-muted-foreground">
               <CalendarIcon className="h-5 w-5 mr-2" />
-              <span>Valid until {new Date(deal.end_date).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</span>
+              <span>
+                Valid until{" "}
+                {new Date(deal.end_date).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
             </div>
 
             {/* What's Included */}
@@ -169,7 +186,8 @@ export default function DealDetail({ deal }) {
             <div className="space-y-3">
               <h3 className="text-xl font-semibold">About This Deal</h3>
               <p className="text-muted-foreground leading-relaxed">
-                {deal.description || `Experience the magic of ${location} with this exclusive travel package. Enjoy comfortable accommodations, convenient flights, and unforgettable memories in one of the world's most beautiful destinations.`}
+                {deal.description ||
+                  `Experience the magic of ${location} with this exclusive travel package. Enjoy comfortable accommodations, convenient flights, and unforgettable memories in one of the world's most beautiful destinations.`}
               </p>
             </div>
 
@@ -179,7 +197,9 @@ export default function DealDetail({ deal }) {
                 <h3 className="text-xl font-semibold">Partner Information</h3>
                 <div className="bg-muted p-4 rounded-lg space-y-2">
                   <p className="font-medium">{deal.partners.name}</p>
-                  <p className="text-sm text-muted-foreground">{deal.partners.location}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {deal.partners.location}
+                  </p>
                   {deal.partners.website_url && (
                     <Button variant="link" className="p-0 h-auto" asChild>
                       <Link href={deal.partners.website_url} target="_blank">
@@ -218,7 +238,7 @@ export default function DealDetail({ deal }) {
 
             {/* Booking Button */}
             <div className="pt-4">
-              <Button 
+              <Button
                 onClick={() => setIsBookingOpen(true)}
                 className="w-full bg-[#0a4275] hover:bg-[#083558] text-white font-semibold py-6 text-lg"
                 size="lg"
@@ -230,12 +250,11 @@ export default function DealDetail({ deal }) {
         </Card>
       </div>
 
-      <BookingDialog 
-        deal={deal} 
-        open={isBookingOpen} 
+      <BookingDialog
+        deal={deal}
+        open={isBookingOpen}
         onOpenChange={setIsBookingOpen}
       />
     </>
   );
 }
-

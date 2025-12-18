@@ -9,8 +9,9 @@ import { MapPinIcon, CalendarIcon } from "lucide-react";
 
 export default function DealCard({ deal }) {
   // Calculate discount percentage if not provided
-  const discountPercentage = deal.discount_percentage || 
-    (deal.discount_amount && deal.original_price 
+  const discountPercentage =
+    deal.discount_percentage ||
+    (deal.discount_amount && deal.original_price
       ? Math.round((deal.discount_amount / deal.original_price) * 100)
       : null);
 
@@ -19,8 +20,8 @@ export default function DealCard({ deal }) {
   const discountedPrice = deal.discount_percentage
     ? originalPrice * (1 - deal.discount_percentage / 100)
     : deal.discount_amount
-    ? originalPrice - deal.discount_amount
-    : originalPrice * 0.69; // Default 31% off if no discount info
+      ? originalPrice - deal.discount_amount
+      : originalPrice * 0.69; // Default 31% off if no discount info
 
   const savings = originalPrice - discountedPrice;
 
@@ -29,19 +30,19 @@ export default function DealCard({ deal }) {
     if (deal.image_url) return deal.image_url;
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
-    
+
     // Use deal ID hash to determine which placeholder image to use (1-5)
     // This works with both numeric IDs and UUIDs
     const hashCode = (str) => {
       let hash = 0;
       for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
+        hash = (hash << 5) - hash + char;
         hash = hash & hash; // Convert to 32bit integer
       }
       return Math.abs(hash);
     };
-    
+
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
   };
@@ -66,7 +67,7 @@ export default function DealCard({ deal }) {
     if (includesFlight) inclusions.push("Flight");
     if (includesHotel) inclusions.push(`${nights}-night stay`);
     if (includesTransfer) inclusions.push("Transfer");
-    
+
     if (inclusions.length === 0) return `${nights}-night package`;
     return inclusions.join(" + ");
   };
@@ -89,12 +90,10 @@ export default function DealCard({ deal }) {
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          unoptimized={imageUrl.startsWith('http')}
+          unoptimized={imageUrl.startsWith("http")}
         />
         {discountPercentage && (
-          <Badge 
-            className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white px-4 py-1 text-base font-medium shadow-lg"
-          >
+          <Badge className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white px-4 py-1 text-base font-medium shadow-lg">
             {discountPercentage}% OFF
           </Badge>
         )}
@@ -113,9 +112,7 @@ export default function DealCard({ deal }) {
         </h3>
 
         {/* Inclusions */}
-        <p className="text-sm text-muted-foreground">
-          {getInclusionsText()}
-        </p>
+        <p className="text-sm text-muted-foreground">{getInclusionsText()}</p>
 
         {/* Validity Date */}
         <div className="flex items-center text-sm text-muted-foreground pt-1">
@@ -125,22 +122,28 @@ export default function DealCard({ deal }) {
 
         {/* Pricing */}
         <div className="pt-2 space-y-1">
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm text-muted-foreground line-through">
+          {/* <div className="flex items-baseline gap-2"> */}
+          {/* <span className="text-sm text-muted-foreground line-through">
               £{originalPrice.toFixed(0)}
-            </span>
-          </div>
+            </span> */}
+          {/* </div> */}
           <div className="flex items-baseline justify-between">
             <div className="flex flex-col">
+              <span className="text-xs text-muted-foreground">
+                Starting from
+              </span>
               <span className="text-3xl font-bold text-foreground">
                 £{Math.round(discountedPrice)}
               </span>
               <span className="text-sm text-muted-foreground">per person</span>
             </div>
             <div className="text-right">
-              <span className="text-sm font-semibold text-green-600">
-                Save
-              </span>
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm text-muted-foreground line-through">
+                  £{originalPrice.toFixed(0)}
+                </span>
+              </div>
+              <span className="text-sm font-semibold text-green-600">Save</span>
               <div className="text-base font-bold text-green-600">
                 £{Math.round(savings)}
               </div>
@@ -150,13 +153,11 @@ export default function DealCard({ deal }) {
       </CardContent>
 
       <CardFooter className="p-6 pt-0">
-        <Button 
-          asChild 
+        <Button
+          asChild
           className="w-full bg-[#0a4275] hover:bg-[#083558] text-white font-semibold py-6 text-base"
         >
-          <Link href={`/dashboard/deals/${deal.id}`}>
-            Book Deal
-          </Link>
+          <Link href={`/dashboard/deals/${deal.id}`}>Book Deal</Link>
         </Button>
       </CardFooter>
     </Card>

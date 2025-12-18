@@ -5,14 +5,14 @@ import { useEffect, useState } from "react";
 import { Input } from "./input";
 import InputSuggestion from "./input-suggestion";
 
-const AddressInput = ({ placeholder, value, onChange }) => {
+const AddressInput = ({ placeholder, value, onChange, searchOptions = {} }) => {
   const [suggestions, setSuggestions] = useState([]);
   const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     const fetchSuggestions = async () => {
       if (value && value.length > 2 && isFocused) {
-        const results = await autoCompletePlaces(value);
+        const results = await autoCompletePlaces(value, searchOptions);
         setSuggestions(results);
       } else {
         setSuggestions([]);
