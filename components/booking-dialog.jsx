@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -65,7 +65,34 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
     onOpenChange(false);
   };
 
-  const originalPrice = deal?.original_price || 1299;
+  const [currentBasePrice, setCurrentBasePrice] = useState(
+    deal?.original_price || 1299
+  );
+
+  useEffect(() => {
+    if (deal) {
+      let price = deal.original_price || 1299;
+
+      if (formData.pickupAirport && deal.location_prices?.length > 0) {
+        const matched = deal.location_prices.find(
+          (lp) =>
+            formData.pickupAirport
+              .toLowerCase()
+              .includes(lp.location.toLowerCase()) ||
+            lp.location
+              .toLowerCase()
+              .includes(formData.pickupAirport.toLowerCase())
+        );
+
+        if (matched) {
+          price = parseFloat(matched.price);
+        }
+      }
+      setCurrentBasePrice(price);
+    }
+  }, [formData.pickupAirport, deal]);
+
+  const originalPrice = currentBasePrice;
   const discountedPrice = deal?.discount_percentage
     ? originalPrice * (1 - deal.discount_percentage / 100)
     : deal?.discount_amount

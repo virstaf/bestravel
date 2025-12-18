@@ -139,3 +139,28 @@ export const deleteDealAction = async (dealId) => {
     return { success: false, error: error.message };
   }
 };
+
+export const updateDealAction = async (dealId, dealData) => {
+  try {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from("deals")
+      .update(dealData)
+      .eq("id", dealId);
+
+    if (error) {
+      console.error("Error updating deal:", error);
+      throw new Error(error.message);
+    }
+
+    revalidatePath("/admin/deals");
+    revalidatePath("/dashboard/deals");
+    revalidatePath(`/dashboard/deals/${dealId}`);
+    revalidatePath("/"); // For featured deals
+    return { success: true };
+  } catch (error) {
+    console.error("Server action error:", error);
+    return { success: false, error: error.message };
+  }
+};

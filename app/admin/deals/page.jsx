@@ -130,11 +130,11 @@ const AdminDealsPage = async () => {
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex justify-end items-center gap-2">
-                        {/* <Link href={`/admin/deals/${deal.id}/edit`}>
-                           <Button variant="ghost" size="sm">
-                             <Edit size={16} />
-                           </Button>
-                         </Link> */}
+                        <Link href={`/admin/deals/${deal.id}/edit`}>
+                          <Button variant="ghost" size="sm">
+                            <Edit size={16} />
+                          </Button>
+                        </Link>
                         <DeleteButton dealId={deal.id} />
                       </div>
                     </td>

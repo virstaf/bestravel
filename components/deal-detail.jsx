@@ -18,20 +18,46 @@ export default function DealDetail({ deal }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   // Calculate prices
-  const originalPrice = deal.original_price || 1299;
+  // Calculate prices logic with location support
+  const calculateDiscountedPrice = (price) => {
+    return deal.discount_percentage
+      ? price * (1 - deal.discount_percentage / 100)
+      : deal.discount_amount
+        ? price - deal.discount_amount
+        : price * 0.69;
+  };
+
+  // Find lowest price option
+  const priceOptions = [{ original: deal.original_price || 1299 }];
+  if (deal.location_prices?.length > 0) {
+    deal.location_prices.forEach((lp) => {
+      if (lp.price) priceOptions.push({ original: parseFloat(lp.price) });
+    });
+  }
+
+  const processedOptions = priceOptions.map((opt) => {
+    const discounted = calculateDiscountedPrice(opt.original);
+    return {
+      original: opt.original,
+      discounted: discounted,
+      savings: opt.original - discounted,
+    };
+  });
+
+  // Sort by discounted price ascending
+  processedOptions.sort((a, b) => a.discounted - b.discounted);
+
+  const bestOption = processedOptions[0];
+  const originalPrice = bestOption.original;
+  const discountedPrice = bestOption.discounted;
+  const savings = bestOption.savings;
+
+  // Calculate discount percentage for display (based on best option or global)
   const discountPercentage =
     deal.discount_percentage ||
     (deal.discount_amount && originalPrice
       ? Math.round((deal.discount_amount / originalPrice) * 100)
       : 31);
-
-  const discountedPrice = deal.discount_percentage
-    ? originalPrice * (1 - deal.discount_percentage / 100)
-    : deal.discount_amount
-      ? originalPrice - deal.discount_amount
-      : originalPrice * 0.69;
-
-  const savings = originalPrice - discountedPrice;
 
   // Get image URL
   const getImageUrl = () => {
@@ -57,6 +83,7 @@ export default function DealDetail({ deal }) {
   const imageUrl = getImageUrl();
 
   const location = deal.location || deal.partners?.location || "Destination";
+  const title = deal.title || deal.package_type || "Travel Package";
   const packageType = deal.package_type || deal.title || "Travel Package";
   const nights = deal.duration_nights || 4;
   const includesFlight = deal.includes_flight !== false;
@@ -100,7 +127,7 @@ export default function DealDetail({ deal }) {
                   <MapPinIcon className="h-5 w-5 mr-2" />
                   <span className="text-lg">{location}</span>
                 </div>
-                <CardTitle className="text-3xl">{packageType}</CardTitle>
+                <CardTitle className="text-3xl">{title}</CardTitle>
                 <p className="text-lg text-muted-foreground">
                   {[
                     includesFlight && "Flight",
@@ -113,26 +140,29 @@ export default function DealDetail({ deal }) {
               </div>
 
               <div className="bg-muted p-6 rounded-lg space-y-2 min-w-[280px]">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-sm text-muted-foreground line-through">
-                    £{originalPrice.toFixed(0)}
-                  </span>
-                </div>
-                <div className="flex flex-col">
-                  <span className="text-xs text-muted-foreground mb-1">
-                    Starting from
-                  </span>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold text-foreground">
-                      £{Math.round(discountedPrice)}
+                <div className="flex justify-between">
+                  <div className="">
+                    <span className="text-xs text-muted-foreground mb-1">
+                      Starting from
                     </span>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-sm text-muted-foreground line-through">
+                        £{originalPrice.toFixed(0)}
+                      </span>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl font-bold text-foreground">
+                        £{Math.round(discountedPrice)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="text-green-600 font-semibold text-lg flex flex-col">
+                    Save £{Math.round(savings)}
                     <span className="text-sm text-muted-foreground">
                       per person
                     </span>
                   </div>
-                </div>
-                <div className="text-green-600 font-semibold text-lg">
-                  Save £{Math.round(savings)}
                 </div>
               </div>
             </div>

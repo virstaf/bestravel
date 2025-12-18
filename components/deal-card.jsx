@@ -16,14 +16,39 @@ export default function DealCard({ deal }) {
       : null);
 
   // Calculate prices
-  const originalPrice = deal.original_price || 1299;
-  const discountedPrice = deal.discount_percentage
-    ? originalPrice * (1 - deal.discount_percentage / 100)
-    : deal.discount_amount
-      ? originalPrice - deal.discount_amount
-      : originalPrice * 0.69; // Default 31% off if no discount info
+  // Calculate prices logic with location support
+  const calculateDiscountedPrice = (price) => {
+    return deal.discount_percentage
+      ? price * (1 - deal.discount_percentage / 100)
+      : deal.discount_amount
+        ? price - deal.discount_amount
+        : price * 0.69;
+  };
 
-  const savings = originalPrice - discountedPrice;
+  // Find lowest price option
+  const priceOptions = [{ original: deal.original_price || 1299 }];
+  if (deal.location_prices?.length > 0) {
+    deal.location_prices.forEach((lp) => {
+      if (lp.price) priceOptions.push({ original: parseFloat(lp.price) });
+    });
+  }
+
+  const processedOptions = priceOptions.map((opt) => {
+    const discounted = calculateDiscountedPrice(opt.original);
+    return {
+      original: opt.original,
+      discounted: discounted,
+      savings: opt.original - discounted,
+    };
+  });
+
+  // Sort by discounted price ascending
+  processedOptions.sort((a, b) => a.discounted - b.discounted);
+
+  const bestOption = processedOptions[0];
+  const originalPrice = bestOption.original;
+  const discountedPrice = bestOption.discounted;
+  const savings = bestOption.savings;
 
   // Get image URL - use partner image or placeholder
   const getImageUrl = () => {

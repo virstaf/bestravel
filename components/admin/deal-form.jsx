@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { createDealAction, getPartnersListAction } from "@/actions/deals";
+import {
+  createDealAction,
+  updateDealAction,
+  getPartnersListAction,
+} from "@/actions/deals";
 import { supabase } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,34 +21,40 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Upload, X } from "lucide-react";
+import { Loader2, Upload, X, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 
-const DealForm = () => {
+const DealForm = ({ initialData }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [partners, setPartners] = useState([]);
   const [error, setError] = useState("");
 
+  const [locationPrices, setLocationPrices] = useState(
+    initialData?.location_prices || []
+  );
+
   const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    partner_id: "",
-    start_date: "",
-    end_date: "",
-    discount_percentage: "",
-    discount_amount: "",
-    original_price: "",
-    promo_code: "",
-    package_type: "",
-    duration_nights: "4",
-    location: "",
-    image_url: "",
-    includes_flight: true,
-    includes_hotel: true,
-    includes_transfer: false,
-    is_active: true,
-    is_featured: false,
+    title: initialData?.title || "",
+    description: initialData?.description || "",
+    partner_id: initialData?.partner_id || "",
+    start_date: initialData?.start_date
+      ? initialData.start_date.split("T")[0]
+      : "",
+    end_date: initialData?.end_date ? initialData.end_date.split("T")[0] : "",
+    discount_percentage: initialData?.discount_percentage || "",
+    discount_amount: initialData?.discount_amount || "",
+    original_price: initialData?.original_price || "",
+    promo_code: initialData?.promo_code || "",
+    package_type: initialData?.package_type || "",
+    duration_nights: initialData?.duration_nights || "4",
+    location: initialData?.location || "",
+    image_url: initialData?.image_url || "",
+    includes_flight: initialData?.includes_flight !== false,
+    includes_hotel: initialData?.includes_hotel !== false,
+    includes_transfer: initialData?.includes_transfer || false,
+    is_active: initialData?.is_active !== false,
+    is_featured: initialData?.is_featured || false,
   });
 
   useEffect(() => {
@@ -71,6 +81,23 @@ const DealForm = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Location Pricing Handlers
+  const addLocationPrice = () => {
+    setLocationPrices([...locationPrices, { location: "", price: "" }]);
+  };
+
+  const removeLocationPrice = (index) => {
+    const newPrices = [...locationPrices];
+    newPrices.splice(index, 1);
+    setLocationPrices(newPrices);
+  };
+
+  const handleLocationPriceChange = (index, field, value) => {
+    const newPrices = [...locationPrices];
+    newPrices[index][field] = value;
+    setLocationPrices(newPrices);
+  };
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -81,8 +108,6 @@ const DealForm = () => {
       const fileName = `deal-${Date.now()}.${fileExt}`;
       const filePath = `${fileName}`;
 
-      // Try to upload to 'deals' bucket first, fallback to 'public' if needed
-      // Note: You might need to create the 'deals' bucket in Supabase dashboard
       let bucketName = "deals";
 
       const { error: uploadError } = await supabase.storage
@@ -90,7 +115,6 @@ const DealForm = () => {
         .upload(filePath, file);
 
       if (uploadError) {
-        // Fallback or retry logic could go here
         throw uploadError;
       }
 
@@ -135,10 +159,16 @@ const DealForm = () => {
         duration_nights: formData.duration_nights
           ? parseInt(formData.duration_nights)
           : null,
-        partner_id: formData.partner_id || null, // Allow null if not selected
+        partner_id: formData.partner_id || null,
+        location_prices: locationPrices.filter((lp) => lp.location && lp.price), // Clean empty
       };
 
-      const result = await createDealAction(payload);
+      let result;
+      if (initialData?.id) {
+        result = await updateDealAction(initialData.id, payload);
+      } else {
+        result = await createDealAction(payload);
+      }
 
       if (!result.success) {
         throw new Error(result.error);
@@ -159,7 +189,9 @@ const DealForm = () => {
       className="space-y-8 max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-sm border"
     >
       <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">Create New Deal</h2>
+        <h2 className="text-xl font-bold">
+          {initialData ? "Edit Deal" : "Create New Deal"}
+        </h2>
         <Button variant="outline" type="button" onClick={() => router.back()}>
           Cancel
         </Button>
@@ -365,6 +397,67 @@ const DealForm = () => {
         </div>
       </div>
 
+      {/* Location Based Pricing */}
+      <div className="space-y-4 pt-4 border-t">
+        <div className="flex justify-between items-center">
+          <Label className="text-lg">Location Based Pricing</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={addLocationPrice}
+          >
+            <Plus className="h-4 w-4 mr-1" /> Add Location
+          </Button>
+        </div>
+
+        {locationPrices.length > 0 ? (
+          <div className="space-y-3">
+            {locationPrices.map((lp, index) => (
+              <div key={index} className="flex gap-4 items-end">
+                <div className="flex-1">
+                  <Label className="text-xs mb-1 block">
+                    Departure Location
+                  </Label>
+                  <AddressInput
+                    placeholder="e.g. London"
+                    value={lp.location}
+                    onChange={(value) =>
+                      handleLocationPriceChange(index, "location", value)
+                    }
+                    searchOptions={{ types: ["(cities)"] }}
+                  />
+                </div>
+                <div className="w-32">
+                  <Label className="text-xs mb-1 block">Price</Label>
+                  <Input
+                    type="number"
+                    placeholder="0.00"
+                    value={lp.price}
+                    onChange={(e) =>
+                      handleLocationPriceChange(index, "price", e.target.value)
+                    }
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => removeLocationPrice(index)}
+                  className="mb-0.5"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-gray-500 italic">
+            No specific location pricing added.
+          </p>
+        )}
+      </div>
+
       {/* Toggles */}
       <h3 className="font-semibold text-lg pt-4 border-t">
         Settings & Inclusions
@@ -425,7 +518,7 @@ const DealForm = () => {
         </Button>
         <Button type="submit" disabled={loading}>
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Create Deal
+          {initialData ? "Update Deal" : "Create Deal"}
         </Button>
       </div>
     </form>
