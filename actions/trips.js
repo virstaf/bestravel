@@ -16,7 +16,6 @@ export const fetchAllTrips = async () => {
 
 export const fetchTrips = async (userId) => {
   try {
-    // console.log(`Server action trips for user::: ${userId}`);
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("trips")
@@ -25,15 +24,14 @@ export const fetchTrips = async (userId) => {
       .order("start_date", { ascending: true });
 
     if (error) throw error;
-    
+
     // Calculate current status for each trip based on dates
     const { getTripStatus } = await import("@/lib/statusHelpers");
-    const tripsWithStatus = data.map(trip => ({
+    const tripsWithStatus = data.map((trip) => ({
       ...trip,
       currentStatus: getTripStatus(trip),
     }));
-    
-    // console.log("Fetched trips:::", data);
+
     return tripsWithStatus || [];
   } catch (err) {
     console.error("Error fetching trips:::", err);

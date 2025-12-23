@@ -83,7 +83,10 @@ const DealForm = ({ initialData }) => {
 
   // Location Pricing Handlers
   const addLocationPrice = () => {
-    setLocationPrices([...locationPrices, { location: "", price: "" }]);
+    setLocationPrices([
+      ...locationPrices,
+      { location: "", price: "", original_price: "" },
+    ]);
   };
 
   const removeLocationPrice = (index) => {
@@ -428,8 +431,23 @@ const DealForm = ({ initialData }) => {
                     searchOptions={{ types: ["(cities)"] }}
                   />
                 </div>
-                <div className="w-32">
-                  <Label className="text-xs mb-1 block">Price</Label>
+                <div className="w-28">
+                  <Label className="text-xs mb-1 block">Original Amt</Label>
+                  <Input
+                    type="number"
+                    placeholder="0.00"
+                    value={lp.original_price || ""}
+                    onChange={(e) =>
+                      handleLocationPriceChange(
+                        index,
+                        "original_price",
+                        e.target.value
+                      )
+                    }
+                  />
+                </div>
+                <div className="w-28">
+                  <Label className="text-xs mb-1 block">Sale Amt</Label>
                   <Input
                     type="number"
                     placeholder="0.00"

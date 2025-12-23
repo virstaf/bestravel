@@ -9,6 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import AddressInput from "@/components/ui/addressInput";
@@ -65,39 +72,44 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
     onOpenChange(false);
   };
 
-  const [currentBasePrice, setCurrentBasePrice] = useState(
-    deal?.original_price || 1299
-  );
+  const [priceDetails, setPriceDetails] = useState({
+    original: deal?.original_price || 1299,
+    discounted: deal?.original_price || 1299,
+  });
 
   useEffect(() => {
     if (deal) {
-      let price = deal.original_price || 1299;
+      // Calculate global defaults
+      const base = deal.original_price || 1299;
+      let discounted = deal.discount_percentage
+        ? base * (1 - deal.discount_percentage / 100)
+        : deal.discount_amount
+          ? base - deal.discount_amount
+          : base * 0.69;
+      let original = base;
 
+      // Check for location override
       if (formData.pickupAirport && deal.location_prices?.length > 0) {
         const matched = deal.location_prices.find(
           (lp) =>
+            lp.location === formData.pickupAirport ||
             formData.pickupAirport
               .toLowerCase()
-              .includes(lp.location.toLowerCase()) ||
-            lp.location
-              .toLowerCase()
-              .includes(formData.pickupAirport.toLowerCase())
+              .includes(lp.location.toLowerCase())
         );
 
-        if (matched) {
-          price = parseFloat(matched.price);
+        if (matched && matched.price) {
+          discounted = parseFloat(matched.price);
+          original = matched.original_price
+            ? parseFloat(matched.original_price)
+            : discounted;
         }
       }
-      setCurrentBasePrice(price);
+      setPriceDetails({ original, discounted });
     }
   }, [formData.pickupAirport, deal]);
 
-  const originalPrice = currentBasePrice;
-  const discountedPrice = deal?.discount_percentage
-    ? originalPrice * (1 - deal.discount_percentage / 100)
-    : deal?.discount_amount
-      ? originalPrice - deal.discount_amount
-      : originalPrice * 0.69;
+  const { original: originalPrice, discounted: discountedPrice } = priceDetails;
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -250,15 +262,36 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="pickupAirport">Pickup Airport (Optional)</Label>
-                <AddressInput
-                  placeholder="Start typing airport name..."
-                  value={formData.pickupAirport}
-                  onChange={(val) =>
-                    setFormData((prev) => ({ ...prev, pickupAirport: val }))
-                  }
-                  searchOptions={{ types: ["airport"] }}
-                />
+                <Label htmlFor="pickupAirport">Pickup Location *</Label>
+                {deal?.location_prices?.length > 0 ? (
+                  <Select
+                    value={formData.pickupAirport}
+                    onValueChange={(val) =>
+                      setFormData((prev) => ({ ...prev, pickupAirport: val }))
+                    }
+                    required
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select departure location" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {deal.location_prices.map((lp, index) => (
+                        <SelectItem key={index} value={lp.location}>
+                          {lp.location}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <AddressInput
+                    placeholder="Enter pickup location..."
+                    value={formData.pickupAirport}
+                    onChange={(val) =>
+                      setFormData((prev) => ({ ...prev, pickupAirport: val }))
+                    }
+                    searchOptions={{ types: ["airport", "(cities)"] }}
+                  />
+                )}
               </div>
 
               <div className="space-y-2">

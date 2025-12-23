@@ -233,7 +233,7 @@ export const acceptQuote = async (quoteId) => {
   }
 };
 
-export const rejectQuote = async (quoteId) => {
+export const rejectQuote = async (quoteId, reason, note) => {
   const supabase = await createClient();
 
   try {
@@ -264,10 +264,14 @@ export const rejectQuote = async (quoteId) => {
 
     if (userError) throw userError;
 
-    // 4. Update quote status to rejected
+    // 4. Update quote status to rejected with reason
     const { data: updatedQuote, error: updateError } = await supabase
       .from("quotes")
-      .update({ status: "rejected" })
+      .update({
+        status: "rejected",
+        rejection_reason: reason,
+        rejection_note: note,
+      })
       .eq("id", quoteId)
       .select()
       .single();
@@ -303,6 +307,8 @@ export const rejectQuote = async (quoteId) => {
         quoteDetails: {
           quoteNumber: quote.quote_number,
           tripName: trip.title,
+          rejectionReason: reason,
+          rejectionNote: note,
         },
         userDetails: {
           fullname: user.full_name,

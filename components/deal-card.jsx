@@ -17,7 +17,7 @@ export default function DealCard({ deal }) {
 
   // Calculate prices
   // Calculate prices logic with location support
-  const calculateDiscountedPrice = (price) => {
+  const calculateBaseDiscounted = (price) => {
     return deal.discount_percentage
       ? price * (1 - deal.discount_percentage / 100)
       : deal.discount_amount
@@ -26,29 +26,39 @@ export default function DealCard({ deal }) {
   };
 
   // Find lowest price option
-  const priceOptions = [{ original: deal.original_price || 1299 }];
+  const priceOptions = [];
+
+  // Add base option
+  const baseOriginal = deal.original_price || 1299;
+  const baseSale = calculateBaseDiscounted(baseOriginal);
+  priceOptions.push({
+    sale: baseSale,
+    original: baseOriginal,
+  });
+
+  // Add location options
   if (deal.location_prices?.length > 0) {
     deal.location_prices.forEach((lp) => {
-      if (lp.price) priceOptions.push({ original: parseFloat(lp.price) });
+      if (lp.price) {
+        const sPrice = parseFloat(lp.price);
+        const oPrice = lp.original_price
+          ? parseFloat(lp.original_price)
+          : sPrice;
+        // Only add if it's a valid number
+        if (!isNaN(sPrice)) {
+          priceOptions.push({ sale: sPrice, original: oPrice });
+        }
+      }
     });
   }
 
-  const processedOptions = priceOptions.map((opt) => {
-    const discounted = calculateDiscountedPrice(opt.original);
-    return {
-      original: opt.original,
-      discounted: discounted,
-      savings: opt.original - discounted,
-    };
-  });
+  // Sort by sale price ascending
+  priceOptions.sort((a, b) => a.sale - b.sale);
 
-  // Sort by discounted price ascending
-  processedOptions.sort((a, b) => a.discounted - b.discounted);
-
-  const bestOption = processedOptions[0];
+  const bestOption = priceOptions[0];
   const originalPrice = bestOption.original;
-  const discountedPrice = bestOption.discounted;
-  const savings = bestOption.savings;
+  const discountedPrice = bestOption.sale;
+  const savings = originalPrice - discountedPrice;
 
   // Get image URL - use partner image or placeholder
   const getImageUrl = () => {
