@@ -47,28 +47,23 @@ const ReservationAdminEmail = ({ details, type, user }) => {
                       </strong>{" "}
                       {(() => {
                         if (!value) return "N/A";
-                        if (value instanceof Date)
-                          return value.toLocaleDateString();
                         if (typeof value === "object") {
-                          // Handle rooms specifically or general objects
+                          // Handle rooms specifically
                           if (key === "rooms") {
-                            return Object.entries(value).map(
-                              ([roomType, details]) => {
-                                if (!details.count) return null;
-                                return (
-                                  <div key={roomType} className="ml-4 mt-1">
-                                    • {roomType}: {details.count} (
-                                    {details.meals})
-                                  </div>
-                                );
-                              }
-                            );
+                            return Object.entries(value)
+                              .filter(([_, details]) => details.count > 0)
+                              .map(
+                                ([roomType, details]) =>
+                                  `${roomType}: ${details.count} room(s), ${details.meals || "no meals"}`
+                              )
+                              .join("; ");
                           }
-                          return JSON.stringify(value, null, 2);
+                          // Handle other objects
+                          return JSON.stringify(value);
                         }
                         if (typeof value === "boolean")
                           return value ? "Yes" : "No";
-                        return value;
+                        return String(value);
                       })()}
                     </Text>
                   ))}
