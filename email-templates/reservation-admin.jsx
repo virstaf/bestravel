@@ -45,7 +45,31 @@ const ReservationAdminEmail = ({ details, type, user }) => {
                       <strong>
                         {key.charAt(0).toUpperCase() + key.slice(1)}:
                       </strong>{" "}
-                      {value}
+                      {(() => {
+                        if (!value) return "N/A";
+                        if (value instanceof Date)
+                          return value.toLocaleDateString();
+                        if (typeof value === "object") {
+                          // Handle rooms specifically or general objects
+                          if (key === "rooms") {
+                            return Object.entries(value).map(
+                              ([roomType, details]) => {
+                                if (!details.count) return null;
+                                return (
+                                  <div key={roomType} className="ml-4 mt-1">
+                                    • {roomType}: {details.count} (
+                                    {details.meals})
+                                  </div>
+                                );
+                              }
+                            );
+                          }
+                          return JSON.stringify(value, null, 2);
+                        }
+                        if (typeof value === "boolean")
+                          return value ? "Yes" : "No";
+                        return value;
+                      })()}
                     </Text>
                   ))}
                 </Container>
