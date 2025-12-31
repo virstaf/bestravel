@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { resendEmail } from "./resendEmail";
 
 export const createReservation = async (data) => {
   const supabase = await createClient();
@@ -85,12 +86,10 @@ export const getUserReservations = async (userId) => {
   return reservationsWithStatus;
 };
 
-export const submitReservation = async ({ type, details, tripId, userId }) => {
-  const { getUser } = await import("@/lib/supabase/server");
-  const { resendEmail } = await import("./resendEmail");
+export const submitReservation = async ({ type, details, tripId, user }) => {
+  // const { resendEmail } = await import("./resendEmail");
 
   try {
-    const user = await getUser();
     if (!user) {
       throw new Error("User not authenticated");
     }

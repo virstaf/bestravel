@@ -11,7 +11,6 @@ const page = async ({ params }) => {
   const user = await getUser();
 
   const { data: trip, error } = await fetchTrip(tripId);
-  // console.log("trip::: ", trip);
 
   if (error) {
     console.error("Error fetching trip:", error);
@@ -25,8 +24,7 @@ const page = async ({ params }) => {
         description="😍 Get Resources for your Trip!"
       />
       <div className="content min-w-full min-h-[calc(100vh-180px)] my-2">
-        <ReservationWizard trip={trip} userId={user.id} />
-        {/* <div className="divider my-4" /> */}
+        <ReservationWizard trip={trip} user={user} />
         <div className="w-full flex justify-end">
           <Button
             asChild

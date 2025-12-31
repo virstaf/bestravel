@@ -12,7 +12,7 @@ import { MapPin } from "lucide-react";
 import { Calendar } from "lucide-react";
 import { getFormattedDate } from "@/lib/getFormattedDate";
 
-export default function ReservationWizard({ trip, userId }) {
+export default function ReservationWizard({ trip, user }) {
   const [activeTab, setActiveTab] = useState("hotel");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -25,7 +25,7 @@ export default function ReservationWizard({ trip, userId }) {
         type,
         details,
         tripId: trip.id,
-        userId,
+        user,
       });
 
       if (!success) {
