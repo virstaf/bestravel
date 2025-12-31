@@ -96,38 +96,39 @@ export const submitReservation = async ({ type, details, tripId, user }) => {
 
     const adminType = "admin-" + type;
 
+    // TEMPORARILY DISABLED - Email sending disabled for debugging
     // Send Admin Email
-    const { success: emailAdminSuccess, message: adminMessage } =
-      await resendEmail(
-        {
-          email: "info@virstravelclub.com",
-          details,
-          user: {
-            fullname: user.user_metadata.full_name,
-            email: user.email,
-            userId: user.id,
-          },
-        },
-        adminType
-      );
+    // const { success: emailAdminSuccess, message: adminMessage } =
+    //   await resendEmail(
+    //     {
+    //       email: "info@virstravelclub.com",
+    //       details,
+    //       user: {
+    //         fullname: user.user_metadata.full_name,
+    //         email: user.email,
+    //         userId: user.id,
+    //       },
+    //     },
+    //     adminType
+    //   );
 
-    // Send Member Email
-    const { success: emailMemberSuccess, message: memberMessage } =
-      await resendEmail(
-        {
-          fullname: user.user_metadata.full_name || user.email.split("@")[0],
-          email: user.email,
-          details,
-        },
-        type
-      );
+    // // Send Member Email
+    // const { success: emailMemberSuccess, message: memberMessage } =
+    //   await resendEmail(
+    //     {
+    //       fullname: user.user_metadata.full_name || user.email.split("@")[0],
+    //       email: user.email,
+    //       details,
+    //     },
+    //     type
+    //   );
 
-    if (!emailAdminSuccess) {
-      console.warn("Admin email failed:", adminMessage);
-    }
-    if (!emailMemberSuccess) {
-      console.warn("Member email failed:", memberMessage);
-    }
+    // if (!emailAdminSuccess) {
+    //   console.warn("Admin email failed:", adminMessage);
+    // }
+    // if (!emailMemberSuccess) {
+    //   console.warn("Member email failed:", memberMessage);
+    // }
 
     const supabase = await createClient();
 
