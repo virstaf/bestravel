@@ -1,33 +1,24 @@
-import { createClient } from "@/lib/supabase/server";
+import { getUser } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";
 import TripDetail from "@/components/trip-detail";
 import DashHeader from "@/components/dash-header";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { fetchTrip } from "@/actions/trips";
 
 const TripDetailPage = async ({ params }) => {
   const { tripId } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+
+  const user = await getUser();
+  const { data: trip } = await fetchTrip(tripId);
 
   if (!user) {
     redirect("/auth/login");
   }
 
-  const { data: trip } = await supabase
-    .from("trips")
-    .select("*")
-    .eq("id", tripId)
-    .eq("user_id", user.id)
-    .single();
-
   if (!trip) {
     notFound();
   }
-
-  // console.log("trip::: ", trip);
 
   return (
     <div className="container mx-auto px-4 w-full h-full">

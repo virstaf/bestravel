@@ -24,59 +24,60 @@ export default function ReservationWizard({ trip, user }) {
     // console.log(type, details);
     startTransition(async () => {
       setLoading(true);
-      console.log("type:: ", type);
-      console.log("details:: ", details);
+      //   console.log("type:: ", type);
+      //   console.log("details:: ", details);
+
+      //   try {
+      //     const { success } = await testAction({
+      //       name: "uniik",
+      //       email: "uniiktheo@gmail.com",
+      //     });
+      //     if (!success) {
+      //       throw new Error("error");
+      //     }
+      //     toast.success("success");
+      //   } catch (err) {
+      //     toast.error(err);
+      //   } finally {
+      //     setLoading(false);
+      //   }
+      // });
 
       try {
-        const { success } = await testAction({
-          name: "uniik",
-          email: "uniiktheo@gmail.com",
+        const { success } = await submitReservation({
+          type,
+          details,
+          tripId: trip.id,
+          // user,
         });
+
+        // if (message) console.log("message:::", message);
+
         if (!success) {
-          throw new Error("error");
+          throw new Error(message);
         }
-        toast.success("success");
-      } catch (err) {
-        toast.error(err);
+
+        toast.success(
+          `${
+            type.charAt(0).toUpperCase() + type.slice(1)
+          } reservation submitted successfully!`
+        );
+
+        router.push("/dashboard/reservations");
+      } catch (error) {
+        console.error(
+          `${type.charAt(0).toUpperCase() + type.slice(1)} reservation error:`,
+          error
+        );
+        toast.error(
+          `${type.charAt(0).toUpperCase() + type.slice(1)} reservation error: ${
+            error.message || "Unknown error"
+          }`
+        );
       } finally {
         setLoading(false);
       }
     });
-
-    // try {
-    //   const { success, message } = await submitReservation({
-    //     type,
-    //     details,
-    //     tripId: trip.id,
-    //     user,
-    //   });
-
-    //   if (message) console.log("message:::", message);
-
-    //   if (!success) {
-    //     throw new Error(message);
-    //   }
-
-    //   toast.success(
-    //     `${
-    //       type.charAt(0).toUpperCase() + type.slice(1)
-    //     } reservation submitted successfully!`
-    //   );
-
-    //   router.push("/dashboard/reservations");
-    // } catch (error) {
-    //   console.error(
-    //     `${type.charAt(0).toUpperCase() + type.slice(1)} reservation error:`,
-    //     error
-    //   );
-    //   toast.error(
-    //     `${type.charAt(0).toUpperCase() + type.slice(1)} reservation error: ${
-    //       error.message || "Unknown error"
-    //     }`
-    //   );
-    // } finally {
-    //   setLoading(false);
-    // }
   };
 
   return (
