@@ -12,6 +12,7 @@ import TripSummaryCard from "./TripSummaryCard";
 import { MapPin } from "lucide-react";
 import { Calendar } from "lucide-react";
 import { getFormattedDate } from "@/lib/getFormattedDate";
+import { testAction } from "@/actions/test";
 
 export default function ReservationWizard({ trip, user }) {
   const [activeTab, setActiveTab] = useState("hotel");
@@ -23,6 +24,19 @@ export default function ReservationWizard({ trip, user }) {
 
     console.log("type:: ", type);
     console.log("details:: ", details);
+
+    try {
+      const { success } = await testAction({
+        name: "uniik",
+        email: "uniiktheo@gmail.com",
+      });
+      if (!success) {
+        throw new Error("error");
+      }
+      toast.success("success");
+    } catch (err) {
+      toast.error(err);
+    }
 
     // try {
     //   const { success, message } = await submitReservation({
