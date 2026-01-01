@@ -43,13 +43,13 @@ const TransferReservationForm = ({ trip, onSubmit, loading }) => {
   const [dropoffQuery, setDropoffQuery] = useState("");
   const [shouldDropoffSearch, setShouldDropoffSearch] = useState(true);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
+  const handleSubmit = async () => {
+    // e.preventDefault();
+    await onSubmit(formData);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+    <form action={handleSubmit} className="space-y-4 mt-4">
       <div>
         <Label className="mb-1">Transfer Type</Label>
         <Select
