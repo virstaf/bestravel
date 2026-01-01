@@ -21,7 +21,7 @@ export default function ReservationWizard({ trip, user }) {
   const router = useRouter();
 
   const handleSubmit = async (type, details) => {
-    console.log(type, details)
+    console.log(type, details);
     // startTransition(async () => {
     //   setLoading(true);
     //   console.log("type:: ", type);
@@ -41,7 +41,7 @@ export default function ReservationWizard({ trip, user }) {
     //   } finally {
     //     setLoading(false);
     //   }
-    });
+    // });
 
     // try {
     //   const { success, message } = await submitReservation({
