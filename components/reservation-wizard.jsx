@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HotelReservationForm from "./hotel-reservation-form";
@@ -17,28 +17,30 @@ import { testAction } from "@/actions/test";
 export default function ReservationWizard({ trip, user }) {
   const [activeTab, setActiveTab] = useState("hotel");
   const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleSubmit = async (type, details) => {
-    setLoading(true);
+    startTransition(async () => {
+      setLoading(true);
+      console.log("type:: ", type);
+      console.log("details:: ", details);
 
-    console.log("type:: ", type);
-    // console.log("details:: ", details);
-
-    try {
-      const { success } = await testAction({
-        name: "uniik",
-        email: "uniiktheo@gmail.com",
-      });
-      if (!success) {
-        throw new Error("error");
+      try {
+        const { success } = await testAction({
+          name: "uniik",
+          email: "uniiktheo@gmail.com",
+        });
+        if (!success) {
+          throw new Error("error");
+        }
+        toast.success("success");
+      } catch (err) {
+        toast.error(err);
+      } finally {
+        setLoading(false);
       }
-      toast.success("success");
-    } catch (err) {
-      toast.error(err);
-    } finally {
-      setLoading(false);
-    }
+    });
 
     // try {
     //   const { success, message } = await submitReservation({
