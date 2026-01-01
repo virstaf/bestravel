@@ -91,7 +91,8 @@ export const submitReservation = async ({ type, details, tripId, user }) => {
 
   try {
     if (!user) {
-      throw new Error("User not authenticated");
+      // throw new Error("User not authenticated");
+      console.log("Not Authenticated!");
     }
 
     const adminType = "admin-" + type;
@@ -124,17 +125,18 @@ export const submitReservation = async ({ type, details, tripId, user }) => {
     //   );
 
     // if (!emailAdminSuccess) {
-    //   console.warn("Admin email failed:", adminMessage);
+    //   console.log("Admin email failed:", adminMessage);
     // }
     // if (!emailMemberSuccess) {
-    //   console.warn("Member email failed:", memberMessage);
+    //   console.log("Member email failed:", memberMessage);
     // }
 
     const supabase = await createClient();
 
     // Validate inputs
     if (!tripId) {
-      throw new Error("Trip ID is required");
+      // throw new Error("Trip ID is required");
+      console.log("Trip ID required!");
     }
 
     // Check if trip exists
@@ -145,12 +147,13 @@ export const submitReservation = async ({ type, details, tripId, user }) => {
       .single();
 
     if (tripError || !trip) {
-      console.error("Trip verification failed:", tripError);
-      throw new Error(
-        trip
-          ? "Trip not found"
-          : `Trip not found: ${tripError?.message || "Unknown error"}`
-      );
+      // console.error("Trip verification failed:", tripError);
+      // throw new Error(
+      //   trip
+      //     ? "Trip not found"
+      //     : `Trip not found: ${tripError?.message || "Unknown error"}`
+      // );
+      console.log("Trip not found!");
     }
 
     const { error: insertError } = await supabase.from("reservations").insert({
@@ -164,9 +167,9 @@ export const submitReservation = async ({ type, details, tripId, user }) => {
 
     if (insertError) {
       console.error("Database insertion error:", insertError);
-      throw new Error(
-        `Reservation failed: ${insertError.message || insertError.details || "Database error"}`
-      );
+      // throw new Error(
+      //   `Reservation failed: ${insertError.message || insertError.details || "Database error"}`
+      // );
     }
 
     revalidatePath("/dashboard/reservations");

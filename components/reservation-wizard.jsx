@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -27,6 +28,8 @@ export default function ReservationWizard({ trip, user }) {
         tripId: trip.id,
         user,
       });
+
+      if (message) console.log("message:::", message);
 
       if (!success) {
         throw new Error(message);
