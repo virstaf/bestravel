@@ -21,25 +21,26 @@ export default function ReservationWizard({ trip, user }) {
   const router = useRouter();
 
   const handleSubmit = async (type, details) => {
-    startTransition(async () => {
-      setLoading(true);
-      console.log("type:: ", type);
-      console.log("details:: ", details);
+    console.log(type, details)
+    // startTransition(async () => {
+    //   setLoading(true);
+    //   console.log("type:: ", type);
+    //   console.log("details:: ", details);
 
-      try {
-        const { success } = await testAction({
-          name: "uniik",
-          email: "uniiktheo@gmail.com",
-        });
-        if (!success) {
-          throw new Error("error");
-        }
-        toast.success("success");
-      } catch (err) {
-        toast.error(err);
-      } finally {
-        setLoading(false);
-      }
+    //   try {
+    //     const { success } = await testAction({
+    //       name: "uniik",
+    //       email: "uniiktheo@gmail.com",
+    //     });
+    //     if (!success) {
+    //       throw new Error("error");
+    //     }
+    //     toast.success("success");
+    //   } catch (err) {
+    //     toast.error(err);
+    //   } finally {
+    //     setLoading(false);
+    //   }
     });
 
     // try {
