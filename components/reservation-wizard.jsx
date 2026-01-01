@@ -23,7 +23,7 @@ export default function ReservationWizard({ trip, user }) {
     setLoading(true);
 
     console.log("type:: ", type);
-    console.log("details:: ", details);
+    // console.log("details:: ", details);
 
     try {
       const { success } = await testAction({
@@ -36,6 +36,8 @@ export default function ReservationWizard({ trip, user }) {
       toast.success("success");
     } catch (err) {
       toast.error(err);
+    } finally {
+      setLoading(false);
     }
 
     // try {
