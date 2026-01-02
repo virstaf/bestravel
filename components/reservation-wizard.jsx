@@ -59,8 +59,9 @@ export default function ReservationWizard({ trip, user }) {
           email: authUser.email,
           details,
           tripName: trip.title,
+          reservationType: type,
         },
-        type
+        "confirm-reservation"
       );
 
       if (!sendNotification.success) {

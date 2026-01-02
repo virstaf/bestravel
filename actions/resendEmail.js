@@ -102,7 +102,12 @@ export const resendEmail = async (values, type) => {
   }
 
   if (type === "confirm-reservation") {
-    const { fullname, link, reservationType, email } = values;
+    const {
+      fullname,
+      link = "https://virstravelclub.com/dashboard/reservations",
+      reservationType,
+      email,
+    } = values;
 
     emailTemplate = (
       <ReservationConfirmationEmail
