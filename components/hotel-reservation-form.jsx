@@ -21,7 +21,7 @@ import {
 import Link from "next/link";
 import AddressInput from "./ui/addressInput";
 import { HotelAutocomplete } from "./hotel-autocomplete";
-import {LoaderIcon} from "lucide-react";
+import { LoaderIcon } from "lucide-react";
 
 const HotelReservationForm = ({ trip, onSubmit, loading }) => {
   const [formData, setFormData] = useState({
@@ -35,81 +35,87 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
     specialRequests: "",
   });
 
-  const roomTypes = [{name: "Single", value: "single"}, {name: "Double", value: "double"},{ name: "Family", value: "family"}, {name: "Suite", value: "suite"}];
-  const mealTypes = [{name: "Breakfast only", value: "breakfast",},{name: "Half board", value: "half-board"},{name: "Full board", value: "full-board"}, {name: "All inclusive", value: "all-inclusive"}, {name:"No meals", value:"no-meals"}];
+  const roomTypes = [
+    { name: "Single", value: "single" },
+    { name: "Double", value: "double" },
+    { name: "Family", value: "family" },
+    { name: "Suite", value: "suite" },
+  ];
+  const mealTypes = [
+    { name: "Breakfast only", value: "breakfast" },
+    { name: "Half board", value: "half-board" },
+    { name: "Full board", value: "full-board" },
+    { name: "All inclusive", value: "all-inclusive" },
+    { name: "No meals", value: "no-meals" },
+  ];
 
   const handleRoomQuantityChange = (roomType, value) => {
-      setFormData(prev => ({
-          ...prev,
-          rooms: {
-              ...prev.rooms,
-              [roomType]: {
-                  ...prev.rooms[roomType],
-                  count: parseInt(value) || 0
-              }
-          }
-      }));
-      // console.log("formData::: ", formData)
+    setFormData((prev) => ({
+      ...prev,
+      rooms: {
+        ...prev.rooms,
+        [roomType]: {
+          ...prev.rooms[roomType],
+          count: parseInt(value) || 0,
+        },
+      },
+    }));
+    // console.log("formData::: ", formData)
+  };
 
-  }
+  const handleMealChange = (roomType, mealType) => {
+    setFormData((prev) => ({
+      ...prev,
+      rooms: {
+        ...prev.rooms,
+        [roomType]: {
+          ...prev.rooms[roomType],
+          meals: mealType,
+        },
+      },
+    }));
+  };
 
-    const handleMealChange = (roomType, mealType) => {
-        setFormData(prev => ({
-            ...prev,
-            rooms: {
-                ...prev.rooms,
-                [roomType]: {
-                    ...prev.rooms[roomType],
-                    meals: mealType
-                }
-            }
-        }));
-    };
-
-  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
+  const handleSubmit = async () => {
     onSubmit(formData);
   };
 
-
   return (
     <div>
-      <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <Label className="mb-1" htmlFor="city">
-            City
-          </Label>
-          <AddressInput
-            placeholder="Enter city..."
-            value={formData.city}
-            onChange={(value) => setFormData({ ...formData, city: value })}
-          />
-        </div>
+      <form action={handleSubmit} className="space-y-4 mt-4">
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <Label className="mb-1" htmlFor="city">
+              City
+            </Label>
+            <AddressInput
+              placeholder="Enter city..."
+              value={formData.city}
+              onChange={(value) => setFormData({ ...formData, city: value })}
+            />
+          </div>
 
-        <div>
-          <Label className="mb-1" htmlFor="preferredHotel">
-            Preferred Hotel
-          </Label>
-          {/* <HotelAutocomplete
+          <div>
+            <Label className="mb-1" htmlFor="preferredHotel">
+              Preferred Hotel
+            </Label>
+            {/* <HotelAutocomplete
           // value={formData.preferredHotel}
           // onChange={(value) =>
           //   setFormData({ ...formData, preferredHotel: value })
           // }
           /> */}
-          <Input
-            id="preferredHotel"
-            value={formData.preferredHotel}
-            placeholder="Preferred hotels, separated by comma if multiple"
-            onChange={(e) =>
-              setFormData({ ...formData, preferredHotel: e.target.value })
-            }
-            required
-          />
-        </div>
+            <Input
+              id="preferredHotel"
+              value={formData.preferredHotel}
+              placeholder="Preferred hotels, separated by comma if multiple"
+              onChange={(e) =>
+                setFormData({ ...formData, preferredHotel: e.target.value })
+              }
+              required
+            />
           </div>
+        </div>
 
         <div className="grid md:grid-cols-2 gap-4">
           <div className="">
@@ -204,25 +210,47 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
           </div>
         </div>
 
-          <div className="rooms space-y-6 gap-4 my-6">
-              <Label className="mt-6 mb-2" htmlFor="rooms">Room Types and Meals</Label>
-              {roomTypes.map((roomType) => (
-                  <div className="roomType space-y-2 md:grid md:grid-cols-[45px_1fr_1fr] gap-6 items-center" key={roomType.value}>
-                  <div>{roomType.name}</div>
-                      <Input placeholder={"How many rooms?"} name={roomType+"_quantity"} id={roomType+"_quantity"} type="number" max={8} min={0} onChange={(event)=>handleRoomQuantityChange(roomType.value,event.target.value)} />
-                      <Select name="meals" id={"meals"} value={formData.rooms[roomType.value]?.meals || ""} onValueChange={(meal)=>handleMealChange(roomType.value,meal)}>
-                          <SelectTrigger className="w-full">
-                              <SelectValue placeholder="Select a meal..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                              {mealTypes.map((meal) => (
-                                  <SelectItem key={meal.value} value={meal.value}>{meal.name}</SelectItem>
-                              ))}
-                          </SelectContent>
-                      </Select>
-                  </div>
-              ))}
-          </div>
+        <div className="rooms space-y-6 gap-4 my-6">
+          <Label className="mt-6 mb-2" htmlFor="rooms">
+            Room Types and Meals
+          </Label>
+          {roomTypes.map((roomType) => (
+            <div
+              className="roomType space-y-2 md:grid md:grid-cols-[45px_1fr_1fr] gap-6 items-center"
+              key={roomType.value}
+            >
+              <div>{roomType.name}</div>
+              <Input
+                placeholder={"How many rooms?"}
+                name={roomType + "_quantity"}
+                id={roomType + "_quantity"}
+                type="number"
+                max={8}
+                min={0}
+                onChange={(event) =>
+                  handleRoomQuantityChange(roomType.value, event.target.value)
+                }
+              />
+              <Select
+                name="meals"
+                id={"meals"}
+                value={formData.rooms[roomType.value]?.meals || ""}
+                onValueChange={(meal) => handleMealChange(roomType.value, meal)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a meal..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {mealTypes.map((meal) => (
+                    <SelectItem key={meal.value} value={meal.value}>
+                      {meal.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          ))}
+        </div>
 
         {/*<div className="">*/}
         {/*  <Label htmlFor="rooms" className="block text-sm font-medium mb-1">*/}
@@ -302,7 +330,11 @@ const HotelReservationForm = ({ trip, onSubmit, loading }) => {
 
         <div className="flex justify-between">
           <Button type="submit" disabled={loading}>
-            {loading ? <LoaderIcon className={'min-w-[100px] spin'} /> : "Request Hotel"}
+            {loading ? (
+              <LoaderIcon className={"min-w-[100px] spin"} />
+            ) : (
+              "Request Hotel"
+            )}
           </Button>
           <Button variant="outline" asChild>
             <Link href={`/dashboard/trips/${trip.id}`}>Back</Link>

@@ -1,83 +1,89 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HotelReservationForm from "./hotel-reservation-form";
 import TransferReservationForm from "./transfer-reservation-form";
 import FlightReservationForm from "./flight-reservation-form";
 import { toast } from "sonner";
-import { submitReservation } from "@/actions/reservations";
-import TripSummaryCard from "./TripSummaryCard";
-import { MapPin } from "lucide-react";
-import { Calendar } from "lucide-react";
+import { MapPin, Calendar } from "lucide-react";
 import { getFormattedDate } from "@/lib/getFormattedDate";
-import { testAction } from "@/actions/test";
+import { resendEmail } from "@/actions/resendEmail";
 
 export default function ReservationWizard({ trip, user }) {
   const [activeTab, setActiveTab] = useState("hotel");
   const [loading, setLoading] = useState(false);
-  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleSubmit = async (type, details) => {
-    // console.log(type, details);
-    startTransition(async () => {
-      setLoading(true);
-      //   console.log("type:: ", type);
-      //   console.log("details:: ", details);
+    setLoading(true);
 
-      //   try {
-      //     const { success } = await testAction({
-      //       name: "uniik",
-      //       email: "uniiktheo@gmail.com",
-      //     });
-      //     if (!success) {
-      //       throw new Error("error");
-      //     }
-      //     toast.success("success");
-      //   } catch (err) {
-      //     toast.error(err);
-      //   } finally {
-      //     setLoading(false);
-      //   }
-      // });
+    try {
+      // Get authenticated user
+      const {
+        data: { user: authUser },
+      } = await supabase.auth.getUser();
+      if (!authUser) throw new Error("Not authenticated");
 
-      try {
-        const { success } = await submitReservation({
+      // Insert reservation into database
+      const { error: insertError } = await supabase
+        .from("reservations")
+        .insert({
+          trip_id: trip.id,
+          user_id: authUser.id,
           type,
           details,
-          tripId: trip.id,
-          // user,
+          start_date: trip.start_date,
+          end_date: trip.end_date,
+          status: "pending",
         });
 
-        // if (message) console.log("message:::", message);
-
-        if (!success) {
-          throw new Error(message);
-        }
-
-        toast.success(
-          `${
-            type.charAt(0).toUpperCase() + type.slice(1)
-          } reservation submitted successfully!`
-        );
-
-        router.push("/dashboard/reservations");
-      } catch (error) {
-        console.error(
-          `${type.charAt(0).toUpperCase() + type.slice(1)} reservation error:`,
-          error
-        );
-        toast.error(
-          `${type.charAt(0).toUpperCase() + type.slice(1)} reservation error: ${
-            error.message || "Unknown error"
-          }`
-        );
-      } finally {
-        setLoading(false);
+      if (insertError) {
+        toast.error("Error creating reservation. Please try again.");
+        throw insertError;
       }
-    });
+
+      toast.success(
+        `${
+          type.charAt(0).toUpperCase() + type.slice(1)
+        } reservation submitted successfully!`
+      );
+
+      // Send email notification
+      const sendNotification = await resendEmail(
+        {
+          fullname:
+            authUser.user_metadata.full_name || authUser.email.split("@")[0],
+          email: authUser.email,
+          details,
+          tripName: trip.title,
+        },
+        type
+      );
+
+      if (!sendNotification.success) {
+        console.error(
+          "Error sending confirmation email:",
+          sendNotification.message
+        );
+      }
+
+      router.push("/dashboard/reservations");
+    } catch (err) {
+      console.error(
+        `${type.charAt(0).toUpperCase() + type.slice(1)} reservation error:`,
+        err
+      );
+      toast.error(
+        `${type.charAt(0).toUpperCase() + type.slice(1)} reservation error: ${
+          err.message || "Unknown error"
+        }`
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

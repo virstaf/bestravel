@@ -36,14 +36,13 @@ const FlightReservationForm = ({ trip, onSubmit, loading }) => {
     checkInBag: isCheckInBag,
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
+  const handleSubmit = async () => {
+    await onSubmit(formData);
   };
 
   return (
     <div>
-      <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+      <form action={handleSubmit} className="space-y-4 mt-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <Label className="mb-1">Departure City</Label>
