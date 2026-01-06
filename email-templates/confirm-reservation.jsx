@@ -9,7 +9,7 @@ import {
   Button,
 } from "@react-email/components";
 
-const ReservationConfirmationEmail = ({ fullname, link, type }) => {
+const ReservationConfirmationEmail = ({ fullname, reservationLink, type }) => {
   return (
     <Html>
       <Tailwind>
@@ -37,7 +37,7 @@ const ReservationConfirmationEmail = ({ fullname, link, type }) => {
               <Container className="text-center my-8">
                 <Button
                   target="_blank"
-                  href={link}
+                  href={reservationLink}
                   className="bg-primary text-white px-6 py-3 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary/50"
                 >
                   View Reservation Details
