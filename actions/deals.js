@@ -46,6 +46,8 @@ export const getDealsAction = async (limit) => {
       )
     `
       )
+      .eq("is_active", true)
+      .gte("end_date", new Date().toISOString())
       .order("created_at", { ascending: false });
 
     if (limit) {
