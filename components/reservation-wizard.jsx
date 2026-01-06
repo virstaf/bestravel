@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { MapPin, Calendar } from "lucide-react";
 import { getFormattedDate } from "@/lib/getFormattedDate";
 import { resendEmail } from "@/actions/resendEmail";
-import { submitReservation } from "@/actions/reservations";
 
 export default function ReservationWizard({ trip, user }) {
   const [activeTab, setActiveTab] = useState("hotel");
@@ -22,13 +21,21 @@ export default function ReservationWizard({ trip, user }) {
     setLoading(true);
 
     try {
-      const result = await submitReservation({
-        type,
-        details,
-        tripId: trip.id,
+      const response = await fetch("/api/reservations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          type,
+          details,
+          tripId: trip.id,
+        }),
       });
 
-      if (!result.success) {
+      const result = await response.json();
+
+      if (!response.ok) {
         throw new Error(result.message || "Failed to submit reservation");
       }
 
