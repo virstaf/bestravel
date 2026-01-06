@@ -236,8 +236,21 @@ export const resendEmail = async (values, type) => {
   }
 
   // Initialize Resend client
+  const apiKey = process.env.RESEND_API_KEY;
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  if (!apiKey) {
+    console.error("RESEND_API_KEY is missing in environment variables");
+    return {
+      success: false,
+      message: "Server configuration error (Missing API Key)",
+    };
+  }
+
+  // Debug log (masking key for security)
+  // console.log("Initializing Resend with key:", apiKey.substring(0, 5) + "...");
+
+  const resend = new Resend(apiKey);
+
   if (!resend) {
     console.error("Resend client could not be initialized");
     return { success: false, message: "Resend client initialization failed" };

@@ -86,103 +86,80 @@ export const getUserReservations = async (userId) => {
   return reservationsWithStatus;
 };
 
-export const submitReservation = async ({ type, details, tripId, user }) => {
-  console.log(type, details, tripId, user);
-  return { success: true };
-  // const { resendEmail } = await import("./resendEmail");
+export const submitReservation = async ({ type, details, tripId }) => {
+  try {
+    const supabase = await createClient();
 
-  // try {
-  //   if (!user) {
-  //     // throw new Error("User not authenticated");
-  //     console.log("Not Authenticated!");
-  //   }
+    // Get authenticated user
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-  //   const adminType = "admin-" + type;
+    if (!user) {
+      throw new Error("You must be logged in to make a reservation");
+    }
 
-  // TEMPORARILY DISABLED - Email sending disabled for debugging
-  // Send Admin Email
-  // const { success: emailAdminSuccess, message: adminMessage } =
-  //   await resendEmail(
-  //     {
-  //       email: "info@virstravelclub.com",
-  //       details,
-  //       user: {
-  //         fullname: user.user_metadata.full_name,
-  //         email: user.email,
-  //         userId: user.id,
-  //       },
-  //     },
-  //     adminType
-  //   );
+    // Verify trip exists
+    if (!tripId) {
+      throw new Error("Trip ID is required");
+    }
 
-  // // Send Member Email
-  // const { success: emailMemberSuccess, message: memberMessage } =
-  //   await resendEmail(
-  //     {
-  //       fullname: user.user_metadata.full_name || user.email.split("@")[0],
-  //       email: user.email,
-  //       details,
-  //     },
-  //     type
-  //   );
+    const { data: trip, error: tripError } = await supabase
+      .from("trips")
+      .select("start_date, end_date, title")
+      .eq("id", tripId)
+      .single();
 
-  // if (!emailAdminSuccess) {
-  //   console.log("Admin email failed:", adminMessage);
-  // }
-  // if (!emailMemberSuccess) {
-  //   console.log("Member email failed:", memberMessage);
-  // }
+    if (tripError || !trip) {
+      throw new Error("Trip not found");
+    }
 
-  //   const supabase = await createClient();
+    // 1. Insert reservation into database
+    const { error: insertError } = await supabase.from("reservations").insert({
+      trip_id: tripId,
+      user_id: user.id,
+      type,
+      details,
+      start_date: trip.start_date,
+      end_date: trip.end_date,
+      status: "pending",
+    });
 
-  //   // Validate inputs
-  //   if (!tripId) {
-  //     // throw new Error("Trip ID is required");
-  //     console.log("Trip ID required!");
-  //   }
+    if (insertError) {
+      console.error("Database insertion error:", insertError);
+      throw new Error("Failed to save reservation details");
+    }
 
-  //   // Check if trip exists
-  //   const { data: trip, error: tripError } = await supabase
-  //     .from("trips")
-  //     .select("start_date, end_date")
-  //     .eq("id", tripId)
-  //     .single();
+    // 2. Send Email Notification
+    const { success: emailSuccess, message: emailMessage } = await resendEmail(
+      {
+        fullname: user.user_metadata.full_name || user.email.split("@")[0],
+        email: user.email,
+        details,
+        tripName: trip.title,
+        reservationType: type,
+      },
+      "confirm-reservation"
+    );
 
-  //   if (tripError || !trip) {
-  //     // console.error("Trip verification failed:", tripError);
-  //     // throw new Error(
-  //     //   trip
-  //     //     ? "Trip not found"
-  //     //     : `Trip not found: ${tripError?.message || "Unknown error"}`
-  //     // );
-  //     console.log("Trip not found!");
-  //   }
+    if (!emailSuccess) {
+      console.error("Email sending warning:", emailMessage);
+      // We don't throw here strictly, because the reservation IS saved.
+      // But we returns a warning status.
+      revalidatePath("/dashboard/reservations");
+      return {
+        success: true,
+        warning: "Reservation saved, but confirmation email failed to send.",
+      };
+    }
 
-  //   const { error: insertError } = await supabase.from("reservations").insert({
-  //     trip_id: tripId,
-  //     user_id: user.id,
-  //     type,
-  //     details,
-  //     start_date: trip.start_date,
-  //     end_date: trip.end_date,
-  //   });
-
-  //   if (insertError) {
-  //     console.error("Database insertion error:", insertError);
-  //     // throw new Error(
-  //     //   `Reservation failed: ${insertError.message || insertError.details || "Database error"}`
-  //     // );
-  //   }
-
-  //   revalidatePath("/dashboard/reservations");
-  //   return { success: true };
-  // } catch (error) {
-  //   console.error("Reservation submission fatal error:", error);
-  //   // Return the specific error message to the client
-  //   return {
-  //     success: false,
-  //     message:
-  //       error.message || "An unexpected error occurred. Please try again.",
-  //   };
-  // }
+    revalidatePath("/dashboard/reservations");
+    return { success: true };
+  } catch (error) {
+    console.error("Reservation submission error:", error);
+    return {
+      success: false,
+      message: error.message || "An unexpected error occurred.",
+    };
+  }
 };

@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { MapPin, Calendar } from "lucide-react";
 import { getFormattedDate } from "@/lib/getFormattedDate";
 import { resendEmail } from "@/actions/resendEmail";
+import { submitReservation } from "@/actions/reservations";
 
 export default function ReservationWizard({ trip, user }) {
   const [activeTab, setActiveTab] = useState("hotel");
@@ -21,53 +22,23 @@ export default function ReservationWizard({ trip, user }) {
     setLoading(true);
 
     try {
-      // Get authenticated user
-      const {
-        data: { user: authUser },
-      } = await supabase.auth.getUser();
-      if (!authUser) throw new Error("Not authenticated");
+      const result = await submitReservation({
+        type,
+        details,
+        tripId: trip.id,
+      });
 
-      // Insert reservation into database
-      const { error: insertError } = await supabase
-        .from("reservations")
-        .insert({
-          trip_id: trip.id,
-          user_id: authUser.id,
-          type,
-          details,
-          start_date: trip.start_date,
-          end_date: trip.end_date,
-          status: "pending",
-        });
-
-      if (insertError) {
-        toast.error("Error creating reservation. Please try again.");
-        throw insertError;
+      if (!result.success) {
+        throw new Error(result.message || "Failed to submit reservation");
       }
 
-      toast.success(
-        `${
-          type.charAt(0).toUpperCase() + type.slice(1)
-        } reservation submitted successfully!`
-      );
-
-      // Send email notification
-      const sendNotification = await resendEmail(
-        {
-          fullname:
-            authUser.user_metadata.full_name || authUser.email.split("@")[0],
-          email: authUser.email,
-          details,
-          tripName: trip.title,
-          reservationType: type,
-        },
-        "confirm-reservation"
-      );
-
-      if (!sendNotification.success) {
-        console.error(
-          "Error sending confirmation email:",
-          sendNotification.message
+      if (result.warning) {
+        toast.warning(result.warning);
+      } else {
+        toast.success(
+          `${
+            type.charAt(0).toUpperCase() + type.slice(1)
+          } reservation submitted successfully!`
         );
       }
 
