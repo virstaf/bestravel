@@ -8,21 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { MapPinIcon, CalendarIcon } from "lucide-react";
 
 export default function DealCard({ deal }) {
-  // Calculate discount percentage if not provided
-  const discountPercentage =
-    deal.discount_percentage ||
-    (deal.discount_amount && deal.original_price
-      ? Math.round((deal.discount_amount / deal.original_price) * 100)
-      : null);
-
-  // Calculate prices
   // Calculate prices logic with location support
   const calculateBaseDiscounted = (price) => {
     return deal.discount_percentage
       ? price * (1 - deal.discount_percentage / 100)
       : deal.discount_amount
         ? price - deal.discount_amount
-        : price * 0.69;
+        : price; // No automatic discount if not specified
   };
 
   // Find lowest price option
@@ -59,6 +51,15 @@ export default function DealCard({ deal }) {
   const originalPrice = bestOption.original;
   const discountedPrice = bestOption.sale;
   const savings = originalPrice - discountedPrice;
+
+  // Calculate actual discount percentage from prices
+  const discountPercentage =
+    savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
+
+  // Find which location has the best price (if using location pricing)
+  const bestLocationPrice = deal.location_prices?.find(
+    (lp) => parseFloat(lp.price) === discountedPrice
+  );
 
   // Get image URL - use partner image or placeholder
   const getImageUrl = () => {

@@ -17,15 +17,13 @@ import BookingDialog from "@/components/booking-dialog";
 export default function DealDetail({ deal }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Calculate prices
-  // Calculate prices logic with location support
   // Calculate prices logic with location support
   const calculateBaseDiscounted = (price) => {
     return deal.discount_percentage
       ? price * (1 - deal.discount_percentage / 100)
       : deal.discount_amount
         ? price - deal.discount_amount
-        : price * 0.69;
+        : price; // No automatic discount if not specified
   };
 
   // Find lowest price option
@@ -63,12 +61,9 @@ export default function DealDetail({ deal }) {
   const discountedPrice = bestOption.sale;
   const savings = originalPrice - discountedPrice;
 
-  // Calculate discount percentage for display (based on best option or global)
+  // Calculate actual discount percentage from prices
   const discountPercentage =
-    deal.discount_percentage ||
-    (deal.discount_amount && originalPrice
-      ? Math.round((deal.discount_amount / originalPrice) * 100)
-      : 31);
+    savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
 
   // Get image URL
   const getImageUrl = () => {

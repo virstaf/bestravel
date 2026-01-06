@@ -147,6 +147,45 @@ const DealForm = ({ initialData }) => {
         throw new Error("Please fill in required fields (Title, Dates)");
       }
 
+      // Validate discount configuration
+      if (formData.discount_percentage && formData.discount_amount) {
+        throw new Error(
+          "Please specify either discount percentage OR discount amount, not both"
+        );
+      }
+
+      // Validate discount amount doesn't exceed original price
+      if (formData.discount_amount && formData.original_price) {
+        const discountAmt = parseFloat(formData.discount_amount);
+        const originalPrc = parseFloat(formData.original_price);
+        if (discountAmt >= originalPrc) {
+          throw new Error(
+            "Discount amount cannot be greater than or equal to original price"
+          );
+        }
+      }
+
+      // Validate discount percentage range
+      if (formData.discount_percentage) {
+        const percentage = parseInt(formData.discount_percentage);
+        if (percentage < 0 || percentage > 100) {
+          throw new Error("Discount percentage must be between 0 and 100");
+        }
+      }
+
+      // Validate location prices
+      locationPrices.forEach((lp, index) => {
+        if (lp.price && lp.original_price) {
+          const salePrice = parseFloat(lp.price);
+          const origPrice = parseFloat(lp.original_price);
+          if (salePrice > origPrice) {
+            throw new Error(
+              `Location ${index + 1}: Sale price cannot exceed original price`
+            );
+          }
+        }
+      });
+
       // Format data types
       const payload = {
         ...formData,
