@@ -30,9 +30,13 @@ const NoteTextBox = () => {
   }, [pathname]);
 
   const getAdminId = async () => {
+    if (adminId) return adminId;
     const user = await getAdminUser();
-    setAdminId(user?.id);
-    return user?.id;
+    const id = user?.id || user?.sub;
+    if (id) {
+      setAdminId(id);
+    }
+    return id;
   };
 
   const loadNotes = async () => {
@@ -42,17 +46,15 @@ const NoteTextBox = () => {
 
     let message = "";
     try {
-      const data = await loadNotesAction(pathname, adminId || id);
-      setNote(data.note || "");
-      message = data.message;
-      if (!data.success) {
-        toast.error(message || "Failed to load note");
+      const data = await loadNotesAction(pathname, id);
+      if (data.success) {
+        setNote(data.note || "");
+      } else {
+        toast.error(data.message || "Failed to load note");
       }
-      // if (data.success) {
-      //   toast.success(message || "Note loaded successfully");
-      // }
     } catch (error) {
       console.error("Error loading notes:", error);
+      toast.error("An unexpected error occurred while loading notes");
     }
     setIsLoading(false);
   };

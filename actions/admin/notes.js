@@ -6,6 +6,14 @@ export const loadNotesAction = async (pathname, adminId) => {
   try {
     const supabase = await createAdminClient();
 
+    if (!adminId) {
+      return {
+        success: false,
+        message: "Admin authentication required",
+        note: "",
+      };
+    }
+
     const { data, error } = await supabase
       .from("admin_notes")
       .select("note_content")
@@ -59,7 +67,7 @@ export const saveNoteAction = async (
         console.error("Error updating note:", updateError);
         return { success: false, message: "Error updating note" };
       }
-        return { success: true, message: "Note updated successfully" };
+      return { success: true, message: "Note updated successfully" };
     } else {
       const { error: insertError } = await supabase.from("admin_notes").insert({
         page_path: pathname,
