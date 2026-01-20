@@ -1,32 +1,43 @@
-import { getSortedPostsData } from "@/lib/posts";
-import ListItem from "./ListItem";
+import { getSortedPostsData, getPostExcerpt } from "@/lib/posts";
 import Image from "next/image";
+import BlogsGrid from "./BlogsGrid";
 
-const Posts = () => {
+const Posts = async () => {
   const allPosts = getSortedPostsData();
-  // console.log("post::", allPosts);
+
+  // Generate excerpts for all posts
+  const excerpts = {};
+  for (const post of allPosts) {
+    excerpts[post.id] = await getPostExcerpt(post.id, post.title);
+  }
+
   return (
-    <section className="">
-      <div className="relative h-[300px] flex items-center justify-center mb-8 rounded-2xl overflow-hidden">
-        <h2 className="text-center text-white rounded py-2 px-4 backdrop-blur text-3xl font-bold mb-4 z-10">
-          Blogs
-        </h2>
-        <div className="absolute inset-x-0 bottom-0 top-0 bg-gray-200">
+    <section className="space-y-8">
+      {/* Hero Section */}
+      <div className="relative h-[400px] flex items-center justify-center rounded-2xl overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/40 z-10" />
+        <div className="absolute inset-0">
           <Image
             src="/images/boats-docked-on-sand.jpg"
             alt="Blog Background"
-            layout="fill"
-            objectFit="cover"
+            fill
+            className="object-cover"
+            priority
           />
         </div>
+        <div className="relative z-20 text-center text-white px-4 max-w-3xl">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4">
+            Travel Insights & Stories
+          </h1>
+          <p className="text-lg md:text-xl text-white/90">
+            Discover expert tips, destination guides, and inspiring travel
+            stories from the Virstravel Club community
+          </p>
+        </div>
       </div>
-      <div className="article">
-        <ul className="w-full">
-          {allPosts.map((post) => (
-            <ListItem key={post.id} post={post} />
-          ))}
-        </ul>
-      </div>
+
+      {/* Blog Grid with Search and Filters */}
+      <BlogsGrid posts={allPosts} excerpts={excerpts} />
     </section>
   );
 };

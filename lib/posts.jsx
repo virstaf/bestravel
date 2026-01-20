@@ -4,6 +4,11 @@ import matter from "gray-matter";
 import { remark } from "remark";
 import html from "remark-html";
 import remarkStripHtml from "remark-strip-html";
+import {
+  calculateReadingTime,
+  extractCategory,
+  getFeaturedImage,
+} from "./blogUtils";
 
 const postDirectory = path.join(process.cwd(), "blogposts");
 
@@ -15,9 +20,19 @@ export function getSortedPostsData() {
     const fileContents = fs.readFileSync(fullPath, "utf8");
     const matterResult = matter(fileContents);
 
+    // Calculate additional metadata
+    const readingTime = calculateReadingTime(matterResult.content);
+    const category =
+      matterResult.data.category || extractCategory(id, matterResult.content);
+    const featuredImage =
+      matterResult.data.featuredImage || getFeaturedImage(id);
+
     return {
       id,
       ...matterResult.data,
+      readingTime,
+      category,
+      featuredImage,
     };
   });
 
@@ -52,24 +67,46 @@ export async function getPostExcerpt(id, title) {
     content = content.replace(`# ${title}\n`, "");
   }
 
-  // Process with remark to get plain text
-  const processedContent = await remark()
-    .use(remarkStripHtml) // Optional: if you want to remove any HTML tags
-    .process(content);
-
-  // Convert to plain text and get first 50 words
-  const plainText = processedContent
-    .toString()
-    .replace(/\n/g, " ") // Replace newlines with spaces
-    .replace(/\s+/g, " ") // Collapse multiple spaces
-    .replace(/\*/g, " ") // Replace * with space
+  // Strip all Markdown syntax
+  let plainText = content
+    // Remove HTML comments (including <!--# -->)
+    .replace(/<!--[\s\S]*?-->/g, "")
+    // Remove headers (##, ###, etc.)
+    .replace(/^#{1,6}\s+/gm, "")
+    // Remove horizontal rules
+    .replace(/^[-*_]{3,}$/gm, "")
+    // Remove bold/italic (**text**, *text*, __text__, _text_)
+    .replace(/(\*\*|__)(.*?)\1/g, "$2")
+    .replace(/(\*|_)(.*?)\1/g, "$2")
+    // Remove links [text](url)
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    // Remove images ![alt](url)
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, "")
+    // Remove inline code `code`
+    .replace(/`([^`]+)`/g, "$1")
+    // Remove code blocks
+    .replace(/```[\s\S]*?```/g, "")
+    // Remove blockquotes
+    .replace(/^>\s+/gm, "")
+    // Remove list markers (-, *, +, 1.)
+    .replace(/^[\s]*[-*+]\s+/gm, "")
+    .replace(/^[\s]*\d+\.\s+/gm, "")
+    // Remove emojis and special characters
+    .replace(/[\u{1F300}-\u{1F9FF}]/gu, "")
+    .replace(/[✅✈️🌟🧭💼🎉🔸😌👥🤝🌍📋💬📧📞]/g, "")
+    // Remove checkboxes
+    .replace(/\[[ x]\]/gi, "")
+    // Replace newlines with spaces
+    .replace(/\n/g, " ")
+    // Collapse multiple spaces
+    .replace(/\s+/g, " ")
     .trim();
 
-  const words = plainText.split(" ");
-  const excerptWords = words.slice(0, 50);
+  const words = plainText.split(" ").filter((word) => word.length > 0);
+  const excerptWords = words.slice(0, 40);
 
   // Add ellipsis if we cut off the text
-  const excerpt = excerptWords.join(" ") + (words.length > 50 ? "... " : "");
+  const excerpt = excerptWords.join(" ") + (words.length > 40 ? "..." : "");
 
   return excerpt;
 }
