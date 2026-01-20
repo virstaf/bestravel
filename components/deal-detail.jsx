@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import BookingDialog from "@/components/booking-dialog";
 
-export default function DealDetail({ deal }) {
+export default function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   // Calculate prices logic with location support
@@ -101,7 +101,10 @@ export default function DealDetail({ deal }) {
       <div className="space-y-6 max-w-6xl mx-auto px-4">
         <div>
           <Button variant="outline" asChild>
-            <Link href="/dashboard/deals" className="flex items-center">
+            <Link
+              href={isPublic ? "/deals" : "/dashboard/deals"}
+              className="flex items-center"
+            >
               <ArrowLeftIcon className="h-4 w-4 mr-2" />
               Back to Deals
             </Link>

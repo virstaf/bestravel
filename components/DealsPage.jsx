@@ -1,6 +1,6 @@
 import DealsList from "@/components/deals-list";
 
-const Deals = ({ featuredDeals = [], deals = [] }) => {
+const Deals = ({ featuredDeals = [], deals = [], isPublic = false }) => {
   return (
     <div className="space-y-12">
       <div className="space-y-4">
@@ -10,7 +10,12 @@ const Deals = ({ featuredDeals = [], deals = [] }) => {
         <p className="text-muted-foreground">
           Special offers from our premium partners
         </p>
-        <DealsList initialDeals={featuredDeals} featuredOnly limit={3} />
+        <DealsList
+          initialDeals={featuredDeals}
+          featuredOnly
+          limit={3}
+          isPublic={isPublic}
+        />
       </div>
 
       <div className="space-y-4">
@@ -18,7 +23,7 @@ const Deals = ({ featuredDeals = [], deals = [] }) => {
           All Current Deals
         </h2>
         <p className="text-muted-foreground">Browse all available offers</p>
-        <DealsList initialDeals={deals} />
+        <DealsList initialDeals={deals} isPublic={isPublic} />
       </div>
     </div>
   );

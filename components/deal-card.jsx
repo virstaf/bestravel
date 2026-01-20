@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPinIcon, CalendarIcon } from "lucide-react";
 
-export default function DealCard({ deal }) {
+export default function DealCard({ deal, isPublic = false }) {
   // Calculate prices logic with location support
   const calculateBaseDiscounted = (price) => {
     return deal.discount_percentage
@@ -58,7 +58,7 @@ export default function DealCard({ deal }) {
 
   // Find which location has the best price (if using location pricing)
   const bestLocationPrice = deal.location_prices?.find(
-    (lp) => parseFloat(lp.price) === discountedPrice
+    (lp) => parseFloat(lp.price) === discountedPrice,
   );
 
   // Get image URL - use partner image or placeholder
@@ -193,7 +193,13 @@ export default function DealCard({ deal }) {
           asChild
           className="w-full bg-[#0a4275] hover:bg-[#083558] text-white font-semibold py-6 text-base"
         >
-          <Link href={`/dashboard/deals/${deal.id}`}>Book Deal</Link>
+          <Link
+            href={
+              isPublic ? `/deals/${deal.id}` : `/dashboard/deals/${deal.id}`
+            }
+          >
+            Book Deal
+          </Link>
         </Button>
       </CardFooter>
     </Card>

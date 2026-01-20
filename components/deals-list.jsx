@@ -2,7 +2,7 @@
 
 import DealCard from "@/components/deal-card";
 
-export default function DealsList({ initialDeals: deals }) {
+export default function DealsList({ initialDeals: deals, isPublic = false }) {
   if (deals?.length === 0) {
     return (
       <div className="text-center py-12 space-y-4">
@@ -17,9 +17,8 @@ export default function DealsList({ initialDeals: deals }) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {deals.map((deal) => (
-        <DealCard key={deal.id} deal={deal} />
+        <DealCard key={deal.id} deal={deal} isPublic={isPublic} />
       ))}
     </div>
   );
 }
-
