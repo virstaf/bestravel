@@ -1,14 +1,16 @@
-import { getSortedPostsData, getPostExcerpt } from "@/lib/posts";
+import { getPublishedBlogPosts } from "@/app/actions/blogActions";
 import Image from "next/image";
 import BlogsGrid from "./BlogsGrid";
 
 const Posts = async () => {
-  const allPosts = getSortedPostsData();
+  const { data: allPosts, error } = await getPublishedBlogPosts();
 
-  // Generate excerpts for all posts
-  const excerpts = {};
-  for (const post of allPosts) {
-    excerpts[post.id] = await getPostExcerpt(post.id, post.title);
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-destructive">Error loading blog posts: {error}</p>
+      </div>
+    );
   }
 
   return (
@@ -37,7 +39,7 @@ const Posts = async () => {
       </div>
 
       {/* Blog Grid with Search and Filters */}
-      <BlogsGrid posts={allPosts} excerpts={excerpts} />
+      <BlogsGrid posts={allPosts || []} />
     </section>
   );
 };

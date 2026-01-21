@@ -6,14 +6,17 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import BlogCard from "./BlogCard";
 
-const BlogsGrid = ({ posts, excerpts }) => {
+const BlogsGrid = ({ posts }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // Get unique categories
+  // Get unique categories from database
   const categories = useMemo(() => {
-    const cats = ["All", ...new Set(posts.map((post) => post.category))];
-    return cats;
+    const cats = ["All"];
+    const uniqueCats = new Set(
+      posts.filter((post) => post.category).map((post) => post.category.name),
+    );
+    return [...cats, ...Array.from(uniqueCats)];
   }, [posts]);
 
   // Filter posts based on search and category
@@ -22,14 +25,15 @@ const BlogsGrid = ({ posts, excerpts }) => {
       const matchesSearch =
         searchQuery === "" ||
         post.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        excerpts[post.id]?.toLowerCase().includes(searchQuery.toLowerCase());
+        post.excerpt?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.content?.toLowerCase().includes(searchQuery.toLowerCase());
 
       const matchesCategory =
-        selectedCategory === "All" || post.category === selectedCategory;
+        selectedCategory === "All" || post.category?.name === selectedCategory;
 
       return matchesSearch && matchesCategory;
     });
-  }, [posts, excerpts, searchQuery, selectedCategory]);
+  }, [posts, searchQuery, selectedCategory]);
 
   return (
     <div className="space-y-8">
@@ -77,7 +81,7 @@ const BlogsGrid = ({ posts, excerpts }) => {
       {filteredPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPosts.map((post) => (
-            <BlogCard key={post.id} post={post} excerpt={excerpts[post.id]} />
+            <BlogCard key={post.id} post={post} />
           ))}
         </div>
       ) : (

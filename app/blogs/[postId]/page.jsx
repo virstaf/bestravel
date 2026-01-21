@@ -1,66 +1,54 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getFormattedDate } from "@/lib/getFormattedDate";
-import { getPostData, getSortedPostsData } from "@/lib/posts";
+import { getBlogPostBySlug } from "@/app/actions/blogActions";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import { ShareButton, ShareArticleButton } from "@/components/ShareButtons";
-
-export const generateStaticParams = () => {
-  const posts = getSortedPostsData();
-
-  return posts.map((post) => ({
-    postId: post.id,
-  }));
-};
+import { notFound } from "next/navigation";
 
 export const generateMetadata = async ({ params }) => {
-  const posts = getSortedPostsData();
-  const { postId: rawPostId } = await params;
-  const postId = decodeURIComponent(rawPostId);
-  const post = posts.find((p) => p.id === postId);
+  const { postId: slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
+
+  const { data: post } = await getBlogPostBySlug(decodedSlug);
+
   if (!post) {
     return {
       title: "Post not found",
       description: "The requested blog post could not be found",
     };
   }
+
   return {
     title: post.title,
-    description: post.description,
+    description: post.excerpt || post.title,
   };
 };
 
 const PostPage = async ({ params }) => {
-  const posts = getSortedPostsData();
+  // Get slug from params
+  const { postId: slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
 
-  // Properly await params and decode the URL parameter
-  const { postId: rawPostId } = await params;
-  const postId = decodeURIComponent(rawPostId);
+  // Fetch post from Supabase
+  const { data: post, error } = await getBlogPostBySlug(decodedSlug);
 
-  const post = posts.find((p) => p.id === postId);
-
-  if (!post) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Post not found</h1>
-          <Button asChild>
-            <Link href="/blogs">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Blogs
-            </Link>
-          </Button>
-        </div>
-      </div>
-    );
+  if (error || !post) {
+    notFound();
   }
 
-  const { title, date, content } = await getPostData(postId);
-  const pubDate = getFormattedDate(date);
-  const { category, readingTime, featuredImage } = post;
+  const {
+    title,
+    published_at,
+    content,
+    category,
+    reading_time,
+    featured_image,
+  } = post;
+  const pubDate = published_at ? getFormattedDate(published_at) : "";
 
   // Extract clean title (remove "How to:" prefix if present)
   const displayTitle = title.includes(":") ? title.split(":")[1].trim() : title;
@@ -71,9 +59,9 @@ const PostPage = async ({ params }) => {
       <div className="relative h-[500px] w-full overflow-hidden">
         {/* Featured Image */}
         <div className="absolute inset-0">
-          {featuredImage ? (
+          {featured_image ? (
             <Image
-              src={featuredImage}
+              src={featured_image}
               alt={displayTitle}
               fill
               className="object-cover"
@@ -92,7 +80,7 @@ const PostPage = async ({ params }) => {
           {/* Category Badge */}
           {category && (
             <Badge className="bg-primary text-primary-foreground font-medium shadow-lg mb-4 w-fit">
-              {category}
+              {category.name}
             </Badge>
           )}
 
@@ -105,13 +93,13 @@ const PostPage = async ({ params }) => {
           <div className="flex flex-wrap items-center gap-4 text-white/90 text-sm">
             <div className="flex items-center gap-2">
               <Calendar className="w-4 h-4" />
-              <time dateTime={date}>{pubDate}</time>
+              <time dateTime={published_at}>{pubDate}</time>
             </div>
 
-            {readingTime && (
+            {reading_time && (
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4" />
-                <span>{readingTime} min read</span>
+                <span>{reading_time} min read</span>
               </div>
             )}
 

@@ -4,9 +4,17 @@ import { Calendar, Clock } from "lucide-react";
 import { getFormattedDate } from "@/lib/getFormattedDate";
 import { Badge } from "@/components/ui/badge";
 
-const BlogCard = ({ post, excerpt }) => {
-  const { id, title, date, featuredImage, category, readingTime } = post;
-  const formattedDate = getFormattedDate(date);
+const BlogCard = ({ post }) => {
+  const {
+    slug,
+    title,
+    published_at,
+    featured_image,
+    category,
+    reading_time,
+    excerpt,
+  } = post;
+  const formattedDate = published_at ? getFormattedDate(published_at) : "";
 
   // Extract the subtitle from title (after the colon)
   const displayTitle = title
@@ -14,13 +22,13 @@ const BlogCard = ({ post, excerpt }) => {
     : "Untitled Post";
 
   return (
-    <Link href={`/blogs/${id}`} className="group block h-full">
+    <Link href={`/blogs/${slug}`} className="group block h-full">
       <article className="h-full bg-card border border-border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         {/* Featured Image */}
         <div className="relative h-48 bg-muted overflow-hidden">
-          {featuredImage ? (
+          {featured_image ? (
             <Image
-              src={featuredImage}
+              src={featured_image}
               alt={displayTitle}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -47,7 +55,7 @@ const BlogCard = ({ post, excerpt }) => {
           {category && (
             <div className="absolute top-3 left-3">
               <Badge className="bg-primary text-primary-foreground font-medium shadow-md">
-                {category}
+                {category.name}
               </Badge>
             </div>
           )}
@@ -67,13 +75,13 @@ const BlogCard = ({ post, excerpt }) => {
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5" />
-              <time dateTime={date}>{formattedDate}</time>
+              <time dateTime={published_at}>{formattedDate}</time>
             </div>
 
-            {readingTime && (
+            {reading_time && (
               <div className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5" />
-                <span>{readingTime} min read</span>
+                <span>{reading_time} min read</span>
               </div>
             )}
           </div>
