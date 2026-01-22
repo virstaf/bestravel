@@ -17,6 +17,11 @@ export default async function DashboardLayout({ children }) {
   // try {
   const { profile } = await getProfileAction();
 
+  // Check if user has completed onboarding
+  if (profile && !profile.onboarding_completed) {
+    redirect("/onboarding/welcome");
+  }
+
   if (profile?.role === "ADMIN") {
     redirect("/admin");
   }

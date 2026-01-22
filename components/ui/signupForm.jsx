@@ -37,7 +37,7 @@ const formSchema = z.object({
       },
       {
         message: "Fullname must contain 2 or 3 words",
-      }
+      },
     ),
   email: z.string().email({ message: "Invalid email address" }),
   password: z
@@ -87,13 +87,17 @@ const SignupForm = () => {
 
       errorMessage = (await signupAction(email, password, fullname))
         .errorMessage;
-      title = "Signup successful";
-      description = "Check email to complete account creation";
+      title = "Check your email! 📧";
+      description =
+        "We've sent you a confirmation link. Please check your email and click the link to verify your account, then you can continue with onboarding.";
 
       if (!errorMessage) {
-        toast.success(title, { description: description });
-        router.replace("/auth/login");
-        // router.refresh();
+        toast.success(title, {
+          description: description,
+          duration: 8000, // Show for 8 seconds
+        });
+        // Don't redirect - keep user on page to see the message
+        // After email confirmation, they'll be redirected to onboarding
       } else {
         toast.error("Error", { description: errorMessage });
       }
@@ -240,6 +244,12 @@ const SignupForm = () => {
             </p>
           </div>
         </form>
+        <div className="mt-auto pt-8">
+          <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <span className="text-lg">🔒</span>
+            <span>Secure • Powered by Supabase</span>
+          </p>
+        </div>
       </Form>
     </div>
   );
