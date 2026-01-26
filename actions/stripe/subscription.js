@@ -8,7 +8,7 @@ import { resendEmail } from "../resendEmail";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY // must be service role for admin updates
+  process.env.SUPABASE_SERVICE_KEY, // must be service role for admin updates
 );
 
 export const createCustomerAction = async (session) => {
@@ -28,7 +28,6 @@ export const createCustomerAction = async (session) => {
   let customer;
 
   if (profile.stripe_customer_id) {
-    
     // update the customer in Stripe
     customer = await stripe.customers.update(profile.stripe_customer_id, {
       name: profile.full_name,
@@ -114,7 +113,7 @@ export const createSubscriptionAction = async (session) => {
         },
         {
           onConflict: "user_id",
-        }
+        },
       );
     if (subError) {
       console.error("Error updating subscription:", subError);
@@ -129,7 +128,7 @@ export const createSubscriptionAction = async (session) => {
         plan: isTrial ? "trial" : plan,
         trialEndsAt: isTrial ? new Date(period.end * 1000).toISOString() : null,
       },
-      isTrial ? "confirm-trial" : "confirm-subscription"
+      isTrial ? "confirm-trial" : "confirm-subscription",
     );
     console.log("sendNotification:::", sendNotification);
   }
@@ -139,14 +138,74 @@ export const createSubscriptionAction = async (session) => {
 export const updateSubscriptionAction = async (session) => {
   console.log("Updating subscription:", session);
 
-  // find the user by stripe_customer_id
-  const customer = stripe.customers.retrieve(session.customer);
-  console.log("Customer details:", customer);
+  try {
+    const customerId = session.customer;
+    const subscriptionId = session.id;
+    const newPriceId = session.items?.data[0]?.price?.id;
+    const newStatus = session.status;
+    const currentPeriodEnd = session.current_period_end;
+    const currentPeriodStart = session.current_period_start;
 
-  // update the subscription details
-  //update profiles table with new subscription details
+    // Get customer details
+    const customer = await stripe.customers.retrieve(customerId);
+    console.log("Customer details:", customer);
 
-  return { success: true, errorMessage: null };
+    // Find the plan name from price ID
+    const newPlan = newPriceId ? findPlanByPriceId(newPriceId) : null;
+
+    if (!newPlan) {
+      console.error("Could not determine plan from price ID:", newPriceId);
+      return { success: false, errorMessage: "Invalid price ID" };
+    }
+
+    // Update profiles table with new subscription details
+    const { error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .update({
+        subscription_plan: newPlan,
+        subscription_status: newStatus,
+        subscription_end: new Date(currentPeriodEnd * 1000).toISOString(),
+        subscription_plan_id: subscriptionId,
+      })
+      .eq("stripe_customer_id", customerId);
+
+    if (profileError) {
+      console.error("Error updating profile:", profileError);
+      return { success: false, errorMessage: profileError.message };
+    }
+
+    // Update subscriptions table
+    const { error: subError } = await supabaseAdmin
+      .from("subscriptions")
+      .update({
+        plan: newPlan,
+        status: newStatus,
+        current_period_start: new Date(currentPeriodStart * 1000).toISOString(),
+        current_period_end: new Date(currentPeriodEnd * 1000).toISOString(),
+      })
+      .eq("user_id", customer.metadata?.userId);
+
+    if (subError) {
+      console.error("Error updating subscription:", subError);
+    }
+
+    // Send plan change confirmation email
+    await resendEmail(
+      {
+        email: customer.email,
+        fullname: customer.name || customer.email.split("@")[0],
+        plan: newPlan,
+        link: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard/settings`,
+      },
+      "confirm-subscription",
+    );
+
+    console.log(`Successfully updated subscription to ${newPlan} plan`);
+    return { success: true, errorMessage: null };
+  } catch (error) {
+    console.error("Error in updateSubscriptionAction:", error);
+    return { success: false, errorMessage: error.message };
+  }
 };
 
 //handle subscription cancellation
@@ -178,7 +237,40 @@ export const deleteSubscriptionAction = async (session) => {
 };
 
 export const trialWillEndAction = async (session) => {
-  // const isTrial = session?.amount_due === 0;
   console.log("Trial will end:", session);
-  return { success: true, errorMessage: null };
+
+  try {
+    const customerId = session.customer;
+    const trialEnd = session.trial_end;
+
+    // Get customer details
+    const customer = await stripe.customers.retrieve(customerId);
+
+    if (!customer || !customer.email) {
+      console.error("Customer not found or missing email");
+      return { success: false, errorMessage: "Customer not found" };
+    }
+
+    // Send trial ending reminder email (3 days before expiration)
+    const emailResult = await resendEmail(
+      {
+        email: customer.email,
+        fullname: customer.name || customer.email.split("@")[0],
+        trialEndsAt: new Date(trialEnd * 1000).toISOString(),
+        link: `${process.env.NEXT_PUBLIC_BASEURL}/pricing`,
+      },
+      "trial-ending-reminder",
+    );
+
+    if (!emailResult.success) {
+      console.error("Failed to send trial ending email:", emailResult.message);
+      return { success: false, errorMessage: emailResult.message };
+    }
+
+    console.log(`Trial ending reminder sent to ${customer.email}`);
+    return { success: true, errorMessage: null };
+  } catch (error) {
+    console.error("Error in trialWillEndAction:", error);
+    return { success: false, errorMessage: error.message };
+  }
 };

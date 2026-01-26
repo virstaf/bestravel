@@ -7,6 +7,7 @@ import ContactEmail from "@/email-templates/contact";
 import ReservationAdminEmail from "@/email-templates/reservation-admin";
 import ReservationEmail from "@/email-templates/reservation-email";
 import TrialConfirmationEmail from "@/email-templates/trial";
+import TrialEndingReminderEmail from "@/email-templates/trial-ending-reminder";
 import WelcomeEmail from "@/email-templates/welcome";
 import QuoteNotificationEmail from "@/email-templates/quote-notification";
 import QuoteAcceptanceEmail from "@/email-templates/quote-acceptance";
@@ -231,6 +232,26 @@ export const resendEmail = async (values, type) => {
 
     if (!action || !quoteDetails || !userDetails) {
       console.error("Missing required fields for admin notification");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "trial-ending-reminder") {
+    const { fullname, trialEndsAt, link, email } = values;
+
+    emailTemplate = (
+      <TrialEndingReminderEmail
+        fullname={fullname}
+        trialEndsAt={trialEndsAt}
+        link={link}
+      />
+    );
+    subject = "Your Virstravel trial ends in 3 days!";
+    receivingEmail = email;
+    adminEmail = "membership@virstravelclub.com";
+
+    if (!fullname || !trialEndsAt || !email) {
+      console.error("Missing required fields for trial ending reminder");
       return { success: false, message: "All fields are required" };
     }
   }

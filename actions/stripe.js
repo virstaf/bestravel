@@ -6,7 +6,6 @@ import { createClient } from "@supabase/supabase-js";
 import { resendEmail } from "./resendEmail";
 
 export const upgradePlanAction = async (user, priceId, customerId) => {
-  
   const { url } = await stripe.checkout.sessions.create({
     customer: customerId,
     mode: "subscription",
@@ -61,7 +60,7 @@ export const subscribeAction = async (user, priceId) => {
         email: user?.email,
       },
     },
-    payment_method_collection: "if_required",
+    payment_method_collection: "always", // Always collect payment method, even for trials
     customer_email: user?.email,
     success_url: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard`,
     cancel_url: `${process.env.NEXT_PUBLIC_BASEURL}`,
@@ -77,7 +76,7 @@ export const trialAction = async (user) => {
   }
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
+    process.env.SUPABASE_SERVICE_KEY,
   );
 
   const { data, error } = await supabaseAdmin
@@ -85,12 +84,12 @@ export const trialAction = async (user) => {
     .update({
       trial_start: new Date().toISOString(), // Current time in ISO format
       trial_ends_at: new Date(
-        Date.now() + 7 * 24 * 60 * 60 * 1000
+        Date.now() + 7 * 24 * 60 * 60 * 1000,
       ).toISOString(), // 7 days from now
       is_subscribed: true, // Set to true to indicate trial subscription
       subscription_status: "trialing", // Set status to trialing
       subscription_end: new Date(
-        Date.now() + 7 * 24 * 60 * 60 * 1000
+        Date.now() + 7 * 24 * 60 * 60 * 1000,
       ).toISOString(), // Set end date to 7 days from now
     })
     .eq("id", user.id)
@@ -103,15 +102,15 @@ export const trialAction = async (user) => {
         email: user.email,
         fullname: user.user_metadata?.full_name || user.email.split("@")[0],
         trialEndsAt: new Date(
-          Date.now() + 7 * 24 * 60 * 60 * 1000
+          Date.now() + 7 * 24 * 60 * 60 * 1000,
         ).toISOString(),
       },
-      "confirm-trial"
+      "confirm-trial",
     );
     if (!sendNotification.success) {
       console.error(
         "Error sending trial confirmation email:",
-        sendNotification.message
+        sendNotification.message,
       );
     }
   }
@@ -130,8 +129,7 @@ export async function createPortalSessionAction(customer) {
     });
 
     if (session.url) {
-      // redirect(session.url); // Redirect to the portal session URL
-      return session.url;
+      return session.url; // Return URL for client-side redirect
     }
   } catch (error) {
     console.error("Portal session error:", error);
@@ -146,7 +144,7 @@ export const upgradeSubscription = async (user, priceId) => {
 
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
+    process.env.SUPABASE_SERVICE_KEY,
   );
 
   try {
