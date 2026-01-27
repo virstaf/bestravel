@@ -13,6 +13,10 @@ import QuoteNotificationEmail from "@/email-templates/quote-notification";
 import QuoteAcceptanceEmail from "@/email-templates/quote-acceptance";
 import QuoteRejectionEmail from "@/email-templates/quote-rejection";
 import QuoteAdminNotificationEmail from "@/email-templates/quote-admin-notification";
+import TrialExpiredEmail from "@/email-templates/trial-expired";
+import PaymentFailedEmail from "@/email-templates/payment-failed";
+import SubscriptionCanceledEmail from "@/email-templates/subscription-canceled";
+import RenewalReminderEmail from "@/email-templates/renewal-reminder";
 import { Resend } from "resend";
 
 export const resendEmail = async (values, type) => {
@@ -252,6 +256,74 @@ export const resendEmail = async (values, type) => {
 
     if (!fullname || !trialEndsAt || !email) {
       console.error("Missing required fields for trial ending reminder");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "trial-expired") {
+    const { fullname, link, email } = values;
+
+    emailTemplate = <TrialExpiredEmail fullname={fullname} link={link} />;
+    subject = "Your Virstravel trial has expired";
+    receivingEmail = email;
+    adminEmail = "membership@virstravelclub.com";
+
+    if (!fullname || !email) {
+      console.error("Missing required fields for trial expired email");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "subscription-renewal-reminder") {
+    const { fullname, plan, renewalDate, link, email } = values;
+
+    emailTemplate = (
+      <RenewalReminderEmail
+        fullname={fullname}
+        plan={plan}
+        renewalDate={renewalDate}
+        link={link}
+      />
+    );
+    subject = `Your ${plan} subscription will renew soon`;
+    receivingEmail = email;
+    adminEmail = "membership@virstravelclub.com";
+
+    if (!fullname || !plan || !renewalDate || !email) {
+      console.error("Missing required fields for renewal reminder");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "payment-failed") {
+    const { fullname, plan, link, email } = values;
+
+    emailTemplate = (
+      <PaymentFailedEmail fullname={fullname} plan={plan} link={link} />
+    );
+    subject =
+      "Action Required: Payment failed for your Virstravel subscription";
+    receivingEmail = email;
+    adminEmail = "membership@virstravelclub.com";
+
+    if (!fullname || !plan || !email) {
+      console.error("Missing required fields for payment failed email");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "subscription-canceled") {
+    const { fullname, plan, link, email } = values;
+
+    emailTemplate = (
+      <SubscriptionCanceledEmail fullname={fullname} plan={plan} link={link} />
+    );
+    subject = "Confirmation: Your Virstravel subscription has been canceled";
+    receivingEmail = email;
+    adminEmail = "membership@virstravelclub.com";
+
+    if (!fullname || !plan || !email) {
+      console.error("Missing required fields for subscription canceled email");
       return { success: false, message: "All fields are required" };
     }
   }

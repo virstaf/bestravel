@@ -4,6 +4,7 @@ import { stripe } from "@/lib/stripe"; // Your configured Stripe instance
 import { redirect } from "next/navigation";
 import { createClient } from "@supabase/supabase-js";
 import { resendEmail } from "./resendEmail";
+import { pricingPlans } from "@/lib/constants";
 
 export const upgradePlanAction = async (user, priceId, customerId) => {
   const { url } = await stripe.checkout.sessions.create({
@@ -40,9 +41,8 @@ export const subscribeAction = async (user, priceId) => {
     let customerId = isExistingCustomer.data[0].id;
     return upgradePlanAction(user, priceId, customerId);
   }
-  const is_silver =
-    priceId === "price_1RfmqFLAxh7V2BxLt2hMnLTc" ||
-    priceId === "price_1Ri3nrLAxh7V2BxLaSLg2HDF"; // Example price ID for silver plan
+  const silverPlan = pricingPlans.find((p) => p.name === "silver");
+  const is_silver = silverPlan?.priceId.includes(priceId);
 
   const { url } = await stripe.checkout.sessions.create({
     mode: "subscription",
@@ -88,6 +88,7 @@ export const trialAction = async (user) => {
       ).toISOString(), // 7 days from now
       is_subscribed: true, // Set to true to indicate trial subscription
       subscription_status: "trialing", // Set status to trialing
+      subscription_plan: "trial", // Set plan to trial
       subscription_end: new Date(
         Date.now() + 7 * 24 * 60 * 60 * 1000,
       ).toISOString(), // Set end date to 7 days from now
@@ -148,16 +149,23 @@ export const upgradeSubscription = async (user, priceId) => {
   );
 
   try {
+    // NOTE: This function is dangerous if it sets priceId as plan name.
+    // It should probably use findPlanByPriceId or be avoided.
+    console.warn("Direct upgradeSubscription called with priceId:", priceId);
+    return { error: "Please use the Stripe checkout for upgrades." };
+
+    /*
     const { data, error } = await supabaseAdmin
       .from("profiles")
       .update({
-        subscription_plan: priceId,
+        subscription_plan: "active", // This was likely wrong anyway
         is_subscribed: true,
         subscription_status: "active",
       })
       .eq("id", user.id)
       .select()
       .single();
+    */
 
     if (error) {
       throw new Error(`Failed to update subscription: ${error.message}`);

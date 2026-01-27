@@ -1,7 +1,5 @@
 "use client";
-import { redirect } from "next/navigation";
 import { Button } from "./ui/button";
-import { subscribeAction } from "@/actions/stripe";
 import { useState } from "react";
 import { Loader2Icon } from "lucide-react";
 
@@ -10,10 +8,22 @@ const TrialButton = ({ user, priceId, text = "Start 7-Day Trial" }) => {
 
   const handleStartTrial = async () => {
     setLoading(true);
-    const url = await subscribeAction(user, priceId);
-    setLoading(false);
-    if (url) {
-      redirect(url);
+    try {
+      const response = await fetch("/api/subscription/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ priceId }),
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error("Trial activation error:", error);
+    } finally {
+      setLoading(false);
     }
   };
   //   return <Button onClick={handleStartTrial} disabled={loading}>{text}</Button>;

@@ -3,7 +3,6 @@
 import { useEffect, useState, useTransition } from "react";
 import { getUser } from "@/lib/supabase/server";
 import { Button } from "./button";
-import { subscribeAction, upgradePlanAction } from "@/actions/stripe";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useProfileContext } from "@/contexts/profile";
@@ -35,32 +34,25 @@ const Pricing = ({ className }) => {
       return;
     }
 
-    // console.log("profile.stripe_customer_id::", profile?.stripe_customer_id);
-
-    if (profile?.stripe_customer_id) {
-      startTransition(async () => {
-        const url = await upgradePlanAction(
-          user,
-          priceId,
-          profile?.stripe_customer_id
-        );
-        if (url) {
-          router.push(url);
-        } else {
-          toast.error("Subscription failed. Please try again.");
-          console.error("Subscription failed");
-        }
-      });
-      return;
-    }
-
     startTransition(async () => {
-      const url = await subscribeAction(user, priceId);
-      if (url) {
-        router.push(url);
-      } else {
-        toast.error("Subscription failed. Please try again.");
-        console.error("Subscription failed");
+      try {
+        const response = await fetch("/api/subscription/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ priceId }),
+        });
+
+        const data = await response.json();
+
+        if (data.url) {
+          router.push(data.url);
+        } else {
+          toast.error(data.error || "Subscription failed. Please try again.");
+          console.error("Subscription failed:", data.error);
+        }
+      } catch (error) {
+        toast.error("An error occurred. Please try again.");
+        console.error("Subscription error:", error);
       }
     });
   };
@@ -107,7 +99,7 @@ const Pricing = ({ className }) => {
                 }`}
                 onClick={() =>
                   handleSubscribeClick(
-                    duration === "monthly" ? plan.priceId[0] : plan.priceId[1]
+                    duration === "monthly" ? plan.priceId[0] : plan.priceId[1],
                   )
                 }
                 disabled={isPending}

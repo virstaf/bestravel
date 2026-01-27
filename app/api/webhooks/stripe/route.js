@@ -5,12 +5,13 @@ import Stripe from "stripe";
 // import { revalidatePath } from "next/cache";
 // import { resendEmail } from "@/actions/resendEmail";
 import {
-  createCustomerAction,
-  createSubscriptionAction,
-  deleteSubscriptionAction,
-  trialWillEndAction,
-  updateSubscriptionAction,
-} from "@/actions/stripe/subscription";
+  handleCustomerCreated,
+  handleSubscriptionCreated,
+  handleSubscriptionUpdated,
+  handleSubscriptionDeleted,
+  handleTrialWillEnd,
+  handlePaymentFailed,
+} from "@/lib/subscription";
 // import { resendEmail } from "@/actions/resendEmail";
 
 export const GET = async () => {
@@ -32,7 +33,7 @@ export const POST = async (req) => {
     event = stripe.webhooks.constructEvent(
       rawBody,
       sig,
-      process.env.STRIPE_SIGNING_SECRET
+      process.env.STRIPE_SIGNING_SECRET,
     );
     console.log("Webhook event constructed successfully:", event.type);
   } catch (err) {
@@ -46,30 +47,34 @@ export const POST = async (req) => {
   switch (event.type) {
     //handle new customer creation
     case "customer.created":
-      await createCustomerAction(session);
+      await handleCustomerCreated(session);
       break;
 
     // Handle New subscription started
     // case "customer.subscription.created":
     case "invoice.payment_succeeded":
-      await createSubscriptionAction(session);
+      await handleSubscriptionCreated(session);
 
       break;
 
     //Subscription modified (plan change, pause/resume)
     case "customer.subscription.updated":
-      await updateSubscriptionAction(session);
+      await handleSubscriptionUpdated(session);
 
       break;
 
     // Subscription canceled/ended
     case "customer.subscription.deleted":
-      await deleteSubscriptionAction(session);
+      await handleSubscriptionDeleted(session);
 
       break;
 
     case "customer.subscription.trial_will_end":
-      await trialWillEndAction(session);
+      await handleTrialWillEnd(session);
+      break;
+
+    case "invoice.payment_failed":
+      await handlePaymentFailed(session);
       break;
 
     default:

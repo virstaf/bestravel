@@ -72,7 +72,7 @@ Deno.serve(async (req) => {
             .update({
                 is_subscribed: false,
                 subscription_status: "expired",
-                subscription_plan: "inactive",
+                subscription_plan: null,
             })
             .in("id", profileIds);
 

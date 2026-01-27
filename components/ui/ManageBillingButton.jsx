@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "./button";
-import { createPortalSessionAction } from "@/actions/stripe";
 import { useProfileContext } from "@/contexts/profile";
 import { toast } from "sonner";
 import { ExternalLink } from "lucide-react";
@@ -19,13 +18,16 @@ const ManageBillingButton = () => {
 
     setIsLoading(true);
     try {
-      const portalUrl = await createPortalSessionAction(
-        profile.stripe_customer_id,
-      );
-      if (portalUrl) {
-        window.location.href = portalUrl;
+      const response = await fetch("/api/subscription/portal", {
+        method: "POST",
+      });
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url;
       } else {
-        toast.error("Failed to open billing portal");
+        toast.error(data.error || "Failed to open billing portal");
       }
     } catch (error) {
       console.error("Error opening billing portal:", error);

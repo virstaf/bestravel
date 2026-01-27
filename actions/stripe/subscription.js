@@ -92,7 +92,7 @@ export const createSubscriptionAction = async (session) => {
           session.parent?.subscription_details?.subscription,
         subscription_end: new Date(period.end * 1000),
       })
-      .eq("email", session.customer_email);
+      .eq("id", userId);
 
     if (profileError) {
       console.error("Error updating profile:", profileError);
@@ -167,7 +167,7 @@ export const updateSubscriptionAction = async (session) => {
         subscription_end: new Date(currentPeriodEnd * 1000).toISOString(),
         subscription_plan_id: subscriptionId,
       })
-      .eq("stripe_customer_id", customerId);
+      .eq("id", customer.metadata?.userId);
 
     if (profileError) {
       console.error("Error updating profile:", profileError);
@@ -210,30 +210,55 @@ export const updateSubscriptionAction = async (session) => {
 
 //handle subscription cancellation
 export const deleteSubscriptionAction = async (session) => {
-  console.log("Deleting subscription");
-  const { error: profileError } = await supabaseAdmin
-    .from("profiles")
-    .update({
-      is_subscribed: false,
-      subscription_status: "canceled",
-      subscription_plan: null,
-      // trial_start: null,
-      // trial_end: null,
-    })
-    .eq("stripe_customer_id", session.customer);
+  console.log("Deleting subscription:", session.id);
 
-  const { error: subError } = await supabaseAdmin
-    .from("subscriptions")
-    .delete()
-    .eq("id", session.id);
+  try {
+    const customerId = session.customer;
+    const customer = await stripe.customers.retrieve(customerId);
+    const userId = customer.metadata?.userId;
 
-  if (subError) {
-    console.error("Error deleting subscription:", subError);
+    const { error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .update({
+        is_subscribed: false,
+        subscription_status: "canceled",
+        subscription_plan: null,
+      })
+      .eq("id", userId || "undefined") // Use userId if available
+      .or(`stripe_customer_id.eq.${customerId}`); // Fallback to customer ID
+
+    if (profileError) {
+      console.error(
+        "Error updating profile during cancellation:",
+        profileError,
+      );
+    }
+
+    const { error: subError } = await supabaseAdmin
+      .from("subscriptions")
+      .delete()
+      .eq("id", session.id);
+
+    if (subError) {
+      console.error("Error deleting subscription record:", subError);
+    }
+
+    // Send cancellation confirmation email
+    await resendEmail(
+      {
+        email: customer.email,
+        fullname: customer.name || customer.email.split("@")[0],
+        plan: customer.metadata?.planName || "membership",
+        link: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard/settings`,
+      },
+      "subscription-canceled",
+    );
+
+    return { success: true, errorMessage: null };
+  } catch (error) {
+    console.error("Error in deleteSubscriptionAction:", error);
+    return { success: false, errorMessage: error.message };
   }
-  if (profileError) {
-    console.error("Error updating profile:", profileError);
-  }
-  return { success: true, errorMessage: null };
 };
 
 export const trialWillEndAction = async (session) => {
@@ -271,6 +296,48 @@ export const trialWillEndAction = async (session) => {
     return { success: true, errorMessage: null };
   } catch (error) {
     console.error("Error in trialWillEndAction:", error);
+    return { success: false, errorMessage: error.message };
+  }
+};
+
+export const paymentFailedAction = async (session) => {
+  console.log("Payment failed:", session.id);
+
+  try {
+    const customerId = session.customer;
+    const customer = await stripe.customers.retrieve(customerId);
+
+    if (!customer || !customer.email) {
+      console.error("Customer not found or missing email");
+      return { success: false, errorMessage: "Customer not found" };
+    }
+
+    const priceId = session.lines?.data[0]?.price?.id;
+    const plan = priceId ? findPlanByPriceId(priceId) : "membership";
+
+    // Send payment failed email
+    const emailResult = await resendEmail(
+      {
+        email: customer.email,
+        fullname: customer.name || customer.email.split("@")[0],
+        plan: plan,
+        link: `${process.env.NEXT_PUBLIC_BASEURL}/dashboard/settings`,
+      },
+      "payment-failed",
+    );
+
+    if (!emailResult.success) {
+      console.error(
+        "Failed to send payment failed email:",
+        emailResult.message,
+      );
+      return { success: false, errorMessage: emailResult.message };
+    }
+
+    console.log(`Payment failed notification sent to ${customer.email}`);
+    return { success: true, errorMessage: null };
+  } catch (error) {
+    console.error("Error in paymentFailedAction:", error);
     return { success: false, errorMessage: error.message };
   }
 };
