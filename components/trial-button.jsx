@@ -26,6 +26,7 @@ const TrialButton = ({ user, priceId, text = "Start 7-Day Trial" }) => {
       setLoading(false);
     }
   };
+  // CTA Button
   //   return <Button onClick={handleStartTrial} disabled={loading}>{text}</Button>;
   if (loading) {
     return (
