@@ -6,7 +6,6 @@ import { getUser } from "@/lib/supabase/server";
 import { useRouter } from "next/navigation";
 import { useProfileContext } from "@/contexts/profile";
 import { toast } from "sonner";
-import { createPortalSessionAction } from "@/actions/stripe";
 import { Loader } from "lucide-react";
 import { findPlanByPriceId } from "@/lib/constants";
 
@@ -42,29 +41,23 @@ const EditBillingDetails = () => {
 
     startTransition(async () => {
       try {
-        // if (process.env.NODE_ENV === "production") {
-        //   router.push(process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL);
-        //   return;
-        // }
-        const url = await createPortalSessionAction(
-          userProfile.stripe_customer_id
-        );
-        if (!url) {
-          router.push(process.env.NEXT_PUBLIC_STRIPE_CUSTOMER_PORTAL_URL);
+        const response = await fetch("/api/subscription/portal", {
+          method: "POST",
+        });
+
+        const data = await response.json();
+
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          toast.error(data.error || "Failed to create portal session.");
         }
-        // console.log("Portal session created:", url);
-        router.push(url);
       } catch (error) {
         console.error("Error creating portal session:", error);
         toast.error("Failed to create portal session.");
       }
     });
   };
-
-  // const getPlan = () => {
-  //   const plan = findPlanByPriceId("price_1Rfn1yLAxh7V2BxL8bcMhPvL");
-  //   console.log(plan);
-  // };
 
   return (
     <div className="w-full flex flex-col items-center space-y-4">

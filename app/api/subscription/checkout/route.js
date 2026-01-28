@@ -22,12 +22,18 @@ export async function POST(req) {
     const url = await createCheckoutSession({
       userId: user.id,
       email: user.email,
-      priceId: priceId,
+      priceId,
     });
 
-    return NextResponse.json({ url });
+    return Response.json({ url });
   } catch (error) {
-    console.error("Checkout API error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[API:checkout] Error:", error);
+    return Response.json(
+      {
+        error: "Failed to create checkout session",
+        details: error.message,
+      },
+      { status: 500 },
+    );
   }
 }

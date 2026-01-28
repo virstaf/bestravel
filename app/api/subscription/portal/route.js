@@ -29,9 +29,15 @@ export async function POST(req) {
 
     const url = await createPortalSession(profile.stripe_customer_id);
 
-    return NextResponse.json({ url });
+    return Response.json({ url });
   } catch (error) {
-    console.error("Portal API error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[API:portal] Error:", error);
+    return Response.json(
+      {
+        error: "Failed to create portal session",
+        details: error.message,
+      },
+      { status: 500 },
+    );
   }
 }

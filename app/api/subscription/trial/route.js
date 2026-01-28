@@ -13,15 +13,21 @@ export async function POST(req) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data, error } = await activateTrialManual(user);
+    const result = await activateTrialManual(user);
 
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 400 });
+    if (result.error) {
+      throw result.error;
     }
 
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true, data: result.data });
   } catch (error) {
-    console.error("Trial API error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("[API:trial] Error:", error);
+    return NextResponse.json(
+      {
+        error: "Failed to activate trial",
+        details: error.message,
+      },
+      { status: 500 },
+    );
   }
 }
