@@ -5,12 +5,13 @@ import Stripe from "stripe";
 // import { revalidatePath } from "next/cache";
 // import { resendEmail } from "@/actions/resendEmail";
 import {
-  createCustomerAction,
-  createSubscriptionAction,
-  deleteSubscriptionAction,
-  trialWillEndAction,
-  updateSubscriptionAction,
-} from "@/actions/stripe/subscription";
+  handleCustomerCreated,
+  handleSubscriptionCreated,
+  handleSubscriptionUpdated,
+  handleSubscriptionDeleted,
+  handleTrialWillEnd,
+  handlePaymentFailed,
+} from "@/lib/subscription";
 // import { resendEmail } from "@/actions/resendEmail";
 
 export const GET = async () => {
@@ -32,7 +33,7 @@ export const POST = async (req) => {
     event = stripe.webhooks.constructEvent(
       rawBody,
       sig,
-      process.env.STRIPE_SIGNING_SECRET
+      process.env.STRIPE_SIGNING_SECRET,
     );
     console.log("Webhook event constructed successfully:", event.type);
   } catch (err) {
@@ -43,37 +44,49 @@ export const POST = async (req) => {
   // Handle events
   const session = event.data.object;
 
-  switch (event.type) {
-    //handle new customer creation
-    case "customer.created":
-      await createCustomerAction(session);
-      break;
+  try {
+    switch (event.type) {
+      //handle new customer creation
+      case "customer.created":
+        await handleCustomerCreated(session);
+        break;
 
-    // Handle New subscription started
-    // case "customer.subscription.created":
-    case "invoice.payment_succeeded":
-      await createSubscriptionAction(session);
+      // Handle New subscription started
+      // case "customer.subscription.created":
+      case "invoice.payment_succeeded":
+        await handleSubscriptionCreated(session);
 
-      break;
+        break;
 
-    //Subscription modified (plan change, pause/resume)
-    case "customer.subscription.updated":
-      await updateSubscriptionAction(session);
+      //Subscription modified (plan change, pause/resume)
+      case "customer.subscription.updated":
+        await handleSubscriptionUpdated(session);
 
-      break;
+        break;
 
-    // Subscription canceled/ended
-    case "customer.subscription.deleted":
-      await deleteSubscriptionAction(session);
+      // Subscription canceled/ended
+      case "customer.subscription.deleted":
+        await handleSubscriptionDeleted(session);
 
-      break;
+        break;
 
-    case "customer.subscription.trial_will_end":
-      await trialWillEndAction(session);
-      break;
+      case "customer.subscription.trial_will_end":
+        await handleTrialWillEnd(session);
+        break;
 
-    default:
-      console.log(`Unhandled event type ${event.type}`);
+      case "invoice.payment_failed":
+        await handlePaymentFailed(session);
+        break;
+
+      default:
+        console.log(`Unhandled event type ${event.type}`);
+    }
+  } catch (error) {
+    console.error(`Error processing event ${event.type}:`, error);
+    return NextResponse.json(
+      { error: "Webhook handler failed", details: error.message },
+      { status: 500 },
+    );
   }
 
   return NextResponse.json({ received: true });

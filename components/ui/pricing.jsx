@@ -3,7 +3,6 @@
 import { useEffect, useState, useTransition } from "react";
 import { getUser } from "@/lib/supabase/server";
 import { Button } from "./button";
-import { subscribeAction, upgradePlanAction } from "@/actions/stripe";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useProfileContext } from "@/contexts/profile";
@@ -35,32 +34,25 @@ const Pricing = ({ className }) => {
       return;
     }
 
-    // console.log("profile.stripe_customer_id::", profile?.stripe_customer_id);
-
-    if (profile?.stripe_customer_id) {
-      startTransition(async () => {
-        const url = await upgradePlanAction(
-          user,
-          priceId,
-          profile?.stripe_customer_id
-        );
-        if (url) {
-          router.push(url);
-        } else {
-          toast.error("Subscription failed. Please try again.");
-          console.error("Subscription failed");
-        }
-      });
-      return;
-    }
-
     startTransition(async () => {
-      const url = await subscribeAction(user, priceId);
-      if (url) {
-        router.push(url);
-      } else {
-        toast.error("Subscription failed. Please try again.");
-        console.error("Subscription failed");
+      try {
+        const response = await fetch("/api/subscription/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ priceId }),
+        });
+
+        const data = await response.json();
+
+        if (data.url) {
+          router.push(data.url);
+        } else {
+          toast.error(data.error || "Subscription failed. Please try again.");
+          console.error("Subscription failed:", data.error);
+        }
+      } catch (error) {
+        toast.error("An error occurred. Please try again.");
+        console.error("Subscription error:", error);
       }
     });
   };
@@ -88,47 +80,71 @@ const Pricing = ({ className }) => {
           </div>
         </div>
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row gap-3 items-start justify-center py-8 p-4">
-          {pricingPlans.map((plan, index) => (
-            <div key={index} className=" p-6 w-full max-w-sm">
-              <h2 className="text-xl font-semibold mb-6">{plan.name}</h2>
-              <div className="flex gap-1 items-center h-full mb-6">
-                <p className="text-3xl font-bold">
-                  <span className="font-bold">£</span>
-                  {duration === "monthly" ? plan.price[0] : plan.price[1]}
-                </p>
-                <span className="text-gray-500 font-light leading-4">
-                  per <br />
-                  {duration === "monthly" ? "month" : "year"}
-                </span>
+          {pricingPlans.map((pricingPlan, index) => {
+            // Check if current plan matches, or if user is on "trial" and this is the "silver" plan
+            const isCurrentPlan =
+              plan &&
+              pricingPlan.name &&
+              (plan.toLowerCase() === pricingPlan.name.toLowerCase() ||
+                (plan.toLowerCase() === "trial" &&
+                  pricingPlan.name.toLowerCase() === "silver"));
+
+            return (
+              <div key={index} className=" p-6 w-full max-w-sm">
+                <h2 className="text-xl font-semibold mb-6 capitalize">
+                  {pricingPlan.name}
+                </h2>
+                <div className="flex gap-1 items-center h-full mb-6">
+                  <p className="text-3xl font-bold">
+                    <span className="font-bold">£</span>
+                    {duration === "monthly"
+                      ? pricingPlan.price[0]
+                      : pricingPlan.price[1]}
+                  </p>
+                  <span className="text-gray-500 font-light leading-4">
+                    per <br />
+                    {duration === "monthly" ? "month" : "year"}
+                  </span>
+                </div>
+                <Button
+                  className={`my-4 py-5 w-full text-white text-[16px] ${
+                    isPending || isCurrentPlan
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : ""
+                  }`}
+                  onClick={() =>
+                    handleSubscribeClick(
+                      duration === "monthly"
+                        ? pricingPlan.priceId[0]
+                        : pricingPlan.priceId[1],
+                    )
+                  }
+                  disabled={isPending || isCurrentPlan}
+                >
+                  {isPending
+                    ? "Processing..."
+                    : isCurrentPlan
+                      ? "Current Plan"
+                      : plan && plan !== "Free"
+                        ? "Upgrade"
+                        : "Subscribe"}
+                </Button>
+                <ul className="pl-5 text-[14px] text-gray-600">
+                  {pricingPlan.features.map((feature) => (
+                    <li
+                      key={feature}
+                      className="py-1.5 flex items-center gap-0.5"
+                    >
+                      <span className="text-white text-[10px] mr-2 bg-gray-400 rounded-full w-1.5 h-1.5 p-2 flex items-center justify-center">
+                        ✓
+                      </span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <Button
-                className={`my-4 py-5 w-full text-white text-[16px] ${
-                  isPending ? "bg-gray-400 cursor-not-allowed" : ""
-                }`}
-                onClick={() =>
-                  handleSubscribeClick(
-                    duration === "monthly" ? plan.priceId[0] : plan.priceId[1]
-                  )
-                }
-                disabled={isPending}
-              >
-                {isPending ? "Processing..." : "Subscribe"}
-              </Button>
-              <ul className="pl-5 text-[14px] text-gray-600">
-                {plan.features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="py-1.5 flex items-center gap-0.5"
-                  >
-                    <span className="text-white text-[10px] mr-2 bg-gray-400 rounded-full w-1.5 h-1.5 p-2 flex items-center justify-center">
-                      ✓
-                    </span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </>
