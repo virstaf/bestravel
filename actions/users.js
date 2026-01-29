@@ -61,12 +61,12 @@ export const loginAction = async (email, password) => {
             membershipId: customerId,
             email,
           },
-          "welcome"
+          "welcome",
         );
         if (!sendNotification.success) {
           console.error(
             "Error sending welcome email:",
-            sendNotification.message
+            sendNotification.message,
           );
           return handleError(sendNotification.message);
         }
@@ -102,6 +102,7 @@ export const signupAction = async (email, password, fullname) => {
       email,
       password,
       options: {
+        emailRedirectTo: `${baseUrl}/onboarding/welcome`,
         data: {
           display_name: fullname,
           username: fullname.split(" ").join("_").toLowerCase(),
@@ -193,7 +194,7 @@ export const deleteAccountAction = async () => {
     }
 
     const { error: deleteError } = await supabase.auth.admin.deleteUser(
-      user.id
+      user.id,
     );
     if (deleteError) {
       console.error("Error deleting user:", deleteError);
