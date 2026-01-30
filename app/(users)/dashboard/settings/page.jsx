@@ -4,9 +4,12 @@ import React from "react";
 
 const SettingsPage = () => {
   return (
-    <div className="container mx-auto px-4 my-12 w-full h-full">
-      <DashHeader page="Settings" description="⚙ Set your preferences" />
-      <div className="min-w-full min-h-[calc(100vh-180px)] rounded-lg p-6 mx-auto">
+    <div className="container mx-auto px-4 py-8 w-full h-full">
+      <DashHeader
+        page="Settings"
+        description="Manage your account preferences and profile information"
+      />
+      <div className="mt-8">
         <Settings />
       </div>
     </div>
