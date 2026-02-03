@@ -116,6 +116,20 @@ export default function DealCard({ deal, isPublic = false }) {
     year: "numeric",
   });
 
+  const travelStartDate = deal.travel_start_date
+    ? new Date(deal.travel_start_date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })
+    : null;
+
+  const travelEndDate = deal.travel_end_date
+    ? new Date(deal.travel_end_date).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      })
+    : null;
+
   return (
     <Card className="overflow-hidden py-0 hover:shadow-xl transition-all duration-300 group">
       {/* Hero Image with Discount Badge */}
@@ -155,6 +169,16 @@ export default function DealCard({ deal, isPublic = false }) {
           <CalendarIcon className="h-4 w-4 mr-1.5" />
           <span>Valid until {formattedDate}</span>
         </div>
+
+        {travelStartDate && (
+          <div className="flex items-center text-sm text-blue-600 font-medium pt-0.5">
+            <CalendarIcon className="h-4 w-4 mr-1.5" />
+            <span>
+              Travel: {travelStartDate}
+              {travelEndDate ? ` - ${travelEndDate}` : ""}
+            </span>
+          </div>
+        )}
 
         {/* Pricing */}
         <div className="pt-2 space-y-1">

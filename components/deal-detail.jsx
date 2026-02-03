@@ -178,16 +178,46 @@ export default function DealDetail({ deal, isPublic = false }) {
           </CardHeader>
 
           <CardContent className="space-y-6">
-            <div className="flex items-center text-muted-foreground">
-              <CalendarIcon className="h-5 w-5 mr-2" />
-              <span>
-                Valid until{" "}
-                {new Date(deal.end_date).toLocaleDateString("en-US", {
-                  month: "long",
-                  day: "numeric",
-                  year: "numeric",
-                })}
-              </span>
+            <div className="flex flex-col gap-2 p-4 bg-gray-50 rounded-lg border">
+              <div className="flex items-center text-muted-foreground">
+                <CalendarIcon className="h-5 w-5 mr-2 text-green-600" />
+                <span className="font-medium text-foreground mr-2">
+                  Booking Valid Until:
+                </span>
+                <span>
+                  {new Date(deal.end_date).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
+              </div>
+
+              {deal.travel_start_date && (
+                <div className="flex items-center text-blue-700">
+                  <CalendarIcon className="h-5 w-5 mr-2" />
+                  <span className="font-medium mr-2">Travel Window:</span>
+                  <span>
+                    {new Date(deal.travel_start_date).toLocaleDateString(
+                      "en-US",
+                      {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                      },
+                    )}
+                    {deal.travel_end_date &&
+                      ` - ${new Date(deal.travel_end_date).toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        },
+                      )}`}
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* What's Included */}
