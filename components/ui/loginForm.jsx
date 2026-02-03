@@ -198,6 +198,12 @@ const LoginForm = () => {
             </p>
           </div>
         </form>
+        <div className="mt-auto pt-8">
+          <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <span className="text-lg">🔒</span>
+            <span>Secure • Powered by Supabase</span>
+          </p>
+        </div>
       </Form>
     </div>
   );
