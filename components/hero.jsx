@@ -1,44 +1,26 @@
 import React from "react";
-import { Button } from "./ui/button";
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { ArrowLeft } from "lucide-react";
+import { HeroForm } from "./hero-form";
 
 const Hero = () => {
   return (
-    <div>
-      <div className="max-w-7xl px-4 mx-auto my-12 flex flex-col-reverse md:flex-row justify-between gap-6 h-full">
-        <div className="w-full md:w-1/2 lg:py-12 my-12">
-          <h1 className="text-4xl font-bold text-primary mb-4">
-            Unlock Luxury Travel. Exclusive Travel Perks. Members-Only Prices.
-          </h1>
-          <p className="text-lg mb-6 mt-4 text-gray-600 max-w-3xl mx-auto">
-            Tired of spending hours looking for travel deals and overpaying for
-            comfort? Virstravel Club unlocks premium travel experiences without
-            the premium price tag and stress.
-          </p>
-          <Button
-            variant="outline"
-            asChild
-            className="border-none bg-gradient-to-br from-primary to-secondary px-12 py-6 cursor-pointer text-white transition duration-300 w-full md:w-auto"
-          >
-            <Link href="/auth/signup" className="hover:text-gray-300">
-              Join Now & Save on Your Next Trip
-            </Link>
-          </Button>
-        </div>
-        <div className="w-full md:w-1/2 py-8 rounded overflow-hidden">
-          <Image
-            src="/images/happy-black-woman-laughing-on-street.jpg"
-            alt="Travel Hero"
-            width="1920"
-            height="1280"
-            className="w-full h-auto object-contain rounded-2xl"
-          />
-        </div>
+    <section className="relative w-full text-white min-h-[600px] flex flex-col justify-center hero-bg-custom">
+      {/* Overlay for readability - using absolute div to ensure z-index handling */}
+      <div className="absolute inset-0 bg-black/40 z-0" />
+
+      <div className="relative z-10 mx-auto max-w-6xl px-4 py-20 text-center">
+        <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+          Travel smarter. Save more. Explore freely.
+        </h1>
+
+        <p className="mt-4 text-lg text-white/90">
+          Unlock exclusive flight and hotel deals with your Virstravel
+          membership.
+        </p>
+
+        {/* Form Card - Extracted to Client Component */}
+        <HeroForm />
       </div>
-    </div>
+    </section>
   );
 };
 
