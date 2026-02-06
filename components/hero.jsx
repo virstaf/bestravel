@@ -13,8 +13,8 @@ const Hero = () => {
         </h1>
 
         <p className="mt-4 text-lg text-white/90">
-          Unlock exclusive flight and hotel deals with your Virstravel
-          membership.
+          Tell us your travel plans let&apos;s find you the best member-only
+          deals.
         </p>
 
         {/* Form Card - Extracted to Client Component */}

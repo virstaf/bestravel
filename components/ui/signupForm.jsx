@@ -50,43 +50,42 @@ const formSchema = z.object({
     .max(40),
 });
 
-const SignupForm = () => {
+const SignupForm = ({ onSuccess, redirect = true }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const userObject = await getUser();
+    if (redirect) {
+      const fetchUser = async () => {
+        const userObject = await getUser();
 
-      if (userObject) {
-        redirect("/dashboard");
-      }
-    };
-    fetchUser();
-  }, []);
+        if (userObject) {
+          router.replace("/dashboard");
+        }
+      };
+      fetchUser();
+    }
+  }, [redirect]);
 
   async function onSubmit(values) {
     const { password } = values;
     const { confirmPassword } = values;
     if (password !== confirmPassword) {
-      alert(password, confirmPassword);
       toast.error("Error", { description: "Passwords do not match" });
       return;
     }
 
     startTransition(async () => {
       const { email } = values;
-
       const { fullname } = values;
-
       let errorMessage;
       let title;
       let description;
 
-      errorMessage = (await signupAction(email, password, fullname))
-        .errorMessage;
+      const response = await signupAction(email, password, fullname);
+      errorMessage = response.errorMessage;
       title = "Check your email! 📧";
       description =
         "We've sent you a confirmation link. Please check your email and click the link to verify your account, then you can continue with onboarding.";
@@ -94,10 +93,14 @@ const SignupForm = () => {
       if (!errorMessage) {
         toast.success(title, {
           description: description,
-          duration: 8000, // Show for 8 seconds
+          duration: 8000,
         });
-        // Don't redirect - keep user on page to see the message
-        // After email confirmation, they'll be redirected to onboarding
+
+        if (onSuccess) {
+          onSuccess();
+        }
+
+        // No redirect needed for standard flow as it just shows success message
       } else {
         toast.error("Error", { description: errorMessage });
       }

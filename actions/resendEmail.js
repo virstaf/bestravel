@@ -17,6 +17,8 @@ import TrialExpiredEmail from "@/email-templates/trial-expired";
 import PaymentFailedEmail from "@/email-templates/payment-failed";
 import SubscriptionCanceledEmail from "@/email-templates/subscription-canceled";
 import RenewalReminderEmail from "@/email-templates/renewal-reminder";
+import DealRequestAdminEmail from "@/email-templates/deal-request-admin";
+import DealRequestConfirmationEmail from "@/email-templates/deal-request-confirmation";
 import { Resend } from "resend";
 
 export const resendEmail = async (values, type) => {
@@ -324,6 +326,49 @@ export const resendEmail = async (values, type) => {
 
     if (!fullname || !plan || !email) {
       console.error("Missing required fields for subscription canceled email");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "deal-request-admin") {
+    const { fullname, email, requestDetails, user } = values;
+
+    emailTemplate = (
+      <DealRequestAdminEmail
+        fullname={fullname}
+        email={email}
+        requestDetails={requestDetails}
+        user={user}
+      />
+    );
+    subject = "New Deal Request Received";
+    receivingEmail = adminEmail; // Send TO admin
+    // adminEmail is already set to bookings@... (or noreply by default, but let's ensure it goes to bookings)
+    receivingEmail = "bookings@virstravelclub.com";
+
+    if (!fullname || !email || !requestDetails) {
+      console.error("Missing required fields for deal request admin email");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "deal-request-confirmation") {
+    const { fullname, email, from, to, dates } = values;
+
+    emailTemplate = (
+      <DealRequestConfirmationEmail
+        fullname={fullname}
+        from={from}
+        to={to}
+        dates={dates}
+      />
+    );
+    subject = "We've received your deal request! 🎉";
+    receivingEmail = email;
+    adminEmail = "bookings@virstravelclub.com";
+
+    if (!fullname || !email || !from || !to) {
+      console.error("Missing required fields for confirmation email");
       return { success: false, message: "All fields are required" };
     }
   }
