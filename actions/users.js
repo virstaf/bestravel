@@ -37,7 +37,9 @@ export const loginAction = async (email, password) => {
 
     if (!profile.data) {
       // 1. Generate unique customer ID
-      const isAdmin = email.endsWith("@virstravelclub.com");
+      const isAdmin =
+        email.endsWith("@virstravelclub.com") ||
+        email.endsWith("@virstravel.com");
       const role = isAdmin ? "ADMIN" : "USER";
       const customerId = generateCustomerId(role);
       // 2. Create profile if it doesn't exist

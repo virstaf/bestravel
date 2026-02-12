@@ -5,7 +5,16 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPinIcon, CalendarIcon } from "lucide-react";
+import {
+  MapPinIcon,
+  CalendarIcon,
+  Plane,
+  Hotel,
+  Car,
+  Coffee,
+  Shield,
+  Lock,
+} from "lucide-react";
 
 export default function DealCard({ deal, isPublic = false }) {
   // Calculate prices logic with location support
@@ -85,6 +94,63 @@ export default function DealCard({ deal, isPublic = false }) {
 
   const imageUrl = getImageUrl();
 
+  // Format validity date (needed by badge and urgency functions)
+  const validUntil = new Date(deal.end_date || deal.valid_until);
+
+  // Determine badge type
+  const getBadgeInfo = () => {
+    const daysUntilExpiry = Math.ceil(
+      (validUntil - new Date()) / (1000 * 60 * 60 * 24),
+    );
+
+    if (deal.is_featured) {
+      return {
+        text: "🔥 Hot Deal",
+        className: "bg-orange-500 hover:bg-orange-600",
+      };
+    }
+    if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
+      return {
+        text: "⏰ Ending Soon",
+        className: "bg-red-500 hover:bg-red-600",
+      };
+    }
+    if (deal.is_most_booked) {
+      return {
+        text: "⭐ Most Booked",
+        className: "bg-purple-500 hover:bg-purple-600",
+      };
+    }
+    return null;
+  };
+
+  const badgeInfo = getBadgeInfo();
+
+  // Rotating CTA copy
+  const ctaCopyOptions = [
+    "Lock in This Deal",
+    "View Full Details",
+    "Grab This Offer",
+    "Book Before It's Gone",
+  ];
+  const ctaCopy =
+    ctaCopyOptions[Math.floor(Math.random() * ctaCopyOptions.length)];
+
+  // Urgency microcopy
+  const getUrgencyText = () => {
+    const daysUntilExpiry = Math.ceil(
+      (validUntil - new Date()) / (1000 * 60 * 60 * 24),
+    );
+
+    if (daysUntilExpiry <= 3 && daysUntilExpiry > 0) {
+      return `Deal expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? "s" : ""}`;
+    }
+    if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
+      return "Limited availability";
+    }
+    return "Prices may increase soon";
+  };
+
   // Format location
   const location = deal.location || deal.partners?.location || "Destination";
 
@@ -108,8 +174,7 @@ export default function DealCard({ deal, isPublic = false }) {
     return inclusions.join(" + ");
   };
 
-  // Format validity date
-  const validUntil = new Date(deal.end_date || deal.valid_until);
+  // Format date for display
   const formattedDate = validUntil.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -132,7 +197,7 @@ export default function DealCard({ deal, isPublic = false }) {
 
   return (
     <Card className="overflow-hidden py-0 hover:shadow-xl transition-all duration-300 group">
-      {/* Hero Image with Discount Badge */}
+      {/* Hero Image with Badges */}
       <div className="relative aspect-[16/10] overflow-hidden bg-muted">
         <Image
           src={imageUrl}
@@ -142,6 +207,15 @@ export default function DealCard({ deal, isPublic = false }) {
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           unoptimized={imageUrl.startsWith("http")}
         />
+        {/* Top-left badge */}
+        {badgeInfo && (
+          <Badge
+            className={`absolute top-4 left-4 ${badgeInfo.className} text-white px-3 py-1.5 text-sm font-semibold shadow-lg`}
+          >
+            {badgeInfo.text}
+          </Badge>
+        )}
+        {/* Discount badge */}
         {discountPercentage && (
           <Badge className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white px-4 py-1 text-base font-medium shadow-lg">
             {discountPercentage}% OFF
@@ -161,8 +235,33 @@ export default function DealCard({ deal, isPublic = false }) {
           {packageType}
         </h3>
 
-        {/* Inclusions */}
-        <p className="text-sm text-muted-foreground">{getInclusionsText()}</p>
+        {/* Inclusions Icons */}
+        <div className="flex items-center gap-3 py-2">
+          {includesFlight && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Plane className="w-4 h-4 text-primary" />
+              <span>Flight</span>
+            </div>
+          )}
+          {includesHotel && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Hotel className="w-4 h-4 text-primary" />
+              <span>Hotel</span>
+            </div>
+          )}
+          {includesTransfer && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Car className="w-4 h-4 text-primary" />
+              <span>Transfer</span>
+            </div>
+          )}
+          {deal.includes_breakfast && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Coffee className="w-4 h-4 text-primary" />
+              <span>Breakfast</span>
+            </div>
+          )}
+        </div>
 
         {/* Validity Date */}
         <div className="flex items-center text-sm text-muted-foreground pt-1">
@@ -212,19 +311,36 @@ export default function DealCard({ deal, isPublic = false }) {
         </div>
       </CardContent>
 
-      <CardFooter className="p-6 pt-0">
+      <CardFooter className="p-6 pt-2 flex flex-col gap-3">
+        {/* Urgency microcopy */}
+        <p className="text-xs text-orange-600 font-medium text-center">
+          ⚡ {getUrgencyText()}
+        </p>
+
         <Button
           asChild
-          className="w-full bg-[#0a4275] hover:bg-[#083558] text-white font-semibold py-6 text-base"
+          className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-6 text-base shadow-md hover:shadow-lg transition-all"
         >
           <Link
             href={
               isPublic ? `/deals/${deal.id}` : `/dashboard/deals/${deal.id}`
             }
           >
-            Book Deal
+            {ctaCopy}
           </Link>
         </Button>
+
+        {/* Confidence boosters */}
+        <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <Shield className="w-3.5 h-3.5" />
+            <span>No hidden fees</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Lock className="w-3.5 h-3.5" />
+            <span>Secure checkout</span>
+          </div>
+        </div>
       </CardFooter>
     </Card>
   );
