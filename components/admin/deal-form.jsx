@@ -31,7 +31,7 @@ const DealForm = ({ initialData }) => {
   const [error, setError] = useState("");
 
   const [locationPrices, setLocationPrices] = useState(
-    initialData?.location_prices || []
+    initialData?.location_prices || [],
   );
 
   const [formData, setFormData] = useState({
@@ -42,6 +42,12 @@ const DealForm = ({ initialData }) => {
       ? initialData.start_date.split("T")[0]
       : "",
     end_date: initialData?.end_date ? initialData.end_date.split("T")[0] : "",
+    travel_start_date: initialData?.travel_start_date
+      ? initialData.travel_start_date.split("T")[0]
+      : "",
+    travel_end_date: initialData?.travel_end_date
+      ? initialData.travel_end_date.split("T")[0]
+      : "",
     discount_percentage: initialData?.discount_percentage || "",
     discount_amount: initialData?.discount_amount || "",
     original_price: initialData?.original_price || "",
@@ -129,7 +135,7 @@ const DealForm = ({ initialData }) => {
     } catch (err) {
       console.error("Upload error:", err);
       setError(
-        "Failed to upload image. Make sure 'deals' bucket exists and is public."
+        "Failed to upload image. Make sure 'deals' bucket exists and is public.",
       );
     } finally {
       setLoading(false);
@@ -144,13 +150,25 @@ const DealForm = ({ initialData }) => {
     try {
       // Validate
       if (!formData.title || !formData.start_date || !formData.end_date) {
-        throw new Error("Please fill in required fields (Title, Dates)");
+        throw new Error(
+          "Please fill in required fields (Title, Booking Dates)",
+        );
+      }
+
+      // Validate travel dates if provided
+      if (
+        (formData.travel_start_date && !formData.travel_end_date) ||
+        (!formData.travel_start_date && formData.travel_end_date)
+      ) {
+        throw new Error(
+          "Please provide both Travel Start and End dates, or leave both empty",
+        );
       }
 
       // Validate discount configuration
       if (formData.discount_percentage && formData.discount_amount) {
         throw new Error(
-          "Please specify either discount percentage OR discount amount, not both"
+          "Please specify either discount percentage OR discount amount, not both",
         );
       }
 
@@ -160,7 +178,7 @@ const DealForm = ({ initialData }) => {
         const originalPrc = parseFloat(formData.original_price);
         if (discountAmt >= originalPrc) {
           throw new Error(
-            "Discount amount cannot be greater than or equal to original price"
+            "Discount amount cannot be greater than or equal to original price",
           );
         }
       }
@@ -180,7 +198,7 @@ const DealForm = ({ initialData }) => {
           const origPrice = parseFloat(lp.original_price);
           if (salePrice > origPrice) {
             throw new Error(
-              `Location ${index + 1}: Sale price cannot exceed original price`
+              `Location ${index + 1}: Sale price cannot exceed original price`,
             );
           }
         }
@@ -357,42 +375,69 @@ const DealForm = ({ initialData }) => {
 
       {/* Pricing & Dates */}
       <h3 className="font-semibold text-lg pt-4 border-t">
-        Pricing & Availability
+        Booking Validity & Travel Dates
       </h3>
-      <div className="grid md:grid-cols-3 gap-6">
-        <div>
-          <Label htmlFor="start_date">Start Date *</Label>
-          <Input
-            type="date"
-            id="start_date"
-            name="start_date"
-            value={formData.start_date}
-            onChange={handleChange}
-            required
-          />
+      <div className="grid md:grid-cols-2 gap-6 bg-gray-50 p-4 rounded-lg">
+        <div className="space-y-4">
+          <Label className="font-semibold text-green-700">
+            Booking Validity (When deal is active)
+          </Label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="start_date">Start Date *</Label>
+              <Input
+                type="date"
+                id="start_date"
+                name="start_date"
+                value={formData.start_date}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="end_date">End Date *</Label>
+              <Input
+                type="date"
+                id="end_date"
+                name="end_date"
+                value={formData.end_date}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
         </div>
-        <div>
-          <Label htmlFor="end_date">End Date *</Label>
-          <Input
-            type="date"
-            id="end_date"
-            name="end_date"
-            value={formData.end_date}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <Label htmlFor="duration_nights">Duration (Nights)</Label>
-          <Input
-            type="number"
-            id="duration_nights"
-            name="duration_nights"
-            value={formData.duration_nights}
-            onChange={handleChange}
-          />
+
+        <div className="space-y-4">
+          <Label className="font-semibold text-blue-700">
+            Travel Window (When they can travel)
+          </Label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="travel_start_date">Travel Start</Label>
+              <Input
+                type="date"
+                id="travel_start_date"
+                name="travel_start_date"
+                value={formData.travel_start_date}
+                onChange={handleChange}
+              />
+            </div>
+            <div>
+              <Label htmlFor="travel_end_date">Travel End</Label>
+              <Input
+                type="date"
+                id="travel_end_date"
+                name="travel_end_date"
+                value={formData.travel_end_date}
+                onChange={handleChange}
+              />
+            </div>
+          </div>
         </div>
       </div>
+
+      <h3 className="font-semibold text-lg pt-4">Pricing Configuration</h3>
 
       <div className="grid md:grid-cols-4 gap-6">
         <div>
@@ -480,7 +525,7 @@ const DealForm = ({ initialData }) => {
                       handleLocationPriceChange(
                         index,
                         "original_price",
-                        e.target.value
+                        e.target.value,
                       )
                     }
                   />

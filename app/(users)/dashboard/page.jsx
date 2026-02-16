@@ -7,10 +7,14 @@ import { hotels } from "@/lib/data";
 import ReservationsSection from "@/components/reservations-section";
 import WelcomeSection from "@/components/welcome-section";
 import HolidayDestinationsSection from "@/components/holiday-destinations-section";
+import SubscriptionPrompt from "@/components/subscription-prompt";
+import { getProfileAction } from "@/actions/profiles";
 
 export const dynamic = "force-dynamic";
 
-const DashboardPage = () => {
+const DashboardPage = async () => {
+  const { profile } = await getProfileAction();
+
   return (
     <div className="px-4 h-full w-full sm:w-[calc(100%-100px)]">
       <DashHeader
@@ -19,6 +23,8 @@ const DashboardPage = () => {
         className="w-full mx-auto"
       />
       <div className="w-full min-h-[calc(100vh-180px)]">
+        {profile && <SubscriptionPrompt profile={profile} />}
+
         <section className="my-12">
           <WelcomeSection />
         </section>

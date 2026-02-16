@@ -32,22 +32,25 @@ const formSchema = z.object({
     .max(50),
 });
 
-const LoginForm = () => {
+const LoginForm = ({ onSuccess, redirect = true }) => {
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    const checkUser = async () => {
-      const { profile } = await getProfileAction();
-      if (profile && profile.role === "ADMIN") {
-        router.replace("/admin");
-      } else if (profile) {
-        router.replace("/dashboard");
-      }
-    };
-    checkUser();
-  }, []);
+    // Only redirect if redirect prop is true
+    if (redirect) {
+      const checkUser = async () => {
+        const { profile } = await getProfileAction();
+        if (profile && profile.role === "ADMIN") {
+          router.replace("/admin");
+        } else if (profile) {
+          router.replace("/dashboard");
+        }
+      };
+      checkUser();
+    }
+  }, [redirect]);
 
   async function onSubmit(values) {
     startTransition(async () => {
@@ -66,12 +69,18 @@ const LoginForm = () => {
       if (!errorMessage) {
         toast.success(title, { description: description });
         const { profile } = await getProfileAction();
-        const isAdmin = profile?.role === "ADMIN";
 
-        if (isAdmin) {
-          router.replace("/admin");
-        } else {
-          router.replace("/dashboard");
+        if (onSuccess) {
+          onSuccess(profile);
+        }
+
+        if (redirect) {
+          const isAdmin = profile?.role === "ADMIN";
+          if (isAdmin) {
+            router.replace("/admin");
+          } else {
+            router.replace("/dashboard");
+          }
         }
       } else {
         toast.error("Error", { description: errorMessage });
@@ -198,6 +207,12 @@ const LoginForm = () => {
             </p>
           </div>
         </form>
+        <div className="mt-auto pt-8">
+          <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <span className="text-lg">🔒</span>
+            <span>Secure • Powered by Supabase</span>
+          </p>
+        </div>
       </Form>
     </div>
   );

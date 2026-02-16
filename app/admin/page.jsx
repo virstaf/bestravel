@@ -11,6 +11,7 @@ import { BookOpenTextIcon } from "@/components/ui/BookOpenTextIcon";
 import { FolderIcon } from "@/components/ui/FolderIcon";
 import { MessageCircleIcon } from "@/components/ui/MessageCircleIcon";
 import { UsersRoundIcon } from "@/components/ui/UsersRoundIcon";
+import AnalyticsDashboard from "@/components/admin/analytics-dashboard";
 
 const AdminHome = async () => {
   const reservations = await getAllReservations();
@@ -60,6 +61,11 @@ const AdminHome = async () => {
 
   return (
     <div className="p-4 md:p-8">
+      <div className="mb-8">
+        <h2 className="text-2xl font-bold mb-4">Subscription Analytics</h2>
+        <AnalyticsDashboard />
+      </div>
+
       <MetricList metrics={summaryMetrics} />
 
       <section className="">

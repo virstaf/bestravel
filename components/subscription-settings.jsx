@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import SubscriptionStatus from "./subscription-status";
 import Pricing from "./ui/pricing";
 import EditBillingDetails from "./ui/EditBillingDetails";
+import ManageBillingButton from "./ui/ManageBillingButton";
 
 const SubscriptionSettings = () => {
   return (
@@ -30,8 +31,9 @@ const SubscriptionSettings = () => {
         <CardHeader>
           <CardTitle>Payment Details</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <EditBillingDetails />
+          <ManageBillingButton />
         </CardContent>
       </Card>
     </div>

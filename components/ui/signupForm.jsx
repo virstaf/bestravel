@@ -37,7 +37,7 @@ const formSchema = z.object({
       },
       {
         message: "Fullname must contain 2 or 3 words",
-      }
+      },
     ),
   email: z.string().email({ message: "Invalid email address" }),
   password: z
@@ -50,50 +50,57 @@ const formSchema = z.object({
     .max(40),
 });
 
-const SignupForm = () => {
+const SignupForm = ({ onSuccess, redirect = true }) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const userObject = await getUser();
+    if (redirect) {
+      const fetchUser = async () => {
+        const userObject = await getUser();
 
-      if (userObject) {
-        redirect("/dashboard");
-      }
-    };
-    fetchUser();
-  }, []);
+        if (userObject) {
+          router.replace("/dashboard");
+        }
+      };
+      fetchUser();
+    }
+  }, [redirect]);
 
   async function onSubmit(values) {
     const { password } = values;
     const { confirmPassword } = values;
     if (password !== confirmPassword) {
-      alert(password, confirmPassword);
       toast.error("Error", { description: "Passwords do not match" });
       return;
     }
 
     startTransition(async () => {
       const { email } = values;
-
       const { fullname } = values;
-
       let errorMessage;
       let title;
       let description;
 
-      errorMessage = (await signupAction(email, password, fullname))
-        .errorMessage;
-      title = "Signup successful";
-      description = "Check email to complete account creation";
+      const response = await signupAction(email, password, fullname);
+      errorMessage = response.errorMessage;
+      title = "Check your email! 📧";
+      description =
+        "We've sent you a confirmation link. Please check your email and click the link to verify your account, then you can continue with onboarding.";
 
       if (!errorMessage) {
-        toast.success(title, { description: description });
-        router.replace("/auth/login");
-        // router.refresh();
+        toast.success(title, {
+          description: description,
+          duration: 8000,
+        });
+
+        if (onSuccess) {
+          onSuccess();
+        }
+
+        // No redirect needed for standard flow as it just shows success message
       } else {
         toast.error("Error", { description: errorMessage });
       }
@@ -240,6 +247,12 @@ const SignupForm = () => {
             </p>
           </div>
         </form>
+        <div className="mt-auto pt-8">
+          <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <span className="text-lg">🔒</span>
+            <span>Secure • Powered by Supabase</span>
+          </p>
+        </div>
       </Form>
     </div>
   );

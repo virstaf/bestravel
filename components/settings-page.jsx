@@ -25,39 +25,41 @@ const Settings = () => {
   }
 
   return (
-    <div className="container py-8 px-8 mx-auto w-full h-full">
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full ">
-        <TabsList className="max-w-4xl mx-auto bg-gray-200 border border-gray-300 rounded-lg p-0.5 grid w-full grid-cols-2 mb-4">
-          {/* <TabsTrigger value="general">General</TabsTrigger> */}
-          <TabsTrigger value="account">My Account</TabsTrigger>
-          <TabsTrigger value="subscription">My Subscription</TabsTrigger>
+    <div className="w-full">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="max-w-4xl mx-auto bg-muted/50 border rounded-lg p-1 grid w-full grid-cols-2 mb-8">
+          <TabsTrigger
+            value="account"
+            className="data-[state=active]:bg-background"
+          >
+            My Account
+          </TabsTrigger>
+          <TabsTrigger
+            value="subscription"
+            className="data-[state=active]:bg-background"
+          >
+            My Subscription
+          </TabsTrigger>
         </TabsList>
 
-        {/* <TabsContent value="general" id="general-settings">
-          <h1 className="text-3xl font-bold mb-6 text-center">
-            General Settings
-          </h1>
-        </TabsContent> */}
-        <TabsContent value="account" id="account-settings">
-          <h1 className="text-3xl font-bold mb-6 text-center">
-            Account Settings
-          </h1>
-          {/* Account settings content goes here */}
+        <TabsContent value="account" id="account-settings" className="mt-0">
           {!profile && (
-            <div className="text-red-500">Failed to load profile data.</div>
+            <div className="text-red-500 text-center">
+              Failed to load profile data.
+            </div>
           )}
-          {profile && (
-            <ProfileForm profile={profile} className=" p-4 max-w-3xl mx-auto" />
-          )}
+          {profile && <ProfileForm profile={profile} />}
         </TabsContent>
-        <TabsContent value="subscription" id="subscription-settings">
-          <h1 className="text-3xl font-bold mb-6 text-center">
-            Subscription Settings
-          </h1>
-          <section>
+
+        <TabsContent
+          value="subscription"
+          id="subscription-settings"
+          className="mt-0"
+        >
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-2xl font-bold mb-6">Subscription Settings</h2>
             <SubscriptionSettings />
-          </section>
-          {/* <Pricing /> */}
+          </div>
         </TabsContent>
       </Tabs>
     </div>

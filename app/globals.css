@@ -246,6 +246,13 @@
   height: 100%;
 }
 
+.hero-bg-custom {
+  background-image: url("/images/hero_background.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
 .clipPath {
   clip-path: polygon(74% 0, 100% 0%, 100% 100%, 24% 100%);
 }
