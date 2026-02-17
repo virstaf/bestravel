@@ -25,14 +25,18 @@ const BlogCard = ({ post }) => {
     <Link href={`/blogs/${slug}`} className="group block h-full">
       <article className="h-full bg-card border border-border rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         {/* Featured Image */}
-        <div className="relative h-48 bg-muted overflow-hidden">
+        <div className="relative h-56 bg-muted overflow-hidden">
           {featured_image ? (
-            <Image
-              src={featured_image}
-              alt={displayTitle}
-              fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
-            />
+            <>
+              <Image
+                src={featured_image}
+                alt={displayTitle}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+              {/* Gradient Overlay on Hover */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </>
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
               <svg
@@ -53,8 +57,8 @@ const BlogCard = ({ post }) => {
 
           {/* Category Badge */}
           {category && (
-            <div className="absolute top-3 left-3">
-              <Badge className="bg-primary text-primary-foreground font-medium shadow-md">
+            <div className="absolute top-3 left-3 z-10">
+              <Badge className="bg-primary/90 backdrop-blur-sm text-primary-foreground font-medium shadow-lg hover:bg-primary transition-colors">
                 {category.name}
               </Badge>
             </div>
@@ -70,6 +74,26 @@ const BlogCard = ({ post }) => {
           <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
             {excerpt}
           </p>
+
+          {/* Author Information */}
+          {(post.author_name || post.author_avatar) && (
+            <div className="flex items-center gap-2 mb-4">
+              {post.author_avatar && (
+                <Image
+                  src={post.author_avatar}
+                  alt={post.author_name || "Author"}
+                  width={24}
+                  height={24}
+                  className="rounded-full object-cover"
+                />
+              )}
+              {post.author_name && (
+                <span className="text-sm text-muted-foreground">
+                  By {post.author_name}
+                </span>
+              )}
+            </div>
+          )}
 
           {/* Meta Information */}
           <div className="flex items-center gap-4 text-xs text-muted-foreground">

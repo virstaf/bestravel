@@ -8,6 +8,7 @@ import Image from "next/image";
 import React from "react";
 import { ShareButton, ShareArticleButton } from "@/components/ShareButtons";
 import { notFound } from "next/navigation";
+import { TiptapRenderer } from "@/components/TiptapRenderer";
 
 export const generateMetadata = async ({ params }) => {
   const { postId: slug } = await params;
@@ -121,10 +122,46 @@ const PostPage = async ({ params }) => {
         </div>
 
         {/* Article Body with Custom Styling */}
-        <div
-          className="article"
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
+        {post.content_json ? (
+          <TiptapRenderer content={post.content_json} />
+        ) : (
+          <div
+            className="article"
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        )}
+
+        {/* Author Information Card */}
+        {(post.author_name || post.author_bio || post.author_avatar) && (
+          <div className="bg-muted/50 rounded-xl p-6 my-12">
+            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4">
+              About the Author
+            </h3>
+            <div className="flex items-start gap-4">
+              {post.author_avatar && (
+                <Image
+                  src={post.author_avatar}
+                  alt={post.author_name || "Author"}
+                  width={80}
+                  height={80}
+                  className="rounded-full object-cover"
+                />
+              )}
+              <div className="flex-1">
+                {post.author_name && (
+                  <h4 className="font-semibold text-lg mb-2">
+                    {post.author_name}
+                  </h4>
+                )}
+                {post.author_bio && (
+                  <p className="text-muted-foreground text-sm leading-relaxed">
+                    {post.author_bio}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Divider */}
         <div className="border-t border-border my-12" />

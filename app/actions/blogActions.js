@@ -141,6 +141,9 @@ export async function createBlogPost(formData) {
     slug: formData.get("slug"),
     excerpt: formData.get("excerpt"),
     content: formData.get("content"),
+    content_json: formData.get("content_json")
+      ? JSON.parse(formData.get("content_json"))
+      : null,
     featured_image: formData.get("featured_image"),
     category_id: formData.get("category_id") || null,
     status: formData.get("status") || "draft",
@@ -148,6 +151,9 @@ export async function createBlogPost(formData) {
       ? parseInt(formData.get("reading_time"))
       : null,
     author_id: user.id,
+    author_name: formData.get("author_name") || null,
+    author_bio: formData.get("author_bio") || null,
+    author_avatar: formData.get("author_avatar") || null,
     published_at:
       formData.get("status") === "published" ? new Date().toISOString() : null,
   };
@@ -180,12 +186,18 @@ export async function updateBlogPost(id, formData) {
     slug: formData.get("slug"),
     excerpt: formData.get("excerpt"),
     content: formData.get("content"),
+    content_json: formData.get("content_json")
+      ? JSON.parse(formData.get("content_json"))
+      : null,
     featured_image: formData.get("featured_image"),
     category_id: formData.get("category_id") || null,
     status: formData.get("status"),
     reading_time: formData.get("reading_time")
       ? parseInt(formData.get("reading_time"))
       : null,
+    author_name: formData.get("author_name") || null,
+    author_bio: formData.get("author_bio") || null,
+    author_avatar: formData.get("author_avatar") || null,
   };
 
   // If publishing for the first time, set published_at

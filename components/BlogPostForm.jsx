@@ -22,16 +22,23 @@ import {
 import { ArrowLeft, Upload, Loader2 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { RichTextEditor } from "@/components/RichTextEditor";
 
 export function BlogPostForm({ post = null, categories = [] }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isUploadingAuthorAvatar, setIsUploadingAuthorAvatar] = useState(false);
   const [featuredImage, setFeaturedImage] = useState(
     post?.featured_image || "",
   );
+  const [authorAvatar, setAuthorAvatar] = useState(post?.author_avatar || "");
   const [slug, setSlug] = useState(post?.slug || "");
   const [title, setTitle] = useState(post?.title || "");
+  const [editorContent, setEditorContent] = useState({
+    json: post?.content_json || null,
+    html: post?.content || "",
+  });
 
   // Auto-generate slug from title
   const handleTitleChange = (e) => {
@@ -48,7 +55,7 @@ export function BlogPostForm({ post = null, categories = [] }) {
     }
   };
 
-  // Handle image upload
+  // Handle featured image upload
   const handleImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -65,6 +72,23 @@ export function BlogPostForm({ post = null, categories = [] }) {
     setIsUploading(false);
   };
 
+  // Handle author avatar upload
+  const handleAuthorAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingAuthorAvatar(true);
+    const tempSlug = slug || "temp";
+    const { data, error } = await uploadBlogImage(file, `${tempSlug}-author`);
+
+    if (error) {
+      alert(`Error uploading author avatar: ${error}`);
+    } else {
+      setAuthorAvatar(data.url);
+    }
+    setIsUploadingAuthorAvatar(false);
+  };
+
   // Calculate reading time from content
   const calculateReadingTime = (content) => {
     const wordsPerMinute = 200;
@@ -79,12 +103,22 @@ export function BlogPostForm({ post = null, categories = [] }) {
     const formData = new FormData(e.target);
 
     // Add calculated reading time
-    const content = formData.get("content");
-    const readingTime = calculateReadingTime(content);
+    const readingTime = calculateReadingTime(editorContent.html);
     formData.set("reading_time", readingTime.toString());
+
+    // Add content (HTML for backward compatibility)
+    formData.set("content", editorContent.html);
+
+    // Add content_json (Tiptap JSON format)
+    if (editorContent.json) {
+      formData.set("content_json", JSON.stringify(editorContent.json));
+    }
 
     // Add featured image URL
     formData.set("featured_image", featuredImage);
+
+    // Add author avatar URL
+    formData.set("author_avatar", authorAvatar);
 
     try {
       let result;
@@ -172,18 +206,14 @@ export function BlogPostForm({ post = null, categories = [] }) {
               <CardTitle>Content *</CardTitle>
             </CardHeader>
             <CardContent>
-              <Textarea
-                id="content"
-                name="content"
-                defaultValue={post?.content || ""}
-                placeholder="Write your blog post content here (HTML supported)..."
-                rows={20}
-                required
-                className="font-mono text-sm"
+              <RichTextEditor
+                content={editorContent.json || editorContent.html}
+                onChange={setEditorContent}
+                slug={slug}
               />
               <p className="text-sm text-muted-foreground mt-2">
-                You can use HTML tags for formatting. The content will be
-                rendered with the .article class styles.
+                Use the toolbar to format your content. You can add images,
+                links, code blocks, and more.
               </p>
             </CardContent>
           </Card>
@@ -288,6 +318,81 @@ export function BlogPostForm({ post = null, categories = [] }) {
                     disabled={isUploading}
                   />
                 </Label>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Author Information */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Author Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="author_name">Author Name</Label>
+                <Input
+                  id="author_name"
+                  name="author_name"
+                  defaultValue={post?.author_name || ""}
+                  placeholder="e.g., John Doe"
+                />
+                <p className="text-sm text-muted-foreground mt-1">
+                  Display name for the blog author
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="author_bio">Author Bio</Label>
+                <Textarea
+                  id="author_bio"
+                  name="author_bio"
+                  defaultValue={post?.author_bio || ""}
+                  placeholder="Brief description about the author..."
+                  rows={3}
+                />
+              </div>
+
+              <div>
+                <Label>Author Avatar</Label>
+                {authorAvatar && (
+                  <div className="relative aspect-square w-24 rounded-full overflow-hidden border mb-3">
+                    <Image
+                      src={authorAvatar}
+                      alt="Author avatar"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+
+                <Label
+                  htmlFor="author-avatar-upload"
+                  className="cursor-pointer"
+                >
+                  <div className="border-2 border-dashed rounded-lg p-4 text-center hover:border-primary transition-colors">
+                    {isUploadingAuthorAvatar ? (
+                      <Loader2 className="w-8 h-8 mx-auto animate-spin text-muted-foreground" />
+                    ) : (
+                      <>
+                        <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                        <p className="text-sm text-muted-foreground">
+                          {authorAvatar ? "Change avatar" : "Upload avatar"}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                  <Input
+                    id="author-avatar-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleAuthorAvatarUpload}
+                    className="hidden"
+                    disabled={isUploadingAuthorAvatar}
+                  />
+                </Label>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Recommended: Square image, at least 200x200px
+                </p>
               </div>
             </CardContent>
           </Card>

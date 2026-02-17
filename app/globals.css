@@ -461,3 +461,127 @@
     @apply text-red-500 w-12 h-12;
   }
 }
+
+/* Tiptap Editor Styles */
+.ProseMirror {
+  @apply focus:outline-none;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror h1 {
+  @apply text-3xl font-bold mb-4 mt-6;
+}
+
+.ProseMirror h2 {
+  @apply text-2xl font-semibold mb-3 mt-5;
+}
+
+.ProseMirror h3 {
+  @apply text-xl font-medium mb-2 mt-4;
+}
+
+.ProseMirror p {
+  @apply mb-4;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  @apply pl-6 mb-4;
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+}
+
+.ProseMirror li {
+  @apply mb-2;
+}
+
+.ProseMirror blockquote {
+  @apply border-l-4 border-primary pl-4 py-2 my-4 italic;
+}
+
+.ProseMirror code {
+  @apply bg-muted px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+.ProseMirror pre {
+  @apply bg-muted p-4 rounded-lg overflow-x-auto my-4;
+}
+
+.ProseMirror pre code {
+  @apply bg-transparent p-0;
+}
+
+.ProseMirror a {
+  @apply text-primary underline hover:text-primary/80 transition-colors;
+}
+
+.ProseMirror img {
+  @apply max-w-full h-auto rounded-lg my-4;
+}
+
+/* Enhanced Typography */
+.article-content p:first-of-type::first-letter,
+.ProseMirror > p:first-of-type::first-letter {
+  @apply text-5xl font-bold float-left mr-2 mt-1 leading-none;
+  color: var(--primary);
+}
+
+/* Pull Quotes */
+.pull-quote {
+  @apply text-2xl font-serif italic text-center my-8 px-8 py-6 border-y-2 border-primary/20;
+}
+
+/* Enhanced Links */
+.article a,
+.ProseMirror a {
+  @apply relative inline-block;
+}
+
+.article a::after,
+.ProseMirror a::after {
+  content: "";
+  @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+}
+
+.article a:hover::after,
+.ProseMirror a:hover::after {
+  @apply w-full;
+}
+
+/* Reading Progress Bar */
+.reading-progress {
+  @apply fixed top-0 left-0 h-1 bg-primary z-50 transition-all duration-150;
+}
+
+/* Image Captions */
+.image-caption {
+  @apply text-sm text-muted-foreground text-center mt-2 italic;
+}
+
+/* Improved Spacing */
+.article-content > * + *,
+.ProseMirror > * + * {
+  @apply mt-4;
+}
+
+.article-content > h1 + *,
+.article-content > h2 + *,
+.article-content > h3 + *,
+.ProseMirror > h1 + *,
+.ProseMirror > h2 + *,
+.ProseMirror > h3 + * {
+  @apply mt-6;
+}
