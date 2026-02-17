@@ -40,6 +40,17 @@ export function BlogPostForm({ post = null, categories = [] }) {
     html: post?.content || "",
   });
 
+  // SEO fields
+  const [metaTitle, setMetaTitle] = useState(post?.meta_title || "");
+  const [metaDescription, setMetaDescription] = useState(
+    post?.meta_description || "",
+  );
+  const [ogImage, setOgImage] = useState(post?.og_image || "");
+  const [keywords, setKeywords] = useState(
+    post?.keywords ? post.keywords.join(", ") : "",
+  );
+  const [isUploadingOgImage, setIsUploadingOgImage] = useState(false);
+
   // Auto-generate slug from title
   const handleTitleChange = (e) => {
     const newTitle = e.target.value;
@@ -89,6 +100,23 @@ export function BlogPostForm({ post = null, categories = [] }) {
     setIsUploadingAuthorAvatar(false);
   };
 
+  // Handle OG image upload
+  const handleOgImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingOgImage(true);
+    const tempSlug = slug || "temp";
+    const { data, error } = await uploadBlogImage(file, `${tempSlug}-og`);
+
+    if (error) {
+      alert(`Error uploading OG image: ${error}`);
+    } else {
+      setOgImage(data.url);
+    }
+    setIsUploadingOgImage(false);
+  };
+
   // Calculate reading time from content
   const calculateReadingTime = (content) => {
     const wordsPerMinute = 200;
@@ -119,6 +147,12 @@ export function BlogPostForm({ post = null, categories = [] }) {
 
     // Add author avatar URL
     formData.set("author_avatar", authorAvatar);
+
+    // Add SEO fields
+    formData.set("meta_title", metaTitle);
+    formData.set("meta_description", metaDescription);
+    formData.set("og_image", ogImage);
+    formData.set("keywords", keywords);
 
     try {
       let result;
@@ -392,6 +426,109 @@ export function BlogPostForm({ post = null, categories = [] }) {
                 </Label>
                 <p className="text-sm text-muted-foreground mt-2">
                   Recommended: Square image, at least 200x200px
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* SEO Settings */}
+          <Card>
+            <CardHeader>
+              <CardTitle>SEO Settings</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="meta_title">
+                  Meta Title {metaTitle && `(${metaTitle.length}/60)`}
+                </Label>
+                <Input
+                  id="meta_title"
+                  value={metaTitle}
+                  onChange={(e) => setMetaTitle(e.target.value)}
+                  placeholder={title || "Custom title for search engines"}
+                  maxLength={60}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {metaTitle
+                    ? "Custom meta title for search engines"
+                    : `Fallback: "${title || "Post title"}"`}
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="meta_description">
+                  Meta Description{" "}
+                  {metaDescription && `(${metaDescription.length}/160)`}
+                </Label>
+                <Textarea
+                  id="meta_description"
+                  value={metaDescription}
+                  onChange={(e) => setMetaDescription(e.target.value)}
+                  placeholder="Custom description for search results"
+                  rows={3}
+                  maxLength={160}
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  {metaDescription
+                    ? "Custom meta description for search results"
+                    : "Fallback: Post excerpt"}
+                </p>
+              </div>
+
+              <div>
+                <Label htmlFor="keywords">Keywords (comma-separated)</Label>
+                <Input
+                  id="keywords"
+                  value={keywords}
+                  onChange={(e) => setKeywords(e.target.value)}
+                  placeholder="travel, blog, tips, adventure"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Separate keywords with commas for better SEO
+                </p>
+              </div>
+
+              <div>
+                <Label>Open Graph Image</Label>
+                {ogImage && (
+                  <div className="relative aspect-video w-full max-w-sm rounded-lg overflow-hidden border mb-3">
+                    <Image
+                      src={ogImage}
+                      alt="OG image"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+
+                <Label htmlFor="og-image-upload" className="cursor-pointer">
+                  <div className="border-2 border-dashed rounded-lg p-4 text-center hover:border-primary transition-colors">
+                    {isUploadingOgImage ? (
+                      <Loader2 className="w-8 h-8 mx-auto animate-spin text-muted-foreground" />
+                    ) : (
+                      <>
+                        <Upload className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                        <p className="text-sm text-muted-foreground">
+                          {ogImage ? "Change OG image" : "Upload OG image"}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                  <Input
+                    id="og-image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleOgImageUpload}
+                    className="hidden"
+                    disabled={isUploadingOgImage}
+                  />
+                </Label>
+                <p className="text-sm text-muted-foreground mt-2">
+                  {ogImage
+                    ? "Custom image for social sharing"
+                    : "Fallback: Featured image"}
+                  <br />
+                  Recommended: 1200x630px
                 </p>
               </div>
             </CardContent>

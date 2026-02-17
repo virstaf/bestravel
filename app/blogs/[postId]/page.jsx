@@ -9,6 +9,7 @@ import React from "react";
 import { ShareButton, ShareArticleButton } from "@/components/ShareButtons";
 import { notFound } from "next/navigation";
 import { TiptapRenderer } from "@/components/TiptapRenderer";
+import { JsonLdSchema } from "@/components/JsonLdSchema";
 
 export const generateMetadata = async ({ params }) => {
   const { postId: slug } = await params;
@@ -23,9 +24,46 @@ export const generateMetadata = async ({ params }) => {
     };
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+  const pageUrl = `${siteUrl}/blogs/${post.slug}`;
+  const metaTitle = post.meta_title || post.title;
+  const metaDescription = post.meta_description || post.excerpt || post.title;
+  const ogImageUrl = post.og_image || post.featured_image;
+
   return {
-    title: post.title,
-    description: post.excerpt || post.title,
+    title: metaTitle,
+    description: metaDescription,
+    keywords: post.keywords?.join(", "),
+    alternates: {
+      canonical: pageUrl,
+    },
+    openGraph: {
+      title: metaTitle,
+      description: metaDescription,
+      url: pageUrl,
+      siteName: "BesTravel",
+      images: ogImageUrl
+        ? [
+            {
+              url: ogImageUrl,
+              width: 1200,
+              height: 630,
+              alt: metaTitle,
+            },
+          ]
+        : [],
+      locale: "en_US",
+      type: "article",
+      publishedTime: post.published_at,
+      modifiedTime: post.updated_at || post.published_at,
+      authors: post.author_name ? [post.author_name] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metaTitle,
+      description: metaDescription,
+      images: ogImageUrl ? [ogImageUrl] : [],
+    },
   };
 };
 
@@ -56,6 +94,9 @@ const PostPage = async ({ params }) => {
 
   return (
     <article className="min-h-screen">
+      {/* JSON-LD Structured Data */}
+      <JsonLdSchema post={post} />
+
       {/* Hero Section with Featured Image */}
       <div className="relative h-[500px] w-full overflow-hidden">
         {/* Featured Image */}

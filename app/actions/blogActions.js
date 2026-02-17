@@ -154,6 +154,16 @@ export async function createBlogPost(formData) {
     author_name: formData.get("author_name") || null,
     author_bio: formData.get("author_bio") || null,
     author_avatar: formData.get("author_avatar") || null,
+    meta_title: formData.get("meta_title") || null,
+    meta_description: formData.get("meta_description") || null,
+    og_image: formData.get("og_image") || null,
+    keywords: formData.get("keywords")
+      ? formData
+          .get("keywords")
+          .split(",")
+          .map((k) => k.trim())
+          .filter(Boolean)
+      : null,
     published_at:
       formData.get("status") === "published" ? new Date().toISOString() : null,
   };
@@ -198,6 +208,16 @@ export async function updateBlogPost(id, formData) {
     author_name: formData.get("author_name") || null,
     author_bio: formData.get("author_bio") || null,
     author_avatar: formData.get("author_avatar") || null,
+    meta_title: formData.get("meta_title") || null,
+    meta_description: formData.get("meta_description") || null,
+    og_image: formData.get("og_image") || null,
+    keywords: formData.get("keywords")
+      ? formData
+          .get("keywords")
+          .split(",")
+          .map((k) => k.trim())
+          .filter(Boolean)
+      : null,
   };
 
   // If publishing for the first time, set published_at
