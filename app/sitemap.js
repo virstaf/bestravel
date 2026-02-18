@@ -1,10 +1,10 @@
-import { getAllPublishedBlogPosts } from "@/app/actions/blogActions";
+import { getPublishedBlogPosts } from "@/app/actions/blogActions";
 
 export default async function sitemap() {
-  const siteUrl = process.env.NEXT_PUBLIC_BASEURL || "https://bestravel.com";
+  const siteUrl = process.env.NEXT_PUBLIC_BASEURL || "https://virstravel.com";
 
   // Fetch all published blog posts
-  const { data: posts } = await getAllPublishedBlogPosts();
+  const { data: posts } = await getPublishedBlogPosts();
 
   // Generate blog post URLs
   const blogUrls = (posts || []).map((post) => ({
