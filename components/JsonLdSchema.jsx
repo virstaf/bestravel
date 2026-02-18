@@ -24,7 +24,7 @@ export function JsonLdSchema({ post }) {
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `${process.env.NEXT_PUBLIC_SITE_URL || ""}/blogs/${post.slug}`,
+      "@id": `${process.env.NEXT_PUBLIC_BASEURL || ""}/blogs/${post.slug}`,
     },
     ...(post.keywords &&
       post.keywords.length > 0 && { keywords: post.keywords.join(", ") }),

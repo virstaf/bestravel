@@ -1,5 +1,6 @@
 export default function robots() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://bestravel.com";
+  const siteUrl =
+    process.env.NEXT_PUBLIC_BASEURL || "https://virstravelclub.com";
 
   return {
     rules: [

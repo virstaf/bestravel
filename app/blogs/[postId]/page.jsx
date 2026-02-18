@@ -24,7 +24,7 @@ export const generateMetadata = async ({ params }) => {
     };
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+  const siteUrl = process.env.NEXT_PUBLIC_BASEURL || "";
   const pageUrl = `${siteUrl}/blogs/${post.slug}`;
   const metaTitle = post.meta_title || post.title;
   const metaDescription = post.meta_description || post.excerpt || post.title;
