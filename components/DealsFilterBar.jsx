@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useDebounce } from "use-debounce";
 import {
   MapPin,
   SlidersHorizontal,
@@ -20,9 +22,63 @@ import { DateRangePicker } from "@/components/ui/date-range-picker";
 import { cn } from "@/lib/utils";
 
 const DealsFilterBar = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   const [isSticky, setIsSticky] = useState(false);
-  const [date, setDate] = useState();
-  const [priceRange, setPriceRange] = useState(5000); // Default max price in GBP
+
+  // Initialize state from URL
+  const [dest, setDest] = useState(searchParams.get("dest") || "");
+  const [date, setDate] = useState({
+    from: searchParams.get("from")
+      ? new Date(searchParams.get("from"))
+      : undefined,
+    to: searchParams.get("to") ? new Date(searchParams.get("to")) : undefined,
+  });
+  const [priceRange, setPriceRange] = useState(
+    Number(searchParams.get("maxPrice")) || 5000,
+  );
+  const [sort, setSort] = useState(searchParams.get("sort") || "best-value");
+
+  const [debouncedDest] = useDebounce(dest, 500);
+  const [debouncedPrice] = useDebounce(priceRange, 500);
+
+  // Update URL when filters change
+  const updateFilters = (updates) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
+
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  useEffect(() => {
+    updateFilters({ dest: debouncedDest });
+  }, [debouncedDest]);
+
+  useEffect(() => {
+    updateFilters({ maxPrice: debouncedPrice });
+  }, [debouncedPrice]);
+
+  const handleDateChange = (newDate) => {
+    setDate(newDate);
+    updateFilters({
+      from: newDate?.from?.toISOString().split("T")[0],
+      to: newDate?.to?.toISOString().split("T")[0],
+    });
+  };
+
+  const handleSortChange = (newSort) => {
+    setSort(newSort);
+    updateFilters({ sort: newSort });
+  };
 
   // Handle scroll for sticky state
   useEffect(() => {
@@ -58,8 +114,11 @@ const DealsFilterBar = () => {
             size="sm"
             className="text-xs text-muted-foreground hover:text-foreground"
             onClick={() => {
-              setDate(undefined);
+              setDest("");
+              setDate({ from: undefined, to: undefined });
               setPriceRange(5000);
+              setSort("best-value");
+              router.push(pathname, { scroll: false });
             }}
           >
             Reset All
@@ -77,6 +136,8 @@ const DealsFilterBar = () => {
             <div className="relative">
               <Input
                 placeholder="e.g. Maldives, Bali..."
+                value={dest}
+                onChange={(e) => setDest(e.target.value)}
                 className="h-11 bg-white border-border/60 focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
               />
             </div>
@@ -88,7 +149,11 @@ const DealsFilterBar = () => {
               <Calendar className="w-3.5 h-3.5" />
               Travel Dates
             </label>
-            <DateRangePicker className="w-full" date={date} setDate={setDate} />
+            <DateRangePicker
+              className="w-full"
+              date={date}
+              setDate={handleDateChange}
+            />
           </div>
 
           {/* Price Range Slider */}
@@ -102,19 +167,19 @@ const DealsFilterBar = () => {
                 <span className="text-sm font-semibold text-foreground">
                   £{priceRange.toLocaleString()}
                 </span>
+                <input
+                  type="range"
+                  min="0"
+                  max="10000"
+                  step="100"
+                  value={priceRange}
+                  onChange={(e) => setPriceRange(Number(e.target.value))}
+                  className="w-[60%] h-2 bg-gradient-to-r from-primary/20 to-primary rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110"
+                />
                 <span className="text-xs text-muted-foreground">
                   per person
                 </span>
               </div>
-              <input
-                type="range"
-                min="0"
-                max="10000"
-                step="100"
-                value={priceRange}
-                onChange={(e) => setPriceRange(Number(e.target.value))}
-                className="w-full h-2 bg-gradient-to-r from-primary/20 to-primary rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110"
-              />
             </div>
           </div>
 
@@ -123,7 +188,7 @@ const DealsFilterBar = () => {
             <label className="text-xs font-medium text-muted-foreground">
               Sort By
             </label>
-            <Select defaultValue="best-value">
+            <Select value={sort} onValueChange={handleSortChange}>
               <SelectTrigger className="h-11 bg-white border-border/60 focus:border-primary focus:ring-1 focus:ring-primary/20">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>

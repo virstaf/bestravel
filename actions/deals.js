@@ -16,7 +16,7 @@ export const getFeaturedDealsAction = async ({ limit }) => {
         type,
         location
       )
-    `
+    `,
     )
     .eq("is_active", true)
     .eq("is_featured", true)
@@ -29,37 +29,85 @@ export const getFeaturedDealsAction = async ({ limit }) => {
   return deals || [];
 };
 
-export const getDealsAction = async (limit) => {
+export const getDealsAction = async ({
+  limit,
+  dest,
+  maxPrice,
+  from,
+  to,
+  sort,
+} = {}) => {
   try {
     const supabase = await createClient();
 
-    // Fetch all deals for server-side rendering
-    let query = supabase
-      .from("deals")
-      .select(
-        `
+    // Fetch deals with optional filtering
+    let query = supabase.from("deals").select(
+      `
       *,
       partners:partner_id (
         name,
         type,
         location
       )
-    `
-      )
+    `,
+    );
+
+    // Basic status filters
+    query = query
       .eq("is_active", true)
-      .gte("end_date", new Date().toISOString())
-      .order("created_at", { ascending: false });
+      .gte("end_date", new Date().toISOString());
+
+    // Destination filter
+    if (dest) {
+      query = query.or(`location.ilike.%${dest}%,title.ilike.%${dest}%`);
+    }
+
+    // Max Price filter
+    // Note: Since discounted_price calculation happens in JS/SQL, we use the original_price or a calculated field if available
+    // For now, filtering by original_price as a proxy or if discounted_price exists in DB
+    if (maxPrice) {
+      query = query.lte("original_price", parseInt(maxPrice));
+    }
+
+    // Dates filter
+    if (from) {
+      query = query.gte("travel_start_date", from);
+    }
+    if (to) {
+      query = query.lte("end_date", to);
+    }
+
+    // Sorting
+    switch (sort) {
+      case "lowest-price":
+        query = query.order("original_price", { ascending: true });
+        break;
+      case "popular":
+        query = query.order("is_featured", { ascending: false });
+        break;
+      case "ending-soon":
+        query = query.order("end_date", { ascending: true });
+        break;
+      case "best-value":
+      default:
+        query = query.order("discount_percentage", { ascending: false });
+        break;
+    }
+
+    // Fallback sort to newest first
+    query = query.order("created_at", { ascending: false });
 
     if (limit) {
       query = query.limit(limit);
     }
 
-    const { data } = await query;
+    const { data, error } = await query;
 
-    return data;
+    if (error) throw error;
+
+    return data || [];
   } catch (error) {
-    // throw error;
-    console.error(error);
+    console.error("Error in getDealsAction:", error);
     return [];
   }
 };
@@ -77,7 +125,7 @@ export const getDealByIdAction = async (dealId) => {
           type,
           location
         )
-      `
+      `,
       )
       .eq("id", dealId)
       .single();

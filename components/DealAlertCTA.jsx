@@ -46,8 +46,12 @@ const DealAlertCTA = () => {
               </h2>
 
               <p className="text-muted-foreground text-lg">
-                Get notified when new travel deals drop — no spam, just savings.
+                Get notified when new travel deals drop
               </p>
+
+              <span className="text-muted-foreground text-lg">
+                No spam, just savings.
+              </span>
             </div>
 
             {/* Email Form */}

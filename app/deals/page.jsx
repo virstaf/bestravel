@@ -9,8 +9,25 @@ import DealAlertCTA from "@/components/DealAlertCTA";
 
 export const dynamic = "force-dynamic";
 
-const PublicDealsPage = async () => {
-  const deals = (await getDealsAction()) || [];
+const PublicDealsPage = async (props) => {
+  const searchParams = await props.searchParams;
+  const deals =
+    (await getDealsAction({
+      dest: searchParams.dest,
+      maxPrice: searchParams.maxPrice,
+      from: searchParams.from,
+      to: searchParams.to,
+      sort: searchParams.sort,
+    })) || [];
+
+  // Check if any filters are active
+  const isFiltered = !!(
+    searchParams.dest ||
+    searchParams.maxPrice ||
+    searchParams.from ||
+    searchParams.to
+  );
+
   const featuredDeals = deals.filter((deal) => deal.is_featured).slice(0, 3);
 
   return (
@@ -39,6 +56,7 @@ const PublicDealsPage = async () => {
               deals={deals}
               featuredDeals={featuredDeals}
               isPublic={true}
+              isFiltered={isFiltered}
             />
           </div>
         </div>
