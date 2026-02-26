@@ -196,152 +196,79 @@ export default function DealCard({ deal, isPublic = false }) {
     : null;
 
   return (
-    <Card className="overflow-hidden py-0 hover:shadow-xl transition-all duration-300 group">
-      {/* Hero Image with Badges */}
-      <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+    <Card className="group overflow-hidden border-gray-200 shadow-premium hover:shadow-lg transition-all duration-300">
+      {/* Top: Destination image + Savings badge */}
+      <div className="relative aspect-[16/10] overflow-hidden">
         <Image
           src={imageUrl}
           alt={packageType}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           unoptimized={imageUrl.startsWith("http")}
         />
-        {/* Top-left badge */}
-        {badgeInfo && (
-          <Badge
-            className={`absolute top-4 left-4 ${badgeInfo.className} text-white px-3 py-1.5 text-sm font-semibold shadow-lg`}
-          >
-            {badgeInfo.text}
-          </Badge>
-        )}
-        {/* Discount badge */}
         {discountPercentage && (
-          <Badge className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white px-4 py-1 text-base font-medium shadow-lg">
+          <Badge className="absolute top-4 right-4 bg-accent-500 text-white border-none px-3 py-1 text-sm font-bold shadow-md rounded-lg">
             {discountPercentage}% OFF
           </Badge>
         )}
       </div>
 
-      <CardContent className="px-6 py-0 space-y-3">
-        {/* Location */}
-        <div className="flex items-center text-sm text-muted-foreground">
-          <MapPinIcon className="h-4 w-4 mr-1.5" />
-          <span className="font-medium">{location}</span>
-        </div>
-
-        {/* Package Title */}
-        <h3 className="text-lg font-semibold text-foreground leading-tight">
-          {packageType}
-        </h3>
-
-        {/* Inclusions Icons */}
-        <div className="flex items-center gap-3 py-2">
-          {includesFlight && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Plane className="w-4 h-4 text-primary" />
-              <span>Flight</span>
-            </div>
-          )}
-          {includesHotel && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Hotel className="w-4 h-4 text-primary" />
-              <span>Hotel</span>
-            </div>
-          )}
-          {includesTransfer && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Car className="w-4 h-4 text-primary" />
-              <span>Transfer</span>
-            </div>
-          )}
-          {deal.includes_breakfast && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Coffee className="w-4 h-4 text-primary" />
-              <span>Breakfast</span>
-            </div>
-          )}
-        </div>
-
-        {/* Validity Date */}
-        <div className="flex items-center text-sm text-muted-foreground pt-1">
-          <CalendarIcon className="h-4 w-4 mr-1.5" />
-          <span>Valid until {formattedDate}</span>
-        </div>
-
-        {travelStartDate && (
-          <div className="flex items-center text-sm text-blue-600 font-medium pt-0.5">
-            <CalendarIcon className="h-4 w-4 mr-1.5" />
-            <span>
-              Travel: {travelStartDate}
-              {travelEndDate ? ` - ${travelEndDate}` : ""}
+      <CardContent className="p-6 space-y-4">
+        {/* Middle: Destination + Dates + Public price (strikethrough) */}
+        <div className="space-y-1">
+          <div className="flex items-center justify-between">
+            <h3 className="text-h4 font-bold text-dark-900 truncate">
+              {location}
+            </h3>
+            <span className="text-small text-gray-500 line-through">
+              £{originalPrice.toFixed(0)}
             </span>
           </div>
-        )}
-
-        {/* Pricing */}
-        <div className="pt-2 space-y-1">
-          {/* <div className="flex items-baseline gap-2"> */}
-          {/* <span className="text-sm text-muted-foreground line-through">
-              £{originalPrice.toFixed(0)}
-            </span> */}
-          {/* </div> */}
-          <div className="flex items-baseline justify-between">
-            <div className="flex flex-col">
-              <span className="text-xs text-muted-foreground">
-                Starting from
-              </span>
-              <span className="text-3xl font-bold text-foreground">
-                £{Math.round(discountedPrice)}
-              </span>
-              <span className="text-sm text-muted-foreground">per person</span>
-            </div>
-            <div className="text-right">
-              <div className="flex items-baseline gap-2">
-                <span className="text-sm text-muted-foreground line-through">
-                  £{originalPrice.toFixed(0)}
-                </span>
-              </div>
-              <span className="text-sm font-semibold text-green-600">Save</span>
-              <div className="text-base font-bold text-green-600">
-                £{Math.round(savings)}
-              </div>
-            </div>
+          <div className="flex items-center text-small text-gray-500">
+            <CalendarIcon className="h-4 w-4 mr-2 text-primary-500" />
+            <span>
+              {travelStartDate
+                ? `${travelStartDate}${travelEndDate ? ` - ${travelEndDate}` : ""}`
+                : `Valid until ${formattedDate}`}
+            </span>
           </div>
         </div>
-      </CardContent>
 
-      <CardFooter className="p-6 pt-2 flex flex-col gap-3">
-        {/* Urgency microcopy */}
-        <p className="text-xs text-orange-600 font-medium text-center">
-          ⚡ {getUrgencyText()}
-        </p>
+        {/* Bottom: Member price (bold) + "Save $XXX" */}
+        <div className="flex items-end justify-between pt-2 border-t border-gray-100">
+          <div className="space-y-0.5">
+            <span className="text-micro uppercase tracking-wider font-bold text-primary-500">
+              Member Price
+            </span>
+            <div className="flex items-baseline gap-1">
+              <span className="text-h2 font-bold text-dark-900 leading-none">
+                £{Math.round(discountedPrice)}
+              </span>
+              <span className="text-micro text-gray-500 font-medium">/pp</span>
+            </div>
+          </div>
+          <div className="text-right">
+            <Badge
+              variant="secondary"
+              className="bg-success/10 text-success border-none font-bold"
+            >
+              Save £{Math.round(savings)}
+            </Badge>
+          </div>
+        </div>
 
-        <Button
-          asChild
-          className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-6 text-base shadow-md hover:shadow-lg transition-all"
-        >
+        {/* CTA: View Deal */}
+        <Button asChild variant="default" className="w-full mt-4">
           <Link
             href={
               isPublic ? `/deals/${deal.id}` : `/dashboard/deals/${deal.id}`
             }
           >
-            {ctaCopy}
+            View Deal
           </Link>
         </Button>
-
-        {/* Confidence boosters */}
-        <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Shield className="w-3.5 h-3.5" />
-            <span>No hidden fees</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <Lock className="w-3.5 h-3.5" />
-            <span>Secure checkout</span>
-          </div>
-        </div>
-      </CardFooter>
+      </CardContent>
     </Card>
   );
 }

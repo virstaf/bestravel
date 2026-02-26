@@ -9,6 +9,7 @@ import { NavLinks } from "@/lib/data";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import { AlignRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import Logo from "./ui/logo";
 
 const NavBar = () => {
@@ -38,74 +39,92 @@ const NavBar = () => {
 
   return (
     <nav
-      className={`bg-white/80 backdrop-blur-sm transition-transform duration-300 ease-in-out fixed w-full top-0 z-50 h-16 ${menuOpen ? "bg-white shadow h-screen md:h-16 rounded-b-2xl" : ""}`}
+      className={cn(
+        "fixed top-0 z-50 w-full h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300",
+        menuOpen && "h-screen bg-white md:h-16",
+      )}
     >
-      <div
-        className={`relative max-w-7xl mx-auto px-4 flex items-center justify-between h-full  ${menuOpen ? "flex-col justify-between gap-16 py-8" : ""}`}
-      >
-        <div className={`logo ${menuOpen ? "mt-16" : ""}`}>
-          <Logo href={"/"} />
+      <div className="max-w-[1280px] mx-auto px-6 h-full flex items-center justify-between">
+        {/* Logo left */}
+        <div className="flex-shrink-0">
+          <Logo href="/" />
         </div>
+
+        {/* Links center */}
         <div
-          className={`flex items-center gap-4 ${menuOpen ? "flex-col" : "hidden md:flex"}`}
+          className={cn(
+            "hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2",
+            menuOpen && "flex flex-col static translate-x-0 mt-16",
+          )}
         >
           {NavLinks.map((link) => (
             <Link
               key={link.name}
               href={link.path}
-              className={`text-gray-900 hover:text-gray-600 ${link.path.length < 2 && link.path === pathname ? "font-bold text-primary" : ""} ${
-                link.path !== "/" && pathname.startsWith(link.path)
-                  ? "font-bold text-primary"
-                  : ""
-              }`}
+              className={cn(
+                "text-small font-medium text-gray-500 hover:text-primary-700 transition-colors",
+                pathname === link.path && "text-primary-700 font-bold",
+              )}
             >
               {link.name}
             </Link>
           ))}
         </div>
+
+        {/* CTA right */}
         <div
-          className={`flex items-center justify-center gap-4 ${menuOpen ? "w-full flex flex-col" : "hidden md:flex"}`}
+          className={cn(
+            "hidden md:flex items-center gap-4",
+            menuOpen && "flex flex-col w-full mt-8",
+          )}
         >
           {user ? (
             <>
-              <Button
-                asChild
-                className={`text-white ${menuOpen ? "w-full" : ""}`}
-              >
+              <Button asChild size="sm" className={cn(menuOpen && "w-full")}>
                 <Link href="/dashboard">Dashboard</Link>
               </Button>
               <UserProfile className="hidden md:block" />
             </>
           ) : (
             <div
-              className={`flex gap-2` + (menuOpen ? " flex-col w-full" : "")}
+              className={cn(
+                "flex items-center gap-3",
+                menuOpen && "flex-col w-full",
+              )}
             >
               <Button
                 asChild
-                variant="outline"
-                className={menuOpen ? "w-full" : ""}
+                variant="ghost"
+                size="sm"
+                className={cn(menuOpen && "w-full")}
               >
                 <Link href="/auth/login">Login</Link>
               </Button>
-              <Button asChild className={menuOpen ? "w-full" : ""}>
-                <Link href="/auth/signup" className="text-white">
-                  Get Started
-                </Link>
+              <Button
+                asChild
+                variant="accent"
+                size="sm"
+                className={cn(menuOpen && "w-full")}
+              >
+                <Link href="/auth/signup">Get Started</Link>
               </Button>
             </div>
           )}
         </div>
-        <div className="text-gray-600 absolute top-4 right-8 md:hidden">
-          {!menuOpen ? (
-            <AlignRight
-              onClick={() => setMenuOpen(true)}
-              className="cursor-pointer"
-            />
-          ) : (
-            <X onClick={() => setMenuOpen(false)} className="cursor-pointer" />
-          )}
+
+        {/* Mobile Toggle */}
+        <div className="md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <X /> : <AlignRight />}
+          </Button>
         </div>
       </div>
+
+      {/* Mobile Menu Overlay (content already handled in above structure with cn) */}
     </nav>
   );
 };

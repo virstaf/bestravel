@@ -1,11 +1,4 @@
 export default {
-  variants: {
-    extend: {
-      backgroundColor: ["active"],
-      textColor: ["active"],
-      borderColor: ["active"],
-    },
-  },
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
