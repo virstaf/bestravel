@@ -156,7 +156,8 @@ export function HeroForm() {
       {/* CTA */}
       <Button
         onClick={handleRequestDeal}
-        className="mt-8 w-full h-14 text-lg font-semibold bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-md transition-all"
+        variant="default"
+        className="mt-8 w-full h-14 text-lg font-semibold text-white shadow-premium transition-all"
       >
         Find me the best deals →
       </Button>

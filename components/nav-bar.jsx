@@ -40,8 +40,8 @@ const NavBar = () => {
   return (
     <nav
       className={cn(
-        "fixed top-0 z-50 w-full h-16 bg-white/80 backdrop-blur-md border-b border-gray-100 transition-all duration-300",
-        menuOpen && "h-screen bg-white md:h-16",
+        "fixed top-0 z-50 w-full h-20 bg-white/70 backdrop-blur-xl border-b border-gray-100 transition-all duration-500 shadow-sm shadow-primary-900/5",
+        menuOpen && "h-screen bg-white md:h-20",
       )}
     >
       <div className="max-w-[1280px] mx-auto px-6 h-full flex items-center justify-between">
@@ -62,7 +62,7 @@ const NavBar = () => {
               key={link.name}
               href={link.path}
               className={cn(
-                "text-small font-medium text-gray-500 hover:text-primary-700 transition-colors",
+                "text-small font-semibold text-gray-500 hover:text-primary-700 hover:-translate-y-0.5 transition-all duration-300",
                 pathname === link.path && "text-primary-700 font-bold",
               )}
             >
