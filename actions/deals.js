@@ -79,6 +79,9 @@ export const getDealsAction = async ({
 
     // Sorting
     switch (sort) {
+      case "newest":
+        query = query.order("created_at", { ascending: false });
+        break;
       case "lowest-price":
         query = query.order("original_price", { ascending: true });
         break;

@@ -39,7 +39,7 @@ const DealsFilterBar = () => {
   const [priceRange, setPriceRange] = useState(
     Number(searchParams.get("maxPrice")) || 5000,
   );
-  const [sort, setSort] = useState(searchParams.get("sort") || "best-value");
+  const [sort, setSort] = useState(searchParams.get("sort") || "newest");
 
   const [debouncedDest] = useDebounce(dest, 500);
   const [debouncedPrice] = useDebounce(priceRange, 500);
@@ -117,7 +117,7 @@ const DealsFilterBar = () => {
               setDest("");
               setDate({ from: undefined, to: undefined });
               setPriceRange(5000);
-              setSort("best-value");
+              setSort("newest");
               router.push(pathname, { scroll: false });
             }}
           >
@@ -193,6 +193,7 @@ const DealsFilterBar = () => {
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="newest">🆕 Newest</SelectItem>
                 <SelectItem value="best-value">💎 Best Value</SelectItem>
                 <SelectItem value="lowest-price">💰 Lowest Price</SelectItem>
                 <SelectItem value="popular">🔥 Popular</SelectItem>
