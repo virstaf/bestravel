@@ -143,14 +143,16 @@ const LoginForm = ({ onSuccess, redirect = true }) => {
                 </FormItem>
               )}
             />
-            <div
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute bottom-1 right-2 cursor-pointer"
+              className="absolute right-0 top-[23px] h-9 w-9 text-muted-foreground hover:bg-transparent"
+              aria-label={showPassword ? "Hide password" : "Show password"}
             >
-              <span className="text-muted-foreground">
-                {showPassword ? <EyeClosed /> : <Eye />}
-              </span>
-            </div>
+              {showPassword ? <EyeClosed /> : <Eye />}
+            </Button>
           </div>
 
           <div className="flex justify-end -mt-6">
