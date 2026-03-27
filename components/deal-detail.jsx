@@ -1,6 +1,6 @@
 // components/DealDetail.js
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -13,9 +13,18 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import BookingDialog from "@/components/booking-dialog";
+import { trackEvent } from "@/lib/analytics";
 
 export default function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const location = deal.location || deal.partners?.location || "Destination";
+
+  useEffect(() => {
+    trackEvent("view_deal", {
+      deal_id: deal.id.toString(),
+      destination: location,
+    });
+  }, [deal.id, location]);
 
   // Calculate prices logic with location support
   const calculateBaseDiscounted = (price) => {
@@ -88,7 +97,6 @@ export default function DealDetail({ deal, isPublic = false }) {
 
   const imageUrl = getImageUrl();
 
-  const location = deal.location || deal.partners?.location || "Destination";
   const title = deal.title || deal.package_type || "Travel Package";
   const packageType = deal.package_type || deal.title || "Travel Package";
   const nights = deal.duration_nights || 4;
@@ -308,7 +316,11 @@ export default function DealDetail({ deal, isPublic = false }) {
             {/* Booking Button */}
             <div className="pt-4">
               <Button
-                onClick={() => setIsBookingOpen(true)}
+                onClick={() => {
+                  trackEvent("click_cta", { cta_name: "Book This Deal Now" });
+                  trackEvent("start_booking", { destination: location });
+                  setIsBookingOpen(true);
+                }}
                 className="w-full bg-[#0a4275] hover:bg-[#083558] text-white font-semibold py-6 text-lg"
                 size="lg"
               >
