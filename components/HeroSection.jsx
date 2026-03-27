@@ -50,13 +50,27 @@ const HeroSection = () => {
               <Label className="text-base font-semibold text-gray-700">
                 What are you looking for?
               </Label>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button className="flex-1 h-12 rounded-full bg-primary text-primary-foreground font-medium text-base transition hover:opacity-90 ring-2 ring-primary ring-offset-2">
+              <div
+                className="flex flex-col sm:flex-row gap-4"
+                role="group"
+                aria-label="Travel Type Selection"
+              >
+                <Button
+                  type="button"
+                  variant="default"
+                  className="flex-1 h-12 rounded-full text-base font-medium ring-2 ring-primary ring-offset-2"
+                  aria-pressed="true"
+                >
                   Flights
-                </button>
-                <button className="flex-1 h-12 rounded-full bg-gray-100 text-gray-600 font-medium text-base transition hover:bg-gray-200">
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="flex-1 h-12 rounded-full text-base font-medium bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  aria-pressed="false"
+                >
                   Hotels
-                </button>
+                </Button>
               </div>
             </div>
 

@@ -96,14 +96,15 @@ const NavBar = () => {
           )}
         </div>
         <div className="text-gray-600 absolute top-4 right-8 md:hidden">
-          {!menuOpen ? (
-            <AlignRight
-              onClick={() => setMenuOpen(true)}
-              className="cursor-pointer"
-            />
-          ) : (
-            <X onClick={() => setMenuOpen(false)} className="cursor-pointer" />
-          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            className="hover:bg-transparent"
+          >
+            {!menuOpen ? <AlignRight /> : <X />}
+          </Button>
         </div>
       </div>
     </nav>

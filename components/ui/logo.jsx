@@ -3,7 +3,11 @@ import Link from "next/link";
 
 const Logo = ({ href }) => {
   return (
-    <Link href={href} className="max-h-14 hover:cursor-pointer hover:scale-105">
+    <Link
+      href={href}
+      className="max-h-14 hover:cursor-pointer hover:scale-105"
+      aria-label="Virstravel Home"
+    >
       <div className="h-full relative">
         <Image
           src="/virstravel.png"
