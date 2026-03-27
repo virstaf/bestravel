@@ -22,6 +22,7 @@ import { getUser } from "@/lib/supabase/server";
 import Image from "next/image";
 import { EyeClosed } from "lucide-react";
 import { Eye } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
 
 const formSchema = z.object({
   fullname: z
@@ -91,6 +92,8 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
         "We've sent you a confirmation link. Please check your email and click the link to verify your account, then you can continue with onboarding.";
 
       if (!errorMessage) {
+        trackEvent("sign_up_completed", {});
+
         toast.success(title, {
           description: description,
           duration: 8000,
@@ -110,6 +113,7 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
   const handleGoogleAuth = async () => {
     startTransition(async () => {
       try {
+        trackEvent("click_cta", { cta_name: "Continue with Google" });
         await googleAuthAction();
       } catch (error) {}
     });
@@ -220,7 +224,11 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
             </Button>
           </div>
           <div className="grid w-full gap-3">
-            <Button disabled={isPending} type="submit">
+            <Button
+              disabled={isPending}
+              type="submit"
+              onClick={() => trackEvent("click_cta", { cta_name: "Sign up Submit" })}
+            >
               {isPending ? <Loader2 className="animate-spin" /> : "Sign up"}
             </Button>
             <div className="flex w-full h-6 items-center justify-center">

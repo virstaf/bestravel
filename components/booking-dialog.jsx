@@ -29,6 +29,7 @@ import {
 import { CalendarIcon, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { trackEvent } from "@/lib/analytics";
 
 export default function BookingDialog({ deal, open, onOpenChange }) {
   const [step, setStep] = useState(1);
@@ -54,6 +55,15 @@ export default function BookingDialog({ deal, open, onOpenChange }) {
 
     // Simulate booking submission
     await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    const finalPrice = Math.round(discountedPrice * formData.numberOfTravelers);
+    const location = deal?.location || deal?.partners?.location || "Destination";
+
+    trackEvent("booking_completed", {
+      value: finalPrice,
+      destination: location,
+      currency: "GBP",
+    });
 
     setIsSubmitting(false);
     setStep(3); // Move to confirmation step
