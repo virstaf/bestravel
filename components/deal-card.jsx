@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -16,140 +17,159 @@ import {
   Lock,
 } from "lucide-react";
 
-export default function DealCard({ deal, isPublic = false }) {
-  // Calculate prices logic with location support
-  const calculateBaseDiscounted = (price) => {
-    return deal.discount_percentage
-      ? price * (1 - deal.discount_percentage / 100)
-      : deal.discount_amount
-        ? price - deal.discount_amount
-        : price; // No automatic discount if not specified
+const DealCard = memo(({ deal, isPublic = false }) => {
+  // Use deal ID hash to determine stable values
+  // This works with both numeric IDs and UUIDs
+  const hashCode = (str) => {
+    let hash = 0;
+    if (!str) return hash;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash);
   };
 
-  // Find lowest price option
-  const priceOptions = [];
-
-  // Add base option
-  const baseOriginal = deal.original_price || 1299;
-  const baseSale = calculateBaseDiscounted(baseOriginal);
-  priceOptions.push({
-    sale: baseSale,
-    original: baseOriginal,
-  });
-
-  // Add location options
-  if (deal.location_prices?.length > 0) {
-    deal.location_prices.forEach((lp) => {
-      if (lp.price) {
-        const sPrice = parseFloat(lp.price);
-        const oPrice = lp.original_price
-          ? parseFloat(lp.original_price)
-          : sPrice;
-        // Only add if it's a valid number
-        if (!isNaN(sPrice)) {
-          priceOptions.push({ sale: sPrice, original: oPrice });
-        }
-      }
-    });
-  }
-
-  // Sort by sale price ascending
-  priceOptions.sort((a, b) => a.sale - b.sale);
-
-  const bestOption = priceOptions[0];
-  const originalPrice = bestOption.original;
-  const discountedPrice = bestOption.sale;
-  const savings = originalPrice - discountedPrice;
-
-  // Calculate actual discount percentage from prices
-  const discountPercentage =
-    savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
-
-  // Find which location has the best price (if using location pricing)
-  const bestLocationPrice = deal.location_prices?.find(
-    (lp) => parseFloat(lp.price) === discountedPrice,
-  );
-
-  // Get image URL - use partner image or placeholder
-  const getImageUrl = () => {
-    if (deal.image_url) return deal.image_url;
-    if (deal.partners?.images?.[0]) return deal.partners.images[0];
-    if (deal.partners?.image_url) return deal.partners.image_url;
-
-    // Use deal ID hash to determine which placeholder image to use (1-5)
-    // This works with both numeric IDs and UUIDs
-    const hashCode = (str) => {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash = hash & hash; // Convert to 32bit integer
-      }
-      return Math.abs(hash);
+  // Memoize all derived values to prevent redundant calculations on every re-render
+  const {
+    originalPrice,
+    discountedPrice,
+    savings,
+    discountPercentage,
+    imageUrl,
+    badgeInfo,
+    ctaCopy,
+    urgencyText,
+    validUntil,
+  } = useMemo(() => {
+    // Calculate prices logic with location support
+    const calculateBaseDiscounted = (price) => {
+      return deal.discount_percentage
+        ? price * (1 - deal.discount_percentage / 100)
+        : deal.discount_amount
+          ? price - deal.discount_amount
+          : price; // No automatic discount if not specified
     };
 
-    const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
-    return `/images/deals/default-${imageNumber}.jpg`;
-  };
+    // Find lowest price option
+    const options = [];
 
-  const imageUrl = getImageUrl();
+    // Add base option
+    const baseOriginal = deal.original_price || 1299;
+    const baseSale = calculateBaseDiscounted(baseOriginal);
+    options.push({
+      sale: baseSale,
+      original: baseOriginal,
+    });
 
-  // Format validity date (needed by badge and urgency functions)
-  const validUntil = new Date(deal.end_date || deal.valid_until);
-
-  // Determine badge type
-  const getBadgeInfo = () => {
-    const daysUntilExpiry = Math.ceil(
-      (validUntil - new Date()) / (1000 * 60 * 60 * 24),
-    );
-
-    if (deal.is_featured) {
-      return {
-        text: "🔥 Hot Deal",
-        className: "bg-orange-500 hover:bg-orange-600",
-      };
+    // Add location options
+    if (deal.location_prices?.length > 0) {
+      deal.location_prices.forEach((lp) => {
+        if (lp.price) {
+          const sPrice = parseFloat(lp.price);
+          const oPrice = lp.original_price
+            ? parseFloat(lp.original_price)
+            : sPrice;
+          // Only add if it's a valid number
+          if (!isNaN(sPrice)) {
+            options.push({ sale: sPrice, original: oPrice });
+          }
+        }
+      });
     }
-    if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
-      return {
-        text: "⏰ Ending Soon",
-        className: "bg-red-500 hover:bg-red-600",
-      };
-    }
-    if (deal.is_most_booked) {
-      return {
-        text: "⭐ Most Booked",
-        className: "bg-purple-500 hover:bg-purple-600",
-      };
-    }
-    return null;
-  };
 
-  const badgeInfo = getBadgeInfo();
+    // Sort by sale price ascending
+    options.sort((a, b) => a.sale - b.sale);
 
-  // Rotating CTA copy
-  const ctaCopyOptions = [
-    "Lock in This Deal",
-    "View Full Details",
-    "Grab This Offer",
-    "Book Before It's Gone",
-  ];
-  const ctaCopy =
-    ctaCopyOptions[Math.floor(Math.random() * ctaCopyOptions.length)];
+    const best = options[0];
+    const orig = best.original;
+    const sale = best.sale;
+    const save = orig - sale;
 
-  // Urgency microcopy
-  const getUrgencyText = () => {
-    const daysUntilExpiry = Math.ceil(
-      (validUntil - new Date()) / (1000 * 60 * 60 * 24),
-    );
+    // Calculate actual discount percentage from prices
+    const discPerc = save > 0 ? Math.round((save / orig) * 100) : null;
 
-    if (daysUntilExpiry <= 3 && daysUntilExpiry > 0) {
-      return `Deal expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? "s" : ""}`;
-    }
-    if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
-      return "Limited availability";
-    }
-    return "Prices may increase soon";
-  };
+    // Get image URL - use partner image or placeholder
+    const getUrl = () => {
+      if (deal.image_url) return deal.image_url;
+      if (deal.partners?.images?.[0]) return deal.partners.images[0];
+      if (deal.partners?.image_url) return deal.partners.image_url;
+
+      const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
+      return `/images/deals/default-${imageNumber}.jpg`;
+    };
+
+    const imgUrl = getUrl();
+
+    // Format validity date (needed by badge and urgency functions)
+    const validDate = new Date(deal.end_date || deal.valid_until);
+
+    // Determine badge type
+    const getBadge = () => {
+      const daysUntilExpiry = Math.ceil(
+        (validDate - new Date()) / (1000 * 60 * 60 * 24),
+      );
+
+      if (deal.is_featured) {
+        return {
+          text: "🔥 Hot Deal",
+          className: "bg-orange-500 hover:bg-orange-600",
+        };
+      }
+      if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
+        return {
+          text: "⏰ Ending Soon",
+          className: "bg-red-500 hover:bg-red-600",
+        };
+      }
+      if (deal.is_most_booked) {
+        return {
+          text: "⭐ Most Booked",
+          className: "bg-purple-500 hover:bg-purple-600",
+        };
+      }
+      return null;
+    };
+
+    const badge = getBadge();
+
+    // Rotating CTA copy - stabilized with hashCode to avoid hydration mismatch
+    const ctaOptions = [
+      "Lock in This Deal",
+      "View Full Details",
+      "Grab This Offer",
+      "Book Before It's Gone",
+    ];
+    const cta = ctaOptions[hashCode(String(deal.id)) % ctaOptions.length];
+
+    // Urgency microcopy
+    const getUrgency = () => {
+      const daysUntilExpiry = Math.ceil(
+        (validDate - new Date()) / (1000 * 60 * 60 * 24),
+      );
+
+      if (daysUntilExpiry <= 3 && daysUntilExpiry > 0) {
+        return `Deal expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? "s" : ""}`;
+      }
+      if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
+        return "Limited availability";
+      }
+      return "Prices may increase soon";
+    };
+
+    return {
+      originalPrice: orig,
+      discountedPrice: sale,
+      savings: save,
+      discountPercentage: discPerc,
+      imageUrl: imgUrl,
+      badgeInfo: badge,
+      ctaCopy: cta,
+      urgencyText: getUrgency(),
+      validUntil: validDate,
+    };
+  }, [deal]);
 
   // Format location
   const location = deal.location || deal.partners?.location || "Destination";
@@ -163,8 +183,8 @@ export default function DealCard({ deal, isPublic = false }) {
   const includesHotel = deal.includes_hotel !== false;
   const includesTransfer = deal.includes_transfer || false;
 
-  // Build inclusions text
-  const getInclusionsText = () => {
+  // Build inclusions text - memoized
+  const inclusionsText = useMemo(() => {
     const inclusions = [];
     if (includesFlight) inclusions.push("Flight");
     if (includesHotel) inclusions.push(`${nights}-night stay`);
@@ -172,7 +192,7 @@ export default function DealCard({ deal, isPublic = false }) {
 
     if (inclusions.length === 0) return `${nights}-night package`;
     return inclusions.join(" + ");
-  };
+  }, [includesFlight, includesHotel, includesTransfer, nights]);
 
   // Format date for display
   const formattedDate = validUntil.toLocaleDateString("en-US", {
@@ -314,7 +334,7 @@ export default function DealCard({ deal, isPublic = false }) {
       <CardFooter className="p-6 pt-2 flex flex-col gap-3">
         {/* Urgency microcopy */}
         <p className="text-xs text-orange-600 font-medium text-center">
-          ⚡ {getUrgencyText()}
+          ⚡ {urgencyText}
         </p>
 
         <Button
@@ -344,4 +364,6 @@ export default function DealCard({ deal, isPublic = false }) {
       </CardFooter>
     </Card>
   );
-}
+});
+
+export default DealCard;
