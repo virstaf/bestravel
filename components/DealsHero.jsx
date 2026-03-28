@@ -2,7 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Clock, Globe, Wallet } from "lucide-react";
-import Link from "next/link"; // Changed to Link to avoid page reload on anchor click if possible, or use simple anchor for scroll id
+import Link from "next/link";
+import Image from "next/image";
 
 const DealsHero = () => {
   const scrollToDeals = () => {
@@ -15,12 +16,15 @@ const DealsHero = () => {
   return (
     <section className="relative w-full h-[600px] flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: "url('/images/maldives_beach.jpg')", // Using an existing image
-        }}
-      >
+      <div className="absolute inset-0">
+        <Image
+          src="/images/maldives_beach.jpg"
+          alt="Maldives Beach background"
+          fill
+          priority
+          className="object-cover"
+          sizes="100vw"
+        />
         <div className="absolute inset-0 bg-black/40" />
       </div>
 
