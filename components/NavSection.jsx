@@ -8,6 +8,7 @@ import { NavLinks } from "@/lib/data";
 import UserProfile from "./ui/userProfile";
 import Image from "next/image";
 import { getUser } from "@/lib/supabase/server";
+import { AlignRight, X } from "lucide-react";
 
 const NavSection = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -78,10 +79,21 @@ const NavSection = () => {
             );
           })}
         </div>
+        <div className="flex items-center gap-4 md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            className="text-gray-600 hover:bg-transparent"
+          >
+            {menuOpen ? <X /> : <AlignRight />}
+          </Button>
+        </div>
         {menuOpen && (
           <div
             ref={menuRef}
-            className="md:hidden absolute top-20 right-8 bg-white dark:bg-black shadow rounded backdrop-blur-sm flex flex-col gap-2 p-6"
+            className="md:hidden absolute top-20 right-4 bg-white dark:bg-black shadow-lg rounded-xl border border-gray-100 flex flex-col gap-2 p-6 min-w-[200px] z-50"
           >
             {NavLinks.map((item, idx) => {
               return (
@@ -89,8 +101,8 @@ const NavSection = () => {
                   key={idx}
                   href={item.path}
                   className={`${
-                    item.path === pathname ? "text-primary" : ""
-                  } hover:scale-105`}
+                    item.path === pathname ? "text-primary font-semibold" : "text-gray-600"
+                  } hover:text-primary transition-colors py-2`}
                 >
                   {item.name}
                 </Link>
