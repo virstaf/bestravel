@@ -62,18 +62,26 @@ const Pricing = ({ className }) => {
       <div className={className}>
         <div className="w-[200px] mx-auto my-8">
           {/* <div className="plan">{plan}</div> */}
-          <div className="duration-toggle bg-gray-200 border border-gray-300 rounded-md p-0.5 ">
+          <div
+            className="duration-toggle bg-gray-200 border border-gray-300 rounded-md p-0.5 "
+            role="group"
+            aria-label="Billing duration"
+          >
             <Button
+              type="button"
               className="font-medium w-1/2"
-              variant={duration === "monthly" ? "" : "primary"}
+              variant={duration === "monthly" ? "default" : "ghost"}
               onClick={() => setDuration("monthly")}
+              aria-pressed={duration === "monthly"}
             >
               Monthly
             </Button>
             <Button
+              type="button"
               className="font-medium w-1/2"
-              variant={duration === "yearly" ? "" : "primary"}
+              variant={duration === "yearly" ? "default" : "ghost"}
               onClick={() => setDuration("yearly")}
+              aria-pressed={duration === "yearly"}
             >
               Yearly
             </Button>
@@ -120,6 +128,13 @@ const Pricing = ({ className }) => {
                     )
                   }
                   disabled={isPending || isCurrentPlan}
+                  aria-label={`${
+                    isCurrentPlan
+                      ? "Currently on"
+                      : plan && plan !== "Free"
+                        ? "Upgrade to"
+                        : "Subscribe to"
+                  } ${pricingPlan.name} plan`}
                 >
                   {isPending
                     ? "Processing..."

@@ -129,12 +129,16 @@ const DealsFilterBar = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Destination Search */}
           <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+            <label
+              htmlFor="dest-input"
+              className="text-xs font-medium text-muted-foreground flex items-center gap-1.5"
+            >
               <MapPin className="w-3.5 h-3.5" />
               Destination
             </label>
             <div className="relative">
               <Input
+                id="dest-input"
                 placeholder="e.g. Maldives, Bali..."
                 value={dest}
                 onChange={(e) => setDest(e.target.value)}
@@ -145,11 +149,15 @@ const DealsFilterBar = () => {
 
           {/* Date Picker */}
           <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+            <label
+              htmlFor="date-input"
+              className="text-xs font-medium text-muted-foreground flex items-center gap-1.5"
+            >
               <Calendar className="w-3.5 h-3.5" />
               Travel Dates
             </label>
             <DateRangePicker
+              id="date-input"
               className="w-full"
               date={date}
               setDate={handleDateChange}
@@ -158,7 +166,10 @@ const DealsFilterBar = () => {
 
           {/* Price Range Slider */}
           <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground flex items-center gap-1.5">
+            <label
+              htmlFor="price-range"
+              className="text-xs font-medium text-muted-foreground flex items-center gap-1.5"
+            >
               <PoundSterling className="w-3.5 h-3.5" />
               Max Budget
             </label>
@@ -168,12 +179,17 @@ const DealsFilterBar = () => {
                   £{priceRange.toLocaleString()}
                 </span>
                 <input
+                  id="price-range"
                   type="range"
                   min="0"
                   max="10000"
                   step="100"
                   value={priceRange}
                   onChange={(e) => setPriceRange(Number(e.target.value))}
+                  aria-label="Max budget per person"
+                  aria-valuemin="0"
+                  aria-valuemax="10000"
+                  aria-valuenow={priceRange}
                   className="w-[60%] h-2 bg-gradient-to-r from-primary/20 to-primary rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-transform [&::-webkit-slider-thumb]:hover:scale-110"
                 />
                 <span className="text-xs text-muted-foreground">
@@ -185,11 +201,17 @@ const DealsFilterBar = () => {
 
           {/* Sort Dropdown */}
           <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground">
+            <label
+              htmlFor="sort-select"
+              className="text-xs font-medium text-muted-foreground"
+            >
               Sort By
             </label>
             <Select value={sort} onValueChange={handleSortChange}>
-              <SelectTrigger className="h-11 bg-white border-border/60 focus:border-primary focus:ring-1 focus:ring-primary/20">
+              <SelectTrigger
+                id="sort-select"
+                className="h-11 bg-white border-border/60 focus:border-primary focus:ring-1 focus:ring-primary/20"
+              >
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>

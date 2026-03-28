@@ -13,7 +13,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export function DateRangePicker({ className, date, setDate }) {
+export function DateRangePicker({ id, className, date, setDate }) {
   // If no date is set, optional default could be next month or empty
   // For this use case, we might want it empty initially
 
@@ -22,7 +22,7 @@ export function DateRangePicker({ className, date, setDate }) {
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            id="date"
+            id={id || "date"}
             variant={"outline"}
             className={cn(
               "w-full justify-start text-left font-normal h-10", // Keep h-14 for consistency with inputs
