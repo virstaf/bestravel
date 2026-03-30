@@ -133,8 +133,21 @@ export default function DealCard({ deal, isPublic = false }) {
     "Grab This Offer",
     "Book Before It's Gone",
   ];
-  const ctaCopy =
-    ctaCopyOptions[Math.floor(Math.random() * ctaCopyOptions.length)];
+
+  // ⚡ Performance Optimization: Using a deterministic hash based on deal.id
+  // instead of Math.random() to prevent hydration mismatches during SSR.
+  const getCtaHash = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  };
+
+  const ctaIndex = getCtaHash(String(deal.id)) % ctaCopyOptions.length;
+  const ctaCopy = ctaCopyOptions[ctaIndex];
 
   // Urgency microcopy
   const getUrgencyText = () => {
