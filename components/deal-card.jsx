@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -16,7 +17,22 @@ import {
   Lock,
 } from "lucide-react";
 
-export default function DealCard({ deal, isPublic = false }) {
+/**
+ * Simple 32-bit integer string hashing function to ensure deterministic rendering
+ * of dynamic content (like CTA copy) from stable IDs, preventing hydration mismatches.
+ */
+const hashCode = (str) => {
+  let hash = 0;
+  if (!str) return hash;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash);
+};
+
+const DealCard = memo(function DealCard({ deal, isPublic = false }) {
   // Calculate prices logic with location support
   const calculateBaseDiscounted = (price) => {
     return deal.discount_percentage
@@ -78,16 +94,6 @@ export default function DealCard({ deal, isPublic = false }) {
 
     // Use deal ID hash to determine which placeholder image to use (1-5)
     // This works with both numeric IDs and UUIDs
-    const hashCode = (str) => {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash = hash & hash; // Convert to 32bit integer
-      }
-      return Math.abs(hash);
-    };
-
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
   };
@@ -133,8 +139,9 @@ export default function DealCard({ deal, isPublic = false }) {
     "Grab This Offer",
     "Book Before It's Gone",
   ];
+  // Deterministic selection based on deal ID to prevent hydration mismatch
   const ctaCopy =
-    ctaCopyOptions[Math.floor(Math.random() * ctaCopyOptions.length)];
+    ctaCopyOptions[hashCode(String(deal.id)) % ctaCopyOptions.length];
 
   // Urgency microcopy
   const getUrgencyText = () => {
@@ -205,7 +212,14 @@ export default function DealCard({ deal, isPublic = false }) {
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          unoptimized={imageUrl.startsWith("http")}
+          // Only bypass Next.js optimization for unknown external hosts.
+          // Pre-configured hosts (Unsplash, Supabase, Google Drive) are optimized.
+          unoptimized={
+            imageUrl.startsWith("http") &&
+            !imageUrl.includes("images.unsplash.com") &&
+            !imageUrl.includes("ylpkcsmbsnowmbyxhbzw.supabase.co") &&
+            !imageUrl.includes("drive.google.com")
+          }
         />
         {/* Top-left badge */}
         {badgeInfo && (
@@ -344,4 +358,6 @@ export default function DealCard({ deal, isPublic = false }) {
       </CardFooter>
     </Card>
   );
-}
+});
+
+export default DealCard;
