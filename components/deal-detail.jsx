@@ -1,6 +1,6 @@
 // components/DealDetail.js
 "use client";
-import { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -13,88 +13,125 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import BookingDialog from "@/components/booking-dialog";
+import { hashCode } from "@/utils/hash";
 
+/**
+ * Optimized DealDetail component with memoization.
+ * Reduces redundant calculations for complex price logic and derived state.
+ */
 export default function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Calculate prices logic with location support
-  const calculateBaseDiscounted = (price) => {
-    return deal.discount_percentage
-      ? price * (1 - deal.discount_percentage / 100)
-      : deal.discount_amount
-        ? price - deal.discount_amount
-        : price; // No automatic discount if not specified
-  };
-
-  // Find lowest price option
-  const priceOptions = [];
-
-  // Add base option
-  const baseOriginal = deal.original_price || 1299;
-  const baseSale = calculateBaseDiscounted(baseOriginal);
-  priceOptions.push({
-    sale: baseSale,
-    original: baseOriginal,
-  });
-
-  // Add location options
-  if (deal.location_prices?.length > 0) {
-    deal.location_prices.forEach((lp) => {
-      if (lp.price) {
-        const sPrice = parseFloat(lp.price);
-        const oPrice = lp.original_price
-          ? parseFloat(lp.original_price)
-          : sPrice;
-        // Only add if it's a valid number
-        if (!isNaN(sPrice)) {
-          priceOptions.push({ sale: sPrice, original: oPrice });
-        }
-      }
-    });
-  }
-
-  // Sort by sale price ascending
-  priceOptions.sort((a, b) => a.sale - b.sale);
-
-  const bestOption = priceOptions[0];
-  const originalPrice = bestOption.original;
-  const discountedPrice = bestOption.sale;
-  const savings = originalPrice - discountedPrice;
-
-  // Calculate actual discount percentage from prices
-  const discountPercentage =
-    savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
-
-  // Get image URL
-  const getImageUrl = () => {
-    if (deal.image_url) return deal.image_url;
-    if (deal.partners?.images?.[0]) return deal.partners.images[0];
-    if (deal.partners?.image_url) return deal.partners.image_url;
-
-    // Use deal ID hash to determine which placeholder image to use (1-5)
-    const hashCode = (str) => {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash = hash & hash;
-      }
-      return Math.abs(hash);
+  // Memoize all price and discount calculations
+  const {
+    discountedPrice,
+    originalPrice,
+    savings,
+    discountPercentage,
+    imageUrl,
+  } = useMemo(() => {
+    const calculateBaseDiscounted = (price) => {
+      return deal.discount_percentage
+        ? price * (1 - deal.discount_percentage / 100)
+        : deal.discount_amount
+          ? price - deal.discount_amount
+          : price;
     };
 
-    const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
-    return `/images/deals/default-${imageNumber}.jpg`;
-  };
+    const priceOptions = [];
+    const baseOriginal = deal.original_price || 1299;
+    const baseSale = calculateBaseDiscounted(baseOriginal);
+    priceOptions.push({ sale: baseSale, original: baseOriginal });
 
-  const imageUrl = getImageUrl();
+    if (deal.location_prices?.length > 0) {
+      deal.location_prices.forEach((lp) => {
+        if (lp.price) {
+          const sPrice = parseFloat(lp.price);
+          const oPrice = lp.original_price
+            ? parseFloat(lp.original_price)
+            : sPrice;
+          if (!isNaN(sPrice)) {
+            priceOptions.push({ sale: sPrice, original: oPrice });
+          }
+        }
+      });
+    }
 
-  const location = deal.location || deal.partners?.location || "Destination";
-  const title = deal.title || deal.package_type || "Travel Package";
-  const packageType = deal.package_type || deal.title || "Travel Package";
-  const nights = deal.duration_nights || 4;
-  const includesFlight = deal.includes_flight !== false;
-  const includesHotel = deal.includes_hotel !== false;
-  const includesTransfer = deal.includes_transfer || false;
+    priceOptions.sort((a, b) => a.sale - b.sale);
+    const bestOption = priceOptions[0];
+    const original = bestOption.original;
+    const sale = bestOption.sale;
+    const saved = original - sale;
+    const percentage =
+      saved > 0 ? Math.round((saved / original) * 100) : null;
+
+    // Get image URL
+    let imgUrl = "/images/deals/default-1.jpg";
+    if (deal.image_url) {
+      imgUrl = deal.image_url;
+    } else if (deal.partners?.images?.[0]) {
+      imgUrl = deal.partners.images[0];
+    } else if (deal.partners?.image_url) {
+      imgUrl = deal.partners.image_url;
+    } else {
+      const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
+      imgUrl = `/images/deals/default-${imageNumber}.jpg`;
+    }
+
+    return {
+      discountedPrice: sale,
+      originalPrice: original,
+      savings: saved,
+      discountPercentage: percentage,
+      imageUrl: imgUrl,
+    };
+  }, [deal]);
+
+  // Memoize inclusions and other static info
+  const info = useMemo(() => {
+    const nights = deal.duration_nights || 4;
+    const includesFlight = deal.includes_flight !== false;
+    const includesHotel = deal.includes_hotel !== false;
+    const includesTransfer = deal.includes_transfer || false;
+    const packageType = deal.package_type || deal.title || "Travel Package";
+    const location = deal.location || deal.partners?.location || "Destination";
+    const title = deal.title || deal.package_type || "Travel Package";
+
+    return {
+      nights,
+      includesFlight,
+      includesHotel,
+      includesTransfer,
+      packageType,
+      location,
+      title,
+    };
+  }, [deal]);
+
+  // Format dates for display
+  const dates = useMemo(() => {
+    return {
+      formattedEndDate: new Date(deal.end_date).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      }),
+      formattedStartDate: deal.travel_start_date
+        ? new Date(deal.travel_start_date).toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          })
+        : null,
+      formattedTravelEndDate: deal.travel_end_date
+        ? new Date(deal.travel_end_date).toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          })
+        : null,
+    };
+  }, [deal.end_date, deal.travel_start_date, deal.travel_end_date]);
 
   return (
     <>
@@ -116,7 +153,7 @@ export default function DealDetail({ deal, isPublic = false }) {
           <div className="relative aspect-[21/9] w-full bg-muted">
             <Image
               src={imageUrl}
-              alt={packageType}
+              alt={info.packageType}
               fill
               className="object-cover"
               priority
@@ -134,14 +171,14 @@ export default function DealDetail({ deal, isPublic = false }) {
               <div className="space-y-2">
                 <div className="flex items-center text-muted-foreground">
                   <MapPinIcon className="h-5 w-5 mr-2" />
-                  <span className="text-lg">{location}</span>
+                  <span className="text-lg">{info.location}</span>
                 </div>
-                <CardTitle className="text-3xl">{title}</CardTitle>
+                <CardTitle className="text-3xl">{info.title}</CardTitle>
                 <p className="text-lg text-muted-foreground">
                   {[
-                    includesFlight && "Flight",
-                    includesHotel && `${nights}-night stay`,
-                    includesTransfer && "Transfer",
+                    info.includesFlight && "Flight",
+                    info.includesHotel && `${info.nights}-night stay`,
+                    info.includesTransfer && "Transfer",
                   ]
                     .filter(Boolean)
                     .join(" + ")}
@@ -184,37 +221,17 @@ export default function DealDetail({ deal, isPublic = false }) {
                 <span className="font-medium text-foreground mr-2">
                   Booking Valid Until:
                 </span>
-                <span>
-                  {new Date(deal.end_date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
+                <span>{dates.formattedEndDate}</span>
               </div>
 
-              {deal.travel_start_date && (
+              {dates.formattedStartDate && (
                 <div className="flex items-center text-blue-700">
                   <CalendarIcon className="h-5 w-5 mr-2" />
                   <span className="font-medium mr-2">Travel Window:</span>
                   <span>
-                    {new Date(deal.travel_start_date).toLocaleDateString(
-                      "en-US",
-                      {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      },
-                    )}
-                    {deal.travel_end_date &&
-                      ` - ${new Date(deal.travel_end_date).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "long",
-                          day: "numeric",
-                          year: "numeric",
-                        },
-                      )}`}
+                    {dates.formattedStartDate}
+                    {dates.formattedTravelEndDate &&
+                      ` - ${dates.formattedTravelEndDate}`}
                   </span>
                 </div>
               )}
@@ -224,17 +241,17 @@ export default function DealDetail({ deal, isPublic = false }) {
             <div className="space-y-3">
               <h3 className="text-xl font-semibold">What's Included</h3>
               <div className="grid md:grid-cols-2 gap-3">
-                {includesFlight && (
+                {info.includesFlight && (
                   <div className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
                     <span>Round-trip flights</span>
                   </div>
                 )}
-                {includesHotel && (
+                {info.includesHotel && (
                   <>
                     <div className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                      <span>{nights}-night accommodation</span>
+                      <span>{info.nights}-night accommodation</span>
                     </div>
                     <div className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
@@ -242,7 +259,7 @@ export default function DealDetail({ deal, isPublic = false }) {
                     </div>
                   </>
                 )}
-                {includesTransfer && (
+                {info.includesTransfer && (
                   <div className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
                     <span>Airport transfers</span>
@@ -256,7 +273,7 @@ export default function DealDetail({ deal, isPublic = false }) {
               <h3 className="text-xl font-semibold">About This Deal</h3>
               <p className="text-muted-foreground leading-relaxed">
                 {deal.description ||
-                  `Experience the magic of ${location} with this exclusive travel package. Enjoy comfortable accommodations, convenient flights, and unforgettable memories in one of the world's most beautiful destinations.`}
+                  `Experience the magic of ${info.location} with this exclusive travel package. Enjoy comfortable accommodations, convenient flights, and unforgettable memories in one of the world's most beautiful destinations.`}
               </p>
             </div>
 
