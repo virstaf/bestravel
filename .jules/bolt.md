@@ -1,0 +1,3 @@
+## 2025-05-22 - Optimized Deal components with memoization and deterministic rendering
+**Learning:** Found that `DealCard` and `DealDetail` components were performing redundant calculations and using `Math.random()` for UI selection, leading to potential hydration mismatches and performance bottlenecks in the deals grid.
+**Action:** Implemented `React.memo` for `DealCard` and `useMemo` for expensive calculations in both components. Introduced a deterministic `hashCode` utility to ensure consistent UI (like CTA copy and placeholder images) across server and client, improving both performance and rendering stability.
