@@ -1,6 +1,6 @@
 // components/DealDetail.js
 "use client";
-import { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -13,80 +13,62 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import BookingDialog from "@/components/booking-dialog";
+import { hashCode } from "@/utils/hash";
 
+/**
+ * DealDetail component with memoization for expensive calculations and derived UI properties.
+ */
 export default function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Calculate prices logic with location support
-  const calculateBaseDiscounted = (price) => {
-    return deal.discount_percentage
-      ? price * (1 - deal.discount_percentage / 100)
-      : deal.discount_amount
-        ? price - deal.discount_amount
-        : price; // No automatic discount if not specified
-  };
+  // Memoized price calculations to optimize performance.
+  const pricing = useMemo(() => {
+    const calculateBaseDiscounted = (price) => {
+      return deal.discount_percentage
+        ? price * (1 - deal.discount_percentage / 100)
+        : deal.discount_amount
+          ? price - deal.discount_amount
+          : price;
+    };
 
-  // Find lowest price option
-  const priceOptions = [];
+    const priceOptions = [];
+    const baseOriginal = deal.original_price || 1299;
+    const baseSale = calculateBaseDiscounted(baseOriginal);
+    priceOptions.push({ sale: baseSale, original: baseOriginal });
 
-  // Add base option
-  const baseOriginal = deal.original_price || 1299;
-  const baseSale = calculateBaseDiscounted(baseOriginal);
-  priceOptions.push({
-    sale: baseSale,
-    original: baseOriginal,
-  });
-
-  // Add location options
-  if (deal.location_prices?.length > 0) {
-    deal.location_prices.forEach((lp) => {
-      if (lp.price) {
-        const sPrice = parseFloat(lp.price);
-        const oPrice = lp.original_price
-          ? parseFloat(lp.original_price)
-          : sPrice;
-        // Only add if it's a valid number
-        if (!isNaN(sPrice)) {
-          priceOptions.push({ sale: sPrice, original: oPrice });
+    if (deal.location_prices?.length > 0) {
+      deal.location_prices.forEach((lp) => {
+        if (lp.price) {
+          const sPrice = parseFloat(lp.price);
+          const oPrice = lp.original_price ? parseFloat(lp.original_price) : sPrice;
+          if (!isNaN(sPrice)) {
+            priceOptions.push({ sale: sPrice, original: oPrice });
+          }
         }
-      }
-    });
-  }
+      });
+    }
 
-  // Sort by sale price ascending
-  priceOptions.sort((a, b) => a.sale - b.sale);
+    priceOptions.sort((a, b) => a.sale - b.sale);
+    const bestOption = priceOptions[0];
+    const originalPrice = bestOption.original;
+    const discountedPrice = bestOption.sale;
+    const savings = originalPrice - discountedPrice;
+    const discountPercentage = savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
 
-  const bestOption = priceOptions[0];
-  const originalPrice = bestOption.original;
-  const discountedPrice = bestOption.sale;
-  const savings = originalPrice - discountedPrice;
+    return { originalPrice, discountedPrice, savings, discountPercentage };
+  }, [deal.id, deal.original_price, deal.discount_percentage, deal.discount_amount, deal.location_prices]);
 
-  // Calculate actual discount percentage from prices
-  const discountPercentage =
-    savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
+  const { originalPrice, discountedPrice, savings, discountPercentage } = pricing;
 
-  // Get image URL
-  const getImageUrl = () => {
+  // Memoized image URL generation with deterministic fallback.
+  const imageUrl = useMemo(() => {
     if (deal.image_url) return deal.image_url;
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
 
-    // Use deal ID hash to determine which placeholder image to use (1-5)
-    const hashCode = (str) => {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash = hash & hash;
-      }
-      return Math.abs(hash);
-    };
-
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
-  };
-
-  const imageUrl = getImageUrl();
+  }, [deal.id, deal.image_url, deal.partners?.images, deal.partners?.image_url]);
 
   const location = deal.location || deal.partners?.location || "Destination";
   const title = deal.title || deal.package_type || "Travel Package";
@@ -95,6 +77,33 @@ export default function DealDetail({ deal, isPublic = false }) {
   const includesFlight = deal.includes_flight !== false;
   const includesHotel = deal.includes_hotel !== false;
   const includesTransfer = deal.includes_transfer || false;
+
+  // Memoized inclusions text.
+  const inclusionsText = useMemo(() => {
+    return [
+      includesFlight && "Flight",
+      includesHotel && `${nights}-night stay`,
+      includesTransfer && "Transfer",
+    ]
+      .filter(Boolean)
+      .join(" + ");
+  }, [includesFlight, includesHotel, includesTransfer, nights]);
+
+  // Memoized date formatting.
+  const bookingEndDate = useMemo(() => new Date(deal.end_date).toLocaleDateString("en-US", {
+    month: "long", day: "numeric", year: "numeric",
+  }), [deal.end_date]);
+
+  const travelDates = useMemo(() => {
+    if (!deal.travel_start_date) return null;
+    const start = new Date(deal.travel_start_date).toLocaleDateString("en-US", {
+      month: "long", day: "numeric", year: "numeric",
+    });
+    const end = deal.travel_end_date ? new Date(deal.travel_end_date).toLocaleDateString("en-US", {
+      month: "long", day: "numeric", year: "numeric",
+    }) : null;
+    return { start, end };
+  }, [deal.travel_start_date, deal.travel_end_date]);
 
   return (
     <>
@@ -137,15 +146,7 @@ export default function DealDetail({ deal, isPublic = false }) {
                   <span className="text-lg">{location}</span>
                 </div>
                 <CardTitle className="text-3xl">{title}</CardTitle>
-                <p className="text-lg text-muted-foreground">
-                  {[
-                    includesFlight && "Flight",
-                    includesHotel && `${nights}-night stay`,
-                    includesTransfer && "Transfer",
-                  ]
-                    .filter(Boolean)
-                    .join(" + ")}
-                </p>
+                <p className="text-lg text-muted-foreground">{inclusionsText}</p>
               </div>
 
               <div className="bg-muted p-6 rounded-lg space-y-2 min-w-[280px]">
@@ -184,37 +185,16 @@ export default function DealDetail({ deal, isPublic = false }) {
                 <span className="font-medium text-foreground mr-2">
                   Booking Valid Until:
                 </span>
-                <span>
-                  {new Date(deal.end_date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
+                <span>{bookingEndDate}</span>
               </div>
 
-              {deal.travel_start_date && (
+              {travelDates && (
                 <div className="flex items-center text-blue-700">
                   <CalendarIcon className="h-5 w-5 mr-2" />
                   <span className="font-medium mr-2">Travel Window:</span>
                   <span>
-                    {new Date(deal.travel_start_date).toLocaleDateString(
-                      "en-US",
-                      {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      },
-                    )}
-                    {deal.travel_end_date &&
-                      ` - ${new Date(deal.travel_end_date).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "long",
-                          day: "numeric",
-                          year: "numeric",
-                        },
-                      )}`}
+                    {travelDates.start}
+                    {travelDates.end && ` - ${travelDates.end}`}
                   </span>
                 </div>
               )}
