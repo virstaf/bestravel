@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { AlertCircle, Calendar, Crown, Zap } from "lucide-react";
+import { AlertCircle, Crown, Zap } from "lucide-react";
 
 const SubscriptionPrompt = ({ profile }) => {
   if (!profile) return null;

@@ -1,4 +1,4 @@
-import React from "react";
+
 
 const Destinations = ({ title, imgSrc, description, isFeatured }) => {
   return (

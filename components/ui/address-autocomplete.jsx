@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { useLoadScript } from "@react-google-maps/api";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";

@@ -6,7 +6,7 @@ import ReservationAdminEmail from "@/email-templates/reservation-admin";
 import ReservationEmail from "@/email-templates/reservation-email";
 import TrialConfirmationEmail from "@/email-templates/trial";
 import WelcomeEmail from "@/email-templates/welcome";
-import { destinations } from "@/lib/data";
+
 
 const ContactEmailPage = ({ name = "Nyla" }) => {
   return (

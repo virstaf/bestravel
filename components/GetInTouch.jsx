@@ -1,11 +1,11 @@
-import Link from "next/link";
-import ContactForm from "./ui/contactForm";
-import { Button } from "./ui/button";
-import { Download } from "lucide-react";
-import { Phone } from "lucide-react";
-import { Mail } from "lucide-react";
-import whatsappIcon from "../public/socials/whatsapp-black.svg";
-import Image from "next/image";
+
+
+
+
+
+
+
+
 import { ContactUs } from "./contact7";
 
 const GetInTouch = () => {

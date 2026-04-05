@@ -2,7 +2,7 @@ import { getUserQuotes } from "@/actions/quotes";
 import DashHeader from "@/components/dash-header";
 import QuoteCard from "@/components/QuoteCard";
 import { getUser } from "@/lib/supabase/server";
-import React from "react";
+
 
 const BookingsPage = async () => {
   const user = await getUser();

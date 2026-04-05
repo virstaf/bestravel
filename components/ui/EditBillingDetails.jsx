@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useProfileContext } from "@/contexts/profile";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
-import { findPlanByPriceId } from "@/lib/constants";
+
 
 const EditBillingDetails = () => {
   const [user, setUser] = useState(null);

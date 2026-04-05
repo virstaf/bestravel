@@ -1,4 +1,4 @@
-import React from "react";
+
 import DashHeader from "@/components/dash-header";
 import { getProfileAction } from "@/actions/profiles";
 import { getUserReservations } from "@/actions/reservations";
