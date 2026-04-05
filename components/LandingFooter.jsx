@@ -22,7 +22,12 @@ const LandingFooter = () => {
           <div className="">
             <div className="Socials flex gap-3 my-3">
               {socialLinks.map((item, idx) => (
-                <Link key={idx} href={item.url} target="_blank">
+                <Link
+                  key={idx}
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {/* <Image
                     src={item.iconSrc}
                     width={24}
@@ -51,6 +56,7 @@ const LandingFooter = () => {
           <Link
             href="https://virstaf.com/"
             target="_blank"
+            rel="noopener noreferrer"
             className="hover:text-secondary"
           >
             Virstaf LTD
