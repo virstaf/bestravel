@@ -1,5 +1,4 @@
 // components/Table/TableBody.jsx
-import React from 'react';
 
 const TableBody = ({
   columns,

@@ -1,6 +1,5 @@
 import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import React from "react";
 
 export default async function AuthLayout({ children }) {
   try {

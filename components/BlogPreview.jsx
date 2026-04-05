@@ -1,5 +1,4 @@
 import Link from "next/link";
-import React from "react";
 
 const BlogPreview = ({ excerpt, id }) => {
   return (

@@ -1,4 +1,3 @@
-import React from "react";
 import { getStatusColor } from "@/lib/statusHelpers";
 
 const Status = ({ value }) => {
