@@ -75,6 +75,7 @@ const ContactUs = ({
             <Link
               href="https://wa.me/447770939627"
               target="_blank"
+              rel="noopener noreferrer"
               className="font-semibold hover:underline"
             >
               {chatLink}
