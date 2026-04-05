@@ -59,7 +59,8 @@ export const getDealsAction = async ({
 
     // Destination filter
     if (dest) {
-      query = query.or(`location.ilike.%${dest}%,title.ilike.%${dest}%`);
+      const safeDest = dest.replace(/"/g, '""');
+      query = query.or(`location.ilike."%${safeDest}%",title.ilike."%${safeDest}%"`);
     }
 
     // Max Price filter
