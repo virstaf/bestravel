@@ -7,7 +7,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "next lint",
-    "stripe": "stripe listen --forward-to localhost:3000/api/webhooks/stripe"
+    "stripe": "stripe listen --forward-to localhost:3000/api/webhooks/stripe",
+    "test": "node --test"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
