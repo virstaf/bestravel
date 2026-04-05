@@ -1,8 +1,8 @@
-import DashNav from "@/components/dash-nav";
-import SideBar from "@/components/SideBar";
+
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import React from "react";
+
 
 const DashboardNotFound = () => {
   return (

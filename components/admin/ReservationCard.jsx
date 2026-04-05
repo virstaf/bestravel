@@ -1,5 +1,5 @@
 import { getFormattedDate } from "@/lib/getFormattedDate";
-import React from "react";
+
 import Status from "../ui/status";
 
 export const ReservationCard = ({

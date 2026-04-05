@@ -2,7 +2,7 @@ import Footer from "@/components/Footer";
 import NavSection from "@/components/NavSection";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import React from "react";
+
 
 const NotFound = () => {
   return (

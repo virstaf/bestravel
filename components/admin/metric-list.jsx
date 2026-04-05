@@ -1,4 +1,4 @@
-import React from "react";
+
 import MetricCard from "./metric-card";
 
 const MetricList = ({ metrics }) => {

@@ -1,5 +1,5 @@
 // components/AutoPlayVideo.jsx
-import React from "react";
+
 
 const AutoPlayVideo = ({ source, style }) => {
   return (

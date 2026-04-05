@@ -3,7 +3,7 @@ import MembershipTiers from "@/components/membership-tiers";
 import StartTrialCta from "@/components/start-trial-cta";
 import Testimonials from "@/components/Testimonials";
 import TravelSmarter from "@/components/travel-smarter";
-import { Button } from "@/components/ui/button";
+
 import { membershipBenefits } from "@/lib/data";
 import { Check } from "lucide-react";
 import Image from "next/image";

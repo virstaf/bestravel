@@ -1,7 +1,7 @@
 "use client";
 
 // components/Table/TablePagination.jsx
-import React from "react";
+
 
 const TablePagination = ({
   currentPage,

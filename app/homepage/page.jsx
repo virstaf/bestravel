@@ -2,7 +2,7 @@ import Hero from "@/components/hero";
 import ProblemSection from "@/components/problem";
 import SolutionSection from "@/components/solution";
 import BenefitSection from "@/components/benefit";
-import React from "react";
+
 import WhoItsFor from "@/components/who-its-for";
 import Process from "@/components/process";
 import Testimonials from "@/components/Testimonials";

@@ -2,7 +2,7 @@ import DashHeader from "@/components/dash-header";
 import DealsSection from "@/components/deals-section";
 import HotelCard from "@/components/ui/hotelCard";
 import TripsSection from "@/components/trips-section";
-import WelcomeCard from "@/components/welcome-card";
+
 import { hotels } from "@/lib/data";
 import ReservationsSection from "@/components/reservations-section";
 import WelcomeSection from "@/components/welcome-section";

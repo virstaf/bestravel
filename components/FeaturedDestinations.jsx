@@ -1,5 +1,5 @@
 import { destinations } from "@/lib/data";
-import React from "react";
+
 import Destinations from "./ui/Destinations";
 import { Button } from "./ui/button";
 

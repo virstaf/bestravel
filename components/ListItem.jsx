@@ -1,6 +1,6 @@
 import { getFormattedDate } from "@/lib/getFormattedDate";
 import Link from "next/link";
-import React from "react";
+
 import BlogPreview from "./BlogPreview";
 import { getPostExcerpt } from "@/lib/posts";
 

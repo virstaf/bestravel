@@ -56,3 +56,6 @@ next-env.d.ts
 /dataSources.local.xml
 
 
+node_modules
+.next
+build_output.log

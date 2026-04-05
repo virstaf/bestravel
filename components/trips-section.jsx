@@ -1,4 +1,4 @@
-import React from "react";
+
 import TripsList from "./TripsList";
 import { getProfileAction } from "@/actions/profiles";
 import { fetchTrips } from "@/actions/trips";

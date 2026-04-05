@@ -6,7 +6,7 @@ import UserTripsTable from "@/components/admin/user-trips-table";
 import { UserCard } from "@/components/admin/UserCard";
 import NavSummary from "@/components/NavSummary";
 import NoteTextBox from "@/components/ui/NoteTextBox";
-import React from "react";
+
 
 const UserDetailPage = async ({ params }) => {
   const { customer_id } = await params;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import CurrentUserAvatar from "../current-user-avatar";
 import LogoutButton from "./logout-button";
 import Link from "next/link";
