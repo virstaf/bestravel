@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { hashCode } from "@/utils/hash";
 import {
   MapPinIcon,
   CalendarIcon,
@@ -71,17 +72,6 @@ export default function DealDetail({ deal, isPublic = false }) {
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
 
-    // Use deal ID hash to determine which placeholder image to use (1-5)
-    const hashCode = (str) => {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash = hash & hash;
-      }
-      return Math.abs(hash);
-    };
-
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
   };
@@ -120,7 +110,12 @@ export default function DealDetail({ deal, isPublic = false }) {
               fill
               className="object-cover"
               priority
-              unoptimized={imageUrl.startsWith("http")}
+              unoptimized={
+                imageUrl.startsWith("http") &&
+                !imageUrl.includes("supabase.co") &&
+                !imageUrl.includes("unsplash.com") &&
+                !imageUrl.includes("drive.google.com")
+              }
             />
             {discountPercentage && (
               <Badge className="absolute top-6 right-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-xl font-bold shadow-lg">

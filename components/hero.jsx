@@ -1,11 +1,22 @@
 import React from "react";
+import Image from "next/image";
 import { HeroForm } from "./hero-form";
 
 const Hero = () => {
   return (
-    <section className="relative w-full text-white min-h-[600px] flex flex-col justify-center hero-bg-custom">
+    <section className="relative w-full text-white min-h-[600px] flex flex-col justify-center">
+      {/* Background Image - Optimized for LCP */}
+      <Image
+        src="/images/hero_background.png"
+        alt="Travel background"
+        fill
+        priority
+        className="object-cover z-0"
+        sizes="100vw"
+      />
+
       {/* Overlay for readability - using absolute div to ensure z-index handling */}
-      <div className="absolute inset-0 bg-black/40 z-0" />
+      <div className="absolute inset-0 bg-black/40 z-1" />
 
       <div className="relative z-10 mx-auto max-w-6xl px-4 py-20 text-center">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight">
