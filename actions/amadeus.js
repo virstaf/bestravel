@@ -1,7 +1,7 @@
 "use server";
 
 import Amadeus from "amadeus";
-import { redirect } from "next/navigation";
+
 import { revalidatePath } from "next/cache";
 
 const amadeus = new Amadeus({

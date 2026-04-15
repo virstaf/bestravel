@@ -11,11 +11,17 @@ const AdminQuotesPage = async () => {
   const { data: quotes } = await getAllQuotes();
   const { data: trips } = await fetchAllTrips();
 
+  // Create a map for $O(1)$ lookup of trip titles
+  const tripsMap =
+    trips?.reduce((acc, trip) => {
+      acc[trip.id] = trip.title;
+      return acc;
+    }, {}) || {};
+
   const reducedQuotes = quotes.map((quote) => ({
     id: quote.id,
     quote_number: quote.quote_number,
-    trip_name:
-      trips.find((trip) => trip.id === quote.trip_id)?.title || "Unknown",
+    trip_name: tripsMap[quote.trip_id] || "Unknown",
     total_amount: quote.total_amount,
     status: quote.status,
     valid_until: quote.valid_until || "N/A",

@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DollarSign, Users, UserPlus, UserMinus, Activity } from "lucide-react";
+import { DollarSign, Users, UserMinus, Activity } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getSubscriptionMetrics } from "@/actions/admin/analytics";
 import { Loader2Icon } from "lucide-react";

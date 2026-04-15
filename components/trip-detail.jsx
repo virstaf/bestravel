@@ -5,12 +5,7 @@ import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import {
-  CalendarIcon,
-  MapPinIcon,
-  UsersIcon,
-  CurrencyIcon,
-} from "lucide-react";
+import { CalendarIcon, MapPinIcon, UsersIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";

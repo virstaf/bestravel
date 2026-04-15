@@ -1,5 +1,4 @@
 // components/Table/TableHeader.jsx
-import React from "react";
 
 const TableHeader = ({ columns, sortConfig, onSort }) => {
   return (

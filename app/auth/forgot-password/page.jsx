@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
+
 import ForgotPasswordForm from "@/components/ui/forgotPasswordForm";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const ForgotPasswordPage = () => {
   return (

@@ -19,6 +19,7 @@ import SubscriptionCanceledEmail from "@/email-templates/subscription-canceled";
 import RenewalReminderEmail from "@/email-templates/renewal-reminder";
 import DealRequestAdminEmail from "@/email-templates/deal-request-admin";
 import DealRequestConfirmationEmail from "@/email-templates/deal-request-confirmation";
+import NewsletterSignupEmail from "@/email-templates/newsletter-signup";
 import { Resend } from "resend";
 
 export const resendEmail = async (values, type) => {
@@ -369,6 +370,20 @@ export const resendEmail = async (values, type) => {
 
     if (!fullname || !email || !from || !to) {
       console.error("Missing required fields for confirmation email");
+      return { success: false, message: "All fields are required" };
+    }
+  }
+
+  if (type === "newsletter-signup") {
+    const { email } = values;
+
+    emailTemplate = <NewsletterSignupEmail />;
+    subject = "Welcome to the Virstravel Newsletter!";
+    receivingEmail = email;
+    adminEmail = "hello@virstravelclub.com";
+
+    if (!email) {
+      console.error("Missing required fields for newsletter signup email");
       return { success: false, message: "All fields are required" };
     }
   }

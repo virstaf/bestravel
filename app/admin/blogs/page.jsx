@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Trash2, Eye } from "lucide-react";
+import { Plus, Pencil, Eye } from "lucide-react";
 import Link from "next/link";
 import { DeleteBlogButton } from "@/components/DeleteBlogButton";
 
@@ -121,7 +121,11 @@ export default async function AdminBlogsPage() {
                     <div className="flex justify-end gap-2">
                       {post.status === "published" && (
                         <Button variant="ghost" size="sm" asChild>
-                          <Link href={`/blogs/${post.slug}`} target="_blank">
+                          <Link
+                            href={`/blogs/${post.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <Eye className="w-4 h-4" />
                           </Link>
                         </Button>

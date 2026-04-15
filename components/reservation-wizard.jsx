@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import HotelReservationForm from "./hotel-reservation-form";
 import TransferReservationForm from "./transfer-reservation-form";
@@ -10,7 +10,7 @@ import FlightReservationForm from "./flight-reservation-form";
 import { toast } from "sonner";
 import { MapPin, Calendar } from "lucide-react";
 import { getFormattedDate } from "@/lib/getFormattedDate";
-import { resendEmail } from "@/actions/resendEmail";
+
 
 export default function ReservationWizard({ trip, user }) {
   const [activeTab, setActiveTab] = useState("hotel");

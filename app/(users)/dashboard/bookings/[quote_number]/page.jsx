@@ -9,7 +9,7 @@ import {
   CardContent,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, FileText, User, Clock, Package } from "lucide-react";
+import { Calendar, FileText, Package } from "lucide-react";
 import { notFound } from "next/navigation";
 
 export default async function QuoteDetailPage({ params }) {
