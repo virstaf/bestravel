@@ -130,6 +130,39 @@ function DealCard({ deal, isPublic = false }) {
         className: "bg-purple-500 hover:bg-purple-600",
       };
     }
+    return null;
+  };
+
+  const badgeInfo = getBadgeInfo();
+
+  // Rotating CTA copy
+  const ctaCopyOptions = [
+    "Lock in This Deal",
+    "View Full Details",
+    "Grab This Offer",
+    "Book Before It's Gone",
+  ];
+
+  // ⚡ Performance Optimization: Using a deterministic hash based on deal.id
+  // instead of Math.random() to prevent hydration mismatches during SSR.
+  const getCtaHash = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash;
+    }
+    return Math.abs(hash);
+  };
+
+  const ctaIndex = getCtaHash(String(deal.id)) % ctaCopyOptions.length;
+  const ctaCopy = ctaCopyOptions[ctaIndex];
+
+  // Urgency microcopy
+  const getUrgencyText = () => {
+    const daysUntilExpiry = Math.ceil(
+      (validUntil - new Date()) / (1000 * 60 * 60 * 24),
+    );
 
     // Urgency text
     let urgencyText = "Prices may increase soon";
