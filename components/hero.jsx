@@ -1,7 +1,12 @@
 import React from "react";
+import Image from "next/image";
 import { HeroForm } from "./hero-form";
 import Image from "next/image";
 
+/**
+ * Hero component for the homepage.
+ * Optimization: Using next/image with priority for better LCP instead of CSS background-image.
+ */
 const Hero = () => {
   /**
    * Performance Optimization: Hero LCP (Largest Contentful Paint)
