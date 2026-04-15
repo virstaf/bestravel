@@ -1,6 +1,5 @@
 import DashHeader from "@/components/dash-header";
 import Settings from "@/components/settings-page";
-import React from "react";
 
 const SettingsPage = () => {
   return (

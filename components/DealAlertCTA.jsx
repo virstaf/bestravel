@@ -20,13 +20,32 @@ const DealAlertCTA = () => {
 
     setIsSubmitting(true);
 
-    // TODO: Implement actual newsletter signup logic
-    // For now, just show success message
-    setTimeout(() => {
-      toast.success("You're all set! We'll notify you of new deals.");
-      setEmail("");
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 201) {
+        toast.success("You're all set! We'll notify you of new deals.");
+        setEmail("");
+      } else if (response.status === 200) {
+        toast.info("You are already subscribed to our newsletter.");
+        setEmail("");
+      } else {
+        toast.error(data.errorMessage || "Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      toast.error("Failed to subscribe. Please try again later.");
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (

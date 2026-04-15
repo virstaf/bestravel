@@ -1,5 +1,4 @@
 import { howItWorks } from "@/lib/data";
-import React from "react";
 
 const HowItWorks = () => {
   return (

@@ -1,5 +1,4 @@
 import { benefits } from "@/lib/data";
-import React from "react";
 
 const WhyJoin = () => {
   return (

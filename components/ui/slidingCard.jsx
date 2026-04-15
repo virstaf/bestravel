@@ -1,4 +1,3 @@
-import React from "react";
 
 const SlidingCard = ({ message, author, stars }) => {
   const totalStars = 5;

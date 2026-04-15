@@ -1,4 +1,3 @@
-import React from "react";
 // import { FaMoneyBillWave, FaClock, FaGift, FaSearch, FaUmbrellaBeach } from "react-icons/fa";
 import { Landmark, Clock, Gift, Search, Castle } from "lucide-react";
 import Image from "next/image";

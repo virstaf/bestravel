@@ -1,7 +1,6 @@
 import AddQuoteForm from "@/components/AddQuoteForm";
 import NavSummary from "@/components/NavSummary";
 import { getAdminUser } from "@/lib/supabase/admin/server";
-import React from "react";
 
 const NewQuotePage = async () => {
   const pathname = "/admin/quotes/new";

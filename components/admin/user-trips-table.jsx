@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Table from "../Table/Table";
 import Status from "../ui/status";
 

@@ -57,6 +57,7 @@ const ReservationDetailPage = async ({ params }) => {
                   key={option.name}
                   href={option.url}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="border p-2 rounded-md hover:bg-muted"
                 >
                   {option.name}
@@ -77,6 +78,7 @@ const ReservationDetailPage = async ({ params }) => {
                   key={option.name}
                   href={option.url}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="border p-2 rounded-md hover:bg-muted"
                 >
                   {option.name}
@@ -97,6 +99,7 @@ const ReservationDetailPage = async ({ params }) => {
                   key={option.name}
                   href={option.url}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="border p-2 rounded-md hover:bg-muted"
                 >
                   {option.name}

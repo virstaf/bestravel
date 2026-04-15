@@ -37,7 +37,12 @@ const Footer = () => {
               <h3 className="text-sm font-bold ">Follow Us on Social Media</h3>
               <div className="Socials flex gap-3 my-3">
                 {socialLinks.map((item, idx) => (
-                  <Link key={idx} href={item.url} target="_blank">
+                  <Link
+                    key={idx}
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Image
                       src={item.icon}
                       width={24}
@@ -57,7 +62,11 @@ const Footer = () => {
       </div>
       <div className="flex bg-slate-900 justify-evenly flex-wrap gap-2 text-white text-sm text-center border border-x-0 border-b-0 px-4 py-1">
         <p className="">Virstravel &copy; 2025 All rights reserved.</p>
-        <Link href="https://uniiktheo.tech" target="_blank">
+        <Link
+          href="https://uniiktheo.tech"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <p className="ml-2">Powered by Virstaf</p>
         </Link>
       </div>
