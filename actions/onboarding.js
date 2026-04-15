@@ -65,7 +65,12 @@ export const getPersonalizedDeals = async (preferredDestinations) => {
       .select("*")
       .or(
         preferredDestinations
-          .map((dest) => `destination.ilike.%${dest}%`)
+          .map((dest) => {
+            // Escape double quotes and wrap the whole ILIKE value in double quotes
+            // to safely handle commas and other special characters in PostgREST.
+            const safeDest = dest.replace(/"/g, '""');
+            return `destination.ilike."%${safeDest}%"`;
+          })
           .join(","),
       )
       .eq("is_active", true)

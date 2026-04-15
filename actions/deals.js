@@ -59,9 +59,7 @@ export const getDealsAction = async ({
 
     // Destination filter
     if (dest) {
-      // Escape backslashes, wildcards, and double quotes to prevent filter injection
-      const safeDest = dest.replace(/[\\%_"]/g, '\\$&');
-      // Wrap in double quotes to handle potential commas in the destination string
+      const safeDest = dest.replace(/"/g, '""');
       query = query.or(`location.ilike."%${safeDest}%",title.ilike."%${safeDest}%"`);
     }
 
