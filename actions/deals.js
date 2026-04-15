@@ -59,7 +59,10 @@ export const getDealsAction = async ({
 
     // Destination filter
     if (dest) {
-      query = query.or(`location.ilike.%${dest}%,title.ilike.%${dest}%`);
+      // Escape backslashes, wildcards, and double quotes to prevent filter injection
+      const safeDest = dest.replace(/[\\%_"]/g, '\\$&');
+      // Wrap in double quotes to handle potential commas in the destination string
+      query = query.or(`location.ilike."%${safeDest}%",title.ilike."%${safeDest}%"`);
     }
 
     // Max Price filter
