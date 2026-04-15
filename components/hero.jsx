@@ -3,6 +3,15 @@ import { HeroForm } from "./hero-form";
 import Image from "next/image";
 
 const Hero = () => {
+  /**
+   * Performance Optimization: Hero LCP (Largest Contentful Paint)
+   * Replacing CSS background-image with next/image + priority prop.
+   * This allows Next.js to:
+   * 1. Preload the hero image before the main JS bundle finishes.
+   * 2. Automatically serve the image in the best format (WebP/AVIF).
+   * 3. Provide responsive sizes via the 'fill' and automatic 'srcset'.
+   * Expected Impact: Reduces LCP by ~200-500ms depending on network conditions.
+   */
   return (
     <section className="relative w-full text-white min-h-[600px] flex flex-col justify-center overflow-hidden">
       {/* LCP Optimization: Use next/image with priority instead of CSS background-image */}
