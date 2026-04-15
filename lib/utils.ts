@@ -77,3 +77,8 @@ export const getTransferTypeText = (transferType) => {
   };
   return types[transferType] || transferType;
 };
+
+export const sanitizeEmailHeader = (str: string) => {
+  if (typeof str !== "string") return str;
+  return str.replace(/[\r\n]+/g, " ").trim();
+};
