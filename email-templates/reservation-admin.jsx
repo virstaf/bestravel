@@ -76,6 +76,7 @@ const ReservationAdminEmail = ({ details, type, user }) => {
               <Container className="text-center my-8">
                 <Button
                   target="_blank"
+                  rel="noopener noreferrer"
                   href="https://virstravelclub.com/admin/"
                   className="bg-blue-500 text-white px-6 py-3 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50"
                 >

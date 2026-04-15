@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import ResetPasswordForm from "@/components/ui/resetPasswordForm";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 const ResetPasswordPage = () => {
   return (

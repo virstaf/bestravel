@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { Button } from "./ui/button";
 import { cancelReservation } from "@/actions/reservations";
 import { toast } from "sonner";

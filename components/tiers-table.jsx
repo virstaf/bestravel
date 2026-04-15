@@ -1,7 +1,6 @@
 "use client";
 
 // pages/index.js
-import React from "react";
 import Table from "./Table/Table";
 import { tierTableData } from "@/lib/data";
 
