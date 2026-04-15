@@ -2,11 +2,9 @@ import { getFeaturedDealsAction } from "@/actions/deals";
 import DealsList from "./deals-list";
 
 /**
- * Performance Optimization:
- * This component now uses `getFeaturedDealsAction` with a limit of 3.
- * This shifts filtering (is_featured=true) and limiting to the database layer,
- * reducing the data transfer and memory overhead of fetching all deals
- * and filtering them in-memory.
+ * Optimized DealsSection component.
+ * Moves filtering (is_featured: true) and limiting (3 deals) to the database level
+ * to reduce memory usage, bandwidth, and processing time.
  */
 const DealsSection = async () => {
   const featuredDeals = await getFeaturedDealsAction({ limit: 3 });
