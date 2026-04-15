@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { sanitizeEmailHeader } from "@/lib/utils";
 
 export const GET = async () => {
   return NextResponse.json({ message: "you got here" });
@@ -25,12 +26,14 @@ export const POST = async (request) => {
     },
   });
 
+  const sanitizedFullname = sanitizeEmailHeader(fullname);
+
   // send mail with defined transport object
   const mailInfo = {
     from: process.env.ADMIN_EMAIL, // Sender address
     to: email, // Recipient email address
     subject: `Congrats from Virtaf!`, // Subject line
-    text: `Dear ${fullname}, you have been added to Virstravel Perks Club.`, // plain text body
+    text: `Dear ${sanitizedFullname}, you have been added to Virstravel Perks Club.`, // plain text body
   };
 
   try {
