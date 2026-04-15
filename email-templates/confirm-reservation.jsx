@@ -37,6 +37,7 @@ const ReservationConfirmationEmail = ({ fullname, reservationLink, type }) => {
               <Container className="text-center my-8">
                 <Button
                   target="_blank"
+                  rel="noopener noreferrer"
                   href={reservationLink}
                   className="bg-primary text-white px-6 py-3 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-primary/50"
                 >

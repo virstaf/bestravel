@@ -1,4 +1,3 @@
-import React from "react";
 import Faq from "./ui/faq";
 import { faqs } from "@/lib/data";
 import Image from "next/image";
