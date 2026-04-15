@@ -1,6 +1,5 @@
 // components/Table/TableHeader.jsx
 
-
 const TableHeader = ({ columns, sortConfig, onSort }) => {
   return (
     <thead className="bg-secondary/20">

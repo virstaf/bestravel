@@ -1,5 +1,4 @@
 
-
 const CookiesPolicyPage = () => {
   return (
     <div className="CookiesPolicyPage container min-h-screen mt-16 px-4 ">

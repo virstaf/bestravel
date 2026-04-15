@@ -1,6 +1,5 @@
 import { benefits } from "@/lib/data";
 
-
 const WhyJoin = () => {
   return (
     <div className="w-full py-12 bg-primary-foreground" id="why-join">

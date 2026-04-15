@@ -1,4 +1,3 @@
-
 import Faq from "./ui/faq";
 import { faqs } from "@/lib/data";
 import { Accordion } from "./ui/accordion";

@@ -3,7 +3,6 @@ import ForgotPasswordForm from "@/components/ui/forgotPasswordForm";
 import Image from "next/image";
 import Link from "next/link";
 
-
 const ForgotPasswordPage = () => {
   return (
     <div className="w-full h-screen relative grid lg:grid-cols-2 items-center justify-center">

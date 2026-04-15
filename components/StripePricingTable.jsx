@@ -1,5 +1,4 @@
 
-
 export const StripePricingTable = () => {
   return (
     <div className="stripe-pricing-table w-full max-w-7xl mx-auto p-8 bg-white rounded-lg shadow-lg">

@@ -1,7 +1,6 @@
 import { whoItsFor } from "@/lib/data";
 import Image from "next/image";
 
-
 const WhoItsFor = () => {
   return (
     <section className="bg-white py-16 px-4 sm:px-6 lg:px-8">

@@ -1,5 +1,4 @@
 
-
 const Destinations = ({ title, imgSrc, description, isFeatured }) => {
   return (
     <div className="my-2 bg-white shadow rounded-2xl overflow-hidden">

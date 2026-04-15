@@ -1,5 +1,4 @@
 import { destinations } from "@/lib/data";
-
 import Destinations from "./ui/Destinations";
 import { Button } from "./ui/button";
 

@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-
 const SectionHeader = ({ title, link }) => {
   return (
     <div className="flex gap-2 w-full px-4 justify-between text-xs sm:text-sm">

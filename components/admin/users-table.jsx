@@ -1,6 +1,5 @@
 "use client";
 
-
 import Table from "../Table/Table";
 import { redirect } from "next/navigation";
 import {

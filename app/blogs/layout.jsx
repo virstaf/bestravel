@@ -1,7 +1,6 @@
 import LandingFooter from "@/components/LandingFooter";
 import NavBar from "@/components/nav-bar";
 
-
 export default function Layout({ children }) {
   return (
     <div className=" layout">

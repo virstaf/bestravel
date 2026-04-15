@@ -1,6 +1,5 @@
 // components/AutoPlayVideo.jsx
 
-
 const AutoPlayVideo = ({ source, style }) => {
   return (
     <video

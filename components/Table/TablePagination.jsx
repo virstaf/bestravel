@@ -2,7 +2,6 @@
 
 // components/Table/TablePagination.jsx
 
-
 const TablePagination = ({
   currentPage,
   totalPages,

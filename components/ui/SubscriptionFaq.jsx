@@ -1,5 +1,4 @@
 
-
 const SubscriptionFaq = () => {
   return (
     <section className="article">

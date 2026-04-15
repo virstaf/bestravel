@@ -121,7 +121,11 @@ export default async function AdminBlogsPage() {
                     <div className="flex justify-end gap-2">
                       {post.status === "published" && (
                         <Button variant="ghost" size="sm" asChild>
-                          <Link href={`/blogs/${post.slug}`} target="_blank">
+                          <Link
+                            href={`/blogs/${post.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
                             <Eye className="w-4 h-4" />
                           </Link>
                         </Button>

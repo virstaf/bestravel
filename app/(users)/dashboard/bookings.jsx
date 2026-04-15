@@ -1,5 +1,4 @@
 
-
 const Bookings = () => {
   return <div>bookings</div>;
 };

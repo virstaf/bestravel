@@ -1,4 +1,3 @@
-
 import SubscribeForm from "./ui/subscribe";
 import { Lightbulb } from "lucide-react";
 

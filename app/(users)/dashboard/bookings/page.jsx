@@ -3,7 +3,6 @@ import DashHeader from "@/components/dash-header";
 import QuoteCard from "@/components/QuoteCard";
 import { getUser } from "@/lib/supabase/server";
 
-
 const BookingsPage = async () => {
   const user = await getUser();
   const quotes = await getUserQuotes(user.id);

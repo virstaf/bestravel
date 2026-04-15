@@ -2,7 +2,6 @@ import LoginForm from "@/components/ui/loginForm";
 import Image from "next/image";
 import Link from "next/link";
 
-
 const LoginPage = () => {
   return (
     <div className="w-full h-screen relative grid lg:grid-cols-2 items-center justify-center">

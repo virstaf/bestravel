@@ -3,7 +3,6 @@ import ResetPasswordForm from "@/components/ui/resetPasswordForm";
 import Image from "next/image";
 import Link from "next/link";
 
-
 const ResetPasswordPage = () => {
   return (
     <div className="w-full h-screen relative grid lg:grid-cols-2 items-center justify-center">

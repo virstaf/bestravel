@@ -1,7 +1,6 @@
 import DashHeader from "@/components/dash-header";
 import Settings from "@/components/settings-page";
 
-
 const SettingsPage = () => {
   return (
     <div className="container mx-auto px-4 py-8 w-full h-full">

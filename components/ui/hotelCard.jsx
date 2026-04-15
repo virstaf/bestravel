@@ -1,7 +1,6 @@
 import { Star } from "lucide-react";
 import Image from "next/image";
 
-
 const HotelCard = ({ hotel }) => {
   const imageSrc = hotel.image + hotel.id + ".jpg";
 

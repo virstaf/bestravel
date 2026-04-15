@@ -1,7 +1,6 @@
 import { getUser } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-
 export default async function AuthLayout({ children }) {
   try {
     const user = await getUser();

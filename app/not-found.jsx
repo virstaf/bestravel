@@ -3,7 +3,6 @@ import NavSection from "@/components/NavSection";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-
 const NotFound = () => {
   return (
     <>

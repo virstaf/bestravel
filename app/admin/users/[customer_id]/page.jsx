@@ -7,7 +7,6 @@ import { UserCard } from "@/components/admin/UserCard";
 import NavSummary from "@/components/NavSummary";
 import NoteTextBox from "@/components/ui/NoteTextBox";
 
-
 const UserDetailPage = async ({ params }) => {
   const { customer_id } = await params;
   const pathname = `/admin/users/${customer_id}`;

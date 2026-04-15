@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-
 const BlogPreview = ({ excerpt, id }) => {
   return (
     excerpt && (

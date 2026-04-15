@@ -1,6 +1,5 @@
 import { getFormattedDate } from "@/lib/getFormattedDate";
 import Link from "next/link";
-
 import BlogPreview from "./BlogPreview";
 import { getPostExcerpt } from "@/lib/posts";
 

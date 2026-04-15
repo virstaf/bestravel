@@ -1,6 +1,5 @@
 import { howItWorks } from "@/lib/data";
 
-
 const HowItWorks = () => {
   return (
     <div className="w-full py-15 bg-primary-foreground">

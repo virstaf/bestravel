@@ -271,7 +271,11 @@ export default function DealDetail({ deal, isPublic = false }) {
                   </p>
                   {deal.partners.website_url && (
                     <Button variant="link" className="p-0 h-auto" asChild>
-                      <Link href={deal.partners.website_url} target="_blank">
+                      <Link
+                        href={deal.partners.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         Visit Partner Website
                       </Link>
                     </Button>

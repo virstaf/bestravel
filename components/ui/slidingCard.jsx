@@ -1,5 +1,4 @@
 
-
 const SlidingCard = ({ message, author, stars }) => {
   const totalStars = 5;
   const filledStars = Array(stars).fill("★").join("");

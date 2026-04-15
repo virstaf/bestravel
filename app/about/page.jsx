@@ -9,7 +9,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-
 const AboutPage = () => {
   return (
     <div className="w-full min-h-screen">

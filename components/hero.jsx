@@ -1,4 +1,3 @@
-
 import { HeroForm } from "./hero-form";
 
 const Hero = () => {

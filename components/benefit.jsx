@@ -1,6 +1,5 @@
 import { memberBenefits } from "@/lib/data";
 
-
 const BenefitSection = () => {
   return (
     <section className="bg-accent py-16 px-4 sm:px-6 lg:px-8">

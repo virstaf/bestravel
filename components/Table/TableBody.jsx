@@ -1,6 +1,5 @@
 // components/Table/TableBody.jsx
 
-
 const TableBody = ({
   columns,
   data,
