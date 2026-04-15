@@ -14,20 +14,20 @@ const Hero = () => {
    */
   return (
     <section className="relative w-full text-white min-h-[600px] flex flex-col justify-center overflow-hidden">
-      {/* Optimized Background Image for LCP */}
+      {/* LCP Optimization: Use next/image with priority instead of CSS background-image */}
       <Image
         src="/images/hero_background.png"
-        alt="Travel Background"
+        alt="Travel background"
         fill
         priority
-        quality={85}
-        className="object-cover"
-        style={{ objectPosition: "center" }}
+        className="object-cover z-0"
+        sizes="100vw"
       />
-      {/* Overlay for readability - using absolute div to ensure z-index handling */}
-      <div className="absolute inset-0 bg-black/40 z-0" />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-4 py-20 text-center">
+      {/* Overlay for readability - using absolute div to ensure z-index handling */}
+      <div className="absolute inset-0 bg-black/40 z-10" />
+
+      <div className="relative z-20 mx-auto max-w-6xl px-4 py-20 text-center">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight">
           Travel smarter. Save more. Explore freely.
         </h1>
