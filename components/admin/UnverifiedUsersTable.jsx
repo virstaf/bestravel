@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal } from "lucide-react";
-import UserActions from "@/components/admin/user-actions";
+
 import AuthUserActions from "@/components/admin/auth-user-actions";
 
 const UnverifiedUsersTable = ({ title, users, limit = 50 }) => {

@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Trash2, Eye } from "lucide-react";
+import { Plus, Pencil, Eye } from "lucide-react";
 import Link from "next/link";
 import { DeleteBlogButton } from "@/components/DeleteBlogButton";
 

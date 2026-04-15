@@ -1,14 +1,4 @@
-import {
-  Html,
-  Body,
-  Container,
-  Heading,
-  Head,
-  Text,
-  Img,
-  Tailwind,
-  Button,
-} from "@react-email/components";
+import { Html, Body, Container, Heading, Head, Text, Img, Tailwind } from "@react-email/components";
 
 const QuoteAdminNotificationEmail = ({ action, quoteDetails, userDetails }) => {
   const { quoteNumber, tripName, totalAmount } = quoteDetails;

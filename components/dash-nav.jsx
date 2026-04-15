@@ -2,7 +2,7 @@
 
 import UserProfile from "./ui/userProfile";
 import Link from "next/link";
-import Image from "next/image";
+
 import Logo from "./ui/logo";
 
 const dashSecNav = [

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect  } from "react";
+import { useState, useEffect } from "react";
 import { createDealRequest } from "@/actions/deal-requests";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";

@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "./textarea";
 import { toast } from "sonner";
-import axios from "axios";
+
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
