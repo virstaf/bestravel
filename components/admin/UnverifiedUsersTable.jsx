@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { getFormattedDateTime } from "@/lib/getFormattedDate";
 import Table from "@/components/Table/Table";
 import {

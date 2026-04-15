@@ -1,7 +1,6 @@
 import {getAllUsers, getAuthUsers} from "@/actions/admin/users";
 import UsersTable from "@/components/admin/users-table";
 import NavSummary from "@/components/NavSummary";
-import React from "react";
 import UnverifiedUsersTable from "@/components/admin/UnverifiedUsersTable";
 
 const UsersPage = async () => {

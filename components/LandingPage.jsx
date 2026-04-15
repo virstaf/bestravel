@@ -1,4 +1,3 @@
-import React from "react";
 import HeroSection from "./HeroSection";
 import LimitedTimeSection from "./LimitedTimeSection";
 import WhyJoin from "./WhyJoin";

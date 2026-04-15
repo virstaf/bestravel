@@ -1,5 +1,4 @@
 import { memberBenefits } from "@/lib/data";
-import React from "react";
 
 const BenefitSection = () => {
   return (
