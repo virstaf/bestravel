@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, memo } from "react";
+import { useMemo, memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
+import { hashCode } from "@/utils/hash";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -18,40 +20,28 @@ import {
   Lock,
 } from "lucide-react";
 
-const DealCard = memo(({ deal, isPublic = false }) => {
-  // Memoize all derived values to prevent redundant calculations on every re-render
-  const {
-    originalPrice,
-    discountedPrice,
-    savings,
-    discountPercentage,
-    imageUrl,
-    badgeInfo,
-    ctaCopy,
-    urgencyText,
-    validUntil,
-  } = useMemo(() => {
-    // Calculate prices logic with location support
+/**
+ * DealCard Component
+ *
+ * Optimized with React.memo and useMemo to prevent unnecessary re-renders.
+ * Uses deterministic hashing for CTA text and placeholders to avoid hydration mismatches.
+ */
+function DealCard({ deal, isPublic = false }) {
+  // Memoize price calculations to prevent redundant sorting/logic on every render
+  const pricing = useMemo(() => {
     const calculateBaseDiscounted = (price) => {
       return deal.discount_percentage
         ? price * (1 - deal.discount_percentage / 100)
         : deal.discount_amount
           ? price - deal.discount_amount
-          : price; // No automatic discount if not specified
+          : price;
     };
 
-    // Find lowest price option
-    const options = [];
-
-    // Add base option
+    const priceOptions = [];
     const baseOriginal = deal.original_price || 1299;
     const baseSale = calculateBaseDiscounted(baseOriginal);
-    options.push({
-      sale: baseSale,
-      original: baseOriginal,
-    });
+    priceOptions.push({ sale: baseSale, original: baseOriginal });
 
-    // Add location options
     if (deal.location_prices?.length > 0) {
       deal.location_prices.forEach((lp) => {
         if (lp.price) {
@@ -59,135 +49,122 @@ const DealCard = memo(({ deal, isPublic = false }) => {
           const oPrice = lp.original_price
             ? parseFloat(lp.original_price)
             : sPrice;
-          // Only add if it's a valid number
           if (!isNaN(sPrice)) {
-            options.push({ sale: sPrice, original: oPrice });
+            priceOptions.push({ sale: sPrice, original: oPrice });
           }
         }
       });
     }
 
-    // Sort by sale price ascending
-    options.sort((a, b) => a.sale - b.sale);
+    priceOptions.sort((a, b) => a.sale - b.sale);
+    const bestOption = priceOptions[0];
+    const originalPrice = bestOption.original;
+    const discountedPrice = bestOption.sale;
+    const savings = originalPrice - discountedPrice;
+    const discountPercentage =
+      savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
 
-    const best = options[0];
-    const orig = best.original;
-    const sale = best.sale;
-    const save = orig - sale;
+    return { originalPrice, discountedPrice, savings, discountPercentage };
+  }, [
+    deal.id,
+    deal.original_price,
+    deal.discount_percentage,
+    deal.discount_amount,
+    deal.location_prices,
+  ]);
 
-    // Calculate actual discount percentage from prices
-    const discPerc = save > 0 ? Math.round((save / orig) * 100) : null;
+  const { originalPrice, discountedPrice, savings, discountPercentage } = pricing;
 
-    // Get image URL - use partner image or placeholder
-    const getUrl = () => {
+  // Memoize image selection and date formatting
+  const { imageUrl, validUntil, formattedDate } = useMemo(() => {
+    const getImageUrl = () => {
       if (deal.image_url) return deal.image_url;
       if (deal.partners?.images?.[0]) return deal.partners.images[0];
       if (deal.partners?.image_url) return deal.partners.image_url;
 
+      // Deterministic image selection from ID hash to prevent hydration mismatch
       const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
       return `/images/deals/default-${imageNumber}.jpg`;
     };
 
-    const imgUrl = getUrl();
-
-    // Format validity date (needed by badge and urgency functions)
-    const validDate = new Date(deal.end_date || deal.valid_until);
-
-    // Determine badge type
-    const getBadge = () => {
-      const daysUntilExpiry = Math.ceil(
-        (validDate - new Date()) / (1000 * 60 * 60 * 24),
-      );
-
-      if (deal.is_featured) {
-        return {
-          text: "🔥 Hot Deal",
-          className: "bg-orange-500 hover:bg-orange-600",
-        };
-      }
-      if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
-        return {
-          text: "⏰ Ending Soon",
-          className: "bg-red-500 hover:bg-red-600",
-        };
-      }
-      if (deal.is_most_booked) {
-        return {
-          text: "⭐ Most Booked",
-          className: "bg-purple-500 hover:bg-purple-600",
-        };
-      }
-      return null;
+    const date = new Date(deal.end_date || deal.valid_until);
+    return {
+      imageUrl: getImageUrl(),
+      validUntil: date,
+      formattedDate: date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
     };
+  }, [
+    deal.id,
+    deal.image_url,
+    deal.partners,
+    deal.end_date,
+    deal.valid_until,
+  ]);
 
-    const badge = getBadge();
+  // Memoize UI content to prevent re-calculating strings and logic on every render
+  const uiContent = useMemo(() => {
+    const now = new Date();
+    const daysUntilExpiry = Math.ceil(
+      (validUntil - now) / (1000 * 60 * 60 * 24),
+    );
 
-    // Rotating CTA copy - stabilized with hashCode to avoid hydration mismatch
-    const ctaOptions = [
+    // Badge logic
+    let badgeInfo = null;
+    if (deal.is_featured) {
+      badgeInfo = {
+        text: "🔥 Hot Deal",
+        className: "bg-orange-500 hover:bg-orange-600",
+      };
+    } else if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
+      badgeInfo = {
+        text: "⏰ Ending Soon",
+        className: "bg-red-500 hover:bg-red-600",
+      };
+    } else if (deal.is_most_booked) {
+      badgeInfo = {
+        text: "⭐ Most Booked",
+        className: "bg-purple-500 hover:bg-purple-600",
+      };
+    }
+
+    // Urgency text
+    let urgencyText = "Prices may increase soon";
+    if (daysUntilExpiry <= 3 && daysUntilExpiry > 0) {
+      urgencyText = `Deal expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? "s" : ""}`;
+    } else if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
+      urgencyText = "Limited availability";
+    }
+
+    // Deterministic CTA selection from ID hash to prevent hydration mismatch
+    const ctaCopyOptions = [
       "Lock in This Deal",
       "View Full Details",
       "Grab This Offer",
       "Book Before It's Gone",
     ];
-    const cta = ctaOptions[hashCode(String(deal.id)) % ctaOptions.length];
+    const ctaCopy = ctaCopyOptions[hashCode(String(deal.id)) % ctaCopyOptions.length];
 
-    // Urgency microcopy
-    const getUrgency = () => {
-      const daysUntilExpiry = Math.ceil(
-        (validDate - new Date()) / (1000 * 60 * 60 * 24),
-      );
+    return { badgeInfo, urgencyText, ctaCopy };
+  }, [
+    deal.id,
+    deal.is_featured,
+    deal.is_most_booked,
+    validUntil,
+  ]);
 
-      if (daysUntilExpiry <= 3 && daysUntilExpiry > 0) {
-        return `Deal expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? "s" : ""}`;
-      }
-      if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
-        return "Limited availability";
-      }
-      return "Prices may increase soon";
-    };
+  const { badgeInfo, urgencyText, ctaCopy } = uiContent;
 
-    return {
-      originalPrice: orig,
-      discountedPrice: sale,
-      savings: save,
-      discountPercentage: discPerc,
-      imageUrl: imgUrl,
-      badgeInfo: badge,
-      ctaCopy: cta,
-      urgencyText: getUrgency(),
-      validUntil: validDate,
-    };
-  }, [deal]);
-
-  // Format location
+  // Static/simple property assignments
   const location = deal.location || deal.partners?.location || "Destination";
-
-  // Package type/title
   const packageType = deal.package_type || deal.title || "Travel Package";
-
-  // Duration
   const nights = deal.duration_nights || 4;
   const includesFlight = deal.includes_flight !== false;
   const includesHotel = deal.includes_hotel !== false;
   const includesTransfer = deal.includes_transfer || false;
-
-  // Build inclusions text - memoized
-  const inclusionsText = useMemo(() => {
-    const inclusions = [];
-    if (includesFlight) inclusions.push("Flight");
-    if (includesHotel) inclusions.push(`${nights}-night stay`);
-    if (includesTransfer) inclusions.push("Transfer");
-
-    if (inclusions.length === 0) return `${nights}-night package`;
-    return inclusions.join(" + ");
-  }, [includesFlight, includesHotel, includesTransfer, nights]);
-
-  // Format date for display
-  const formattedDate = validUntil.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
 
   const travelStartDate = deal.travel_start_date
     ? new Date(deal.travel_start_date).toLocaleDateString("en-US", {
@@ -294,11 +271,6 @@ const DealCard = memo(({ deal, isPublic = false }) => {
 
         {/* Pricing */}
         <div className="pt-2 space-y-1">
-          {/* <div className="flex items-baseline gap-2"> */}
-          {/* <span className="text-sm text-muted-foreground line-through">
-              £{originalPrice.toFixed(0)}
-            </span> */}
-          {/* </div> */}
           <div className="flex items-baseline justify-between">
             <div className="flex flex-col">
               <span className="text-xs text-muted-foreground">
@@ -327,6 +299,7 @@ const DealCard = memo(({ deal, isPublic = false }) => {
       <CardFooter className="p-6 pt-2 flex flex-col gap-3">
         {/* Urgency microcopy */}
         <p className="text-xs text-orange-600 font-medium text-center">
+          ⚡ {urgencyText}
           ⚡ {urgencyText}
         </p>
 
@@ -357,6 +330,6 @@ const DealCard = memo(({ deal, isPublic = false }) => {
       </CardFooter>
     </Card>
   );
-});
+}
 
-export default DealCard;
+export default memo(DealCard);

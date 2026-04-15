@@ -1,7 +1,8 @@
 // components/DealDetail.js
 "use client";
-import { useState, useMemo, memo } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
+import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -46,42 +47,21 @@ const isOptimizableImage = (url) => {
 const DealDetail = memo(({ deal, isPublic = false }) => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Memoize all derived values to prevent redundant calculations on every re-render
-  const {
-    originalPrice,
-    discountedPrice,
-    savings,
-    discountPercentage,
-    imageUrl,
-    location,
-    title,
-    packageType,
-    nights,
-    includesFlight,
-    includesHotel,
-    includesTransfer,
-  } = useMemo(() => {
-    // Calculate prices logic with location support
+  // Memoize price calculations
+  const pricing = useMemo(() => {
     const calculateBaseDiscounted = (price) => {
       return deal.discount_percentage
         ? price * (1 - deal.discount_percentage / 100)
         : deal.discount_amount
           ? price - deal.discount_amount
-          : price; // No automatic discount if not specified
+          : price;
     };
 
-    // Find lowest price option
     const priceOptions = [];
-
-    // Add base option
     const baseOriginal = deal.original_price || 1299;
     const baseSale = calculateBaseDiscounted(baseOriginal);
-    priceOptions.push({
-      sale: baseSale,
-      original: baseOriginal,
-    });
+    priceOptions.push({ sale: baseSale, original: baseOriginal });
 
-    // Add location options
     if (deal.location_prices?.length > 0) {
       deal.location_prices.forEach((lp) => {
         if (lp.price) {
@@ -89,7 +69,6 @@ const DealDetail = memo(({ deal, isPublic = false }) => {
           const oPrice = lp.original_price
             ? parseFloat(lp.original_price)
             : sPrice;
-          // Only add if it's a valid number
           if (!isNaN(sPrice)) {
             priceOptions.push({ sale: sPrice, original: oPrice });
           }
@@ -97,30 +76,35 @@ const DealDetail = memo(({ deal, isPublic = false }) => {
       });
     }
 
-    // Sort by sale price ascending
     priceOptions.sort((a, b) => a.sale - b.sale);
-
     const bestOption = priceOptions[0];
-    const origPrice = bestOption.original;
-    const discPrice = bestOption.sale;
-    const save = origPrice - discPrice;
+    const originalPrice = bestOption.original;
+    const discountedPrice = bestOption.sale;
+    const savings = originalPrice - discountedPrice;
+    const discountPercentage =
+      savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
 
-    // Calculate actual discount percentage from prices
-    const discPercentage =
-      save > 0 ? Math.round((save / origPrice) * 100) : null;
+    return { originalPrice, discountedPrice, savings, discountPercentage };
+  }, [
+    deal.id,
+    deal.original_price,
+    deal.discount_percentage,
+    deal.discount_amount,
+    deal.location_prices,
+  ]);
 
-    // Get image URL
-    const getImageUrl = () => {
-      if (deal.image_url) return deal.image_url;
-      if (deal.partners?.images?.[0]) return deal.partners.images[0];
-      if (deal.partners?.image_url) return deal.partners.image_url;
+  const { originalPrice, discountedPrice, savings, discountPercentage } =
+    pricing;
 
-      // Use deal ID hash to determine which placeholder image to use (1-5)
-      const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
-      return `/images/deals/default-${imageNumber}.jpg`;
-    };
+  // Memoize image selection
+  const imageUrl = useMemo(() => {
+    if (deal.image_url) return deal.image_url;
+    if (deal.partners?.images?.[0]) return deal.partners.images[0];
+    if (deal.partners?.image_url) return deal.partners.image_url;
 
-    const imgUrl = getImageUrl();
+    const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
+    return `/images/deals/default-${imageNumber}.jpg`;
+  }, [deal.id, deal.image_url, deal.partners]);
 
     return {
       originalPrice: origPrice,
