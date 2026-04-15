@@ -1,7 +1,7 @@
 "use client";
 
 // components/Table/Table.jsx
-import React, { useState, useMemo } from "react";
+import { useState, useMemo  } from "react";
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
 import TablePagination from "./TablePagination";

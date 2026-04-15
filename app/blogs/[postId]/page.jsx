@@ -5,7 +5,6 @@ import { getBlogPostBySlug } from "@/app/actions/blogActions";
 import { ArrowLeft, Calendar, Clock } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import React from "react";
 import { ShareButton, ShareArticleButton } from "@/components/ShareButtons";
 import { notFound } from "next/navigation";
 import { TiptapRenderer } from "@/components/TiptapRenderer";

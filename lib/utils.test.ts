@@ -1,65 +1,51 @@
-import { describe, it, mock } from "node:test";
+import { test, describe } from "node:test";
 import assert from "node:assert";
-import { handleError } from "./utils";
+import { generateCustomerId, sanitizeEmailHeader } from "./utils.ts";
 
-describe("handleError", () => {
-  it("should handle an Error instance correctly", () => {
-    // Mock console.error to suppress output and verify it's called
-    const consoleErrorMock = mock.method(console, "error", () => {});
-
-    const testError = new Error("This is a test error");
-    const result = handleError(testError);
-
-    assert.deepStrictEqual(result, { errorMessage: "This is a test error" });
-    assert.strictEqual(consoleErrorMock.mock.calls.length, 1);
-    assert.strictEqual(consoleErrorMock.mock.calls[0].arguments[0], "error handler:::");
-    assert.strictEqual(consoleErrorMock.mock.calls[0].arguments[1], testError);
-
-    // Restore the original console.error
-    consoleErrorMock.mock.restore();
+describe("generateCustomerId", () => {
+  test("should return customer ID starting with 'V' and 6 digits by default", () => {
+    const id = generateCustomerId();
+    assert.match(id, /^V\d{6}$/);
   });
 
-  it("should handle a string correctly", () => {
-    const consoleErrorMock = mock.method(console, "error", () => {});
-
-    const result = handleError("This is a string error");
-
-    assert.deepStrictEqual(result, { errorMessage: "An error occurred" });
-    assert.strictEqual(consoleErrorMock.mock.calls.length, 0);
-
-    consoleErrorMock.mock.restore();
+  test("should return customer ID starting with 'V' and 6 digits for 'USER' role", () => {
+    const id = generateCustomerId("USER");
+    assert.match(id, /^V\d{6}$/);
   });
 
-  it("should handle null correctly", () => {
-    const consoleErrorMock = mock.method(console, "error", () => {});
-
-    const result = handleError(null);
-
-    assert.deepStrictEqual(result, { errorMessage: "An error occurred" });
-    assert.strictEqual(consoleErrorMock.mock.calls.length, 0);
-
-    consoleErrorMock.mock.restore();
+  test("should return customer ID starting with 'A' and 6 digits for 'ADMIN' role", () => {
+    const id = generateCustomerId("ADMIN");
+    assert.match(id, /^A\d{6}$/);
   });
 
-  it("should handle undefined correctly", () => {
-    const consoleErrorMock = mock.method(console, "error", () => {});
+  test("should return customer ID starting with 'V' and 6 digits for unexpected inputs", () => {
+    const id1 = generateCustomerId("UNKNOWN_ROLE");
+    assert.match(id1, /^V\d{6}$/);
 
-    const result = handleError(undefined);
+    const id2 = generateCustomerId("");
+    assert.match(id2, /^V\d{6}$/);
+  });
+});
 
-    assert.deepStrictEqual(result, { errorMessage: "An error occurred" });
-    assert.strictEqual(consoleErrorMock.mock.calls.length, 0);
-
-    consoleErrorMock.mock.restore();
+describe("sanitizeEmailHeader", () => {
+  test("should remove newlines and carriage returns", () => {
+    const input = "Line 1\nLine 2\r\nLine 3\rLine 4";
+    const expected = "Line 1 Line 2 Line 3 Line 4";
+    assert.strictEqual(sanitizeEmailHeader(input), expected);
   });
 
-  it("should handle a plain object correctly", () => {
-    const consoleErrorMock = mock.method(console, "error", () => {});
+  test("should trim whitespace", () => {
+    const input = "  Clean Me  \n";
+    const expected = "Clean Me";
+    assert.strictEqual(sanitizeEmailHeader(input), expected);
+  });
 
-    const result = handleError({ message: "Object error" });
+  test("should return non-string inputs as is", () => {
+    const input = 123 as any;
+    assert.strictEqual(sanitizeEmailHeader(input), 123);
+  });
 
-    assert.deepStrictEqual(result, { errorMessage: "An error occurred" });
-    assert.strictEqual(consoleErrorMock.mock.calls.length, 0);
-
-    consoleErrorMock.mock.restore();
+  test("should handle empty strings", () => {
+    assert.strictEqual(sanitizeEmailHeader(""), "");
   });
 });

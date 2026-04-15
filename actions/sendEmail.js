@@ -1,6 +1,7 @@
 "use server";
 
 import nodeMailer from "nodemailer";
+import { sanitizeEmailHeader } from "@/lib/utils";
 // import { createClient } from "@/lib/supabase/server";
 
 export const sendEmail = async (email, subject, message, html = "") => {
@@ -17,7 +18,7 @@ export const sendEmail = async (email, subject, message, html = "") => {
   const mailOptions = {
     from: process.env.ADMIN_EMAIL,
     to: email,
-    subject: subject,
+    subject: sanitizeEmailHeader(subject),
     text: message,
     html: html,
   };
