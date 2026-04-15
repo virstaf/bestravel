@@ -4,25 +4,20 @@ import Image from "next/image";
 
 const Hero = () => {
   return (
-    <section className="relative w-full text-white min-h-[600px] flex flex-col justify-center">
-      {/*
-        ⚡ BOLT OPTIMIZATION:
-        Using next/image with 'priority' and 'fill' instead of CSS background-image.
-        This improves LCP (Largest Contentful Paint) by allowing the browser to
-        preload the image and Next.js to serve it in optimized formats/sizes.
-      */}
+    <section className="relative w-full text-white min-h-[600px] flex flex-col justify-center overflow-hidden">
+      {/* LCP Optimization: Use next/image with priority instead of CSS background-image */}
       <Image
         src="/images/hero_background.png"
-        alt="Hero background"
+        alt="Travel background"
         fill
         priority
-        className="object-cover"
+        className="object-cover z-0"
         sizes="100vw"
       />
-      {/* Overlay for readability - z-10 ensures it's above the image */}
+
+      {/* Overlay for readability - using absolute div to ensure z-index handling */}
       <div className="absolute inset-0 bg-black/40 z-10" />
 
-      {/* Content - z-20 ensures it's above the overlay */}
       <div className="relative z-20 mx-auto max-w-6xl px-4 py-20 text-center">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight">
           Travel smarter. Save more. Explore freely.
