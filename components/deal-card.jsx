@@ -1,8 +1,10 @@
 "use client";
 
 import { useMemo, memo } from "react";
+import { useMemo, memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
 import { hashCode } from "@/utils/hash";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
@@ -188,7 +190,12 @@ function DealCard({ deal, isPublic = false }) {
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          unoptimized={imageUrl.startsWith("http")}
+          unoptimized={
+            imageUrl.startsWith("http") &&
+            !imageUrl.includes("supabase.co") &&
+            !imageUrl.includes("unsplash.com") &&
+            !imageUrl.includes("drive.google.com")
+          }
         />
         {/* Top-left badge */}
         {badgeInfo && (
@@ -292,6 +299,7 @@ function DealCard({ deal, isPublic = false }) {
       <CardFooter className="p-6 pt-2 flex flex-col gap-3">
         {/* Urgency microcopy */}
         <p className="text-xs text-orange-600 font-medium text-center">
+          ⚡ {urgencyText}
           ⚡ {urgencyText}
         </p>
 

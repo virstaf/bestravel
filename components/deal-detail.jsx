@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { hashCode } from "@/utils/hash";
 import {
   MapPinIcon,
   CalendarIcon,
@@ -15,7 +16,35 @@ import {
 } from "lucide-react";
 import BookingDialog from "@/components/booking-dialog";
 
-export default function DealDetail({ deal, isPublic = false }) {
+// Helper for stable hashing
+const hashCode = (str) => {
+  let hash = 0;
+  if (!str) return hash;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash);
+};
+
+// Check if image can be optimized by Next.js based on next.config.mjs
+const isOptimizableImage = (url) => {
+  if (!url) return false;
+  const optimizableHosts = [
+    "drive.google.com",
+    "images.unsplash.com",
+    "ylpkcsmbsnowmbyxhbzw.supabase.co",
+  ];
+  try {
+    const { hostname } = new URL(url);
+    return optimizableHosts.includes(hostname);
+  } catch (e) {
+    return false;
+  }
+};
+
+const DealDetail = memo(({ deal, isPublic = false }) => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
   // Memoize price calculations
@@ -77,13 +106,21 @@ export default function DealDetail({ deal, isPublic = false }) {
     return `/images/deals/default-${imageNumber}.jpg`;
   }, [deal.id, deal.image_url, deal.partners]);
 
-  const location = deal.location || deal.partners?.location || "Destination";
-  const title = deal.title || deal.package_type || "Travel Package";
-  const packageType = deal.package_type || deal.title || "Travel Package";
-  const nights = deal.duration_nights || 4;
-  const includesFlight = deal.includes_flight !== false;
-  const includesHotel = deal.includes_hotel !== false;
-  const includesTransfer = deal.includes_transfer || false;
+    return {
+      originalPrice: origPrice,
+      discountedPrice: discPrice,
+      savings: save,
+      discountPercentage: discPercentage,
+      imageUrl: imgUrl,
+      location: deal.location || deal.partners?.location || "Destination",
+      title: deal.title || deal.package_type || "Travel Package",
+      packageType: deal.package_type || deal.title || "Travel Package",
+      nights: deal.duration_nights || 4,
+      includesFlight: deal.includes_flight !== false,
+      includesHotel: deal.includes_hotel !== false,
+      includesTransfer: deal.includes_transfer || false,
+    };
+  }, [deal]);
 
   return (
     <>
@@ -109,7 +146,10 @@ export default function DealDetail({ deal, isPublic = false }) {
               fill
               className="object-cover"
               priority
-              unoptimized={imageUrl.startsWith("http")}
+              // Only bypass optimization for external images from unknown hosts
+              unoptimized={
+                imageUrl.startsWith("http") && !isOptimizableImage(imageUrl)
+              }
             />
             {discountPercentage && (
               <Badge className="absolute top-6 right-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-xl font-bold shadow-lg">
@@ -315,4 +355,6 @@ export default function DealDetail({ deal, isPublic = false }) {
       />
     </>
   );
-}
+});
+
+export default DealDetail;
