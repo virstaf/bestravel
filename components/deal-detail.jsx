@@ -1,6 +1,6 @@
 // components/DealDetail.js
 "use client";
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
@@ -15,39 +15,15 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import BookingDialog from "@/components/booking-dialog";
+import { hashCode } from "@/utils/hash";
 
-// Helper for stable hashing
-const hashCode = (str) => {
-  let hash = 0;
-  if (!str) return hash;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash;
-  }
-  return Math.abs(hash);
-};
-
-// Check if image can be optimized by Next.js based on next.config.mjs
-const isOptimizableImage = (url) => {
-  if (!url) return false;
-  const optimizableHosts = [
-    "drive.google.com",
-    "images.unsplash.com",
-    "ylpkcsmbsnowmbyxhbzw.supabase.co",
-  ];
-  try {
-    const { hostname } = new URL(url);
-    return optimizableHosts.includes(hostname);
-  } catch (e) {
-    return false;
-  }
-};
-
-const DealDetail = memo(({ deal, isPublic = false }) => {
+/**
+ * DealDetail component with memoization for expensive calculations and derived UI properties.
+ */
+export default function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Memoize price calculations
+  // Memoized price calculations to optimize performance.
   const pricing = useMemo(() => {
     const calculateBaseDiscounted = (price) => {
       return deal.discount_percentage
@@ -61,14 +37,16 @@ const DealDetail = memo(({ deal, isPublic = false }) => {
     const baseOriginal = deal.original_price || 1299;
     const baseSale = calculateBaseDiscounted(baseOriginal);
     priceOptions.push({ sale: baseSale, original: baseOriginal });
+    const priceOptions = [];
+    const baseOriginal = deal.original_price || 1299;
+    const baseSale = calculateBaseDiscounted(baseOriginal);
+    priceOptions.push({ sale: baseSale, original: baseOriginal });
 
     if (deal.location_prices?.length > 0) {
       deal.location_prices.forEach((lp) => {
         if (lp.price) {
           const sPrice = parseFloat(lp.price);
-          const oPrice = lp.original_price
-            ? parseFloat(lp.original_price)
-            : sPrice;
+          const oPrice = lp.original_price ? parseFloat(lp.original_price) : sPrice;
           if (!isNaN(sPrice)) {
             priceOptions.push({ sale: sPrice, original: oPrice });
           }
@@ -81,22 +59,14 @@ const DealDetail = memo(({ deal, isPublic = false }) => {
     const originalPrice = bestOption.original;
     const discountedPrice = bestOption.sale;
     const savings = originalPrice - discountedPrice;
-    const discountPercentage =
-      savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
+    const discountPercentage = savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
 
     return { originalPrice, discountedPrice, savings, discountPercentage };
-  }, [
-    deal.id,
-    deal.original_price,
-    deal.discount_percentage,
-    deal.discount_amount,
-    deal.location_prices,
-  ]);
+  }, [deal.id, deal.original_price, deal.discount_percentage, deal.discount_amount, deal.location_prices]);
 
-  const { originalPrice, discountedPrice, savings, discountPercentage } =
-    pricing;
+  const { originalPrice, discountedPrice, savings, discountPercentage } = pricing;
 
-  // Memoize image selection
+  // Memoized image URL generation with deterministic fallback.
   const imageUrl = useMemo(() => {
     if (deal.image_url) return deal.image_url;
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
@@ -104,23 +74,42 @@ const DealDetail = memo(({ deal, isPublic = false }) => {
 
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
-  }, [deal.id, deal.image_url, deal.partners]);
+  }, [deal.id, deal.image_url, deal.partners?.images, deal.partners?.image_url]);
 
-    return {
-      originalPrice: origPrice,
-      discountedPrice: discPrice,
-      savings: save,
-      discountPercentage: discPercentage,
-      imageUrl: imgUrl,
-      location: deal.location || deal.partners?.location || "Destination",
-      title: deal.title || deal.package_type || "Travel Package",
-      packageType: deal.package_type || deal.title || "Travel Package",
-      nights: deal.duration_nights || 4,
-      includesFlight: deal.includes_flight !== false,
-      includesHotel: deal.includes_hotel !== false,
-      includesTransfer: deal.includes_transfer || false,
-    };
-  }, [deal]);
+  const location = deal.location || deal.partners?.location || "Destination";
+  const title = deal.title || deal.package_type || "Travel Package";
+  const packageType = deal.package_type || deal.title || "Travel Package";
+  const nights = deal.duration_nights || 4;
+  const includesFlight = deal.includes_flight !== false;
+  const includesHotel = deal.includes_hotel !== false;
+  const includesTransfer = deal.includes_transfer || false;
+
+  // Memoized inclusions text.
+  const inclusionsText = useMemo(() => {
+    return [
+      includesFlight && "Flight",
+      includesHotel && `${nights}-night stay`,
+      includesTransfer && "Transfer",
+    ]
+      .filter(Boolean)
+      .join(" + ");
+  }, [includesFlight, includesHotel, includesTransfer, nights]);
+
+  // Memoized date formatting.
+  const bookingEndDate = useMemo(() => new Date(deal.end_date).toLocaleDateString("en-US", {
+    month: "long", day: "numeric", year: "numeric",
+  }), [deal.end_date]);
+
+  const travelDates = useMemo(() => {
+    if (!deal.travel_start_date) return null;
+    const start = new Date(deal.travel_start_date).toLocaleDateString("en-US", {
+      month: "long", day: "numeric", year: "numeric",
+    });
+    const end = deal.travel_end_date ? new Date(deal.travel_end_date).toLocaleDateString("en-US", {
+      month: "long", day: "numeric", year: "numeric",
+    }) : null;
+    return { start, end };
+  }, [deal.travel_start_date, deal.travel_end_date]);
 
   return (
     <>
@@ -166,15 +155,7 @@ const DealDetail = memo(({ deal, isPublic = false }) => {
                   <span className="text-lg">{location}</span>
                 </div>
                 <CardTitle className="text-3xl">{title}</CardTitle>
-                <p className="text-lg text-muted-foreground">
-                  {[
-                    includesFlight && "Flight",
-                    includesHotel && `${nights}-night stay`,
-                    includesTransfer && "Transfer",
-                  ]
-                    .filter(Boolean)
-                    .join(" + ")}
-                </p>
+                <p className="text-lg text-muted-foreground">{inclusionsText}</p>
               </div>
 
               <div className="bg-muted p-6 rounded-lg space-y-2 min-w-[280px]">
@@ -213,37 +194,16 @@ const DealDetail = memo(({ deal, isPublic = false }) => {
                 <span className="font-medium text-foreground mr-2">
                   Booking Valid Until:
                 </span>
-                <span>
-                  {new Date(deal.end_date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
+                <span>{bookingEndDate}</span>
               </div>
 
-              {deal.travel_start_date && (
+              {travelDates && (
                 <div className="flex items-center text-blue-700">
                   <CalendarIcon className="h-5 w-5 mr-2" />
                   <span className="font-medium mr-2">Travel Window:</span>
                   <span>
-                    {new Date(deal.travel_start_date).toLocaleDateString(
-                      "en-US",
-                      {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      },
-                    )}
-                    {deal.travel_end_date &&
-                      ` - ${new Date(deal.travel_end_date).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "long",
-                          day: "numeric",
-                          year: "numeric",
-                        },
-                      )}`}
+                    {travelDates.start}
+                    {travelDates.end && ` - ${travelDates.end}`}
                   </span>
                 </div>
               )}
