@@ -3,14 +3,10 @@ import { resendEmail } from "@/actions/resendEmail";
 
 export const POST = async (req) => {
   const {
-    trip_id,
-    user_id,
     email,
     type,
     details,
     fullname,
-    start_date,
-    end_date,
   } = await req.json();
 
   try {
@@ -35,6 +31,11 @@ export const POST = async (req) => {
 
     console.log("user:::", emailUser);
     console.log("admin:::", emailAdmin);
+
+    return NextResponse.json(
+      { message: "Reservation created successfully" },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error creating reservation:", error);
     return NextResponse.json(
@@ -42,9 +43,4 @@ export const POST = async (req) => {
       { status: 500 }
     );
   }
-
-  return NextResponse.json(
-    { message: "Reservation created successfully" },
-    { status: 201 }
-  );
 };
