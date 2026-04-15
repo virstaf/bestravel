@@ -2,10 +2,12 @@
 "use client";
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
+import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { hashCode } from "@/utils/hash";
 import {
   MapPinIcon,
   CalendarIcon,
@@ -31,6 +33,10 @@ export default function DealDetail({ deal, isPublic = false }) {
           : price;
     };
 
+    const priceOptions = [];
+    const baseOriginal = deal.original_price || 1299;
+    const baseSale = calculateBaseDiscounted(baseOriginal);
+    priceOptions.push({ sale: baseSale, original: baseOriginal });
     const priceOptions = [];
     const baseOriginal = deal.original_price || 1299;
     const baseSale = calculateBaseDiscounted(baseOriginal);
@@ -129,7 +135,10 @@ export default function DealDetail({ deal, isPublic = false }) {
               fill
               className="object-cover"
               priority
-              unoptimized={imageUrl.startsWith("http")}
+              // Only bypass optimization for external images from unknown hosts
+              unoptimized={
+                imageUrl.startsWith("http") && !isOptimizableImage(imageUrl)
+              }
             />
             {discountPercentage && (
               <Badge className="absolute top-6 right-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-xl font-bold shadow-lg">
@@ -306,4 +315,6 @@ export default function DealDetail({ deal, isPublic = false }) {
       />
     </>
   );
-}
+});
+
+export default DealDetail;

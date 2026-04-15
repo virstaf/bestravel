@@ -3,7 +3,9 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
+import { hashCode } from "@/utils/hash";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -33,6 +35,10 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
           : price;
     };
 
+    const priceOptions = [];
+    const baseOriginal = deal.original_price || 1299;
+    const baseSale = calculateBaseDiscounted(baseOriginal);
+    priceOptions.push({ sale: baseSale, original: baseOriginal });
     const priceOptions = [];
     const baseOriginal = deal.original_price || 1299;
     const baseSale = calculateBaseDiscounted(baseOriginal);
@@ -79,6 +85,8 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
   const badgeInfo = useMemo(() => {
     const daysUntilExpiry = Math.ceil((validUntil - new Date()) / (1000 * 60 * 60 * 24));
 
+    // Badge logic
+    let badgeInfo = null;
     if (deal.is_featured) {
       return { text: "🔥 Hot Deal", className: "bg-orange-500 hover:bg-orange-600" };
     }
@@ -106,10 +114,9 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
   const urgencyText = useMemo(() => {
     const daysUntilExpiry = Math.ceil((validUntil - new Date()) / (1000 * 60 * 60 * 24));
     if (daysUntilExpiry <= 3 && daysUntilExpiry > 0) {
-      return `Deal expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? "s" : ""}`;
-    }
-    if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
-      return "Limited availability";
+      urgencyText = `Deal expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? "s" : ""}`;
+    } else if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
+      urgencyText = "Limited availability";
     }
     return "Prices may increase soon";
   }, [validUntil]);
