@@ -12,6 +12,7 @@ const TravelSmarter = () => {
         <Link
           className="hover:text-primary hover:underline"
           target="_blank"
+          rel="noopener noreferrer"
           href="https://www.caa.co.uk/atol-protection/"
         >
           ATOL
