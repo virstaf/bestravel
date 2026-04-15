@@ -3,6 +3,7 @@
 import { useMemo, memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,19 +19,6 @@ import {
 } from "lucide-react";
 
 const DealCard = memo(({ deal, isPublic = false }) => {
-  // Use deal ID hash to determine stable values
-  // This works with both numeric IDs and UUIDs
-  const hashCode = (str) => {
-    let hash = 0;
-    if (!str) return hash;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash; // Convert to 32bit integer
-    }
-    return Math.abs(hash);
-  };
-
   // Memoize all derived values to prevent redundant calculations on every re-render
   const {
     originalPrice,
@@ -225,7 +213,12 @@ const DealCard = memo(({ deal, isPublic = false }) => {
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          unoptimized={imageUrl.startsWith("http")}
+          unoptimized={
+            imageUrl.startsWith("http") &&
+            !imageUrl.includes("supabase.co") &&
+            !imageUrl.includes("unsplash.com") &&
+            !imageUrl.includes("drive.google.com")
+          }
         />
         {/* Top-left badge */}
         {badgeInfo && (
