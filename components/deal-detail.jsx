@@ -1,11 +1,13 @@
 // components/DealDetail.js
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
+import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { hashCode } from "@/utils/hash";
 import {
   MapPinIcon,
   CalendarIcon,
@@ -14,87 +16,111 @@ import {
 } from "lucide-react";
 import BookingDialog from "@/components/booking-dialog";
 
-export default function DealDetail({ deal, isPublic = false }) {
+// Helper for stable hashing
+const hashCode = (str) => {
+  let hash = 0;
+  if (!str) return hash;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return Math.abs(hash);
+};
+
+// Check if image can be optimized by Next.js based on next.config.mjs
+const isOptimizableImage = (url) => {
+  if (!url) return false;
+  const optimizableHosts = [
+    "drive.google.com",
+    "images.unsplash.com",
+    "ylpkcsmbsnowmbyxhbzw.supabase.co",
+  ];
+  try {
+    const { hostname } = new URL(url);
+    return optimizableHosts.includes(hostname);
+  } catch (e) {
+    return false;
+  }
+};
+
+const DealDetail = memo(({ deal, isPublic = false }) => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Calculate prices logic with location support
-  const calculateBaseDiscounted = (price) => {
-    return deal.discount_percentage
-      ? price * (1 - deal.discount_percentage / 100)
-      : deal.discount_amount
-        ? price - deal.discount_amount
-        : price; // No automatic discount if not specified
-  };
+  // Memoize price calculations
+  const pricing = useMemo(() => {
+    const calculateBaseDiscounted = (price) => {
+      return deal.discount_percentage
+        ? price * (1 - deal.discount_percentage / 100)
+        : deal.discount_amount
+          ? price - deal.discount_amount
+          : price;
+    };
 
-  // Find lowest price option
-  const priceOptions = [];
+    const priceOptions = [];
+    const baseOriginal = deal.original_price || 1299;
+    const baseSale = calculateBaseDiscounted(baseOriginal);
+    priceOptions.push({ sale: baseSale, original: baseOriginal });
 
-  // Add base option
-  const baseOriginal = deal.original_price || 1299;
-  const baseSale = calculateBaseDiscounted(baseOriginal);
-  priceOptions.push({
-    sale: baseSale,
-    original: baseOriginal,
-  });
-
-  // Add location options
-  if (deal.location_prices?.length > 0) {
-    deal.location_prices.forEach((lp) => {
-      if (lp.price) {
-        const sPrice = parseFloat(lp.price);
-        const oPrice = lp.original_price
-          ? parseFloat(lp.original_price)
-          : sPrice;
-        // Only add if it's a valid number
-        if (!isNaN(sPrice)) {
-          priceOptions.push({ sale: sPrice, original: oPrice });
+    if (deal.location_prices?.length > 0) {
+      deal.location_prices.forEach((lp) => {
+        if (lp.price) {
+          const sPrice = parseFloat(lp.price);
+          const oPrice = lp.original_price
+            ? parseFloat(lp.original_price)
+            : sPrice;
+          if (!isNaN(sPrice)) {
+            priceOptions.push({ sale: sPrice, original: oPrice });
+          }
         }
-      }
-    });
-  }
+      });
+    }
 
-  // Sort by sale price ascending
-  priceOptions.sort((a, b) => a.sale - b.sale);
+    priceOptions.sort((a, b) => a.sale - b.sale);
+    const bestOption = priceOptions[0];
+    const originalPrice = bestOption.original;
+    const discountedPrice = bestOption.sale;
+    const savings = originalPrice - discountedPrice;
+    const discountPercentage =
+      savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
 
-  const bestOption = priceOptions[0];
-  const originalPrice = bestOption.original;
-  const discountedPrice = bestOption.sale;
-  const savings = originalPrice - discountedPrice;
+    return { originalPrice, discountedPrice, savings, discountPercentage };
+  }, [
+    deal.id,
+    deal.original_price,
+    deal.discount_percentage,
+    deal.discount_amount,
+    deal.location_prices,
+  ]);
 
-  // Calculate actual discount percentage from prices
-  const discountPercentage =
-    savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
+  const { originalPrice, discountedPrice, savings, discountPercentage } =
+    pricing;
 
-  // Get image URL
-  const getImageUrl = () => {
+  // Memoize image selection
+  const imageUrl = useMemo(() => {
     if (deal.image_url) return deal.image_url;
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
 
-    // Use deal ID hash to determine which placeholder image to use (1-5)
-    const hashCode = (str) => {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash = hash & hash;
-      }
-      return Math.abs(hash);
-    };
-
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
-  };
+  }, [deal.id, deal.image_url, deal.partners]);
 
-  const imageUrl = getImageUrl();
-
-  const location = deal.location || deal.partners?.location || "Destination";
-  const title = deal.title || deal.package_type || "Travel Package";
-  const packageType = deal.package_type || deal.title || "Travel Package";
-  const nights = deal.duration_nights || 4;
-  const includesFlight = deal.includes_flight !== false;
-  const includesHotel = deal.includes_hotel !== false;
-  const includesTransfer = deal.includes_transfer || false;
+    return {
+      originalPrice: origPrice,
+      discountedPrice: discPrice,
+      savings: save,
+      discountPercentage: discPercentage,
+      imageUrl: imgUrl,
+      location: deal.location || deal.partners?.location || "Destination",
+      title: deal.title || deal.package_type || "Travel Package",
+      packageType: deal.package_type || deal.title || "Travel Package",
+      nights: deal.duration_nights || 4,
+      includesFlight: deal.includes_flight !== false,
+      includesHotel: deal.includes_hotel !== false,
+      includesTransfer: deal.includes_transfer || false,
+    };
+  }, [deal]);
 
   return (
     <>
@@ -120,7 +146,10 @@ export default function DealDetail({ deal, isPublic = false }) {
               fill
               className="object-cover"
               priority
-              unoptimized={imageUrl.startsWith("http")}
+              // Only bypass optimization for external images from unknown hosts
+              unoptimized={
+                imageUrl.startsWith("http") && !isOptimizableImage(imageUrl)
+              }
             />
             {discountPercentage && (
               <Badge className="absolute top-6 right-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-xl font-bold shadow-lg">
@@ -326,4 +355,6 @@ export default function DealDetail({ deal, isPublic = false }) {
       />
     </>
   );
-}
+});
+
+export default DealDetail;
