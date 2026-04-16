@@ -19,23 +19,15 @@ const Hero = () => {
    */
   return (
     <section className="relative w-full text-white min-h-[600px] flex flex-col justify-center overflow-hidden">
-      {/*
-          ⚡ Performance Optimization: Using Next.js Image with priority prop instead of CSS background-image.
-          This ensures the hero image is discovered by the preloader early and optimized by Next.js,
-          significantly improving Largest Contentful Paint (LCP).
-      */}
+      {/* Optimized Background Image for LCP */}
       <Image
         src="/images/hero_background.png"
         alt="Travel background"
         fill
         priority
-        className="object-cover z-0"
+        className="object-cover -z-10"
         sizes="100vw"
       />
-
-      {/* Overlay for readability - using absolute div to ensure z-index handling */}
-      <div className="absolute inset-0 bg-black/40 z-1" />
-
       {/* Overlay for readability - using absolute div to ensure z-index handling */}
       <div className="absolute inset-0 bg-black/40 z-10" />
 
