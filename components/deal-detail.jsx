@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { hashCode } from "@/utils/hash";
+import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -25,47 +26,51 @@ import { hashCode } from "@/utils/hash";
 export default function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Memoize price calculations to avoid re-calculating on every render
-  const pricing = useMemo(() => {
-    const calculateBaseDiscounted = (price) => {
-      return deal.discount_percentage
-        ? price * (1 - deal.discount_percentage / 100)
-        : deal.discount_amount
-          ? price - deal.discount_amount
-          : price;
-    };
+  // Memoize price calculations
+  const { originalPrice, discountedPrice, savings, discountPercentage } =
+    useMemo(() => {
+      const calculateBaseDiscounted = (price) => {
+        return deal.discount_percentage
+          ? price * (1 - deal.discount_percentage / 100)
+          : deal.discount_amount
+            ? price - deal.discount_amount
+            : price;
+      };
 
-    const options = [];
-    const baseOriginal = deal.original_price || 1299;
-    const baseSale = calculateBaseDiscounted(baseOriginal);
-    options.push({ sale: baseSale, original: baseOriginal });
+      const priceOptions = [];
+      const baseOriginal = deal.original_price || 1299;
+      const baseSale = calculateBaseDiscounted(baseOriginal);
+      priceOptions.push({ sale: baseSale, original: baseOriginal });
 
-    if (deal.location_prices?.length > 0) {
-      deal.location_prices.forEach((lp) => {
-        if (lp.price) {
-          const sPrice = parseFloat(lp.price);
-          const oPrice = lp.original_price ? parseFloat(lp.original_price) : sPrice;
-          if (!isNaN(sPrice)) options.push({ sale: sPrice, original: oPrice });
-        }
-      });
-    }
+      if (deal.location_prices?.length > 0) {
+        deal.location_prices.forEach((lp) => {
+          if (lp.price) {
+            const sPrice = parseFloat(lp.price);
+            const oPrice = lp.original_price
+              ? parseFloat(lp.original_price)
+              : sPrice;
+            if (!isNaN(sPrice)) {
+              priceOptions.push({ sale: sPrice, original: oPrice });
+            }
+          }
+        });
+      }
 
-    options.sort((a, b) => a.sale - b.sale);
-    const best = options[0];
-    const savings = best.original - best.sale;
-    const discountPercent = savings > 0 ? Math.round((savings / best.original) * 100) : null;
+      priceOptions.sort((a, b) => a.sale - b.sale);
+      const best = priceOptions[0];
+      const savings = best.original - best.sale;
+      const discount =
+        savings > 0 ? Math.round((savings / best.original) * 100) : null;
 
-    return {
-      originalPrice: best.original,
-      discountedPrice: best.sale,
-      savings,
-      discountPercentage: discountPercent,
-    };
-  }, [deal.id, deal.original_price, deal.discount_percentage, deal.discount_amount, deal.location_prices]);
+      return {
+        originalPrice: best.original,
+        discountedPrice: best.sale,
+        savings,
+        discountPercentage: discount,
+      };
+    }, [deal.discount_percentage, deal.discount_amount, deal.original_price, deal.location_prices]);
 
-  const { originalPrice, discountedPrice, savings, discountPercentage } = pricing;
-
-  // Memoize the image URL derivation
+  // Memoize image URL
   const imageUrl = useMemo(() => {
     if (deal.image_url) return deal.image_url;
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
@@ -74,6 +79,7 @@ export default function DealDetail({ deal, isPublic = false }) {
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
   }, [deal.id, deal.image_url, deal.partners?.images, deal.partners?.image_url]);
+
 
   const location = deal.location || deal.partners?.location || "Destination";
   const title = deal.title || deal.package_type || "Travel Package";
@@ -107,9 +113,11 @@ export default function DealDetail({ deal, isPublic = false }) {
               fill
               className="object-cover"
               priority
-              // Only bypass optimization for external images from unknown hosts
               unoptimized={
-                imageUrl.startsWith("http") && !isOptimizableImage(imageUrl)
+                imageUrl.startsWith("http") &&
+                !imageUrl.includes("drive.google.com") &&
+                !imageUrl.includes("images.unsplash.com") &&
+                !imageUrl.includes("ylpkcsmbsnowmbyxhbzw.supabase.co")
               }
             />
             {discountPercentage && (
