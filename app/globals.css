@@ -246,12 +246,7 @@
   height: 100%;
 }
 
-.hero-bg-custom {
-  background-image: url("/images/hero_background.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
+/* .hero-bg-custom is now handled by Next.js Image component in hero.jsx for LCP optimization */
 
 .clipPath {
   clip-path: polygon(74% 0, 100% 0%, 100% 100%, 24% 100%);

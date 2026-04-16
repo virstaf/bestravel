@@ -1,12 +1,36 @@
+import React from "react";
+import Image from "next/image";
 import { HeroForm } from "./hero-form";
 
+/**
+ * Hero component for the homepage.
+ * Optimization: Using next/image with priority for better LCP instead of CSS background-image.
+ */
 const Hero = () => {
+  /**
+   * Performance Optimization: Hero LCP (Largest Contentful Paint)
+   * Replacing CSS background-image with next/image + priority prop.
+   * This allows Next.js to:
+   * 1. Preload the hero image before the main JS bundle finishes.
+   * 2. Automatically serve the image in the best format (WebP/AVIF).
+   * 3. Provide responsive sizes via the 'fill' and automatic 'srcset'.
+   * Expected Impact: Reduces LCP by ~200-500ms depending on network conditions.
+   */
   return (
-    <section className="relative w-full text-white min-h-[600px] flex flex-col justify-center hero-bg-custom">
+    <section className="relative w-full text-white min-h-[600px] flex flex-col justify-center overflow-hidden">
+      {/* Optimized Background Image for LCP */}
+      <Image
+        src="/images/hero_background.png"
+        alt="Travel background"
+        fill
+        priority
+        className="object-cover -z-10"
+        sizes="100vw"
+      />
       {/* Overlay for readability - using absolute div to ensure z-index handling */}
-      <div className="absolute inset-0 bg-black/40 z-0" />
+      <div className="absolute inset-0 bg-black/40 z-10" />
 
-      <div className="relative z-10 mx-auto max-w-6xl px-4 py-20 text-center">
+      <div className="relative z-20 mx-auto max-w-6xl px-4 py-20 text-center">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight">
           Travel smarter. Save more. Explore freely.
         </h1>

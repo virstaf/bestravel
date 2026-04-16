@@ -1,7 +1,8 @@
 // components/DealDetail.js
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
+import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,87 +15,98 @@ import {
 } from "lucide-react";
 import BookingDialog from "@/components/booking-dialog";
 
+/**
+ * Optimized DealDetail component with memoization.
+ * Reduces redundant calculations for complex price logic and derived state.
+ */
 export default function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Calculate prices logic with location support
-  const calculateBaseDiscounted = (price) => {
-    return deal.discount_percentage
-      ? price * (1 - deal.discount_percentage / 100)
-      : deal.discount_amount
-        ? price - deal.discount_amount
-        : price; // No automatic discount if not specified
-  };
+  // Memoize price calculations
+  const { originalPrice, discountedPrice, savings, discountPercentage } =
+    useMemo(() => {
+      const calculateBaseDiscounted = (price) => {
+        return deal.discount_percentage
+          ? price * (1 - deal.discount_percentage / 100)
+          : deal.discount_amount
+            ? price - deal.discount_amount
+            : price;
+      };
 
-  // Find lowest price option
-  const priceOptions = [];
+      const priceOptions = [];
+      const baseOriginal = deal.original_price || 1299;
+      const baseSale = calculateBaseDiscounted(baseOriginal);
+      priceOptions.push({ sale: baseSale, original: baseOriginal });
 
-  // Add base option
-  const baseOriginal = deal.original_price || 1299;
-  const baseSale = calculateBaseDiscounted(baseOriginal);
-  priceOptions.push({
-    sale: baseSale,
-    original: baseOriginal,
-  });
-
-  // Add location options
-  if (deal.location_prices?.length > 0) {
-    deal.location_prices.forEach((lp) => {
-      if (lp.price) {
-        const sPrice = parseFloat(lp.price);
-        const oPrice = lp.original_price
-          ? parseFloat(lp.original_price)
-          : sPrice;
-        // Only add if it's a valid number
-        if (!isNaN(sPrice)) {
-          priceOptions.push({ sale: sPrice, original: oPrice });
-        }
+      if (deal.location_prices?.length > 0) {
+        deal.location_prices.forEach((lp) => {
+          if (lp.price) {
+            const sPrice = parseFloat(lp.price);
+            const oPrice = lp.original_price
+              ? parseFloat(lp.original_price)
+              : sPrice;
+            if (!isNaN(sPrice)) {
+              priceOptions.push({ sale: sPrice, original: oPrice });
+            }
+          }
+        });
       }
-    });
-  }
 
-  // Sort by sale price ascending
-  priceOptions.sort((a, b) => a.sale - b.sale);
+      priceOptions.sort((a, b) => a.sale - b.sale);
+      const best = priceOptions[0];
+      const savings = best.original - best.sale;
+      const discount =
+        savings > 0 ? Math.round((savings / best.original) * 100) : null;
 
-  const bestOption = priceOptions[0];
-  const originalPrice = bestOption.original;
-  const discountedPrice = bestOption.sale;
-  const savings = originalPrice - discountedPrice;
+      return {
+        originalPrice: best.original,
+        discountedPrice: best.sale,
+        savings,
+        discountPercentage: discount,
+      };
+    }, [
+      deal.discount_percentage,
+      deal.discount_amount,
+      deal.original_price,
+      deal.location_prices,
+    ]);
 
-  // Calculate actual discount percentage from prices
-  const discountPercentage =
-    savings > 0 ? Math.round((savings / originalPrice) * 100) : null;
-
-  // Get image URL
-  const getImageUrl = () => {
+  // Memoize image URL
+  const imageUrl = useMemo(() => {
     if (deal.image_url) return deal.image_url;
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
 
-    // Use deal ID hash to determine which placeholder image to use (1-5)
-    const hashCode = (str) => {
-      let hash = 0;
-      for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = (hash << 5) - hash + char;
-        hash = hash & hash;
-      }
-      return Math.abs(hash);
-    };
-
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
+  }, [
+    deal.id,
+    deal.image_url,
+    deal.partners?.images,
+    deal.partners?.image_url,
+  ]);
+
+  const info = {
+    location: deal.location || deal.partners?.location || "Destination",
+    title: deal.title || deal.package_type || "Travel Package",
+    packageType: deal.package_type || deal.title || "Travel Package",
+    nights: deal.duration_nights || 4,
+    includesFlight: deal.includes_flight !== false,
+    includesHotel: deal.includes_hotel !== false,
+    includesTransfer: deal.includes_transfer || false,
   };
 
-  const imageUrl = getImageUrl();
-
-  const location = deal.location || deal.partners?.location || "Destination";
-  const title = deal.title || deal.package_type || "Travel Package";
-  const packageType = deal.package_type || deal.title || "Travel Package";
-  const nights = deal.duration_nights || 4;
-  const includesFlight = deal.includes_flight !== false;
-  const includesHotel = deal.includes_hotel !== false;
-  const includesTransfer = deal.includes_transfer || false;
+  const dates = {
+    formattedEndDate: deal.end_date || deal.valid_until
+      ? new Date(deal.end_date || deal.valid_until).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      : "Open-ended",
+    formattedStartDate: deal.travel_start_date
+      ? new Date(deal.travel_start_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+      : null,
+    formattedTravelEndDate: deal.travel_end_date
+      ? new Date(deal.travel_end_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      : null,
+  };
 
   return (
     <>
@@ -116,11 +128,16 @@ export default function DealDetail({ deal, isPublic = false }) {
           <div className="relative aspect-[21/9] w-full bg-muted">
             <Image
               src={imageUrl}
-              alt={packageType}
+              alt={info.packageType}
               fill
               className="object-cover"
               priority
-              unoptimized={imageUrl.startsWith("http")}
+              unoptimized={
+                imageUrl.startsWith("http") &&
+                !imageUrl.includes("drive.google.com") &&
+                !imageUrl.includes("images.unsplash.com") &&
+                !imageUrl.includes("ylpkcsmbsnowmbyxhbzw.supabase.co")
+              }
             />
             {discountPercentage && (
               <Badge className="absolute top-6 right-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-xl font-bold shadow-lg">
@@ -134,14 +151,14 @@ export default function DealDetail({ deal, isPublic = false }) {
               <div className="space-y-2">
                 <div className="flex items-center text-muted-foreground">
                   <MapPinIcon className="h-5 w-5 mr-2" />
-                  <span className="text-lg">{location}</span>
+                  <span className="text-lg">{info.location}</span>
                 </div>
-                <CardTitle className="text-3xl">{title}</CardTitle>
+                <CardTitle className="text-3xl">{info.title}</CardTitle>
                 <p className="text-lg text-muted-foreground">
                   {[
-                    includesFlight && "Flight",
-                    includesHotel && `${nights}-night stay`,
-                    includesTransfer && "Transfer",
+                    info.includesFlight && "Flight",
+                    info.includesHotel && `${info.nights}-night stay`,
+                    info.includesTransfer && "Transfer",
                   ]
                     .filter(Boolean)
                     .join(" + ")}
@@ -184,37 +201,17 @@ export default function DealDetail({ deal, isPublic = false }) {
                 <span className="font-medium text-foreground mr-2">
                   Booking Valid Until:
                 </span>
-                <span>
-                  {new Date(deal.end_date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
+                <span>{dates.formattedEndDate}</span>
               </div>
 
-              {deal.travel_start_date && (
+              {dates.formattedStartDate && (
                 <div className="flex items-center text-blue-700">
                   <CalendarIcon className="h-5 w-5 mr-2" />
                   <span className="font-medium mr-2">Travel Window:</span>
                   <span>
-                    {new Date(deal.travel_start_date).toLocaleDateString(
-                      "en-US",
-                      {
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      },
-                    )}
-                    {deal.travel_end_date &&
-                      ` - ${new Date(deal.travel_end_date).toLocaleDateString(
-                        "en-US",
-                        {
-                          month: "long",
-                          day: "numeric",
-                          year: "numeric",
-                        },
-                      )}`}
+                    {dates.formattedStartDate}
+                    {dates.formattedTravelEndDate &&
+                      ` - ${dates.formattedTravelEndDate}`}
                   </span>
                 </div>
               )}
@@ -224,17 +221,17 @@ export default function DealDetail({ deal, isPublic = false }) {
             <div className="space-y-3">
               <h3 className="text-xl font-semibold">What's Included</h3>
               <div className="grid md:grid-cols-2 gap-3">
-                {includesFlight && (
+                {info.includesFlight && (
                   <div className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
                     <span>Round-trip flights</span>
                   </div>
                 )}
-                {includesHotel && (
+                {info.includesHotel && (
                   <>
                     <div className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
-                      <span>{nights}-night accommodation</span>
+                      <span>{info.nights}-night accommodation</span>
                     </div>
                     <div className="flex items-start gap-2">
                       <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
@@ -242,7 +239,7 @@ export default function DealDetail({ deal, isPublic = false }) {
                     </div>
                   </>
                 )}
-                {includesTransfer && (
+                {info.includesTransfer && (
                   <div className="flex items-start gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-600 mt-0.5" />
                     <span>Airport transfers</span>
@@ -256,7 +253,7 @@ export default function DealDetail({ deal, isPublic = false }) {
               <h3 className="text-xl font-semibold">About This Deal</h3>
               <p className="text-muted-foreground leading-relaxed">
                 {deal.description ||
-                  `Experience the magic of ${location} with this exclusive travel package. Enjoy comfortable accommodations, convenient flights, and unforgettable memories in one of the world's most beautiful destinations.`}
+                  `Experience the magic of ${info.location} with this exclusive travel package. Enjoy comfortable accommodations, convenient flights, and unforgettable memories in one of the world's most beautiful destinations.`}
               </p>
             </div>
 
