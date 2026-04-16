@@ -3,12 +3,10 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { hashCode } from "@/utils/hash";
-import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import { hashCode } from "@/utils/hash";
 import {
   MapPinIcon,
   CalendarIcon,
@@ -16,8 +14,6 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import BookingDialog from "@/components/booking-dialog";
-import { hashCode } from "@/utils/hash";
-import { hashCode } from "@/utils/hash";
 
 /**
  * Optimized DealDetail component with memoization.
@@ -68,7 +64,12 @@ export default function DealDetail({ deal, isPublic = false }) {
         savings,
         discountPercentage: discount,
       };
-    }, [deal.discount_percentage, deal.discount_amount, deal.original_price, deal.location_prices]);
+    }, [
+      deal.discount_percentage,
+      deal.discount_amount,
+      deal.original_price,
+      deal.location_prices,
+    ]);
 
   // Memoize image URL
   const imageUrl = useMemo(() => {
@@ -78,16 +79,34 @@ export default function DealDetail({ deal, isPublic = false }) {
 
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
-  }, [deal.id, deal.image_url, deal.partners?.images, deal.partners?.image_url]);
+  }, [
+    deal.id,
+    deal.image_url,
+    deal.partners?.images,
+    deal.partners?.image_url,
+  ]);
 
+  const info = {
+    location: deal.location || deal.partners?.location || "Destination",
+    title: deal.title || deal.package_type || "Travel Package",
+    packageType: deal.package_type || deal.title || "Travel Package",
+    nights: deal.duration_nights || 4,
+    includesFlight: deal.includes_flight !== false,
+    includesHotel: deal.includes_hotel !== false,
+    includesTransfer: deal.includes_transfer || false,
+  };
 
-  const location = deal.location || deal.partners?.location || "Destination";
-  const title = deal.title || deal.package_type || "Travel Package";
-  const packageType = deal.package_type || deal.title || "Travel Package";
-  const nights = deal.duration_nights || 4;
-  const includesFlight = deal.includes_flight !== false;
-  const includesHotel = deal.includes_hotel !== false;
-  const includesTransfer = deal.includes_transfer || false;
+  const dates = {
+    formattedEndDate: deal.end_date || deal.valid_until
+      ? new Date(deal.end_date || deal.valid_until).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      : "Open-ended",
+    formattedStartDate: deal.travel_start_date
+      ? new Date(deal.travel_start_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+      : null,
+    formattedTravelEndDate: deal.travel_end_date
+      ? new Date(deal.travel_end_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+      : null,
+  };
 
   return (
     <>
@@ -304,6 +323,4 @@ export default function DealDetail({ deal, isPublic = false }) {
       />
     </>
   );
-});
-
-export default DealDetail;
+}
