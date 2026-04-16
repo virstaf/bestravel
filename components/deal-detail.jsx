@@ -1,11 +1,14 @@
 // components/DealDetail.js
 "use client";
 import React, { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import Link from "next/link";
+import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import { hashCode } from "@/utils/hash";
 import {
   MapPinIcon,
   CalendarIcon,
@@ -13,6 +16,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import BookingDialog from "@/components/booking-dialog";
+import { hashCode } from "@/utils/hash";
 import { hashCode } from "@/utils/hash";
 
 /**
@@ -157,7 +161,10 @@ export default function DealDetail({ deal, isPublic = false }) {
               fill
               className="object-cover"
               priority
-              unoptimized={imageUrl.startsWith("http")}
+              // Only bypass optimization for external images from unknown hosts
+              unoptimized={
+                imageUrl.startsWith("http") && !isOptimizableImage(imageUrl)
+              }
             />
             {discountPercentage && (
               <Badge className="absolute top-6 right-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-xl font-bold shadow-lg">
@@ -343,4 +350,6 @@ export default function DealDetail({ deal, isPublic = false }) {
       />
     </>
   );
-}
+});
+
+export default DealDetail;
