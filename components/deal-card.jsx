@@ -39,10 +39,10 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
     const baseOriginal = deal.original_price || 1299;
     const baseSale = calculateBaseDiscounted(baseOriginal);
     priceOptions.push({ sale: baseSale, original: baseOriginal });
-    const priceOptions = [];
-    const baseOriginal = deal.original_price || 1299;
-    const baseSale = calculateBaseDiscounted(baseOriginal);
-    priceOptions.push({ sale: baseSale, original: baseOriginal });
+    // const priceOptions = [];
+    // const baseOriginal = deal.original_price || 1299;
+    // const baseSale = calculateBaseDiscounted(baseOriginal);
+    // priceOptions.push({ sale: baseSale, original: baseOriginal });
 
     if (deal.location_prices?.length > 0) {
       deal.location_prices.forEach((lp) => {
