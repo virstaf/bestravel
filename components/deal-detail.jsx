@@ -1,7 +1,6 @@
 // components/DealDetail.js
 "use client";
-import React, { useState, useMemo } from "react";
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
@@ -26,14 +25,8 @@ import { hashCode } from "@/utils/hash";
 export default function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Memoize all price and discount calculations
-  const {
-    discountedPrice,
-    originalPrice,
-    savings,
-    discountPercentage,
-    imageUrl,
-  } = useMemo(() => {
+  // Memoize price calculations to avoid re-calculating on every render
+  const pricing = useMemo(() => {
     const calculateBaseDiscounted = (price) => {
       return deal.discount_percentage
         ? price * (1 - deal.discount_percentage / 100)
@@ -42,100 +35,53 @@ export default function DealDetail({ deal, isPublic = false }) {
           : price;
     };
 
-    const priceOptions = [];
+    const options = [];
     const baseOriginal = deal.original_price || 1299;
     const baseSale = calculateBaseDiscounted(baseOriginal);
-    priceOptions.push({ sale: baseSale, original: baseOriginal });
+    options.push({ sale: baseSale, original: baseOriginal });
 
     if (deal.location_prices?.length > 0) {
       deal.location_prices.forEach((lp) => {
         if (lp.price) {
           const sPrice = parseFloat(lp.price);
-          const oPrice = lp.original_price
-            ? parseFloat(lp.original_price)
-            : sPrice;
-          if (!isNaN(sPrice)) {
-            priceOptions.push({ sale: sPrice, original: oPrice });
-          }
+          const oPrice = lp.original_price ? parseFloat(lp.original_price) : sPrice;
+          if (!isNaN(sPrice)) options.push({ sale: sPrice, original: oPrice });
         }
       });
     }
 
-    priceOptions.sort((a, b) => a.sale - b.sale);
-    const bestOption = priceOptions[0];
-    const original = bestOption.original;
-    const sale = bestOption.sale;
-    const saved = original - sale;
-    const percentage =
-      saved > 0 ? Math.round((saved / original) * 100) : null;
-
-    // Get image URL
-    let imgUrl = "/images/deals/default-1.jpg";
-    if (deal.image_url) {
-      imgUrl = deal.image_url;
-    } else if (deal.partners?.images?.[0]) {
-      imgUrl = deal.partners.images[0];
-    } else if (deal.partners?.image_url) {
-      imgUrl = deal.partners.image_url;
-    } else {
-      const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
-      imgUrl = `/images/deals/default-${imageNumber}.jpg`;
-    }
+    options.sort((a, b) => a.sale - b.sale);
+    const best = options[0];
+    const savings = best.original - best.sale;
+    const discountPercent = savings > 0 ? Math.round((savings / best.original) * 100) : null;
 
     return {
-      discountedPrice: sale,
-      originalPrice: original,
-      savings: saved,
-      discountPercentage: percentage,
-      imageUrl: imgUrl,
+      originalPrice: best.original,
+      discountedPrice: best.sale,
+      savings,
+      discountPercentage: discountPercent,
     };
-  }, [deal]);
+  }, [deal.id, deal.original_price, deal.discount_percentage, deal.discount_amount, deal.location_prices]);
 
-  // Memoize inclusions and other static info
-  const info = useMemo(() => {
-    const nights = deal.duration_nights || 4;
-    const includesFlight = deal.includes_flight !== false;
-    const includesHotel = deal.includes_hotel !== false;
-    const includesTransfer = deal.includes_transfer || false;
-    const packageType = deal.package_type || deal.title || "Travel Package";
-    const location = deal.location || deal.partners?.location || "Destination";
-    const title = deal.title || deal.package_type || "Travel Package";
+  const { originalPrice, discountedPrice, savings, discountPercentage } = pricing;
 
-    return {
-      nights,
-      includesFlight,
-      includesHotel,
-      includesTransfer,
-      packageType,
-      location,
-      title,
-    };
-  }, [deal]);
+  // Memoize the image URL derivation
+  const imageUrl = useMemo(() => {
+    if (deal.image_url) return deal.image_url;
+    if (deal.partners?.images?.[0]) return deal.partners.images[0];
+    if (deal.partners?.image_url) return deal.partners.image_url;
 
-  // Format dates for display
-  const dates = useMemo(() => {
-    return {
-      formattedEndDate: new Date(deal.end_date).toLocaleDateString("en-US", {
-        month: "long",
-        day: "numeric",
-        year: "numeric",
-      }),
-      formattedStartDate: deal.travel_start_date
-        ? new Date(deal.travel_start_date).toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })
-        : null,
-      formattedTravelEndDate: deal.travel_end_date
-        ? new Date(deal.travel_end_date).toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })
-        : null,
-    };
-  }, [deal.end_date, deal.travel_start_date, deal.travel_end_date]);
+    const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
+    return `/images/deals/default-${imageNumber}.jpg`;
+  }, [deal.id, deal.image_url, deal.partners?.images, deal.partners?.image_url]);
+
+  const location = deal.location || deal.partners?.location || "Destination";
+  const title = deal.title || deal.package_type || "Travel Package";
+  const packageType = deal.package_type || deal.title || "Travel Package";
+  const nights = deal.duration_nights || 4;
+  const includesFlight = deal.includes_flight !== false;
+  const includesHotel = deal.includes_hotel !== false;
+  const includesTransfer = deal.includes_transfer || false;
 
   return (
     <>
