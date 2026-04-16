@@ -1,7 +1,6 @@
 import React from "react";
 import Image from "next/image";
 import { HeroForm } from "./hero-form";
-import Image from "next/image";
 
 /**
  * Hero component for the homepage.

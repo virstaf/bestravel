@@ -1,12 +1,10 @@
 "use client";
 
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { hashCode } from "@/utils/hash";
-import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
-import { hashCode } from "@/utils/hash";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -21,29 +19,28 @@ import {
 } from "lucide-react";
 
 /**
- * Simple 32-bit integer string hashing function to ensure deterministic rendering
- * of dynamic content (like CTA copy) from stable IDs, preventing hydration mismatches.
+ * Optimized DealCard component with memoization to prevent redundant re-renders.
  */
-const hashCode = (str) => {
-  let hash = 0;
-  if (!str) return hash;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  return Math.abs(hash);
-};
-
 const DealCard = memo(function DealCard({ deal, isPublic = false }) {
-  // Calculate prices logic with location support
-  const calculateBaseDiscounted = (price) => {
-    return deal.discount_percentage
-      ? price * (1 - deal.discount_percentage / 100)
-      : deal.discount_amount
-        ? price - deal.discount_amount
-        : price; // No automatic discount if not specified
-  };
+  // Simple values derived from props - kept simple as they are cheap
+  const location = deal.location || deal.partners?.location || "Destination";
+  const packageType = deal.package_type || deal.title || "Travel Package";
+  const nights = deal.duration_nights || 4;
+  const includesFlight = deal.includes_flight !== false;
+  const includesHotel = deal.includes_hotel !== false;
+  const includesTransfer = deal.includes_transfer || false;
+  const includesBreakfast = deal.includes_breakfast || false;
+
+  // Calculate prices logic with location support - memoized for performance
+  const { originalPrice, discountedPrice, savings, discountPercentage } =
+    useMemo(() => {
+      const calculateBaseDiscounted = (price) => {
+        return deal.discount_percentage
+          ? price * (1 - deal.discount_percentage / 100)
+          : deal.discount_amount
+            ? price - deal.discount_amount
+            : price;
+      };
 
       const priceOptions = [];
       const baseOriginal = deal.original_price || 1299;
@@ -66,17 +63,22 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
 
       priceOptions.sort((a, b) => a.sale - b.sale);
       const best = priceOptions[0];
-      const savings = best.original - best.sale;
+      const bestSavings = best.original - best.sale;
       const discount =
-        savings > 0 ? Math.round((savings / best.original) * 100) : null;
+        bestSavings > 0 ? Math.round((bestSavings / best.original) * 100) : null;
 
       return {
         originalPrice: best.original,
         discountedPrice: best.sale,
-        savings,
+        savings: bestSavings,
         discountPercentage: discount,
       };
-    }, [deal.discount_percentage, deal.discount_amount, deal.original_price, deal.location_prices]);
+    }, [
+      deal.discount_percentage,
+      deal.discount_amount,
+      deal.original_price,
+      deal.location_prices,
+    ]);
 
   // Memoize image URL
   const imageUrl = useMemo(() => {
@@ -85,7 +87,6 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
     if (deal.partners?.image_url) return deal.partners.image_url;
 
     // Use deal ID hash to determine which placeholder image to use (1-5)
-    // This works with both numeric IDs and UUIDs
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
   }, [deal.id, deal.image_url, deal.partners?.images, deal.partners?.image_url]);
@@ -103,13 +104,22 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
     );
 
     if (deal.is_featured) {
-      return { text: "🔥 Hot Deal", className: "bg-orange-500 hover:bg-orange-600" };
+      return {
+        text: "🔥 Hot Deal",
+        className: "bg-orange-500 hover:bg-orange-600",
+      };
     }
     if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
-      return { text: "⏰ Ending Soon", className: "bg-red-500 hover:bg-red-600" };
+      return {
+        text: "⏰ Ending Soon",
+        className: "bg-red-500 hover:bg-red-600",
+      };
     }
     if (deal.is_most_booked) {
-      return { text: "⭐ Most Booked", className: "bg-purple-500 hover:bg-purple-600" };
+      return {
+        text: "⭐ Most Booked",
+        className: "bg-purple-500 hover:bg-purple-600",
+      };
     }
     return null;
   }, [deal.is_featured, deal.is_most_booked, validUntil]);
@@ -132,34 +142,15 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
     );
 
     if (daysUntilExpiry <= 3 && daysUntilExpiry > 0) {
-      urgencyText = `Deal expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? "s" : ""}`;
+      return `Deal expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? "s" : ""}`;
     } else if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
-      urgencyText = "Limited availability";
+      return "Limited availability";
     }
     return "Prices may increase soon";
   }, [validUntil]);
 
-  // Build inclusions text - memoized to prevent redundant string manipulation
-  const inclusionsText = useMemo(() => {
-    const inclusions = [];
-    if (includesFlight) inclusions.push("Flight");
-    if (includesHotel) inclusions.push(`${nights}-night stay`);
-    if (includesTransfer) inclusions.push("Transfer");
-
-    if (inclusions.length === 0) return `${nights}-night package`;
-    return inclusions.join(" + ");
-  }, [includesFlight, includesHotel, includesTransfer, nights]);
-
-  // Simple values derived from props
-  const location = deal.location || deal.partners?.location || "Destination";
-  const packageType = deal.package_type || deal.title || "Travel Package";
-  const nights = deal.duration_nights || 4;
-  const includesFlight = deal.includes_flight !== false;
-  const includesHotel = deal.includes_hotel !== false;
-  const includesTransfer = deal.includes_transfer || false;
-
   // Format date for display
-  const formattedDate = useMemo(
+  const formattedEndDate = useMemo(
     () =>
       validUntil.toLocaleDateString("en-US", {
         month: "short",
@@ -202,7 +193,6 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           // Only bypass Next.js optimization for unknown external hosts.
-          // Pre-configured hosts (Unsplash, Supabase, Google Drive) are optimized.
           unoptimized={
             imageUrl.startsWith("http") &&
             !imageUrl.includes("images.unsplash.com") &&
@@ -212,7 +202,9 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
         />
         {/* Top-left badge */}
         {badgeInfo && (
-          <Badge className={`absolute top-4 left-4 ${badgeInfo.className} text-white px-3 py-1.5 text-sm font-semibold shadow-lg`}>
+          <Badge
+            className={`absolute top-4 left-4 ${badgeInfo.className} text-white px-3 py-1.5 text-sm font-semibold shadow-lg`}
+          >
             {badgeInfo.text}
           </Badge>
         )}
@@ -234,25 +226,25 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
         </h3>
 
         <div className="flex items-center gap-3 py-2">
-          {inclusions.includesFlight && (
+          {includesFlight && (
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Plane className="w-4 h-4 text-primary" />
               <span>Flight</span>
             </div>
           )}
-          {inclusions.includesHotel && (
+          {includesHotel && (
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Hotel className="w-4 h-4 text-primary" />
               <span>Hotel</span>
             </div>
           )}
-          {inclusions.includesTransfer && (
+          {includesTransfer && (
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Car className="w-4 h-4 text-primary" />
               <span>Transfer</span>
             </div>
           )}
-          {inclusions.includesBreakfast && (
+          {includesBreakfast && (
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Coffee className="w-4 h-4 text-primary" />
               <span>Breakfast</span>
