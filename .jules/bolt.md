@@ -1,3 +1,5 @@
-## 2024-04-03 - Hydration Stability and Component Memoization
-**Learning:** Using `Math.random()` for UI content (like CTA copy) in Next.js causes hydration mismatches, which triggers slower full-page re-renders on the client. Deterministic hashing of stable IDs (like deal IDs) is a better pattern for selecting dynamic content while maintaining SSR compatibility.
-**Action:** Always use deterministic hashing or stable indexes for selecting random-looking UI variants in client components to ensure hydration stability.
+# Bolt Performance Journal
+
+## 2025-05-22 - Optimizing Deal Rendering and Hydration
+**Learning:** The project used `Math.random()` for UI element selection (CTA copy) in client components, which caused hydration mismatches. Additionally, duplicate hashing logic and missing memoization in core components (`DealCard`, `DealDetail`) were leading to redundant calculations and re-renders. Next.js image optimization was also being bypassed for known external hosts.
+**Action:** Centralized hashing logic in `utils/hash.js`, implemented `React.memo` and `useMemo` in `DealCard.jsx` and `DealDetail.jsx`, used deterministic hashing for UI selection, and refined `unoptimized` prop logic to leverage Next.js image optimization for supported hosts.

@@ -1,12 +1,11 @@
 /**
- * Simple 32-bit integer string hashing function.
- * Used for deterministic selection of UI elements like CTA copy or placeholder images.
- * @param {string} str - The string to hash.
- * @returns {number} - The 32-bit hash value.
+ * Generates a deterministic 32-bit integer hash from a string.
+ * Useful for stable UI selections and avoiding hydration mismatches.
+ * @param {string} str - The input string to hash.
+ * @returns {number} A non-negative 32-bit integer.
  */
 export const hashCode = (str) => {
   let hash = 0;
-  if (!str) return hash;
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i);
     hash = (hash << 5) - hash + char;
