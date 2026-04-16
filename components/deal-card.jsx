@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { hashCode } from "@/utils/hash";
@@ -20,17 +20,30 @@ import {
   Lock,
 } from "lucide-react";
 
-const DealCard = React.memo(({ deal, isPublic = false }) => {
-  // Memoize price calculations
-  const { originalPrice, discountedPrice, savings, discountPercentage } =
-    useMemo(() => {
-      const calculateBaseDiscounted = (price) => {
-        return deal.discount_percentage
-          ? price * (1 - deal.discount_percentage / 100)
-          : deal.discount_amount
-            ? price - deal.discount_amount
-            : price;
-      };
+/**
+ * Simple 32-bit integer string hashing function to ensure deterministic rendering
+ * of dynamic content (like CTA copy) from stable IDs, preventing hydration mismatches.
+ */
+const hashCode = (str) => {
+  let hash = 0;
+  if (!str) return hash;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return Math.abs(hash);
+};
+
+const DealCard = memo(function DealCard({ deal, isPublic = false }) {
+  // Calculate prices logic with location support
+  const calculateBaseDiscounted = (price) => {
+    return deal.discount_percentage
+      ? price * (1 - deal.discount_percentage / 100)
+      : deal.discount_amount
+        ? price - deal.discount_amount
+        : price; // No automatic discount if not specified
+  };
 
       const priceOptions = [];
       const baseOriginal = deal.original_price || 1299;
@@ -71,6 +84,8 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
 
+    // Use deal ID hash to determine which placeholder image to use (1-5)
+    // This works with both numeric IDs and UUIDs
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
   }, [deal.id, deal.image_url, deal.partners?.images, deal.partners?.image_url]);
@@ -99,16 +114,16 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
     return null;
   }, [deal.is_featured, deal.is_most_booked, validUntil]);
 
-  // Rotating CTA copy - deterministic to avoid hydration mismatch
-  const ctaCopy = useMemo(() => {
-    const options = [
-      "Lock in This Deal",
-      "View Full Details",
-      "Grab This Offer",
-      "Book Before It's Gone",
-    ];
-    return ctaCopyOptions[hashCode(String(deal.id)) % ctaCopyOptions.length];
-  }, [deal.id]);
+  // Rotating CTA copy
+  const ctaCopyOptions = [
+    "Lock in This Deal",
+    "View Full Details",
+    "Grab This Offer",
+    "Book Before It's Gone",
+  ];
+  // Deterministic selection based on deal ID to prevent hydration mismatch
+  const ctaCopy =
+    ctaCopyOptions[hashCode(String(deal.id)) % ctaCopyOptions.length];
 
   // Urgency microcopy
   const urgencyText = useMemo(() => {
@@ -186,11 +201,13 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
           fill
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          // Only bypass Next.js optimization for unknown external hosts.
+          // Pre-configured hosts (Unsplash, Supabase, Google Drive) are optimized.
           unoptimized={
             imageUrl.startsWith("http") &&
-            !imageUrl.includes("drive.google.com") &&
             !imageUrl.includes("images.unsplash.com") &&
-            !imageUrl.includes("ylpkcsmbsnowmbyxhbzw.supabase.co")
+            !imageUrl.includes("ylpkcsmbsnowmbyxhbzw.supabase.co") &&
+            !imageUrl.includes("drive.google.com")
           }
         />
         {/* Top-left badge */}
