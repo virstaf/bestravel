@@ -4,7 +4,9 @@ import React, { useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { hashCode } from "@/utils/hash";
+import { hashCode } from "@/utils/hash";
 import { Button } from "@/components/ui/button";
+import { hashCode } from "@/utils/hash";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -86,22 +88,13 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
     );
 
     if (deal.is_featured) {
-      return {
-        text: "🔥 Hot Deal",
-        className: "bg-orange-500 hover:bg-orange-600",
-      };
+      return { text: "🔥 Hot Deal", className: "bg-orange-500 hover:bg-orange-600" };
     }
     if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
-      return {
-        text: "⏰ Ending Soon",
-        className: "bg-red-500 hover:bg-red-600",
-      };
+      return { text: "⏰ Ending Soon", className: "bg-red-500 hover:bg-red-600" };
     }
     if (deal.is_most_booked) {
-      return {
-        text: "⭐ Most Booked",
-        className: "bg-purple-500 hover:bg-purple-600",
-      };
+      return { text: "⭐ Most Booked", className: "bg-purple-500 hover:bg-purple-600" };
     }
     return null;
   }, [deal.is_featured, deal.is_most_booked, validUntil]);
@@ -124,10 +117,9 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
     );
 
     if (daysUntilExpiry <= 3 && daysUntilExpiry > 0) {
-      return `Deal expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? "s" : ""}`;
-    }
-    if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
-      return "Limited availability";
+      urgencyText = `Deal expires in ${daysUntilExpiry} day${daysUntilExpiry > 1 ? "s" : ""}`;
+    } else if (daysUntilExpiry <= 7 && daysUntilExpiry > 0) {
+      urgencyText = "Limited availability";
     }
     return "Prices may increase soon";
   }, [validUntil]);
@@ -203,13 +195,10 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
         />
         {/* Top-left badge */}
         {badgeInfo && (
-          <Badge
-            className={`absolute top-4 left-4 ${badgeInfo.className} text-white px-3 py-1.5 text-sm font-semibold shadow-lg`}
-          >
+          <Badge className={`absolute top-4 left-4 ${badgeInfo.className} text-white px-3 py-1.5 text-sm font-semibold shadow-lg`}>
             {badgeInfo.text}
           </Badge>
         )}
-        {/* Discount badge */}
         {discountPercentage && (
           <Badge className="absolute top-4 right-4 bg-red-500 hover:bg-red-600 text-white px-4 py-1 text-base font-medium shadow-lg">
             {discountPercentage}% OFF
@@ -218,38 +207,35 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
       </div>
 
       <CardContent className="px-6 py-0 space-y-3">
-        {/* Location */}
         <div className="flex items-center text-sm text-muted-foreground">
           <MapPinIcon className="h-4 w-4 mr-1.5" />
           <span className="font-medium">{location}</span>
         </div>
 
-        {/* Package Title */}
         <h3 className="text-lg font-semibold text-foreground leading-tight">
           {packageType}
         </h3>
 
-        {/* Inclusions Icons */}
         <div className="flex items-center gap-3 py-2">
-          {includesFlight && (
+          {inclusions.includesFlight && (
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Plane className="w-4 h-4 text-primary" />
               <span>Flight</span>
             </div>
           )}
-          {includesHotel && (
+          {inclusions.includesHotel && (
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Hotel className="w-4 h-4 text-primary" />
               <span>Hotel</span>
             </div>
           )}
-          {includesTransfer && (
+          {inclusions.includesTransfer && (
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Car className="w-4 h-4 text-primary" />
               <span>Transfer</span>
             </div>
           )}
-          {deal.includes_breakfast && (
+          {inclusions.includesBreakfast && (
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Coffee className="w-4 h-4 text-primary" />
               <span>Breakfast</span>
@@ -257,10 +243,9 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
           )}
         </div>
 
-        {/* Validity Date */}
         <div className="flex items-center text-sm text-muted-foreground pt-1">
           <CalendarIcon className="h-4 w-4 mr-1.5" />
-          <span>Valid until {formattedDate}</span>
+          <span>Valid until {formattedEndDate}</span>
         </div>
 
         {travelStartDate && (
@@ -273,13 +258,7 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
           </div>
         )}
 
-        {/* Pricing */}
         <div className="pt-2 space-y-1">
-          {/* <div className="flex items-baseline gap-2"> */}
-          {/* <span className="text-sm text-muted-foreground line-through">
-              £{originalPrice.toFixed(0)}
-            </span> */}
-          {/* </div> */}
           <div className="flex items-baseline justify-between">
             <div className="flex flex-col">
               <span className="text-xs text-muted-foreground">
@@ -306,7 +285,6 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
       </CardContent>
 
       <CardFooter className="p-6 pt-2 flex flex-col gap-3">
-        {/* Urgency microcopy */}
         <p className="text-xs text-orange-600 font-medium text-center">
           ⚡ {urgencyText}
         </p>
@@ -324,7 +302,6 @@ const DealCard = React.memo(({ deal, isPublic = false }) => {
           </Link>
         </Button>
 
-        {/* Confidence boosters */}
         <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Shield className="w-3.5 h-3.5" />
