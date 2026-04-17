@@ -2,6 +2,10 @@
 
 import DealCard from "@/components/deal-card";
 
+/**
+ * Optimized DealsList component.
+ * Implements prioritized loading for the first few items to improve LCP.
+ */
 export default function DealsList({ initialDeals: deals, isPublic = false }) {
   if (deals?.length === 0) {
     return (
@@ -16,8 +20,14 @@ export default function DealsList({ initialDeals: deals, isPublic = false }) {
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {deals.map((deal) => (
-        <DealCard key={deal.id} deal={deal} isPublic={isPublic} />
+      {deals.map((deal, index) => (
+        <DealCard
+          key={deal.id}
+          deal={deal}
+          isPublic={isPublic}
+          // Prioritize loading for the first row (3 items) to improve LCP
+          priority={index < 3}
+        />
       ))}
     </div>
   );
