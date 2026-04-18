@@ -2,6 +2,10 @@
 
 import DealCard from "@/components/deal-card";
 
+/**
+ * DealsList component optimized for performance.
+ * Uses index-based priority for above-the-fold images to improve LCP.
+ */
 export default function DealsList({ initialDeals: deals, isPublic = false }) {
   if (deals?.length === 0) {
     return (
@@ -16,8 +20,14 @@ export default function DealsList({ initialDeals: deals, isPublic = false }) {
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {deals.map((deal) => (
-        <DealCard key={deal.id} deal={deal} isPublic={isPublic} />
+      {deals.map((deal, index) => (
+        <DealCard
+          key={deal.id}
+          deal={deal}
+          isPublic={isPublic}
+          // Prioritize the first 3 images to improve Largest Contentful Paint (LCP)
+          priority={index < 3}
+        />
       ))}
     </div>
   );
