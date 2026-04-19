@@ -16,8 +16,13 @@ export default function DealsList({ initialDeals: deals, isPublic = false }) {
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      {deals.map((deal) => (
-        <DealCard key={deal.id} deal={deal} isPublic={isPublic} />
+      {deals.map((deal, index) => (
+        <DealCard
+          key={deal.id}
+          deal={deal}
+          isPublic={isPublic}
+          priority={index < 3}
+        />
       ))}
     </div>
   );

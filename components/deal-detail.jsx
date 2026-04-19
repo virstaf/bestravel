@@ -3,6 +3,8 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { hashCode } from "@/utils/hash";
+import { isOptimizableImage } from "@/lib/image-utils";
+import { calculateDealPrices } from "@/lib/deal-utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,58 +20,14 @@ import BookingDialog from "@/components/booking-dialog";
 /**
  * Optimized DealDetail component with memoization.
  * Reduces redundant calculations for complex price logic and derived state.
+ * Uses centralized utilities for consistency and performance.
  */
 export default function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  // Memoize price calculations
+  // Memoize price calculations using centralized utility
   const { originalPrice, discountedPrice, savings, discountPercentage } =
-    useMemo(() => {
-      const calculateBaseDiscounted = (price) => {
-        return deal.discount_percentage
-          ? price * (1 - deal.discount_percentage / 100)
-          : deal.discount_amount
-            ? price - deal.discount_amount
-            : price;
-      };
-
-      const priceOptions = [];
-      const baseOriginal = deal.original_price || 1299;
-      const baseSale = calculateBaseDiscounted(baseOriginal);
-      priceOptions.push({ sale: baseSale, original: baseOriginal });
-
-      if (deal.location_prices?.length > 0) {
-        deal.location_prices.forEach((lp) => {
-          if (lp.price) {
-            const sPrice = parseFloat(lp.price);
-            const oPrice = lp.original_price
-              ? parseFloat(lp.original_price)
-              : sPrice;
-            if (!isNaN(sPrice)) {
-              priceOptions.push({ sale: sPrice, original: oPrice });
-            }
-          }
-        });
-      }
-
-      priceOptions.sort((a, b) => a.sale - b.sale);
-      const best = priceOptions[0];
-      const savings = best.original - best.sale;
-      const discount =
-        savings > 0 ? Math.round((savings / best.original) * 100) : null;
-
-      return {
-        originalPrice: best.original,
-        discountedPrice: best.sale,
-        savings,
-        discountPercentage: discount,
-      };
-    }, [
-      deal.discount_percentage,
-      deal.discount_amount,
-      deal.original_price,
-      deal.location_prices,
-    ]);
+    useMemo(() => calculateDealPrices(deal), [deal]);
 
   // Memoize image URL
   const imageUrl = useMemo(() => {
@@ -86,7 +44,7 @@ export default function DealDetail({ deal, isPublic = false }) {
     deal.partners?.image_url,
   ]);
 
-  const info = {
+  const info = useMemo(() => ({
     location: deal.location || deal.partners?.location || "Destination",
     title: deal.title || deal.package_type || "Travel Package",
     packageType: deal.package_type || deal.title || "Travel Package",
@@ -94,9 +52,9 @@ export default function DealDetail({ deal, isPublic = false }) {
     includesFlight: deal.includes_flight !== false,
     includesHotel: deal.includes_hotel !== false,
     includesTransfer: deal.includes_transfer || false,
-  };
+  }), [deal]);
 
-  const dates = {
+  const dates = useMemo(() => ({
     formattedEndDate: deal.end_date || deal.valid_until
       ? new Date(deal.end_date || deal.valid_until).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
       : "Open-ended",
@@ -106,7 +64,7 @@ export default function DealDetail({ deal, isPublic = false }) {
     formattedTravelEndDate: deal.travel_end_date
       ? new Date(deal.travel_end_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
       : null,
-  };
+  }), [deal.end_date, deal.valid_until, deal.travel_start_date, deal.travel_end_date]);
 
   return (
     <>
@@ -132,12 +90,7 @@ export default function DealDetail({ deal, isPublic = false }) {
               fill
               className="object-cover"
               priority
-              unoptimized={
-                imageUrl.startsWith("http") &&
-                !imageUrl.includes("drive.google.com") &&
-                !imageUrl.includes("images.unsplash.com") &&
-                !imageUrl.includes("ylpkcsmbsnowmbyxhbzw.supabase.co")
-              }
+              unoptimized={!isOptimizableImage(imageUrl)}
             />
             {discountPercentage && (
               <Badge className="absolute top-6 right-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-xl font-bold shadow-lg">
