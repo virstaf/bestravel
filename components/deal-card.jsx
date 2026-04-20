@@ -20,18 +20,17 @@ import {
 } from "lucide-react";
 
 /**
- * Optimized DealCard component.
- * Uses memoization for expensive calculations and proper React component structure.
+ * Optimized DealCard component with memoization and LCP optimization.
+ * @param {Object} props.deal - The deal data object.
+ * @param {boolean} props.isPublic - Whether the card is being displayed in a public context.
+ * @param {boolean} props.priority - Whether the image should be loaded with high priority (for LCP).
  */
 const DealCard = memo(function DealCard({
   deal,
   isPublic = false,
   priority = false,
 }) {
-  const dealIdStr = String(deal.id);
-  const dealHash = useMemo(() => hashCode(dealIdStr), [dealIdStr]);
-
-  // Simple values derived from props - Declared early to avoid ReferenceError in useMemo
+  // Simple values derived from props
   const location = deal.location || deal.partners?.location || "Destination";
   const packageType = deal.package_type || deal.title || "Travel Package";
   const nights = deal.duration_nights || 4;
@@ -94,10 +93,15 @@ const DealCard = memo(function DealCard({
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
 
-    // Use absolute value to avoid negative index from modulo
-    const imageNumber = (Math.abs(dealHash) % 5) + 1;
+    // Use deal ID hash to determine which placeholder image to use (1-5)
+    const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
-  }, [deal.image_url, deal.partners?.images, deal.partners?.image_url, dealHash]);
+  }, [
+    deal.id,
+    deal.image_url,
+    deal.partners?.images,
+    deal.partners?.image_url,
+  ]);
 
   // Format validity date
   const validUntil = useMemo(
@@ -132,7 +136,7 @@ const DealCard = memo(function DealCard({
     return null;
   }, [deal.is_featured, deal.is_most_booked, validUntil]);
 
-  // Rotating CTA copy
+  // Deterministic CTA selection
   const ctaCopy = useMemo(() => {
     const ctaCopyOptions = [
       "Lock in This Deal",
@@ -140,9 +144,8 @@ const DealCard = memo(function DealCard({
       "Grab This Offer",
       "Book Before It's Gone",
     ];
-    // Use absolute value to avoid negative index from modulo
-    return ctaCopyOptions[Math.abs(dealHash) % ctaCopyOptions.length];
-  }, [dealHash]);
+    return ctaCopyOptions[hashCode(String(deal.id)) % ctaCopyOptions.length];
+  }, [deal.id]);
 
   // Urgency microcopy
   const urgencyText = useMemo(() => {
@@ -157,17 +160,6 @@ const DealCard = memo(function DealCard({
     }
     return "Prices may increase soon";
   }, [validUntil]);
-
-  // Build inclusions text - memoized
-  const inclusionsText = useMemo(() => {
-    const inclusions = [];
-    if (includesFlight) inclusions.push("Flight");
-    if (includesHotel) inclusions.push(`${nights}-night stay`);
-    if (includesTransfer) inclusions.push("Transfer");
-
-    if (inclusions.length === 0) return `${nights}-night package`;
-    return inclusions.join(" + ");
-  }, [includesFlight, includesHotel, includesTransfer, nights]);
 
   // Format date for display
   const formattedDate = useMemo(
@@ -213,7 +205,13 @@ const DealCard = memo(function DealCard({
           priority={priority}
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          unoptimized={!isOptimizableImage(imageUrl)}
+          // Only bypass Next.js optimization for unknown external hosts.
+          unoptimized={
+            imageUrl.startsWith("http") &&
+            !imageUrl.includes("images.unsplash.com") &&
+            !imageUrl.includes("ylpkcsmbsnowmbyxhbzw.supabase.co") &&
+            !imageUrl.includes("drive.google.com")
+          }
         />
         {/* Top-left badge */}
         {badgeInfo && (
@@ -285,7 +283,9 @@ const DealCard = memo(function DealCard({
         <div className="pt-2 space-y-1">
           <div className="flex items-baseline justify-between">
             <div className="flex flex-col">
-              <span className="text-xs text-muted-foreground">Starting from</span>
+              <span className="text-xs text-muted-foreground">
+                Starting from
+              </span>
               <span className="text-3xl font-bold text-foreground">
                 £{Math.round(discountedPrice)}
               </span>

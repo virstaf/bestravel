@@ -3,8 +3,8 @@
 import DealCard from "@/components/deal-card";
 
 /**
- * Optimized DealsList component.
- * Implements prioritized loading for the first few items to improve LCP.
+ * DealsList component optimized for performance.
+ * Uses index-based priority for above-the-fold images to improve LCP.
  */
 export default function DealsList({ initialDeals: deals, isPublic = false }) {
   if (deals?.length === 0) {
@@ -25,7 +25,7 @@ export default function DealsList({ initialDeals: deals, isPublic = false }) {
           key={deal.id}
           deal={deal}
           isPublic={isPublic}
-          // Prioritize loading for the first row (3 items) to improve LCP
+          // Prioritize the first 3 images to improve Largest Contentful Paint (LCP)
           priority={index < 3}
         />
       ))}
