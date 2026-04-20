@@ -38,29 +38,56 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
     // Use absolute value to avoid negative index from modulo
     const imageNumber = (Math.abs(dealHash) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
-  }, [deal.image_url, deal.partners?.images, deal.partners?.image_url, dealHash]);
+  }, [
+    deal.image_url,
+    deal.partners?.images,
+    deal.partners?.image_url,
+    dealHash,
+  ]);
 
-  const info = useMemo(() => ({
-    location: deal.location || deal.partners?.location || "Destination",
-    title: deal.title || deal.package_type || "Travel Package",
-    packageType: deal.package_type || deal.title || "Travel Package",
-    nights: deal.duration_nights || 4,
-    includesFlight: deal.includes_flight !== false,
-    includesHotel: deal.includes_hotel !== false,
-    includesTransfer: deal.includes_transfer || false,
-  }), [deal]);
+  const info = useMemo(
+    () => ({
+      location: deal.location || deal.partners?.location || "Destination",
+      title: deal.title || deal.package_type || "Travel Package",
+      packageType: deal.package_type || deal.title || "Travel Package",
+      nights: deal.duration_nights || 4,
+      includesFlight: deal.includes_flight !== false,
+      includesHotel: deal.includes_hotel !== false,
+      includesTransfer: deal.includes_transfer || false,
+    }),
+    [deal],
+  );
 
-  const dates = useMemo(() => ({
-    formattedEndDate: deal.end_date || deal.valid_until
-      ? new Date(deal.end_date || deal.valid_until).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-      : "Open-ended",
-    formattedStartDate: deal.travel_start_date
-      ? new Date(deal.travel_start_date).toLocaleDateString("en-US", { month: "short", day: "numeric" })
-      : null,
-    formattedTravelEndDate: deal.travel_end_date
-      ? new Date(deal.travel_end_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-      : null,
-  }), [deal.end_date, deal.valid_until, deal.travel_start_date, deal.travel_end_date]);
+  const dates = useMemo(
+    () => ({
+      formattedEndDate:
+        deal.end_date || deal.valid_until
+          ? new Date(deal.end_date || deal.valid_until).toLocaleDateString(
+              "en-US",
+              { month: "short", day: "numeric", year: "numeric" },
+            )
+          : "Open-ended",
+      formattedStartDate: deal.travel_start_date
+        ? new Date(deal.travel_start_date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+          })
+        : null,
+      formattedTravelEndDate: deal.travel_end_date
+        ? new Date(deal.travel_end_date).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })
+        : null,
+    }),
+    [
+      deal.end_date,
+      deal.valid_until,
+      deal.travel_start_date,
+      deal.travel_end_date,
+    ],
+  );
 
   return (
     <>
@@ -153,8 +180,7 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
                   <span className="font-medium mr-2">Travel Window:</span>
                   <span>
                     {formattedStartDate}
-                    {formattedTravelEndDate &&
-                      ` - ${formattedTravelEndDate}`}
+                    {formattedTravelEndDate && ` - ${formattedTravelEndDate}`}
                   </span>
                 </div>
               )}
@@ -270,4 +296,4 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
       />
     </>
   );
-}
+});
