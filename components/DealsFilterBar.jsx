@@ -94,13 +94,13 @@ const DealsFilterBar = () => {
   return (
     <div
       className={cn(
-        "sticky top-16 z-40 w-full transition-all duration-300",
+        "sticky top-16 z-40 w-full  mx-auto transition-all duration-300",
         isSticky
           ? "bg-white/98 backdrop-blur-lg shadow-lg border-b border-border/40"
           : "bg-gradient-to-b from-white to-background/50 border-b border-border/20",
       )}
     >
-      <div className="container mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Header Section */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
