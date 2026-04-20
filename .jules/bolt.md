@@ -9,3 +9,11 @@
 ## 2026-04-18 - [LCP Optimization for List Views]
 **Learning:** For list views (e.g., deal grids), Largest Contentful Paint (LCP) can be significantly improved by passing a `priority` prop to above-the-fold items (e.g., the first row) in the loop. This tells Next.js to preload these critical images, reducing the time to the first meaningful paint.
 **Action:** In list rendering loops, use `priority={index < n}` (where `n` is the number of items in the first row) to optimize LCP.
+
+## 2025-05-15 - [Deterministic Hashing for Hydration Stability]
+**Learning:** Using `Math.random()` or non-deterministic logic for dynamic UI content (like CTA text or skeleton widths) causes hydration mismatches in Next.js. Centralizing deterministic logic based on stable IDs (e.g., deal IDs) ensures consistency between server and client renders.
+**Action:** Use a centralized `hashCode` utility for deterministic selection of dynamic content in client components.
+
+## 2025-05-15 - [Centralized Logic for Component Consistency]
+**Learning:** Duplicating complex business logic (like price calculations) across multiple components (`DealCard`, `DealDetail`) leads to maintenance overhead and performance inconsistencies. Centralizing this logic into pure utility functions allows for better memoization and smaller component bundles.
+**Action:** Move complex calculations to `lib/` utilities and use `useMemo` in components to cache the results.

@@ -25,7 +25,6 @@ export default function DealsList({ initialDeals: deals, isPublic = false }) {
           key={deal.id}
           deal={deal}
           isPublic={isPublic}
-          // Prioritize the first 3 images to improve Largest Contentful Paint (LCP)
           priority={index < 3}
         />
       ))}
