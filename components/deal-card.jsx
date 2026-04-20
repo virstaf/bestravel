@@ -18,9 +18,20 @@ import {
   Lock,
 } from "lucide-react";
 
+/**
+ * Optimized DealCard component with memoization to prevent redundant re-renders.
+ */
 const DealCard = memo(function DealCard({ deal, isPublic = false }) {
-  console.log(deal);
-  // Calculate prices logic with location support
+  // Simple values derived from props - kept simple as they are cheap
+  const location = deal.location || deal.partners?.location || "Destination";
+  const packageType = deal.package_type || deal.title || "Travel Package";
+  const nights = deal.duration_nights || 4;
+  const includesFlight = deal.includes_flight !== false;
+  const includesHotel = deal.includes_hotel !== false;
+  const includesTransfer = deal.includes_transfer || false;
+  const includesBreakfast = deal.includes_breakfast || false;
+
+  // Calculate prices logic with location support - memoized for performance
   const { originalPrice, discountedPrice, savings, discountPercentage } =
     useMemo(() => {
       const calculateBaseDiscounted = (price) => {
@@ -28,7 +39,7 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
           ? price * (1 - deal.discount_percentage / 100)
           : deal.discount_amount
             ? price - deal.discount_amount
-            : price; // No automatic discount if not specified
+            : price;
       };
 
       const priceOptions = [];
@@ -52,14 +63,14 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
 
       priceOptions.sort((a, b) => a.sale - b.sale);
       const best = priceOptions[0];
-      const savings = best.original - best.sale;
+      const bestSavings = best.original - best.sale;
       const discount =
-        savings > 0 ? Math.round((savings / best.original) * 100) : null;
+        bestSavings > 0 ? Math.round((bestSavings / best.original) * 100) : null;
 
       return {
         originalPrice: best.original,
         discountedPrice: best.sale,
-        savings,
+        savings: bestSavings,
         discountPercentage: discount,
       };
     }, [
@@ -76,7 +87,6 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
     if (deal.partners?.image_url) return deal.partners.image_url;
 
     // Use deal ID hash to determine which placeholder image to use (1-5)
-    // This works with both numeric IDs and UUIDs
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
   }, [
@@ -164,7 +174,7 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
   }, [validUntil]);
 
   // Format date for display
-  const formattedDate = useMemo(
+  const formattedEndDate = useMemo(
     () =>
       validUntil.toLocaleDateString("en-US", {
         month: "short",
@@ -207,7 +217,6 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           // Only bypass Next.js optimization for unknown external hosts.
-          // Pre-configured hosts (Unsplash, Supabase, Google Drive) are optimized.
           unoptimized={
             imageUrl.startsWith("http") &&
             !imageUrl.includes("images.unsplash.com") &&
@@ -242,39 +251,34 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
           </div>
         </div>
 
-        {/* Inclusions (Tags) */}
-        <div className="flex flex-wrap gap-2">
+        <h3 className="text-lg font-semibold text-foreground leading-tight">
+          {packageType}
+        </h3>
+
+        <div className="flex items-center gap-3 py-2">
           {includesFlight && (
-            <Badge
-              variant="secondary"
-              className="bg-sky-50 text-sky-700 hover:bg-sky-100 dark:bg-sky-950 dark:text-sky-300 font-medium px-2 py-0.5 rounded-md"
-            >
-              <Plane className="w-3.5 h-3.5 mr-1" /> Flight
-            </Badge>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Plane className="w-4 h-4 text-primary" />
+              <span>Flight</span>
+            </div>
           )}
           {includesHotel && (
-            <Badge
-              variant="secondary"
-              className="bg-orange-50 text-orange-700 hover:bg-orange-100 dark:bg-orange-950 dark:text-orange-300 font-medium px-2 py-0.5 rounded-md"
-            >
-              <Hotel className="w-3.5 h-3.5 mr-1" /> {nights} Nights
-            </Badge>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Hotel className="w-4 h-4 text-primary" />
+              <span>Hotel</span>
+            </div>
           )}
           {includesTransfer && (
-            <Badge
-              variant="secondary"
-              className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950 dark:text-emerald-300 font-medium px-2 py-0.5 rounded-md"
-            >
-              <Car className="w-3.5 h-3.5 mr-1" /> Transfer
-            </Badge>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Car className="w-4 h-4 text-primary" />
+              <span>Transfer</span>
+            </div>
           )}
-          {deal.includes_breakfast && (
-            <Badge
-              variant="secondary"
-              className="bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-950 dark:text-amber-300 font-medium px-2 py-0.5 rounded-md"
-            >
-              <Coffee className="w-3.5 h-3.5 mr-1" /> Breakfast
-            </Badge>
+          {includesBreakfast && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Coffee className="w-4 h-4 text-primary" />
+              <span>Breakfast</span>
+            </div>
           )}
         </div>
 
