@@ -4,6 +4,7 @@ import { memo, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { hashCode } from "@/utils/hash";
+import { isOptimizableImage } from "@/lib/image-utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,19 +20,26 @@ import {
 } from "lucide-react";
 
 /**
- * Optimized DealCard component with memoization to prevent redundant re-renders.
+ * Optimized DealCard component.
+ * Uses memoization for expensive calculations and proper React component structure.
  */
-const DealCard = memo(function DealCard({ deal, isPublic = false }) {
-  // Simple values derived from props - kept simple as they are cheap
+const DealCard = memo(function DealCard({
+  deal,
+  isPublic = false,
+  priority = false,
+}) {
+  const dealIdStr = String(deal.id);
+  const dealHash = useMemo(() => hashCode(dealIdStr), [dealIdStr]);
+
+  // Simple values derived from props - Declared early to avoid ReferenceError in useMemo
   const location = deal.location || deal.partners?.location || "Destination";
   const packageType = deal.package_type || deal.title || "Travel Package";
   const nights = deal.duration_nights || 4;
   const includesFlight = deal.includes_flight !== false;
   const includesHotel = deal.includes_hotel !== false;
   const includesTransfer = deal.includes_transfer || false;
-  const includesBreakfast = deal.includes_breakfast || false;
 
-  // Calculate prices logic with location support - memoized for performance
+  // Memoize price calculations
   const { originalPrice, discountedPrice, savings, discountPercentage } =
     useMemo(() => {
       const calculateBaseDiscounted = (price) => {
@@ -63,14 +71,14 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
 
       priceOptions.sort((a, b) => a.sale - b.sale);
       const best = priceOptions[0];
-      const bestSavings = best.original - best.sale;
+      const savings = best.original - best.sale;
       const discount =
-        bestSavings > 0 ? Math.round((bestSavings / best.original) * 100) : null;
+        savings > 0 ? Math.round((savings / best.original) * 100) : null;
 
       return {
         originalPrice: best.original,
         discountedPrice: best.sale,
-        savings: bestSavings,
+        savings,
         discountPercentage: discount,
       };
     }, [
@@ -86,15 +94,10 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
 
-    // Use deal ID hash to determine which placeholder image to use (1-5)
-    const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
+    // Use absolute value to avoid negative index from modulo
+    const imageNumber = (Math.abs(dealHash) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
-  }, [
-    deal.id,
-    deal.image_url,
-    deal.partners?.images,
-    deal.partners?.image_url,
-  ]);
+  }, [deal.image_url, deal.partners?.images, deal.partners?.image_url, dealHash]);
 
   // Format validity date
   const validUntil = useMemo(
@@ -129,28 +132,17 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
     return null;
   }, [deal.is_featured, deal.is_most_booked, validUntil]);
 
-
-  // Build inclusions text - memoized to prevent redundant string manipulation
-  const inclusionsText = useMemo(() => {
-    const inclusions = [];
-    if (includesFlight) inclusions.push("Flight");
-    if (includesHotel) inclusions.push(`${nights}-night stay`);
-    if (includesTransfer) inclusions.push("Transfer");
-
-    if (inclusions.length === 0) return `${nights}-night package`;
-    return inclusions.join(" + ");
-  }, [includesFlight, includesHotel, includesTransfer, nights]);
-
   // Rotating CTA copy
-  const ctaCopyOptions = [
-    "Lock in This Deal",
-    "View Full Details",
-    "Grab This Offer",
-    "Book Before It's Gone",
-  ];
-  // Deterministic selection based on deal ID to prevent hydration mismatch
-  const ctaCopy =
-    ctaCopyOptions[hashCode(String(deal.id)) % ctaCopyOptions.length];
+  const ctaCopy = useMemo(() => {
+    const ctaCopyOptions = [
+      "Lock in This Deal",
+      "View Full Details",
+      "Grab This Offer",
+      "Book Before It's Gone",
+    ];
+    // Use absolute value to avoid negative index from modulo
+    return ctaCopyOptions[Math.abs(dealHash) % ctaCopyOptions.length];
+  }, [dealHash]);
 
   // Urgency microcopy
   const urgencyText = useMemo(() => {
@@ -166,8 +158,19 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
     return "Prices may increase soon";
   }, [validUntil]);
 
+  // Build inclusions text - memoized
+  const inclusionsText = useMemo(() => {
+    const inclusions = [];
+    if (includesFlight) inclusions.push("Flight");
+    if (includesHotel) inclusions.push(`${nights}-night stay`);
+    if (includesTransfer) inclusions.push("Transfer");
+
+    if (inclusions.length === 0) return `${nights}-night package`;
+    return inclusions.join(" + ");
+  }, [includesFlight, includesHotel, includesTransfer, nights]);
+
   // Format date for display
-  const formattedEndDate = useMemo(
+  const formattedDate = useMemo(
     () =>
       validUntil.toLocaleDateString("en-US", {
         month: "short",
@@ -207,15 +210,10 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
           src={imageUrl}
           alt={packageType}
           fill
+          priority={priority}
           className="object-cover group-hover:scale-105 transition-transform duration-300"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          // Only bypass Next.js optimization for unknown external hosts.
-          unoptimized={
-            imageUrl.startsWith("http") &&
-            !imageUrl.includes("images.unsplash.com") &&
-            !imageUrl.includes("ylpkcsmbsnowmbyxhbzw.supabase.co") &&
-            !imageUrl.includes("drive.google.com")
-          }
+          unoptimized={!isOptimizableImage(imageUrl)}
         />
         {/* Top-left badge */}
         {badgeInfo && (
@@ -232,18 +230,15 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
         )}
       </div>
 
-      <CardContent className="px-5 pt-5 pb-3 space-y-4">
-        {/* Header: Title and Location (swapped order for visual hierarchy) */}
-        <div className="space-y-1">
-          <h3 className="text-xl font-bold text-foreground leading-tight line-clamp-2">
-            {packageType}
-          </h3>
-          <div className="flex items-center text-sm text-muted-foreground">
-            <MapPinIcon className="h-3.5 w-3.5 mr-1 text-primary/70" />
-            <span className="font-medium truncate">{location}</span>
-          </div>
+      <CardContent className="px-6 py-0 space-y-3">
+        <div className="flex items-center text-sm text-muted-foreground">
+          <MapPinIcon className="h-4 w-4 mr-1.5" />
+          <span className="font-medium">{location}</span>
         </div>
 
+        <h3 className="text-lg font-semibold text-foreground leading-tight">
+          {packageType}
+        </h3>
 
         <div className="flex items-center gap-3 py-2">
           {includesFlight && (
@@ -264,7 +259,7 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
               <span>Transfer</span>
             </div>
           )}
-          {includesBreakfast && (
+          {deal.includes_breakfast && (
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Coffee className="w-4 h-4 text-primary" />
               <span>Breakfast</span>
@@ -272,60 +267,47 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
           )}
         </div>
 
-        {/* Dates Grid Box */}
-        <div className="bg-muted/40 rounded-lg p-3 text-xs flex flex-col gap-2 border border-border/50">
-          <div className="flex items-center justify-between text-muted-foreground">
-            <span className="flex items-center gap-1.5 font-medium">
-              <CalendarIcon className="h-3.5 w-3.5" /> Book by:
-            </span>
-            <span className="font-semibold text-foreground">
-              {formattedEndDate}
-            </span>
-          </div>
-          {travelStartDate && (
-            <div className="flex items-center justify-between text-muted-foreground pt-2 border-t border-border/50">
-              <span className="flex items-center gap-1.5 font-medium">
-                <Plane className="h-3.5 w-3.5" /> Travel:
-              </span>
-              <span className="font-semibold text-foreground text-right">
-                {travelStartDate}
-                {travelEndDate ? ` - ${travelEndDate}` : ""}
-              </span>
-            </div>
-          )}
+        <div className="flex items-center text-sm text-muted-foreground pt-1">
+          <CalendarIcon className="h-4 w-4 mr-1.5" />
+          <span>Valid until {formattedDate}</span>
         </div>
 
-        {/* Pricing Area */}
-        <div className="flex items-end justify-between pt-1">
-          <div className="flex flex-col">
-            <span className="text-xs text-muted-foreground font-semibold mb-0.5 uppercase tracking-wider">
-              From
+        {travelStartDate && (
+          <div className="flex items-center text-sm text-blue-600 font-medium pt-0.5">
+            <CalendarIcon className="h-4 w-4 mr-1.5" />
+            <span>
+              Travel: {travelStartDate}
+              {travelEndDate ? ` - ${travelEndDate}` : ""}
             </span>
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-black tracking-tighter text-foreground">
+          </div>
+        )}
+
+        <div className="pt-2 space-y-1">
+          <div className="flex items-baseline justify-between">
+            <div className="flex flex-col">
+              <span className="text-xs text-muted-foreground">Starting from</span>
+              <span className="text-3xl font-bold text-foreground">
                 £{Math.round(discountedPrice)}
               </span>
-              <span className="text-sm text-muted-foreground font-medium">
-                pp
-              </span>
+              <span className="text-sm text-muted-foreground">per person</span>
+            </div>
+            <div className="text-right">
+              <div className="flex items-baseline gap-2">
+                <span className="text-sm text-muted-foreground line-through">
+                  £{originalPrice.toFixed(0)}
+                </span>
+              </div>
+              <span className="text-sm font-semibold text-green-600">Save</span>
+              <div className="text-base font-bold text-green-600">
+                £{Math.round(savings)}
+              </div>
             </div>
           </div>
-
-          {savings > 0 && (
-            <div className="flex flex-col items-end">
-              <span className="text-muted-foreground line-through decoration-muted-foreground/50 font-medium mb-1 text-xs">
-                £{originalPrice.toFixed(0)}
-              </span>
-              <span className="font-bold text-emerald-700 bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 px-2 py-0.5 rounded-md text-xs border border-emerald-200 dark:border-emerald-800">
-                Save £{Math.round(savings)}
-              </span>
-            </div>
-          )}
         </div>
       </CardContent>
 
-      <CardFooter className="px-5 pb-5 pt-0 flex flex-col gap-3">
-        <p className="text-xs text-orange-600 font-semibold text-center mt-1">
+      <CardFooter className="p-6 pt-2 flex flex-col gap-3">
+        <p className="text-xs text-orange-600 font-medium text-center">
           ⚡ {urgencyText}
         </p>
 
@@ -334,15 +316,13 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
           className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-6 text-base shadow-md hover:shadow-lg transition-all"
         >
           <Link
-            href={
-              isPublic ? `/deals/${deal.id}` : `/dashboard/deals/${deal.id}`
-            }
+            href={isPublic ? `/deals/${deal.id}` : `/dashboard/deals/${deal.id}`}
           >
             {ctaCopy}
           </Link>
         </Button>
 
-        <div className="flex items-center justify-center gap-4 text-[11px] text-muted-foreground font-medium">
+        <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Shield className="w-3.5 h-3.5" />
             <span>No hidden fees</span>

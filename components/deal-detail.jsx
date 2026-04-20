@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
 import { hashCode } from "@/utils/hash";
+import { isOptimizableImage } from "@/lib/image-utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -18,9 +19,13 @@ import BookingDialog from "@/components/booking-dialog";
 /**
  * Optimized DealDetail component with memoization.
  * Reduces redundant calculations for complex price logic and derived state.
+ * Uses shared image optimization utility.
  */
 const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+
+  const dealIdStr = String(deal.id);
+  const dealHash = useMemo(() => hashCode(dealIdStr), [dealIdStr]);
 
   // Memoize price calculations
   const { originalPrice, discountedPrice, savings, discountPercentage } =
@@ -77,13 +82,13 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
 
-    const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
+    // Use absolute value to avoid negative index from modulo
+    const imageNumber = (Math.abs(dealHash) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
-  }, [deal.id, deal.image_url, deal.partners?.images, deal.partners?.image_url]);
+  }, [deal.image_url, deal.partners?.images, deal.partners?.image_url, dealHash]);
 
-  // Derived info from deal prop
-  const info = useMemo(() => {
-    return {
+  const info = useMemo(
+    () => ({
       location: deal.location || deal.partners?.location || "Destination",
       title: deal.title || deal.package_type || "Travel Package",
       packageType: deal.package_type || deal.title || "Travel Package",
@@ -91,58 +96,44 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
       includesFlight: deal.includes_flight !== false,
       includesHotel: deal.includes_hotel !== false,
       includesTransfer: deal.includes_transfer || false,
-    };
-  }, [deal]);
+    }),
+    [
+      deal.location,
+      deal.partners?.location,
+      deal.title,
+      deal.package_type,
+      deal.duration_nights,
+      deal.includes_flight,
+      deal.includes_hotel,
+      deal.includes_transfer,
+    ],
+  );
 
-  const {
-    location,
-    title,
-    packageType,
-    nights,
-    includesFlight,
-    includesHotel,
-    includesTransfer,
-  } = info;
-
-  // Memoize dates
   const dates = useMemo(() => {
-    const validUntilDate = new Date(deal.end_date || deal.valid_until);
-    const startDate = deal.travel_start_date ? new Date(deal.travel_start_date) : null;
-    const endDate = deal.travel_end_date ? new Date(deal.travel_end_date) : null;
-
+    const end = deal.end_date || deal.valid_until;
     return {
-      formattedEndDate: validUntilDate.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }),
-      formattedStartDate: startDate
-        ? startDate.toLocaleDateString("en-US", {
+      formattedEndDate: end
+        ? new Date(end).toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          })
+        : "Open-ended",
+      formattedStartDate: deal.travel_start_date
+        ? new Date(deal.travel_start_date).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
           })
         : null,
-      formattedTravelEndDate: endDate
-        ? endDate.toLocaleDateString("en-US", {
+      formattedTravelEndDate: deal.travel_end_date
+        ? new Date(deal.travel_end_date).toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
+            year: "numeric",
           })
         : null,
     };
   }, [deal.end_date, deal.valid_until, deal.travel_start_date, deal.travel_end_date]);
-
-  const { formattedEndDate, formattedStartDate, formattedTravelEndDate } = dates;
-
-  // Memoize inclusions string
-  const inclusionsSummary = useMemo(() => {
-    return [
-      includesFlight && "Flight",
-      includesHotel && `${nights}-night stay`,
-      includesTransfer && "Transfer",
-    ]
-      .filter(Boolean)
-      .join(" + ");
-  }, [includesFlight, includesHotel, includesTransfer, nights]);
 
   return (
     <>
@@ -168,12 +159,7 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
               fill
               className="object-cover"
               priority
-              unoptimized={
-                imageUrl.startsWith("http") &&
-                !imageUrl.includes("drive.google.com") &&
-                !imageUrl.includes("images.unsplash.com") &&
-                !imageUrl.includes("ylpkcsmbsnowmbyxhbzw.supabase.co")
-              }
+              unoptimized={!isOptimizableImage(imageUrl)}
             />
             {discountPercentage && (
               <Badge className="absolute top-6 right-6 bg-red-500 hover:bg-red-600 text-white px-6 py-3 text-xl font-bold shadow-lg">
