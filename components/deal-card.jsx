@@ -129,13 +129,6 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
     return null;
   }, [deal.is_featured, deal.is_most_booked, validUntil]);
 
-  // Simple values derived from props
-  const location = deal.location || deal.partners?.location || "Destination";
-  const packageType = deal.title || "Travel Package";
-  const nights = deal.duration_nights || 4;
-  const includesFlight = deal.includes_flight !== false;
-  const includesHotel = deal.includes_hotel !== false;
-  const includesTransfer = deal.includes_transfer || false;
 
   // Build inclusions text - memoized to prevent redundant string manipulation
   const inclusionsText = useMemo(() => {
@@ -251,9 +244,6 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold text-foreground leading-tight">
-          {packageType}
-        </h3>
 
         <div className="flex items-center gap-3 py-2">
           {includesFlight && (
@@ -289,7 +279,7 @@ const DealCard = memo(function DealCard({ deal, isPublic = false }) {
               <CalendarIcon className="h-3.5 w-3.5" /> Book by:
             </span>
             <span className="font-semibold text-foreground">
-              {formattedDate}
+              {formattedEndDate}
             </span>
           </div>
           {travelStartDate && (
