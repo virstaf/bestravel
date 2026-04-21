@@ -1,10 +1,11 @@
 import Link from "next/link";
 import Image from "next/image";
+import { memo } from "react";
 import { Calendar, Clock } from "lucide-react";
 import { getFormattedDate } from "@/lib/getFormattedDate";
 import { Badge } from "@/components/ui/badge";
 
-const BlogCard = ({ post }) => {
+const BlogCard = memo(({ post, priority = false }) => {
   const {
     slug,
     title,
@@ -32,6 +33,7 @@ const BlogCard = ({ post }) => {
                 src={featured_image}
                 alt={displayTitle}
                 fill
+                priority={priority}
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
               {/* Gradient Overlay on Hover */}
@@ -131,6 +133,8 @@ const BlogCard = ({ post }) => {
       </article>
     </Link>
   );
-};
+});
+
+BlogCard.displayName = "BlogCard";
 
 export default BlogCard;

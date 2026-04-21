@@ -1,4 +1,4 @@
-// components/DealDetail.js
+// components/deal-detail.jsx
 "use client";
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
@@ -29,6 +29,8 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
   const { originalPrice, discountedPrice, savings, discountPercentage } =
     useMemo(() => calculateDealPrices(deal), [deal]);
 
+  const dealHash = useMemo(() => hashCode(String(deal.id)), [deal.id]);
+
   // Memoize image URL
   const imageUrl = useMemo(() => {
     if (deal.image_url) return deal.image_url;
@@ -40,17 +42,16 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
     return `/images/deals/default-${imageNumber}.jpg`;
   }, [deal.image_url, deal.partners?.images, deal.partners?.image_url, dealHash]);
 
-  const info = useMemo(() => ({
+  const { location, title, nights, includesFlight, includesHotel, includesTransfer } = useMemo(() => ({
     location: deal.location || deal.partners?.location || "Destination",
     title: deal.title || deal.package_type || "Travel Package",
-    packageType: deal.package_type || deal.title || "Travel Package",
     nights: deal.duration_nights || 4,
     includesFlight: deal.includes_flight !== false,
     includesHotel: deal.includes_hotel !== false,
     includesTransfer: deal.includes_transfer || false,
   }), [deal]);
 
-  const dates = useMemo(() => ({
+  const { formattedEndDate, formattedStartDate, formattedTravelEndDate } = useMemo(() => ({
     formattedEndDate: deal.end_date || deal.valid_until
       ? new Date(deal.end_date || deal.valid_until).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
       : "Open-ended",
@@ -61,6 +62,14 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
       ? new Date(deal.travel_end_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
       : null,
   }), [deal.end_date, deal.valid_until, deal.travel_start_date, deal.travel_end_date]);
+
+  const inclusionsSummary = useMemo(() => {
+    const parts = [];
+    if (includesFlight) parts.push("Flights");
+    if (includesHotel) parts.push(`${nights} Nights Hotel`);
+    if (includesTransfer) parts.push("Transfers");
+    return parts.join(" + ");
+  }, [includesFlight, includesHotel, includesTransfer, nights]);
 
   return (
     <>
@@ -82,7 +91,7 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
           <div className="relative aspect-[21/9] w-full bg-muted">
             <Image
               src={imageUrl}
-              alt={packageType}
+              alt={title}
               fill
               className="object-cover"
               priority
@@ -270,4 +279,6 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
       />
     </>
   );
-}
+});
+
+export default DealDetail;

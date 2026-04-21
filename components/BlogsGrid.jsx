@@ -2,12 +2,14 @@
 
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
+import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import BlogCard from "./BlogCard";
 
 const BlogsGrid = ({ posts }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Get unique categories from database
@@ -22,18 +24,19 @@ const BlogsGrid = ({ posts }) => {
   // Filter posts based on search and category
   const filteredPosts = useMemo(() => {
     return posts.filter((post) => {
+      const query = debouncedSearchQuery.toLowerCase();
       const matchesSearch =
-        searchQuery === "" ||
-        post.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.excerpt?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        post.content?.toLowerCase().includes(searchQuery.toLowerCase());
+        debouncedSearchQuery === "" ||
+        post.title?.toLowerCase().includes(query) ||
+        post.excerpt?.toLowerCase().includes(query) ||
+        post.content?.toLowerCase().includes(query);
 
       const matchesCategory =
         selectedCategory === "All" || post.category?.name === selectedCategory;
 
       return matchesSearch && matchesCategory;
     });
-  }, [posts, searchQuery, selectedCategory]);
+  }, [posts, debouncedSearchQuery, selectedCategory]);
 
   return (
     <div className="space-y-8">
@@ -80,8 +83,8 @@ const BlogsGrid = ({ posts }) => {
       {/* Blog Grid */}
       {filteredPosts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPosts.map((post) => (
-            <BlogCard key={post.id} post={post} />
+          {filteredPosts.map((post, index) => (
+            <BlogCard key={post.id} post={post} priority={index < 3} />
           ))}
         </div>
       ) : (
