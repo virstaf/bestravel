@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { getUser } from "@/lib/supabase/server";
 import UserProfile from "./ui/userProfile";
+import { useProfileContext } from "@/contexts/profile";
 import { NavLinks } from "@/lib/data";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
@@ -12,17 +12,9 @@ import { AlignRight } from "lucide-react";
 import Logo from "./ui/logo";
 
 const NavBar = () => {
-  const [user, setUser] = useState(null);
+  const { profile: user, isLoading } = useProfileContext();
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userData = await getUser();
-      setUser(userData);
-    };
-    fetchUser();
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {

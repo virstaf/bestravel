@@ -17,3 +17,7 @@
 ## 2025-05-15 - [Centralized Logic for Component Consistency]
 **Learning:** Duplicating complex business logic (like price calculations) across multiple components (`DealCard`, `DealDetail`) leads to maintenance overhead and performance inconsistencies. Centralizing this logic into pure utility functions allows for better memoization and smaller component bundles.
 **Action:** Move complex calculations to `lib/` utilities and use `useMemo` in components to cache the results.
+
+## 2025-05-16 - [Consolidating Global State Fetching]
+**Learning:** Redundant client-side fetches for global data (like user profiles) across common components (`NavBar`, `UserProfile`) create unnecessary server load and can cause UI flickering or inconsistent states during navigation. Centralizing this data fetching in a high-level React Context ensures a single source of truth and eliminates duplicate network requests.
+**Action:** Use shared contexts to manage global state and ensure common UI components consume this state rather than fetching it independently.
