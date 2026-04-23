@@ -1,7 +1,7 @@
 // components/NewTripForm.js
 "use client";
 import { useState } from "react";
-import { supabase } from "@/lib/supabase/client";
+import { getProfileAction } from "@/actions/profiles";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import AddressInput from "./ui/addressInput";
 import { resendEmail } from "@/actions/resendEmail";
 import { handleError } from "@/lib/utils";
+import { createTrip } from "@/actions/trips";
 
 const NewTripForm = () => {
   const router = useRouter();
@@ -40,28 +41,27 @@ const NewTripForm = () => {
     setError(null);
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      const { success, profile } = await getProfileAction();
+      if (!success || !profile) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("trips").insert({
-        ...formData,
-        user_id: user.id,
-        status: "planning",
-      });
-
-      if (error) {
+      try {
+        await createTrip({
+          ...formData,
+          user_id: profile.id,
+          status: "planning",
+        });
+      } catch (error) {
         toast.error("Error creating trip. Please try again.");
         throw error;
       }
+      
       toast.success("Trip created successfully!");
 
       const sendNotification = await resendEmail(
         {
-          fullname: user.user_metadata.full_name || user.email.split("@")[0],
+          fullname: profile.full_name || profile.first_name || profile.email?.split("@")[0] || "Traveler",
           tripName: formData.title,
-          email: user.email,
+          email: profile.email,
         },
         "confirm-trip"
       );

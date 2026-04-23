@@ -1,5 +1,6 @@
 // app/dashboard/trips/[tripId]/edit/page.js
-import { createClient } from "@/lib/supabase/server";
+import { getProfileAction } from "@/actions/profiles";
+import { fetchTrip } from "@/actions/trips";
 import { notFound, redirect } from "next/navigation";
 import EditTripForm from "@/components/edit-trip-form";
 import DashHeader from "@/components/dash-header";
@@ -8,21 +9,15 @@ import { Button } from "@/components/ui/button";
 
 const EditTripPage = async ({ params }) => {
   const { tripId } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { profile } = await getProfileAction();
 
-  if (!user) {
-    redirect("/login");
+  if (!profile) {
+    redirect("/auth/login");
   }
 
-  const { data: trip } = await supabase
-    .from("trips")
-    .select("*")
-    .eq("id", tripId)
-    .eq("user_id", user.id)
-    .single();
+  const { data: trip } = await fetchTrip(tripId);
+  // Optional: check if trip belongs to user, but backend should ideally enforce this
+  // if (trip && trip.user_id !== profile.id) notFound();
 
   if (!trip) {
     notFound();

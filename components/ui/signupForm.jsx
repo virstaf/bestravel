@@ -20,25 +20,30 @@ import { Loader2 } from "lucide-react";
 import { googleAuthAction, signupAction } from "@/actions/users";
 import { getUser } from "@/lib/supabase/server";
 import Image from "next/image";
-import { EyeClosed } from "lucide-react";
-import { Eye } from "lucide-react";
+import { EyeClosed, Eye } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z.object({
-  fullname: z
+  title: z.enum(["Mr", "Ms", "Mrs"], { required_error: "Title is required" }),
+  firstName: z
     .string()
-    .min(3, {
-      message: "Fullname must be at least 3 characters",
+    .min(2, {
+      message: "First name must be at least 2 characters",
     })
-    .max(40)
-    .refine(
-      (value) => {
-        const words = value.trim().split(/\s+/);
-        return words.length >= 2 && words.length <= 3;
-      },
-      {
-        message: "Fullname must contain 2 or 3 words",
-      },
-    ),
+    .max(40),
+  lastName: z
+    .string()
+    .min(2, {
+      message: "Last name must be at least 2 characters",
+    })
+    .max(40),
+  phone: z.string().min(5, { message: "Phone number is required" }),
   email: z.string().email({ message: "Invalid email address" }),
   password: z
     .string()
@@ -78,20 +83,26 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
     }
 
     startTransition(async () => {
-      const { email } = values;
-      const { fullname } = values;
+      const { email, title, firstName, lastName, phone } = values;
       let errorMessage;
-      let title;
+      let titleMessage;
       let description;
 
-      const response = await signupAction(email, password, fullname);
+      const response = await signupAction(
+        email,
+        password,
+        title,
+        firstName,
+        lastName,
+        phone,
+      );
       errorMessage = response.errorMessage;
-      title = "Check your email! 📧";
+      titleMessage = "Check your email! 📧";
       description =
         "We've sent you a confirmation link. Please check your email and click the link to verify your account, then you can continue with onboarding.";
 
       if (!errorMessage) {
-        toast.success(title, {
+        toast.success(titleMessage, {
           description: description,
           duration: 8000,
         });
@@ -101,6 +112,7 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
         }
 
         // No redirect needed for standard flow as it just shows success message
+        router.replace("/auth/login");
       } else {
         toast.error("Error", { description: errorMessage });
       }
@@ -118,7 +130,10 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: "",
+      title: undefined,
+      firstName: "",
+      lastName: "",
+      phone: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -126,7 +141,7 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
   });
 
   return (
-    <div className="w-full max-w-[450px] mx-auto">
+    <div className="w-full max-w-[450px] mx-auto mt-15">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-8 ">
           <div className="flex flex-col gap-1">
@@ -137,14 +152,54 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
               Enter your details below to create your account
             </p>
           </div>
+          <div className="flex gap-4">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem className="w-1/3">
+                  <FormLabel>Title</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Title" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Mr">Mr</SelectItem>
+                      <SelectItem value="Ms">Ms</SelectItem>
+                      <SelectItem value="Mrs">Mrs</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="firstName"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>First Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="First Name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
-            name="fullname"
+            name="lastName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel>Last Name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter Full Name" {...field} />
+                  <Input placeholder="Last Name" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -158,6 +213,19 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input placeholder="example@email.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="phone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Phone Number</FormLabel>
+                <FormControl>
+                  <Input placeholder="+1234567890" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -214,7 +282,9 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
               size="icon"
               onClick={() => setShowConfirmPassword((prev) => !prev)}
               className="absolute right-0 top-[23px] h-9 w-9 text-muted-foreground hover:bg-transparent"
-              aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+              aria-label={
+                showConfirmPassword ? "Hide password" : "Show password"
+              }
             >
               {showConfirmPassword ? <EyeClosed /> : <Eye />}
             </Button>

@@ -1,33 +1,32 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+/**
+ * Deal Actions — Phase 3 Migration
+ *
+ * Public deal reads (featured deals, all deals, deal by ID) now route through
+ * FastAPI (Supabase B).
+ *
+ * GET /v1/app/deals/grab/all       → all deals
+ * GET /v1/app/deals/{deal_id}      → single deal
+ *
+ * NOTE: The FastAPI DealOut schema is flatter than Supabase A (no joined
+ * `partners` object). Partner data comes via the `partner_id` field.
+ * Admin write operations (createDealAction, updateDealAction, deleteDealAction)
+ * are migrated but require an admin JWT with appropriate permissions.
+ *
+ * MISSING vs Supabase A:
+ *  - No server-side filtering (destination, price, date range, sort) — FastAPI
+ *    returns all deals and filtering is done client-side until backend adds
+ *    query params to GET /v1/app/deals/grab/all.
+ *  - No joined partner data — partner_id is returned; use GET /v1/app/partners/{id}
+ *    separately if partner name is needed.
+ */
+
+import { apiGet, apiPost, apiPut, apiDelete } from "@/lib/api/client";
+import { getServerToken } from "@/lib/session";
 import { revalidatePath } from "next/cache";
 
-export const getFeaturedDealsAction = async ({ limit }) => {
-  const supabase = await createClient();
-
-  const { data: deals, error } = await supabase
-    .from("deals")
-    .select(
-      `
-      *,
-      partners:partner_id (
-        name,
-        type,
-        location
-      )
-    `,
-    )
-    .eq("is_active", true)
-    .eq("is_featured", true)
-    .gte("end_date", new Date().toISOString())
-    .order("created_at", { ascending: false })
-    .limit(limit);
-
-  if (error) throw error;
-
-  return deals || [];
-};
+// ─── Get All Deals (with optional client-side filtering) ───────────────────────
 
 export const getDealsAction = async ({
   limit,
@@ -38,183 +37,171 @@ export const getDealsAction = async ({
   sort,
 } = {}) => {
   try {
-    const supabase = await createClient();
+    const token = await getServerToken();
+    const { data, error } = await apiGet("/v1/app/deals/grab/all", token);
+    if (error) throw new Error(error);
 
-    // Fetch deals with optional filtering
-    let query = supabase.from("deals").select(
-      `
-      *,
-      partners:partner_id (
-        name,
-        type,
-        location
-      )
-    `,
-    );
+    let deals = data || [];
 
-    // Basic status filters
-    query = query
-      .eq("is_active", true)
-      .gte("end_date", new Date().toISOString());
-
-    // Destination filter
+    // Client-side filtering (FastAPI doesn't support query params yet on this route)
     if (dest) {
-      const safeDest = dest.replace(/"/g, '""');
-      query = query.or(`location.ilike."%${safeDest}%",title.ilike."%${safeDest}%"`);
+      const safeDest = dest.toLowerCase();
+      deals = deals.filter(
+        (d) =>
+          d.destination?.toLowerCase().includes(safeDest) ||
+          d.title?.toLowerCase().includes(safeDest)
+      );
     }
 
-    // Max Price filter
-    // Note: Since discounted_price calculation happens in JS/SQL, we use the original_price or a calculated field if available
-    // For now, filtering by original_price as a proxy or if discounted_price exists in DB
     if (maxPrice) {
-      query = query.lte("original_price", parseInt(maxPrice));
+      deals = deals.filter((d) => d.price <= parseInt(maxPrice));
     }
 
-    // Dates filter
     if (from) {
-      query = query.gte("travel_start_date", from);
+      deals = deals.filter(
+        (d) => !d.start_date || new Date(d.start_date) >= new Date(from)
+      );
     }
+
     if (to) {
-      query = query.lte("end_date", to);
+      deals = deals.filter(
+        (d) => !d.end_date || new Date(d.end_date) <= new Date(to)
+      );
     }
 
     // Sorting
     switch (sort) {
-      case "newest":
-        query = query.order("created_at", { ascending: false });
-        break;
       case "lowest-price":
-        query = query.order("original_price", { ascending: true });
+        deals.sort((a, b) => (a.price || 0) - (b.price || 0));
         break;
       case "popular":
-        query = query.order("is_featured", { ascending: false });
+        deals.sort((a, b) => (b.is_featured ? 1 : 0) - (a.is_featured ? 1 : 0));
         break;
       case "ending-soon":
-        query = query.order("end_date", { ascending: true });
+        deals.sort(
+          (a, b) => new Date(a.end_date || 0) - new Date(b.end_date || 0)
+        );
         break;
-      case "best-value":
+      case "newest":
       default:
-        query = query.order("discount_percentage", { ascending: false });
+        deals.sort(
+          (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)
+        );
         break;
     }
 
-    // Fallback sort to newest first
-    query = query.order("created_at", { ascending: false });
+    if (limit) deals = deals.slice(0, limit);
 
-    if (limit) {
-      query = query.limit(limit);
-    }
-
-    const { data, error } = await query;
-
-    if (error) throw error;
-
-    return data || [];
-  } catch (error) {
-    console.error("Error in getDealsAction:", error);
+    return deals;
+  } catch (err) {
+    console.error("[getDealsAction] Error:", err);
     return [];
   }
 };
+
+// ─── Get Featured Deals ───────────────────────────────────────────────────────
+
+export const getFeaturedDealsAction = async ({ limit } = {}) => {
+  try {
+    const token = await getServerToken();
+    const { data, error } = await apiGet("/v1/app/deals/grab/all", token);
+    if (error) throw new Error(error);
+
+    const now = new Date();
+    let deals = (data || []).filter(
+      (d) => d.is_featured && d.status !== "inactive" && (!d.end_date || new Date(d.end_date) >= now)
+    );
+
+    deals.sort(
+      (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)
+    );
+
+    if (limit) deals = deals.slice(0, limit);
+
+    return deals;
+  } catch (err) {
+    console.error("[getFeaturedDealsAction] Error:", err);
+    return [];
+  }
+};
+
+// ─── Get Deal By ID ───────────────────────────────────────────────────────────
 
 export const getDealByIdAction = async (dealId) => {
   try {
-    const supabase = await createClient();
-    const { data: deal, error } = await supabase
-      .from("deals")
-      .select(
-        `
-        *,
-        partners:partner_id (
-          name,
-          type,
-          location
-        )
-      `,
-      )
-      .eq("id", dealId)
-      .single();
-
-    if (error) throw error;
-
-    return deal;
-  } catch (error) {
-    return { errorMessage: error.message };
+    const token = await getServerToken();
+    const { data, error } = await apiGet(`/v1/app/deals/${dealId}`, token);
+    if (error) throw new Error(error);
+    return data;
+  } catch (err) {
+    return { errorMessage: err.message };
   }
 };
 
+// ─── Get Partners List ────────────────────────────────────────────────────────
+
 export const getPartnersListAction = async () => {
   try {
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("partners")
-      .select("id, name")
-      .order("name", { ascending: true });
-
-    if (error) throw error;
-    return data;
-  } catch (error) {
-    console.error("Error fetching partners:", error);
+    const token = await getServerToken();
+    const { data, error } = await apiGet("/v1/app/partners/all", token);
+    if (error) throw new Error(error);
+    // Map to { id, name } shape expected by consumers (FastAPI uses `title`)
+    return (data || []).map((p) => ({ id: p.id, name: p.title }));
+  } catch (err) {
+    console.error("[getPartnersListAction] Error:", err);
     return [];
   }
 };
 
+// ─── Admin: Create Deal ───────────────────────────────────────────────────────
+
 export const createDealAction = async (dealData) => {
   try {
-    const supabase = await createClient();
-
-    const { error } = await supabase.from("deals").insert([dealData]);
-
-    if (error) {
-      console.error("Error creating deal:", error);
-      throw new Error(error.message);
-    }
+    const token = await getServerToken();
+    const { error } = await apiPost("/v1/app/deals/", dealData, token);
+    if (error) throw new Error(error);
 
     revalidatePath("/admin/deals");
     revalidatePath("/dashboard/deals");
-    revalidatePath("/"); // For featured deals
+    revalidatePath("/");
     return { success: true };
-  } catch (error) {
-    console.error("Server action error:", error);
-    return { success: false, error: error.message };
+  } catch (err) {
+    console.error("[createDealAction] Error:", err);
+    return { success: false, error: err.message };
   }
 };
 
-export const deleteDealAction = async (dealId) => {
-  try {
-    const supabase = await createClient();
-    const { error } = await supabase.from("deals").delete().eq("id", dealId);
-
-    if (error) throw error;
-
-    revalidatePath("/admin/deals");
-    revalidatePath("/dashboard/deals");
-    return { success: true };
-  } catch (error) {
-    return { success: false, error: error.message };
-  }
-};
+// ─── Admin: Update Deal ───────────────────────────────────────────────────────
 
 export const updateDealAction = async (dealId, dealData) => {
   try {
-    const supabase = await createClient();
-
-    const { error } = await supabase
-      .from("deals")
-      .update(dealData)
-      .eq("id", dealId);
-
-    if (error) {
-      console.error("Error updating deal:", error);
-      throw new Error(error.message);
-    }
+    const token = await getServerToken();
+    const { error } = await apiPut(`/v1/app/deals/${dealId}`, dealData, token);
+    if (error) throw new Error(error);
 
     revalidatePath("/admin/deals");
     revalidatePath("/dashboard/deals");
     revalidatePath(`/dashboard/deals/${dealId}`);
-    revalidatePath("/"); // For featured deals
+    revalidatePath("/");
     return { success: true };
-  } catch (error) {
-    console.error("Server action error:", error);
-    return { success: false, error: error.message };
+  } catch (err) {
+    console.error("[updateDealAction] Error:", err);
+    return { success: false, error: err.message };
+  }
+};
+
+// ─── Admin: Delete Deal ───────────────────────────────────────────────────────
+
+export const deleteDealAction = async (dealId) => {
+  try {
+    const token = await getServerToken();
+    const { error } = await apiDelete(`/v1/app/deals/${dealId}`, token);
+    if (error) throw new Error(error);
+
+    revalidatePath("/admin/deals");
+    revalidatePath("/dashboard/deals");
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
   }
 };

@@ -1,38 +1,87 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+/**
+ * Reservation Actions — Phase 3 Migration
+ *
+ * All reservation operations now route through FastAPI (Supabase B).
+ *
+ * POST   /v1/app/reservations/                        → create reservation
+ * GET    /v1/app/reservations/{reservation_id}        → get single reservation
+ * GET    /v1/app/reservations/by_user_id/{user_id}    → list user reservations
+ * PUT    /v1/app/reservations/{reservation_id}        → update reservation
+ * DELETE /v1/app/reservations/{reservation_id}        → delete reservation
+ */
+
+import { apiGet, apiPost, apiPut, apiDelete } from "@/lib/api/client";
+import { getServerToken } from "@/lib/session";
 import { revalidatePath } from "next/cache";
 import { resendEmail } from "./resendEmail";
 
+// ─── Create Reservation ───────────────────────────────────────────────────────
+
 export const createReservation = async (data) => {
-  const supabase = await createClient();
-  const { error } = await supabase.from("reservations").insert([data]);
-  if (error) {
-    throw new Error("Error creating reservation");
+  const token = await getServerToken();
+  const { error } = await apiPost("/v1/app/reservations/", data, token);
+  if (error) throw new Error("Error creating reservation: " + error);
+};
+
+// ─── Get Single Reservation ───────────────────────────────────────────────────
+
+export const getReservation = async (reservationId) => {
+  try {
+    const token = await getServerToken();
+    const { data, error } = await apiGet(
+      `/v1/app/reservations/${reservationId}`,
+      token
+    );
+    if (error) throw new Error(error);
+    return data;
+  } catch (err) {
+    throw err;
   }
 };
 
-export const deleteReservation = async (reservationId) => {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("reservations")
-    .delete()
-    .eq("id", reservationId);
-  if (error) {
-    throw new Error("Error deleting reservation");
-  }
+// ─── Get User Reservations ────────────────────────────────────────────────────
+
+export const getUserReservations = async (userId) => {
+  const token = await getServerToken();
+  const { data, error } = await apiGet(
+    `/v1/app/reservations/by_user_id/${userId}`,
+    token
+  );
+  if (error) throw new Error("Error fetching user reservations: " + error);
+
+  // Preserve status calculation from original
+  const { getReservationStatus } = await import("@/lib/statusHelpers");
+  return (data || []).map((reservation) => ({
+    ...reservation,
+    currentStatus: getReservationStatus(reservation),
+  }));
 };
+
+// ─── Update Reservation ───────────────────────────────────────────────────────
+
+export const updateReservation = async (reservationId, data) => {
+  const token = await getServerToken();
+  const { error } = await apiPut(
+    `/v1/app/reservations/${reservationId}`,
+    data,
+    token
+  );
+  if (error) throw new Error("Error updating reservation: " + error);
+};
+
+// ─── Cancel Reservation ───────────────────────────────────────────────────────
 
 export const cancelReservation = async (reservationId) => {
   try {
-    const supabase = await createClient();
-    const { error } = await supabase
-      .from("reservations")
-      .update({ status: "cancelled" })
-      .eq("id", reservationId);
-    if (error) {
-      throw error;
-    }
+    const token = await getServerToken();
+    const { error } = await apiPut(
+      `/v1/app/reservations/${reservationId}`,
+      { status: "cancelled" },
+      token
+    );
+    if (error) throw new Error(error);
     revalidatePath("/");
     return { success: true };
   } catch (err) {
@@ -40,112 +89,64 @@ export const cancelReservation = async (reservationId) => {
   }
 };
 
-export const updateReservation = async (reservationId, data) => {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("reservations")
-    .update(data)
-    .eq("id", reservationId);
-  if (error) {
-    throw new Error("Error updating reservation");
-  }
+// ─── Delete Reservation ───────────────────────────────────────────────────────
+
+export const deleteReservation = async (reservationId) => {
+  const token = await getServerToken();
+  const { error } = await apiDelete(
+    `/v1/app/reservations/${reservationId}`,
+    token
+  );
+  if (error) throw new Error("Error deleting reservation: " + error);
 };
 
-export const getReservation = async (res_id) => {
+// ─── Submit Reservation (full flow) ──────────────────────────────────────────
+
+/**
+ * Creates a reservation and sends email notifications.
+ * Requires the user's ID and trip details to be passed in.
+ */
+export const submitReservation = async ({ type, details, tripId, userId, userEmail, userName, tripStartDate, tripEndDate, tripTitle }) => {
   try {
-    const supabase = await createClient();
-    const { data, error: resError } = await supabase
-      .from("reservations")
-      .select("*")
-      .eq("id", res_id);
-    if (resError) throw resError;
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
+    if (!tripId) throw new Error("Trip ID is required");
+    if (!userId) throw new Error("You must be logged in to make a reservation");
 
-export const getUserReservations = async (userId) => {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("reservations")
-    .select("*")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false });
-  if (error) {
-    throw new Error("Error fetching user reservations");
-  }
+    const token = await getServerToken();
 
-  // Calculate current status for each reservation based on dates
-  const { getReservationStatus } = await import("@/lib/statusHelpers");
-  const reservationsWithStatus = data.map((reservation) => ({
-    ...reservation,
-    currentStatus: getReservationStatus(reservation),
-  }));
-
-  return reservationsWithStatus;
-};
-
-export const submitReservation = async ({ type, details, tripId }) => {
-  try {
-    const supabase = await createClient();
-
-    // Get authenticated user
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (!user) {
-      throw new Error("You must be logged in to make a reservation");
-    }
-
-    // Verify trip exists
-    if (!tripId) {
-      throw new Error("Trip ID is required");
-    }
-
-    const { data: trip, error: tripError } = await supabase
-      .from("trips")
-      .select("start_date, end_date, title")
-      .eq("id", tripId)
-      .single();
-
-    if (tripError || !trip) {
-      throw new Error("Trip not found");
-    }
-
-    // 1. Insert reservation into database
-    const { error: insertError } = await supabase.from("reservations").insert({
-      trip_id: tripId,
-      user_id: user.id,
-      type,
-      details,
-      start_date: trip.start_date,
-      end_date: trip.end_date,
-      status: "pending",
-    });
+    // 1. Create reservation via FastAPI
+    const { data: reservation, error: insertError } = await apiPost(
+      "/v1/app/reservations/",
+      {
+        trip_id: tripId,
+        user_id: userId,
+        type,
+        details,
+        start_date: tripStartDate || null,
+        end_date: tripEndDate || null,
+        status: "pending",
+      },
+      token
+    );
 
     if (insertError) {
-      console.error("Database insertion error:", insertError);
+      console.error("[submitReservation] FastAPI error:", insertError);
       throw new Error("Failed to save reservation details");
     }
 
     // 2. Send Email Notification
     const { success: emailSuccess, message: emailMessage } = await resendEmail(
       {
-        fullname: user.user_metadata.full_name || user.email.split("@")[0],
-        email: user.email,
+        fullname: userName || userEmail?.split("@")[0] || "Traveller",
+        email: userEmail,
         details,
-        tripName: trip.title,
+        tripName: tripTitle,
         reservationType: type,
       },
       "confirm-reservation"
     );
 
     if (!emailSuccess) {
-      console.error("Email sending warning:", emailMessage);
-      // We don't throw here strictly, because the reservation IS saved.
-      // But we returns a warning status.
+      console.error("[submitReservation] Email warning:", emailMessage);
       revalidatePath("/dashboard/reservations");
       return {
         success: true,
@@ -155,11 +156,8 @@ export const submitReservation = async ({ type, details, tripId }) => {
 
     revalidatePath("/dashboard/reservations");
     return { success: true };
-  } catch (error) {
-    console.error("Reservation submission error:", error);
-    return {
-      success: false,
-      message: error.message || "An unexpected error occurred.",
-    };
+  } catch (err) {
+    console.error("[submitReservation] Error:", err);
+    return { success: false, message: err.message || "An unexpected error occurred." };
   }
 };

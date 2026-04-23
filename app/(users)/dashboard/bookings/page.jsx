@@ -1,11 +1,20 @@
 import { getUserQuotes } from "@/actions/quotes";
 import DashHeader from "@/components/dash-header";
 import QuoteCard from "@/components/QuoteCard";
-import { getUser } from "@/lib/supabase/server";
+import { getProfileAction } from "@/actions/profiles";
 
 const BookingsPage = async () => {
-  const user = await getUser();
-  const quotes = await getUserQuotes(user.id);
+  const { profile } = await getProfileAction();
+  
+  if (!profile) {
+    return (
+      <div className="container mx-auto px-4 w-full h-full flex items-center justify-center min-h-[400px]">
+        <p className="text-muted-foreground">Please log in to view your quotes.</p>
+      </div>
+    );
+  }
+
+  const quotes = await getUserQuotes(profile.id);
 
   return (
     <div className="container mx-auto px-4 w-full h-full">

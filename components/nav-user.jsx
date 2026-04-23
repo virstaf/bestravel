@@ -26,11 +26,12 @@ import {
 } from "@/components/ui/sidebar";
 import { Button } from "./ui/button";
 import { logoutAction } from "@/actions/users";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
   const { name, email, avatar, initials } = user || {};
+  const router = useRouter();
 
   return (
     <SidebarMenu>
@@ -94,13 +95,13 @@ export function NavUser({ user }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="">
+            <DropdownMenuItem asChild>
               <Button
                 variant="ghost"
                 className="w-full justify-start text-red-500 focus:text-red-500 hover:text-red-600"
-                onClick={() => {
-                  logoutAction();
-                  redirect("/auth/login");
+                onClick={async () => {
+                  await logoutAction();
+                  router.push("/auth/login");
                 }}
               >
                 <IconLogout className="text-red-500 focus:text-red-500 hover:text-red-600" />

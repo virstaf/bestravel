@@ -23,13 +23,17 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+import { getProfileAction } from "@/actions/profiles";
+
+export default async function RootLayout({ children }) {
+  const { profile } = await getProfileAction();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ProfileProvider>{children}</ProfileProvider>
+        <ProfileProvider initialProfile={profile}>{children}</ProfileProvider>
         <Toaster />
       </body>
     </html>

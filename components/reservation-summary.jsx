@@ -23,15 +23,15 @@ export const ReservationSummaryCard = ({
           </h3>
           <div className="relative">
             <p>
-              {reservation.details.class.slice(0, 1).toUpperCase() +
-                reservation.details.class.slice(1)}{" "}
+              {reservation?.details?.class?.slice(0, 1)?.toUpperCase() +
+                reservation?.details?.class?.slice(1)}{" "}
               Flight
             </p>
             <p>
-              Departure: {getFormattedDate(reservation.details.departureDate)}
+              Departure: {getFormattedDate(reservation?.details?.departureDate)}
             </p>
-            <p>From: {reservation.details.departureCity}</p>
-            <p>To: {reservation.details.arrivalCity}</p>
+            <p>From: {reservation?.details?.departureCity}</p>
+            <p>To: {reservation?.details?.arrivalCity}</p>
             <div className="absolute right-0 top-0">
               <Status value={reservation.currentStatus || reservation.status} />
             </div>
@@ -60,9 +60,9 @@ export const ReservationSummaryCard = ({
               {reservation?.details?.roomType?.slice(0, 1)?.toUpperCase() +
                 reservation?.details?.roomType?.slice(1)}
             </p> */}
-            <p>City: {reservation.details.city}</p>
-            <p>Check in: {getFormattedDate(reservation.details.checkIn)}</p>
-            <p>Preferred hotel: {reservation.details.preferredHotel}</p>
+            <p>City: {reservation?.details?.city}</p>
+            <p>Check in: {getFormattedDate(reservation?.details?.checkIn)}</p>
+            <p>Preferred hotel: {reservation?.details?.preferredHotel}</p>
             <div className="absolute right-0 top-0">
               <Status value={reservation.currentStatus || reservation.status} />
             </div>
@@ -89,14 +89,14 @@ export const ReservationSummaryCard = ({
           </h3>
           <div className="relative">
             <p>
-              Pickup date: {getFormattedDate(reservation.details.pickupDate)}
+              Pickup date: {getFormattedDate(reservation?.details?.pickupDate)}
             </p>
-            <p>Pickup Location: {reservation.details.pickupLocation}</p>
-            <p>Dropoff Location: {reservation.details.dropoffLocation}</p>
+            <p>Pickup Location: {reservation?.details?.pickupLocation}</p>
+            <p>Dropoff Location: {reservation?.details?.dropoffLocation}</p>
             <p>
               Vehicle Type:{" "}
-              {reservation.details.vehicleType.slice(0, 1).toUpperCase() +
-                reservation.details.vehicleType.slice(1)}
+              {reservation?.details?.vehicleType?.slice(0, 1)?.toUpperCase() +
+                reservation?.details?.vehicleType?.slice(1)}
             </p>
             <div className="absolute right-0 top-0">
               <Status value={reservation.currentStatus || reservation.status} />

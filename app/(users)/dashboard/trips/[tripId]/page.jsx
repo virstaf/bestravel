@@ -1,4 +1,4 @@
-import { getUser } from "@/lib/supabase/server";
+import { getProfileAction } from "@/actions/profiles";
 import { notFound, redirect } from "next/navigation";
 import TripDetail from "@/components/trip-detail";
 import DashHeader from "@/components/dash-header";
@@ -9,10 +9,10 @@ import { fetchTrip } from "@/actions/trips";
 const TripDetailPage = async ({ params }) => {
   const { tripId } = await params;
 
-  const user = await getUser();
+  const { profile } = await getProfileAction();
   const { data: trip } = await fetchTrip(tripId);
 
-  if (!user) {
+  if (!profile) {
     redirect("/auth/login");
   }
 

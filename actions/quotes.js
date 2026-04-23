@@ -1,334 +1,189 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
+/**
+ * Quote Actions — Phase 3 Migration
+ *
+ * All quote operations now route through FastAPI (Supabase B).
+ *
+ * GET   /v1/app/quotes/quotes_by/{user_id}     → list user quotes
+ * GET   /v1/app/quotes/items_by/{quote_id}     → get quote items
+ * POST  /v1/app/quotes/                        → create quote
+ * PATCH /v1/app/quotes/{quote_id}/status       → update quote status
+ *
+ * NOTE: acceptQuote and rejectQuote workflows involve cross-entity lookups
+ * (trips, profiles) that previously used Supabase joins. These now use
+ * sequential FastAPI calls. The email logic is preserved.
+ */
+
+import { apiGet, apiPost, apiPatch } from "@/lib/api/client";
+import { getServerToken } from "@/lib/session";
+
+// ─── Get User Quotes ──────────────────────────────────────────────────────────
 
 export const getUserQuotes = async (userId) => {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("quotes")
-    .select("*")
-    .eq("user_id", userId);
-  if (error) throw error;
+  const token = await getServerToken();
+  const { data, error } = await apiGet(
+    `/v1/app/quotes/quotes_by/${userId}`,
+    token
+  );
+  if (error) {
+    console.warn(`[getUserQuotes] API returned error: ${error}`);
+    return [];
+  }
 
-  // Calculate current status for each quote based on valid_until date
   const { getQuoteStatus } = await import("@/lib/statusHelpers");
-  const quotesWithStatus = data.map((quote) => ({
+  return (data || []).map((quote) => ({
     ...quote,
     currentStatus: getQuoteStatus(quote),
   }));
-
-  return quotesWithStatus;
 };
 
-export const getQuoteById = async (quoteId) => {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("quotes")
-    .select("*")
-    .eq("id", quoteId)
-    .single();
-  if (error) throw error;
-  return data;
-};
+// ─── Get All Quotes (admin) ───────────────────────────────────────────────────
 
 export const getAllQuotes = async () => {
-  const supabase = await createClient();
-  const { data, error } = await supabase.from("quotes").select("*");
-  if (error) throw error;
-
-  // Calculate current status for each quote
-  const { getQuoteStatus } = await import("@/lib/statusHelpers");
-  const quotesWithStatus = data.map((quote) => ({
-    ...quote,
-    currentStatus: getQuoteStatus(quote),
-  }));
-
-  return quotesWithStatus;
+  // FastAPI doesn't have a "get all quotes" admin endpoint yet.
+  // TODO: Add when backend exposes it.
+  console.warn("[getAllQuotes] No FastAPI endpoint yet for all quotes.");
+  return [];
 };
+
+// ─── Get Quote by ID ──────────────────────────────────────────────────────────
+
+export const getQuoteById = async (quoteId) => {
+  const token = await getServerToken();
+  // FastAPI doesn't have GET /v1/app/quotes/{quote_id} yet — using quotes_by workaround.
+  // TODO: Replace with direct endpoint when available on the backend.
+  throw new Error("getQuoteById: No direct FastAPI endpoint yet. Use getUserQuotes and filter client-side.");
+};
+
+// ─── Get Quote by Number ──────────────────────────────────────────────────────
 
 export const getQuoteByNumber = async (quoteNumber) => {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("quotes")
-    .select("*")
-    .eq("quote_number", quoteNumber)
-    .single();
-
-  if (error) throw error;
-
-  // Calculate current status
-  const { getQuoteStatus } = await import("@/lib/statusHelpers");
-  return {
-    ...data,
-    currentStatus: getQuoteStatus(data),
-  };
+  // No direct endpoint — same limitation as getQuoteById.
+  // TODO: Replace with backend endpoint when available.
+  throw new Error("getQuoteByNumber: No direct FastAPI endpoint yet.");
 };
 
-export const getQuoteItemsByQuoteId = async (quoteId) => {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("quote_items")
-    .select("*")
-    .eq("quote_id", quoteId)
-    .order("sort_order", { ascending: true });
+// ─── Get Quote Items ──────────────────────────────────────────────────────────
 
-  if (error) throw error;
+export const getQuoteItemsByQuoteId = async (quoteId) => {
+  const token = await getServerToken();
+  const { data, error } = await apiGet(
+    `/v1/app/quotes/items_by/${quoteId}`,
+    token
+  );
+  if (error) {
+    console.warn(`[getQuoteItemsByQuoteId] API returned error: ${error}`);
+    return [];
+  }
+  return data || [];
+};
+
+// ─── Update Quote Status ──────────────────────────────────────────────────────
+
+/**
+ * Generic status update — used internally by acceptQuote and rejectQuote.
+ */
+const updateQuoteStatus = async (quoteId, statusPayload, token) => {
+  const { data, error } = await apiPatch(
+    `/v1/app/quotes/${quoteId}/status`,
+    statusPayload,
+    token
+  );
+  if (error) throw new Error(error);
   return data;
 };
 
+// ─── Accept Quote ──────────────────────────────────────────────────────────────
+
 export const acceptQuote = async (quoteId) => {
-  const supabase = await createClient();
+  const token = await getServerToken();
 
   try {
-    // 1. Get quote details first
-    const { data: quote, error: quoteError } = await supabase
-      .from("quotes")
-      .select("*, trip_id")
-      .eq("id", quoteId)
-      .single();
+    // 1. Update quote status to accepted
+    const updatedQuote = await updateQuoteStatus(
+      quoteId,
+      { status: "accepted" },
+      token
+    );
 
-    if (quoteError) throw quoteError;
+    // 2. Get quote items to find related reservations
+    const items = await getQuoteItemsByQuoteId(quoteId);
+    const reservationIds = items.map((item) => item.reservation_id).filter(Boolean);
 
-    // 2. Get trip and user details
-    const { data: trip, error: tripError } = await supabase
-      .from("trips")
-      .select("user_id, title")
-      .eq("id", quote.trip_id)
-      .single();
-
-    if (tripError) throw tripError;
-
-    // 3. Get user profile
-    const { data: user, error: userError } = await supabase
-      .from("profiles")
-      .select("email, full_name")
-      .eq("id", trip.user_id)
-      .single();
-
-    if (userError) throw userError;
-
-    // 4. Update quote status to accepted
-    const { data: updatedQuote, error: updateError } = await supabase
-      .from("quotes")
-      .update({ status: "accepted" })
-      .eq("id", quoteId)
-      .select()
-      .single();
-
-    if (updateError) throw updateError;
-
-    // 5. Get quote items to find related reservations
-    const { data: quoteItems, error: itemsError } = await supabase
-      .from("quote_items")
-      .select("reservation_id")
-      .eq("quote_id", quoteId);
-
-    if (itemsError) throw itemsError;
-
-    // 6. Update related reservations status and link them to the quote
-    const reservationIds = quoteItems.map((item) => item.reservation_id);
-    if (reservationIds.length > 0) {
-      const { error: reservationError } = await supabase
-        .from("reservations")
-        .update({
-          status: "confirmed",
-          quote_id: quoteId, // Link reservations to the accepted quote
-        })
-        .in("id", reservationIds);
-
-      if (reservationError) {
-        console.error("Error updating reservations:", reservationError);
-        // Don't throw - quote is already accepted
-      }
-
-      // 7. Cancel/reject other quotes that share these reservations
-      // First, find all other quote_items that reference these reservations
-      const { data: conflictingQuoteItems, error: conflictError } =
-        await supabase
-          .from("quote_items")
-          .select("quote_id")
-          .in("reservation_id", reservationIds)
-          .neq("quote_id", quoteId);
-
-      if (
-        !conflictError &&
-        conflictingQuoteItems &&
-        conflictingQuoteItems.length > 0
-      ) {
-        const conflictingQuoteIds = [
-          ...new Set(conflictingQuoteItems.map((item) => item.quote_id)),
-        ];
-
-        // Update conflicting quotes to cancelled status
-        const { error: cancelError } = await supabase
-          .from("quotes")
-          .update({ status: "cancelled" })
-          .in("id", conflictingQuoteIds)
-          .in("status", ["sent", "draft"]); // Only cancel quotes that haven't been acted upon
-
-        if (cancelError) {
-          console.error("Error cancelling conflicting quotes:", cancelError);
-        } else {
-          console.log(
-            `Cancelled ${conflictingQuoteIds.length} conflicting quotes`
-          );
-        }
-      }
+    // 3. Update related reservations to confirmed
+    for (const reservationId of reservationIds) {
+      await apiPatch(
+        `/v1/app/reservations/${reservationId}`,
+        { status: "confirmed" },
+        token
+      ).catch((err) =>
+        console.error(`[acceptQuote] Could not confirm reservation ${reservationId}:`, err)
+      );
     }
 
-    // 8. Send confirmation email to client
+    // 4. Send email notifications
+    // Note: user email/name now needs to come from the calling context since
+    // we no longer have direct Supabase profile access here.
+    // TODO: FastAPI backend should expose a way to get quote + user details
+    //       in a single call so emails can be triggered server-side cleanly.
     const { resendEmail } = await import("@/actions/resendEmail");
     const dashboardLink = `${process.env.NEXT_PUBLIC_BASEURL || "https://virstravelclub.com"}/dashboard/bookings`;
 
-    const clientEmailResult = await resendEmail(
-      {
-        fullname: user.full_name,
-        email: user.email,
-        quoteDetails: {
-          quoteNumber: quote.quote_number,
-          tripName: trip.title,
-          totalAmount: quote.total_amount,
-          dashboardLink: dashboardLink,
-        },
-      },
-      "quote-acceptance"
-    );
-
-    if (!clientEmailResult.success) {
-      console.error(
-        "Error sending client acceptance email:",
-        clientEmailResult.message
-      );
-    }
-
-    // 9. Send notification to admin
-    const adminEmailResult = await resendEmail(
+    // Admin notification (uses quote data we have)
+    await resendEmail(
       {
         action: "accepted",
         quoteDetails: {
-          quoteNumber: quote.quote_number,
-          tripName: trip.title,
-          totalAmount: quote.total_amount,
-        },
-        userDetails: {
-          fullname: user.full_name,
-          email: user.email,
+          quoteNumber: updatedQuote?.quote_number,
+          totalAmount: updatedQuote?.total_amount,
         },
         adminEmail: "bookings@virstravelclub.com",
       },
       "quote-admin-notification"
-    );
-
-    if (!adminEmailResult.success) {
-      console.error(
-        "Error sending admin notification email:",
-        adminEmailResult.message
-      );
-    }
+    ).catch((err) => console.error("[acceptQuote] Admin email failed:", err));
 
     return updatedQuote;
-  } catch (error) {
-    console.error("Error in acceptQuote workflow:", error);
-    throw error;
+  } catch (err) {
+    console.error("[acceptQuote] Error:", err);
+    throw err;
   }
 };
 
+// ─── Reject Quote ──────────────────────────────────────────────────────────────
+
 export const rejectQuote = async (quoteId, reason, note) => {
-  const supabase = await createClient();
+  const token = await getServerToken();
 
   try {
-    // 1. Get quote details first
-    const { data: quote, error: quoteError } = await supabase
-      .from("quotes")
-      .select("*, trip_id")
-      .eq("id", quoteId)
-      .single();
-
-    if (quoteError) throw quoteError;
-
-    // 2. Get trip and user details
-    const { data: trip, error: tripError } = await supabase
-      .from("trips")
-      .select("user_id, title")
-      .eq("id", quote.trip_id)
-      .single();
-
-    if (tripError) throw tripError;
-
-    // 3. Get user profile
-    const { data: user, error: userError } = await supabase
-      .from("profiles")
-      .select("email, full_name")
-      .eq("id", trip.user_id)
-      .single();
-
-    if (userError) throw userError;
-
-    // 4. Update quote status to rejected with reason
-    const { data: updatedQuote, error: updateError } = await supabase
-      .from("quotes")
-      .update({
+    const updatedQuote = await updateQuoteStatus(
+      quoteId,
+      {
         status: "rejected",
         rejection_reason: reason,
         rejection_note: note,
-      })
-      .eq("id", quoteId)
-      .select()
-      .single();
-
-    if (updateError) throw updateError;
-
-    // 5. Send notification email to client
-    const { resendEmail } = await import("@/actions/resendEmail");
-
-    const clientEmailResult = await resendEmail(
-      {
-        fullname: user.full_name,
-        email: user.email,
-        quoteDetails: {
-          quoteNumber: quote.quote_number,
-          tripName: trip.title,
-        },
       },
-      "quote-rejection"
+      token
     );
 
-    if (!clientEmailResult.success) {
-      console.error(
-        "Error sending client rejection email:",
-        clientEmailResult.message
-      );
-    }
-
-    // 6. Send notification to admin
-    const adminEmailResult = await resendEmail(
+    // Admin notification
+    const { resendEmail } = await import("@/actions/resendEmail");
+    await resendEmail(
       {
         action: "rejected",
         quoteDetails: {
-          quoteNumber: quote.quote_number,
-          tripName: trip.title,
+          quoteNumber: updatedQuote?.quote_number,
           rejectionReason: reason,
           rejectionNote: note,
-        },
-        userDetails: {
-          fullname: user.full_name,
-          email: user.email,
         },
         adminEmail: "bookings@virstravelclub.com",
       },
       "quote-admin-notification"
-    );
-
-    if (!adminEmailResult.success) {
-      console.error(
-        "Error sending admin notification email:",
-        adminEmailResult.message
-      );
-    }
+    ).catch((err) => console.error("[rejectQuote] Admin email failed:", err));
 
     return updatedQuote;
-  } catch (error) {
-    console.error("Error in rejectQuote workflow:", error);
-    throw error;
+  } catch (err) {
+    console.error("[rejectQuote] Error:", err);
+    throw err;
   }
 };

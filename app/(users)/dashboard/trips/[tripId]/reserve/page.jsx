@@ -3,15 +3,15 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import ReservationWizard from "@/components/reservation-wizard";
-import { getUser } from "@/lib/supabase/server";
+import { getProfileAction } from "@/actions/profiles";
 import { fetchTrip } from "@/actions/trips";
 
 const page = async ({ params }) => {
   const { tripId } = await params;
-  const user = await getUser();
+  const { profile } = await getProfileAction();
   const { data: trip } = await fetchTrip(tripId);
 
-  if (!user) {
+  if (!profile) {
     redirect("/auth/login");
   }
 
@@ -26,7 +26,7 @@ const page = async ({ params }) => {
         description="😍 Get Resources for your Trip!"
       />
       <div className="content min-w-full min-h-[calc(100vh-180px)] my-2">
-        <ReservationWizard trip={trip} user={user} />
+        <ReservationWizard trip={trip} user={profile} />
         <div className="w-full flex justify-end">
           <Button
             asChild

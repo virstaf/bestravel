@@ -2,30 +2,42 @@ import { getProfileAction } from "@/actions/profiles";
 import DashNav from "@/components/dash-nav";
 import LandingFooter from "@/components/LandingFooter";
 import SideBar from "@/components/SideBar";
-import { getUser } from "@/lib/supabase/server";
+import { getServerToken } from "@/lib/session";
 import { redirect } from "next/navigation";
 import DashboardNotFound from "./not-found";
 
+// Dashboard routes read cookies — must not be statically rendered
+export const dynamic = "force-dynamic";
+
 export default async function DashboardLayout({ children }) {
-  try {
-    const user = await getUser();
-    if (!user) {
+  // Auth gate — check for FastAPI JWT first, then Supabase A session (legacy fallback)
+  const token = await getServerToken();
+  // console.log(token);
+
+  if (!token) {
+    // Check Supabase A session for migration-pending users
+    try {
+      const { getUser } = await import("@/lib/supabase/server");
+      const user = await getUser();
+      if (!user) redirect("/auth/login");
+    } catch {
       redirect("/auth/login");
     }
-  } catch (error) {}
+  }
 
-  // try {
   const { profile } = await getProfileAction();
 
-  // Check if user has completed onboarding
-  if (profile && !profile.onboarding_completed) {
+  // Check if user has completed onboarding (legacy Supabase A field)
+  if (profile && profile.onboarding_completed === false) {
     redirect("/onboarding/welcome");
   }
 
-  if (profile?.role === "ADMIN") {
+  // Admin redirect — check both FastAPI user_type and legacy role field
+  const isAdmin =
+    profile?.user_type === "ADMINUSER" || profile?.role === "ADMIN";
+  if (isAdmin) {
     redirect("/admin");
   }
-  // } catch (error) {}
 
   if (!children) {
     return <DashboardNotFound />;
