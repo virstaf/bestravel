@@ -25,6 +25,8 @@ import BookingDialog from "@/components/booking-dialog";
 const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
+  const dealHash = useMemo(() => hashCode(String(deal.id)), [deal.id]);
+
   // Memoize price calculations using centralized utility
   const { originalPrice, discountedPrice, savings, discountPercentage } =
     useMemo(() => calculateDealPrices(deal), [deal]);
@@ -40,17 +42,43 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
     return `/images/deals/default-${imageNumber}.jpg`;
   }, [deal.image_url, deal.partners?.images, deal.partners?.image_url, dealHash]);
 
-  const info = useMemo(() => ({
-    location: deal.location || deal.partners?.location || "Destination",
-    title: deal.title || deal.package_type || "Travel Package",
-    packageType: deal.package_type || deal.title || "Travel Package",
-    nights: deal.duration_nights || 4,
-    includesFlight: deal.includes_flight !== false,
-    includesHotel: deal.includes_hotel !== false,
-    includesTransfer: deal.includes_transfer || false,
-  }), [deal]);
+  const {
+    location,
+    title,
+    packageType,
+    nights,
+    includesFlight,
+    includesHotel,
+    includesTransfer,
+    inclusionsSummary,
+  } = useMemo(() => {
+    const loc = deal.location || deal.partners?.location || "Destination";
+    const t = deal.title || deal.package_type || "Travel Package";
+    const pt = deal.package_type || deal.title || "Travel Package";
+    const n = deal.duration_nights || 4;
+    const ifl = deal.includes_flight !== false;
+    const ih = deal.includes_hotel !== false;
+    const it = deal.includes_transfer || false;
 
-  const dates = useMemo(() => ({
+    const inclusions = [];
+    if (ifl) inclusions.push("Flights");
+    if (ih) inclusions.push(`${n} Nights`);
+    if (it) inclusions.push("Transfers");
+    if (deal.includes_breakfast) inclusions.push("Breakfast");
+
+    return {
+      location: loc,
+      title: t,
+      packageType: pt,
+      nights: n,
+      includesFlight: ifl,
+      includesHotel: ih,
+      includesTransfer: it,
+      inclusionsSummary: inclusions.join(" • "),
+    };
+  }, [deal]);
+
+  const { formattedEndDate, formattedStartDate, formattedTravelEndDate } = useMemo(() => ({
     formattedEndDate: deal.end_date || deal.valid_until
       ? new Date(deal.end_date || deal.valid_until).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
       : "Open-ended",
