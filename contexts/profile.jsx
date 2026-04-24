@@ -11,15 +11,7 @@ export const ProfileContext = createContext(null);
 const ENCRYPTION_KEY = process.env.PROFILE_ENCRYPTION_KEY;
 
 export const ProfileProvider = ({ children }) => {
-  const [userProfile, setUserProfile] = useState({
-    name: "",
-    email: "",
-    is_subscribed: null,
-    plan: null,
-    customer_id: null,
-    trialActive: false,
-    trialEndDate: null,
-  });
+  const [userProfile, setUserProfile] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Encrypt and store profile
@@ -61,12 +53,12 @@ export const ProfileProvider = ({ children }) => {
       const { profile, error } = await getProfileAction();
       if (error) {
         // console.error("Error fetching profile:", error);
-        setIsLoading(false);
-        return;
-      }
-      if (profile) {
+        setUserProfile(null);
+      } else if (profile) {
         setUserProfile(profile);
         // persistProfile(profile); // Encrypt and store
+      } else {
+        setUserProfile(null);
       }
       setIsLoading(false);
     };
@@ -83,13 +75,12 @@ export const ProfileProvider = ({ children }) => {
 
 export const useProfileContext = () => {
   const context = useContext(ProfileContext);
-  const { isLoading, profile } = context || {};
-  if (!isLoading && !profile) {
+  if (!context) {
     return {
       isLoading: true,
       profile: null,
     };
   }
-  return { isLoading, profile };
+  return context;
 };
 export default ProfileContext;

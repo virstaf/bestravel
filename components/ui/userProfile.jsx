@@ -1,33 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CurrentUserAvatar from "../current-user-avatar";
 import LogoutButton from "./logout-button";
 import Link from "next/link";
 import { Button } from "./button";
 import { usePathname } from "next/navigation";
-import { getProfileAction } from "@/actions/profiles";
+import { useProfileContext } from "@/contexts/profile";
 
 const UserProfile = ({ className }) => {
-  const [loading, setLoading] = useState(true);
+  const { profile: user, isLoading: loading } = useProfileContext();
   const [logoutOpen, setLogoutOpen] = useState(false);
-  const [user, setUser] = useState(null);
   const pathname = usePathname();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const {profile} = await getProfileAction();
-        setUser(profile);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
 
   return (
     <div
