@@ -10,6 +10,8 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { CircleDollarSign } from "lucide-react";
+import Image from "next/image";
+import { isOptimizableImage } from "@/lib/image-utils";
 
 export default function TripDetail({ trip }) {
   const router = useRouter();
@@ -142,11 +144,15 @@ export default function TripDetail({ trip }) {
                 <CardTitle>Cover Photo</CardTitle>
               </CardHeader>
               <CardContent>
-                <img
-                  src={trip.cover_image_url}
-                  alt="Trip cover"
-                  className="rounded-md w-full h-auto"
-                />
+                <div className="relative w-full aspect-video overflow-hidden rounded-md">
+                  <Image
+                    src={trip.cover_image_url}
+                    alt="Trip cover"
+                    fill
+                    className="object-cover"
+                    unoptimized={!isOptimizableImage(trip.cover_image_url)}
+                  />
+                </div>
               </CardContent>
             </Card>
           )}
