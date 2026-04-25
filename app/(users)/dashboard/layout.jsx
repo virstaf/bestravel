@@ -8,8 +8,7 @@ import { getServerToken } from "@/lib/session";
 import { redirect } from "next/navigation";
 import DashboardNotFound from "./not-found";
 
-// Dashboard routes read cookies — must not be statically rendered
-export const dynamic = "force-dynamic";
+
 
 export default async function DashboardLayout({ children }) {
   // Auth gate — check for FastAPI JWT first, then Supabase A session (legacy fallback)
