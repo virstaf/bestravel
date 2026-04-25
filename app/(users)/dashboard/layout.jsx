@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getProfileAction } from "@/actions/profiles";
 import DashNav from "@/components/dash-nav";
 import LandingFooter from "@/components/LandingFooter";

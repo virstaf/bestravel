@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Hotel, Plane, Crown } from "lucide-react";
+import { useOnboarding } from "@/contexts/onboarding";
 
 // Sample deals based on wireframe
 const SAMPLE_DEALS = [
@@ -52,32 +53,25 @@ const SAMPLE_DEALS = [
 
 export default function OnboardingDeals() {
   const router = useRouter();
-  const [deals, setDeals] = useState([]);
-  const [preferences, setPreferences] = useState(null);
+  const { preferences } = useOnboarding();
 
-  useEffect(() => {
-    // Get preferences from sessionStorage
-    const stored = sessionStorage.getItem("onboardingPreferences");
-    if (stored) {
-      const prefs = JSON.parse(stored);
-      setPreferences(prefs);
+  const deals = useMemo(() => {
+    const { preferredDestinations = [] } = preferences;
+    if (preferredDestinations.length === 0) return SAMPLE_DEALS;
 
-      // Filter deals based on preferred destinations
-      const filteredDeals = SAMPLE_DEALS.filter((deal) => {
-        if (deal.type === "perk") return true; // Always show perks
-        return prefs.preferredDestinations.some(
-          (dest) =>
-            deal.destination.toLowerCase().includes(dest.toLowerCase()) ||
-            dest.toLowerCase().includes(deal.destination.toLowerCase()),
-        );
-      });
+    // Filter deals based on preferred destinations
+    const filtered = SAMPLE_DEALS.filter((deal) => {
+      if (deal.type === "perk") return true; // Always show perks
+      return preferredDestinations.some(
+        (dest) =>
+          deal.destination.toLowerCase().includes(dest.toLowerCase()) ||
+          dest.toLowerCase().includes(deal.destination.toLowerCase()),
+      );
+    });
 
-      // If no matches, show all deals
-      setDeals(filteredDeals.length > 0 ? filteredDeals : SAMPLE_DEALS);
-    } else {
-      setDeals(SAMPLE_DEALS);
-    }
-  }, []);
+    // If no matches, show all deals
+    return filtered.length > 0 ? filtered : SAMPLE_DEALS;
+  }, [preferences]);
 
   const handleUnlockDeals = () => {
     router.push("/onboarding/benefits");
