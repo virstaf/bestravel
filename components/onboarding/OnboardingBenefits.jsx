@@ -6,18 +6,18 @@ import { updateOnboardingProfile } from "@/actions/onboarding";
 import { toast } from "sonner";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useOnboarding } from "@/contexts/onboarding";
 
 export default function OnboardingBenefits() {
   const router = useRouter();
+  const { preferences, clearPreferences } = useOnboarding();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleContinue = async () => {
     setIsLoading(true);
 
     try {
-      // Get preferences from sessionStorage
-      const stored = sessionStorage.getItem("onboardingPreferences");
-      if (!stored) {
+      if (!preferences.homeCountry) {
         toast.error("Error", {
           description: "Preferences not found. Please start over.",
         });
@@ -25,14 +25,12 @@ export default function OnboardingBenefits() {
         return;
       }
 
-      const preferences = JSON.parse(stored);
-
       // Update user profile with onboarding data
       const result = await updateOnboardingProfile(preferences);
 
       if (result.success) {
-        // Clear sessionStorage
-        sessionStorage.removeItem("onboardingPreferences");
+        // Clear in-memory preferences
+        clearPreferences();
 
         toast.success("Welcome aboard!", {
           description: "Your profile has been set up successfully.",
