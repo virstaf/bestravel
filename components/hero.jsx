@@ -24,13 +24,13 @@ const Hero = () => {
         alt="Travel background"
         fill
         priority
-        className="object-cover -z-10"
+        className="object-cover z-0"
         sizes="100vw"
       />
       {/* Overlay for readability - using absolute div to ensure z-index handling */}
-      <div className="absolute inset-0 bg-black/40 z-10" />
+      <div className="absolute inset-0 bg-black/40 z-[1]" />
 
-      <div className="relative z-20 mx-auto max-w-6xl px-4 py-20 text-center">
+      <div className="relative z-[2] mx-auto max-w-6xl px-4 py-20 text-center">
         <h1 className="text-4xl md:text-5xl font-bold leading-tight">
           Travel smarter. Save more. Explore freely.
         </h1>

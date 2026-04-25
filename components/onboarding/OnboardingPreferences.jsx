@@ -15,6 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { X, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useOnboarding } from "@/contexts/onboarding";
 
 // Popular destinations
 const POPULAR_DESTINATIONS = [
@@ -56,6 +57,7 @@ const COUNTRIES = [
 
 export default function OnboardingPreferences() {
   const router = useRouter();
+  const { updatePreferences } = useOnboarding();
   const [homeCountry, setHomeCountry] = useState("");
   const [selectedDestinations, setSelectedDestinations] = useState([]);
   const [customDestination, setCustomDestination] = useState("");
@@ -84,15 +86,11 @@ export default function OnboardingPreferences() {
   };
 
   const handleContinue = () => {
-    // Store preferences in sessionStorage to pass to next step
-    sessionStorage.setItem(
-      "onboardingPreferences",
-      JSON.stringify({
-        homeCountry,
-        preferredDestinations: selectedDestinations,
-        travelFrequency,
-      }),
-    );
+    updatePreferences({
+      homeCountry,
+      preferredDestinations: selectedDestinations,
+      travelFrequency,
+    });
     router.push("/onboarding/deals");
   };
 
