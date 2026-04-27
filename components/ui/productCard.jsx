@@ -22,9 +22,8 @@ const ProductCard = ({
         <Image
           src={imgSrc}
           alt={title}
-          layout="fill"
-          objectFit="cover"
-          className="object-fit"
+          fill
+          className="object-cover"
         />
       </div>
       <div className="meta flex flex-col justify-between h-[180px] p-4">

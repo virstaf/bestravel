@@ -10,8 +10,8 @@ const HotelCard = ({ hotel }) => {
         <Image
           src={imageSrc}
           alt={hotel.name}
-          layout="fill"
-          objectFit="cover"
+          fill
+          className="object-cover"
         />
       </div>
       <div className="p-4 flex flex-col justify-between">
