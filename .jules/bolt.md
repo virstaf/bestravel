@@ -17,3 +17,7 @@
 ## 2025-05-15 - [Centralized Logic for Component Consistency]
 **Learning:** Duplicating complex business logic (like price calculations) across multiple components (`DealCard`, `DealDetail`) leads to maintenance overhead and performance inconsistencies. Centralizing this logic into pure utility functions allows for better memoization and smaller component bundles.
 **Action:** Move complex calculations to `lib/` utilities and use `useMemo` in components to cache the results.
+
+## 2026-04-28 - [Log Hygiene in PRs]
+**Learning:** Including runtime logs like `dev_server.log` in a PR can be misinterpreted as faking performance data and adds unnecessary noise to the codebase. It is critical to verify `git status` and unstage any accidental log modifications before submission.
+**Action:** Always run `git restore --staged <log_file>` before committing if a local process modified a log file.
