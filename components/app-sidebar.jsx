@@ -1,8 +1,7 @@
 "use client";
 
-// import * as React from "react";
+import { useMemo } from "react";
 import { IconSettings } from "@tabler/icons-react";
-
 import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
@@ -16,16 +15,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Logo from "./ui/logo";
-import { getProfileAction } from "@/actions/profiles";
-import { useEffect, useState } from "react";
+import { useProfileContext } from "@/contexts/profile";
 import { adminNavLinks } from "@/lib/admin/dummy-data";
 
 const data = {
-  user: {
-    name: "Nyla Harper",
-    email: "nyla@virstravelclub.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   navMain: adminNavLinks,
   navSecondary: [
     {
@@ -37,27 +30,25 @@ const data = {
 };
 
 export function AppSidebar({ ...props }) {
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { profile } = await getProfileAction();
-      const initials = profile?.full_name
-        .split(" ")
-        .map((n) => n[0])
-        .join("");
-      // console.log("initials:::", initials);
-      setUser(() => {
-        return {
-          name: profile?.full_name,
-          email: profile?.email,
-          avatar: profile?.avatar_url || "",
-          initials: initials,
-        };
-      });
+  const { profile } = useProfileContext();
+
+  const user = useMemo(() => {
+    if (!profile) return null;
+
+    const initials = profile.full_name
+      ?.split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+
+    return {
+      name: profile.full_name,
+      email: profile.email,
+      avatar: profile.avatar_url || "",
+      initials: initials || "?",
     };
-    fetchUser();
-  }, []);
-  // console.log("user state:::", user);
+  }, [profile]);
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -74,7 +65,6 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {/* <NavDocuments items={data.documents} /> */}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

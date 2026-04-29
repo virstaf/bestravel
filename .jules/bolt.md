@@ -17,3 +17,7 @@
 ## 2025-05-15 - [Centralized Logic for Component Consistency]
 **Learning:** Duplicating complex business logic (like price calculations) across multiple components (`DealCard`, `DealDetail`) leads to maintenance overhead and performance inconsistencies. Centralizing this logic into pure utility functions allows for better memoization and smaller component bundles.
 **Action:** Move complex calculations to `lib/` utilities and use `useMemo` in components to cache the results.
+
+## 2025-05-16 - [Consolidating Profile Fetching for Network Efficiency]
+**Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
+**Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
