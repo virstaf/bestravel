@@ -93,12 +93,14 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@secretlint/secretlint-rule-preset-recommend": "^12.3.1",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4",
     "baseline-browser-mapping": "^2.9.19",
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "prettier": "^3.5.3",
+    "secretlint": "^12.3.1",
     "supabase": "^2.54.11",
     "tailwindcss": "^4"
   }
