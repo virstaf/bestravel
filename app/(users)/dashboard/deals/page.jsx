@@ -5,9 +5,8 @@ import Deals from "@/components/DealsPage";
 export const dynamic = "force-dynamic";
 
 const DealsPage = async () => {
-  const deals = (await getDealsAction()) || [];
+  const { data: deals = [] } = (await getDealsAction()) || {};
   const featuredDeals = deals.filter((deal) => deal.is_featured).slice(0, 3);
-  // console.log("Fetched featured deals:", featuredDeals);
 
   return (
     <div className="container mx-auto px-4 w-full h-full">

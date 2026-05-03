@@ -11,14 +11,14 @@ export const dynamic = "force-dynamic";
 
 const PublicDealsPage = async (props) => {
   const searchParams = await props.searchParams;
-  const deals =
+  const { data: deals = [] } =
     (await getDealsAction({
       dest: searchParams.dest,
       maxPrice: searchParams.maxPrice,
       from: searchParams.from,
       to: searchParams.to,
       sort: searchParams.sort,
-    })) || [];
+    })) || {};
 
   // Check if any filters are active
   const isFiltered = !!(

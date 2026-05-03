@@ -19,7 +19,7 @@ const NavSection = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const { data } = await getUser();
-      setUserData(data.user);
+      setUserData(data?.user);
     };
     fetchUserData();
   }, [userData]);

@@ -39,9 +39,10 @@ export const getDealsAction = async ({
   try {
     const token = await getServerToken();
     const { data, error } = await apiGet("/v1/app/deals/grab/all", token);
-    if (error) throw new Error(error);
+    if (error) return { success: false, data: [], error };
 
     let deals = data || [];
+    console.log(deals);
 
     // Client-side filtering (FastAPI doesn't support query params yet on this route)
     if (dest) {
@@ -49,7 +50,7 @@ export const getDealsAction = async ({
       deals = deals.filter(
         (d) =>
           d.destination?.toLowerCase().includes(safeDest) ||
-          d.title?.toLowerCase().includes(safeDest)
+          d.title?.toLowerCase().includes(safeDest),
       );
     }
 
@@ -59,13 +60,13 @@ export const getDealsAction = async ({
 
     if (from) {
       deals = deals.filter(
-        (d) => !d.start_date || new Date(d.start_date) >= new Date(from)
+        (d) => !d.start_date || new Date(d.start_date) >= new Date(from),
       );
     }
 
     if (to) {
       deals = deals.filter(
-        (d) => !d.end_date || new Date(d.end_date) <= new Date(to)
+        (d) => !d.end_date || new Date(d.end_date) <= new Date(to),
       );
     }
 
@@ -79,23 +80,22 @@ export const getDealsAction = async ({
         break;
       case "ending-soon":
         deals.sort(
-          (a, b) => new Date(a.end_date || 0) - new Date(b.end_date || 0)
+          (a, b) => new Date(a.end_date || 0) - new Date(b.end_date || 0),
         );
         break;
       case "newest":
       default:
         deals.sort(
-          (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)
+          (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0),
         );
         break;
     }
 
     if (limit) deals = deals.slice(0, limit);
-
-    return deals;
+    return { success: true, data: deals };
   } catch (err) {
     console.error("[getDealsAction] Error:", err);
-    return [];
+    return { success: false, data: [], error: err.message };
   }
 };
 
@@ -105,23 +105,25 @@ export const getFeaturedDealsAction = async ({ limit } = {}) => {
   try {
     const token = await getServerToken();
     const { data, error } = await apiGet("/v1/app/deals/grab/all", token);
-    if (error) throw new Error(error);
+    if (error) return { success: false, data: [], error };
 
     const now = new Date();
     let deals = (data || []).filter(
-      (d) => d.is_featured && d.status !== "inactive" && (!d.end_date || new Date(d.end_date) >= now)
+      (d) =>
+        d.is_featured &&
+        d.status !== "inactive" &&
+        (!d.end_date || new Date(d.end_date) >= now),
     );
 
     deals.sort(
-      (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)
+      (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0),
     );
 
     if (limit) deals = deals.slice(0, limit);
-
-    return deals;
+    return { success: true, data: deals };
   } catch (err) {
     console.error("[getFeaturedDealsAction] Error:", err);
-    return [];
+    return { success: false, data: [], error: err.message };
   }
 };
 

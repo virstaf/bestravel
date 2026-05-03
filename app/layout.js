@@ -88,7 +88,7 @@ export default async function RootLayout({ children }) {
             </p>
           </div>
         </noscript>
-        <ProfileProvider>{children}</ProfileProvider>
+        <ProfileProvider initialProfile={profile}>{children}</ProfileProvider>
         <Toaster />
       </body>
     </html>

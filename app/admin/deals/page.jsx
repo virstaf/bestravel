@@ -27,7 +27,7 @@ const DeleteButton = ({ dealId }) => {
 
 const AdminDealsPage = async () => {
   const pathname = "/admin/deals";
-  const deals = (await getDealsAction()) || [];
+  const { data: deals = [] } = (await getDealsAction()) || {};
 
   return (
     <div className="p-4 md:p-8">
@@ -75,10 +75,10 @@ const AdminDealsPage = async () => {
                   <tr key={deal.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        {deal.image_url && (
+                        {(deal.cover_image_url || deal.image_url) && (
                           <div className="h-10 w-10 relative rounded overflow-hidden flex-shrink-0">
                             <Image
-                              src={deal.image_url}
+                              src={deal.cover_image_url || deal.image_url}
                               alt={deal.title}
                               fill
                               className="object-cover"
@@ -90,7 +90,7 @@ const AdminDealsPage = async () => {
                             {deal.title}
                           </div>
                           <div className="text-xs text-gray-500 line-clamp-1">
-                            {deal.location}
+                            {deal.destination || deal.location}
                           </div>
                         </div>
                       </div>
@@ -112,14 +112,20 @@ const AdminDealsPage = async () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 font-medium">
-                      {deal.original_price ? `$${deal.original_price}` : "-"}
+                      {deal.price ? `$${deal.price}` : deal.original_price ? `$${deal.original_price}` : "-"}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         <span
-                          className={`px-2 py-0.5 rounded-full text-xs w-fit ${deal.is_active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}`}
+                          className={`px-2 py-0.5 rounded-full text-xs w-fit ${
+                            deal.status === "active"
+                              ? "bg-green-100 text-green-800"
+                              : deal.is_active
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                          }`}
                         >
-                          {deal.is_active ? "Active" : "Draft"}
+                          {deal.status || (deal.is_active ? "Active" : "Draft")}
                         </span>
                         {deal.is_featured && (
                           <span className="px-2 py-0.5 rounded-full text-xs w-fit bg-yellow-100 text-yellow-800">

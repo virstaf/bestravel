@@ -30,7 +30,7 @@ export const getProfileAction = async () => {
 
       if (error) {
         console.warn("[getProfileAction] API returned error:", error);
-        return { success: false, error };
+        return { success: false, error, profile: null };
       }
       return {
         success: true,

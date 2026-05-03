@@ -20,9 +20,14 @@ import { resendEmail } from "./resendEmail";
 // ─── Create Reservation ───────────────────────────────────────────────────────
 
 export const createReservation = async (data) => {
-  const token = await getServerToken();
-  const { error } = await apiPost("/v1/app/reservations/", data, token);
-  if (error) throw new Error("Error creating reservation: " + error);
+  try {
+    const token = await getServerToken();
+    const { error } = await apiPost("/v1/app/reservations/", data, token);
+    if (error) return { success: false, error };
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
 };
 
 // ─── Get Single Reservation ───────────────────────────────────────────────────
@@ -34,41 +39,54 @@ export const getReservation = async (reservationId) => {
       `/v1/app/reservations/${reservationId}`,
       token
     );
-    if (error) throw new Error(error);
-    return data;
+    if (error) return { success: false, error };
+    return { success: true, data };
   } catch (err) {
-    throw err;
+    return { success: false, error: err.message };
   }
 };
 
 // ─── Get User Reservations ────────────────────────────────────────────────────
 
 export const getUserReservations = async (userId) => {
-  const token = await getServerToken();
-  const { data, error } = await apiGet(
-    `/v1/app/reservations/by_user_id/${userId}`,
-    token
-  );
-  if (error) throw new Error("Error fetching user reservations: " + error);
+  try {
+    const token = await getServerToken();
+    const { data, error } = await apiGet(
+      `/v1/app/reservations/by_user_id/${userId}`,
+      token
+    );
+    if (error) return { success: false, data: [], error };
 
-  // Preserve status calculation from original
-  const { getReservationStatus } = await import("@/lib/statusHelpers");
-  return (data || []).map((reservation) => ({
-    ...reservation,
-    currentStatus: getReservationStatus(reservation),
-  }));
+    // Preserve status calculation from original
+    const { getReservationStatus } = await import("@/lib/statusHelpers");
+    return {
+      success: true,
+      data: (data || []).map((reservation) => ({
+        ...reservation,
+        currentStatus: getReservationStatus(reservation),
+      })),
+    };
+  } catch (err) {
+    console.error("[getUserReservations] Error:", err);
+    return { success: false, data: [], error: err.message };
+  }
 };
 
 // ─── Update Reservation ───────────────────────────────────────────────────────
 
 export const updateReservation = async (reservationId, data) => {
-  const token = await getServerToken();
-  const { error } = await apiPut(
-    `/v1/app/reservations/${reservationId}`,
-    data,
-    token
-  );
-  if (error) throw new Error("Error updating reservation: " + error);
+  try {
+    const token = await getServerToken();
+    const { error } = await apiPut(
+      `/v1/app/reservations/${reservationId}`,
+      data,
+      token
+    );
+    if (error) return { success: false, error };
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
 };
 
 // ─── Cancel Reservation ───────────────────────────────────────────────────────
@@ -81,23 +99,28 @@ export const cancelReservation = async (reservationId) => {
       { status: "cancelled" },
       token
     );
-    if (error) throw new Error(error);
+    if (error) return { success: false, error };
     revalidatePath("/");
     return { success: true };
   } catch (err) {
-    throw err;
+    return { success: false, error: err.message };
   }
 };
 
 // ─── Delete Reservation ───────────────────────────────────────────────────────
 
 export const deleteReservation = async (reservationId) => {
-  const token = await getServerToken();
-  const { error } = await apiDelete(
-    `/v1/app/reservations/${reservationId}`,
-    token
-  );
-  if (error) throw new Error("Error deleting reservation: " + error);
+  try {
+    const token = await getServerToken();
+    const { error } = await apiDelete(
+      `/v1/app/reservations/${reservationId}`,
+      token
+    );
+    if (error) return { success: false, error };
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
 };
 
 // ─── Submit Reservation (full flow) ──────────────────────────────────────────

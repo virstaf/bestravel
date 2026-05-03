@@ -31,15 +31,16 @@ const DealCard = memo(function DealCard({ deal, isPublic = false, priority = fal
     [deal],
   );
 
-  // Memoize image URL
+  // Memoize image URL — FastAPI returns cover_image_url; legacy Supabase used image_url
   const imageUrl = useMemo(() => {
+    if (deal.cover_image_url) return deal.cover_image_url;
     if (deal.image_url) return deal.image_url;
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
 
     const imageNumber = (hashCode(String(deal.id)) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
-  }, [deal.id, deal.image_url, deal.partners?.images, deal.partners?.image_url]);
+  }, [deal.id, deal.cover_image_url, deal.image_url, deal.partners?.images, deal.partners?.image_url]);
 
   // Format validity date
   const validUntil = useMemo(
@@ -47,8 +48,10 @@ const DealCard = memo(function DealCard({ deal, isPublic = false, priority = fal
     [deal.end_date, deal.valid_until],
   );
 
-  // Simple values derived from props
-  const location = deal.location || deal.partners?.location || "Destination";
+  // Simple values derived from props — handle both API schemas
+  // FastAPI DealOut: destination, cover_image_url, price
+  // Legacy Supabase: location, image_url, original_price
+  const location = deal.destination || deal.location || deal.partners?.location || "Destination";
   const packageType = deal.package_type || deal.title || "Travel Package";
   const nights = deal.duration_nights || 4;
   const includesFlight = deal.includes_flight !== false;

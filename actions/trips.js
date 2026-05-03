@@ -31,17 +31,20 @@ export const fetchTrips = async (userId) => {
       token
     );
 
-    if (error) throw new Error(error);
+    if (error) return { success: false, data: [], error };
 
     // Augment with client-side status calculation (preserved from original)
     const { getTripStatus } = await import("@/lib/statusHelpers");
-    return (data || []).map((trip) => ({
-      ...trip,
-      currentStatus: getTripStatus(trip),
-    }));
+    return {
+      success: true,
+      data: (data || []).map((trip) => ({
+        ...trip,
+        currentStatus: getTripStatus(trip),
+      })),
+    };
   } catch (err) {
     console.error("[fetchTrips] Error:", err);
-    throw err;
+    return { success: false, data: [], error: err.message };
   }
 };
 
@@ -79,10 +82,10 @@ export const createTrip = async (tripData) => {
   try {
     const token = await getToken();
     const { data, error } = await apiPost("/v1/app/trips/", tripData, token);
-    if (error) throw new Error(error);
-    return data;
+    if (error) return { success: false, error };
+    return { success: true, data };
   } catch (err) {
-    throw err;
+    return { success: false, error: err.message };
   }
 };
 
@@ -96,10 +99,10 @@ export const updateTrip = async (tripId, tripData) => {
       tripData,
       token
     );
-    if (error) throw new Error(error);
-    return data;
+    if (error) return { success: false, error };
+    return { success: true, data };
   } catch (err) {
-    throw err;
+    return { success: false, error: err.message };
   }
 };
 
@@ -109,9 +112,9 @@ export const deleteTrip = async (tripId) => {
   try {
     const token = await getToken();
     const { data, error } = await apiDelete(`/v1/app/trips/${tripId}`, token);
-    if (error) throw new Error(error);
-    return data;
+    if (error) return { success: false, error };
+    return { success: true, data };
   } catch (err) {
-    throw err;
+    return { success: false, error: err.message };
   }
 };

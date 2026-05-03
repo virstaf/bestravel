@@ -64,26 +64,44 @@ const POPULAR_DESTINATIONS = [
   "Santorini",
 ];
 
-const ProfileForm = ({ profile, className }) => {
-  const [formData, setFormData] = useState({
-    full_name: profile?.full_name || "",
+const getInitialProfileData = (profile) => {
+  const getFullName = (p) => {
+    if (p?.full_name) return p.full_name;
+    if (p?.kyc) {
+      const parts = [p.kyc.first_name, p.kyc.other_name, p.kyc.last_name].filter(Boolean);
+      if (parts.length > 0) return parts.join(" ");
+    }
+    return "";
+  };
+
+  const getDOB = (p) => {
+    if (p?.date_of_birth) return p.date_of_birth;
+    if (p?.kyc?.date_of_birth) return p.kyc.date_of_birth.split("T")[0];
+    return "";
+  };
+
+  return {
+    full_name: getFullName(profile),
     username: profile?.username || "",
     bio: profile?.bio || "",
     phone: profile?.phone || "",
     country: profile?.home_country || profile?.country || "",
     website: profile?.website || "",
-    public_email: profile?.public_email || "",
+    public_email: profile?.public_email || profile?.email || "",
     avatar_url: profile?.avatar_url || "",
     preferred_destinations: profile?.preferred_destinations || [],
     travel_frequency: profile?.travel_frequency || "3-5 trips/year",
-    // Billing information
-    date_of_birth: profile?.date_of_birth || "",
-    address_line1: profile?.address_line1 || "",
+    date_of_birth: getDOB(profile),
+    address_line1: profile?.address_line1 || profile?.kyc?.post_gps_address || "",
     address_line2: profile?.address_line2 || "",
-    city: profile?.city || "",
+    city: profile?.city || profile?.kyc?.residence_town || "",
     postal_code: profile?.postal_code || "",
-    billing_country: profile?.billing_country || "",
-  });
+    billing_country: profile?.billing_country || profile?.kyc?.residence_region || "",
+  };
+};
+
+const ProfileForm = ({ profile, className }) => {
+  const [formData, setFormData] = useState(() => getInitialProfileData(profile));
 
   const [customDestination, setCustomDestination] = useState("");
   const [loading, setLoading] = useState(false);
@@ -94,25 +112,7 @@ const ProfileForm = ({ profile, className }) => {
 
   // Track changes
   useEffect(() => {
-    const initialData = {
-      full_name: profile?.full_name || "",
-      username: profile?.username || "",
-      bio: profile?.bio || "",
-      phone: profile?.phone || "",
-      country: profile?.home_country || profile?.country || "",
-      website: profile?.website || "",
-      public_email: profile?.public_email || "",
-      avatar_url: profile?.avatar_url || "",
-      preferred_destinations: profile?.preferred_destinations || [],
-      travel_frequency: profile?.travel_frequency || "3-5 trips/year",
-      date_of_birth: profile?.date_of_birth || "",
-      address_line1: profile?.address_line1 || "",
-      address_line2: profile?.address_line2 || "",
-      city: profile?.city || "",
-      postal_code: profile?.postal_code || "",
-      billing_country: profile?.billing_country || "",
-    };
-
+    const initialData = getInitialProfileData(profile);
     const changed = JSON.stringify(formData) !== JSON.stringify(initialData);
     setHasChanges(changed);
   }, [formData, profile]);
@@ -170,24 +170,7 @@ const ProfileForm = ({ profile, className }) => {
   };
 
   const handleCancel = () => {
-    setFormData({
-      full_name: profile?.full_name || "",
-      username: profile?.username || "",
-      bio: profile?.bio || "",
-      website: profile?.website || "",
-      public_email: profile?.public_email || "",
-      avatar_url: profile?.avatar_url || "",
-      country: profile?.home_country || profile?.country || "",
-      phone: profile?.phone || "",
-      preferred_destinations: profile?.preferred_destinations || [],
-      travel_frequency: profile?.travel_frequency || "3-5 trips/year",
-      date_of_birth: profile?.date_of_birth || "",
-      address_line1: profile?.address_line1 || "",
-      address_line2: profile?.address_line2 || "",
-      city: profile?.city || "",
-      postal_code: profile?.postal_code || "",
-      billing_country: profile?.billing_country || "",
-    });
+    setFormData(getInitialProfileData(profile));
     setHasChanges(false);
   };
 
@@ -300,7 +283,7 @@ const ProfileForm = ({ profile, className }) => {
               <Label htmlFor="customer_id">Membership ID</Label>
               <Input
                 id="customer_id"
-                value={profile?.customer_id}
+                value={profile?.customer_id || profile?.id}
                 readOnly
                 className="bg-muted cursor-not-allowed"
               />

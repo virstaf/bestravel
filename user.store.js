@@ -23,38 +23,54 @@ const useUserStore = create(
         set({ isLoading: true });
         try {
           const authUser = await getUser();
-          const { profile: userProfile } = await getProfileAction(authUser?.id);
+          const { profile: userProfile, success, error: profileError } = await getProfileAction(authUser?.id);
 
-          if (authUser && userProfile) {
-            const plan =
-              userProfile.subscription_plan !== "inactive"
-                ? userProfile.subscription_plan
-                : null;
-            const expiresAt = getFormattedDateTime(
-              userProfile.subscription_end || userProfile.trial_ends_at
-            );
-            set({ isAuthenticated: true, user: userProfile });
-            if (plan) {
-              set({
-                isSubscribed: true,
-                subscription: {
-                  plan,
-                  expiresAt,
-                },
+          if (authUser) {
+            // We have a session, so the user IS authenticated
+            set({ isAuthenticated: true });
+
+            if (userProfile) {
+              const plan =
+                userProfile.subscription_plan !== "inactive"
+                  ? userProfile.subscription_plan
+                  : null;
+              const expiresAt = getFormattedDateTime(
+                userProfile.subscription_end || userProfile.trial_ends_at
+              );
+              set({ user: userProfile });
+              if (plan) {
+                set({
+                  isSubscribed: true,
+                  subscription: {
+                    plan,
+                    expiresAt,
+                  },
+                });
+              } else {
+                set({ isSubscribed: false, subscription: null });
+              }
+            } else if (profileError) {
+              console.warn("Could not fetch profile, but user has session:", profileError);
+              // Keep isAuthenticated: true, but user might be null or partial
+              // We could set a placeholder user if we have authUser data
+              set({ 
+                user: { 
+                  id: authUser.id, 
+                  email: authUser.email,
+                  is_partial: true 
+                } 
               });
-            } else {
-              set({ isSubscribed: false, subscription: null });
             }
           } else {
-            set({ isAuthenticated: false, user: null });
+            // No auth user found
+            set({ isAuthenticated: false, user: null, isSubscribed: false, subscription: null });
           }
         } catch (error) {
-          console.error("Error fetching user:", error);
+          console.error("Error in fetchUser:", error);
           set({ isAuthenticated: false, user: null });
         } finally {
           set({ isLoading: false });
         }
-        set({ isLoading: false });
       },
     }),
   //   {

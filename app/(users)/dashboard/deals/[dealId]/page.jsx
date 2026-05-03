@@ -6,8 +6,8 @@ export default async function DealDetailPage({ params }) {
   const { dealId } = await params;
   const deal = await getDealByIdAction(dealId);
 
-  if (deal.length === 0) {
-    return notFound;
+  if (!deal || deal.errorMessage) {
+    return notFound();
   }
 
   return (

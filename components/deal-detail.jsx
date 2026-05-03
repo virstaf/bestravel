@@ -31,8 +31,9 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
 
   const dealHash = useMemo(() => hashCode(deal.id || "default"), [deal.id]);
 
-  // Memoize image URL
+  // Memoize image URL — FastAPI returns cover_image_url; legacy Supabase used image_url
   const imageUrl = useMemo(() => {
+    if (deal.cover_image_url) return deal.cover_image_url;
     if (deal.image_url) return deal.image_url;
     if (deal.partners?.images?.[0]) return deal.partners.images[0];
     if (deal.partners?.image_url) return deal.partners.image_url;
@@ -41,6 +42,7 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
     const imageNumber = (Math.abs(dealHash) % 5) + 1;
     return `/images/deals/default-${imageNumber}.jpg`;
   }, [
+    deal.cover_image_url,
     deal.image_url,
     deal.partners?.images,
     deal.partners?.image_url,
@@ -57,7 +59,8 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
     includesTransfer,
   } = useMemo(
     () => ({
-      location: deal.location || deal.partners?.location || "Destination",
+      // FastAPI DealOut uses `destination`; legacy Supabase used `location`
+      location: deal.destination || deal.location || deal.partners?.location || "Destination",
       title: deal.title || deal.package_type || "Travel Package",
       packageType: deal.package_type || deal.title || "Travel Package",
       nights: deal.duration_nights || 4,
