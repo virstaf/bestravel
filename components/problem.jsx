@@ -120,9 +120,8 @@ export default function ProblemSection() {
               <Image
                 src="/images/frustrated-woman.jpg"
                 alt="Stressed traveler"
-                layout="fill"
-                objectFit="cover"
-                className="overflow-hidden rounded-xl"
+                fill
+                className="object-cover overflow-hidden rounded-xl"
               />
             </div>
             {/* Optional: Animated decorative element */}
