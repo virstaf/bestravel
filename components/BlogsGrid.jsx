@@ -2,15 +2,23 @@
 
 import { useState, useMemo } from "react";
 import { Search } from "lucide-react";
+import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useDebounce } from "use-debounce";
 import BlogCard from "./BlogCard";
 
+/**
+ * Optimized BlogsGrid component.
+ * Implements search debouncing and LCP optimization for the blog grid.
+ */
 const BlogsGrid = ({ posts }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  // Debounce search query to reduce the frequency of filtering operations
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
 
   // Get unique categories from database
   const categories = useMemo(() => {
@@ -21,15 +29,21 @@ const BlogsGrid = ({ posts }) => {
     return [...cats, ...Array.from(uniqueCats)];
   }, [posts]);
 
-  // Filter posts based on search and category
+  // Filter posts based on debounced search and category
   const filteredPosts = useMemo(() => {
     const query = debouncedSearchQuery.toLowerCase();
     return posts.filter((post) => {
       const matchesSearch =
         debouncedSearchQuery === "" ||
-        (post.title?.toLowerCase() || "").includes(query) ||
-        (post.excerpt?.toLowerCase() || "").includes(query) ||
-        (post.content?.toLowerCase() || "").includes(query);
+        post.title
+          ?.toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase()) ||
+        post.excerpt
+          ?.toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase()) ||
+        post.content
+          ?.toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase());
 
       const matchesCategory =
         selectedCategory === "All" || post.category?.name === selectedCategory;
