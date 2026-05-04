@@ -8,8 +8,7 @@ import QuoteActions from "@/components/QuoteActions";
 
 
 import Status from "@/components/ui/status";
-import { getFormattedDate, getFormattedDateTime } from "@/lib/getFormattedDate";
-// import html2pdf from "html2pdf.js";
+import { getFormattedDate } from "@/lib/getFormattedDate";
 
 const QuoteDetailPage = async ({ params }) => {
   const { quote_number } = await params;
@@ -18,9 +17,6 @@ const QuoteDetailPage = async ({ params }) => {
   const trip = await getTripById(quote.trip_id);
   const customer = await getUserById(trip.user_id);
   const { data: quoteItems } = await getQuoteItems(quote.id);
-  // const now = new Date();
-  // const next7days = getFormattedDateTime(now);
-  // console.log("next 7 days::: ", next7days, now);
 
   const flightQuotes = quoteItems.filter(
     (item) => item.reservation_type === "flight"
@@ -52,7 +48,6 @@ const QuoteDetailPage = async ({ params }) => {
       >
         <div className="header grid my-6 grid-cols-1 lg:grid-cols-3 space-y-4 ">
           <div className="customer-info">
-            {/* <h2>Customer Information</h2> */}
             <p>Name: {customer.full_name}</p>
             <p>Email: {customer.email}</p>
             <p>Phone: {customer.phone || "N/A"}</p>
@@ -118,8 +113,6 @@ const QuoteDetailPage = async ({ params }) => {
         </div>
       </div>
       <QuoteActions />
-      {/* <pre>{JSON.stringify(quote, null, 2)}</pre> */}
-      {/* <pre>{JSON.stringify(hotelQuotes, null, 2)}</pre> */}
     </div>
   );
 };
