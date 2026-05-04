@@ -26,6 +26,5 @@ export async function GET(request) {
   }
 
   // return the user to an error page with instructions
-  console.log("callback redirecting!!");
   return NextResponse.redirect(`${origin}/auth/auth-code-error`);
 }
