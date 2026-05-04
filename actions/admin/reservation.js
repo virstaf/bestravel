@@ -210,9 +210,15 @@ export const modifyReservationStatus = async (reservation_id, status) => {
 
 export const modifyReservationsStatus = async (reservation_ids, status) => {
     try {
-       await Promise.all(
-           reservation_ids.map((id) => modifyReservationStatus(id, status))
-       );
+        const supabase = await createAdminClient();
+        const { error } = await supabase
+            .from("reservations")
+            .update({ status })
+            .in("id", reservation_ids);
+
+        if (error) {
+            return error;
+        }
     } catch (error) {
         return error;
     }
