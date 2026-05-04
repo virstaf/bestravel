@@ -1,6 +1,7 @@
 import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { memo } from "react";
 import { Calendar, Clock } from "lucide-react";
 import { getFormattedDate } from "@/lib/getFormattedDate";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +36,6 @@ const BlogCard = memo(({ post, priority = false }) => {
                 alt={displayTitle}
                 fill
                 priority={priority}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
@@ -137,5 +137,7 @@ const BlogCard = memo(({ post, priority = false }) => {
     </Link>
   );
 });
+
+BlogCard.displayName = "BlogCard";
 
 export default BlogCard;

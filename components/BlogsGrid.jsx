@@ -34,11 +34,12 @@ const BlogsGrid = ({ posts }) => {
   const filteredPosts = useMemo(() => {
     const query = debouncedSearchQuery.toLowerCase();
     return posts.filter((post) => {
+      const query = debouncedSearchQuery.toLowerCase();
       const matchesSearch =
-        query === "" ||
-        (post.title?.toLowerCase() || "").includes(query) ||
-        (post.excerpt?.toLowerCase() || "").includes(query) ||
-        (post.content?.toLowerCase() || "").includes(query);
+        debouncedSearchQuery === "" ||
+        post.title?.toLowerCase().includes(query) ||
+        post.excerpt?.toLowerCase().includes(query) ||
+        post.content?.toLowerCase().includes(query);
 
       const matchesCategory =
         selectedCategory === "All" || post.category?.name === selectedCategory;
