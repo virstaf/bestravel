@@ -24,6 +24,7 @@ const ProductCard = ({
           alt={title}
           fill
           className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
       </div>
       <div className="meta flex flex-col justify-between h-[180px] p-4">
