@@ -29,9 +29,6 @@ export const POST = async (req) => {
       "admin-" + type
     );
 
-    console.log("user:::", emailUser);
-    console.log("admin:::", emailAdmin);
-
     return NextResponse.json(
       { message: "Reservation created successfully" },
       { status: 201 }
