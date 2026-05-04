@@ -151,7 +151,6 @@ export default function TripDetail({ trip }) {
                     fill
                     className="object-cover"
                     unoptimized={!isOptimizableImage(trip.cover_image_url)}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw"
                   />
                 </div>
               </CardContent>
