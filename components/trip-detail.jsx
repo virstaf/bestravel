@@ -144,12 +144,13 @@ export default function TripDetail({ trip }) {
                 <CardTitle>Cover Photo</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="relative w-full aspect-video overflow-hidden rounded-md">
+                <div className="relative aspect-video overflow-hidden rounded-md">
                   <Image
                     src={trip.cover_image_url}
                     alt="Trip cover"
                     fill
                     className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     unoptimized={!isOptimizableImage(trip.cover_image_url)}
                   />
                 </div>

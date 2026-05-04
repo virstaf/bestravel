@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import Image from "next/image";
+import { isOptimizableImage } from "@/lib/image-utils";
 
 const HotelCard = ({ hotel }) => {
   const imageSrc = hotel.image + hotel.id + ".jpg";
@@ -12,6 +13,8 @@ const HotelCard = ({ hotel }) => {
           alt={hotel.name}
           fill
           className="object-cover"
+          sizes="(max-width: 768px) 50vw, 20vw"
+          unoptimized={!isOptimizableImage(imageSrc)}
         />
       </div>
       <div className="p-4 flex flex-col justify-between">

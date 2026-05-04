@@ -2,6 +2,7 @@
 import { Landmark, Clock, Gift, Search, Castle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { isOptimizableImage } from "@/lib/image-utils";
 
 export default function ProblemSection() {
   return (
@@ -121,7 +122,11 @@ export default function ProblemSection() {
                 src="/images/frustrated-woman.jpg"
                 alt="Stressed traveler"
                 fill
-                className="object-cover overflow-hidden rounded-xl"
+                className="overflow-hidden rounded-xl object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                unoptimized={
+                  !isOptimizableImage("/images/frustrated-woman.jpg")
+                }
               />
             </div>
             {/* Optional: Animated decorative element */}

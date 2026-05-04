@@ -2,17 +2,26 @@ import { memo } from "react";
 import Image from "next/image";
 import { isOptimizableImage } from "@/lib/image-utils";
 
-const Destinations = memo(({ title, imgSrc, description, isFeatured }) => {
-  if (!imgSrc) return null;
+import Image from "next/image";
+import { isOptimizableImage } from "@/lib/image-utils";
 
+const Destinations = ({
+  title,
+  imgSrc,
+  description,
+  isFeatured,
+  priority = false,
+}) => {
   return (
     <div className="my-2 bg-white shadow rounded-2xl overflow-hidden">
-      <div className="relative w-full h-64 overflow-hidden rounded-b-none">
+      <div className="relative h-64 overflow-hidden">
         <Image
           src={imgSrc}
-          alt={title || "Destination"}
+          alt={title}
           fill
-          className="object-cover hover:scale-105 transform transition duration-300 ease-in-out"
+          priority={priority}
+          className="object-cover rounded-b-none hover:scale-105 transform transition duration-300 ease-in-out"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           unoptimized={!isOptimizableImage(imgSrc)}
         />
       </div>
@@ -22,7 +31,7 @@ const Destinations = memo(({ title, imgSrc, description, isFeatured }) => {
       </div>
     </div>
   );
-});
+};
 
 Destinations.displayName = "Destinations";
 
