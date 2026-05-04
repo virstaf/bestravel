@@ -22,7 +22,7 @@ const HolidayDestinationsSection = () => {
             imgSrc={item.imgSrc}
             description={item.description}
             isFeatured={item.isFeatured}
-            priority={index < 2}
+            priority={index < 4}
           />
         ))}
       </div>

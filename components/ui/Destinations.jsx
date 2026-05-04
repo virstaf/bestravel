@@ -5,13 +5,11 @@ import { isOptimizableImage } from "@/lib/image-utils";
 import Image from "next/image";
 import { isOptimizableImage } from "@/lib/image-utils";
 
-const Destinations = ({
-  title,
-  imgSrc,
-  description,
-  isFeatured,
-  priority = false,
-}) => {
+import Image from "next/image";
+
+const Destinations = ({ title, imgSrc, description, isFeatured, priority }) => {
+  if (!imgSrc) return null;
+
   return (
     <div className="my-2 bg-white shadow rounded-2xl overflow-hidden">
       <div className="relative h-64 overflow-hidden">
@@ -22,7 +20,6 @@ const Destinations = ({
           priority={priority}
           className="object-cover rounded-b-none hover:scale-105 transform transition duration-300 ease-in-out"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          unoptimized={!isOptimizableImage(imgSrc)}
         />
       </div>
       <div className="p-6">
