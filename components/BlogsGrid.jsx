@@ -13,9 +13,12 @@ const BlogsGrid = ({ posts }) => {
   // Get unique categories from database
   const categories = useMemo(() => {
     const cats = ["All"];
-    const uniqueCats = new Set(
-      posts.filter((post) => post.category).map((post) => post.category.name),
-    );
+    const uniqueCats = posts.reduce((acc, post) => {
+      if (post.category) {
+        acc.add(post.category.name);
+      }
+      return acc;
+    }, new Set());
     return [...cats, ...Array.from(uniqueCats)];
   }, [posts]);
 
