@@ -18,7 +18,7 @@ Deno.serve(async (req) => {
     {
       headers: {
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": Deno.env.get("NEXT_PUBLIC_BASEURL") ?? "https://virstravelclub.com",
       },
     },
   );
