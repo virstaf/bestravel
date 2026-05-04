@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useDebounce } from "use-debounce";
 import { Search } from "lucide-react";
 import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/input";
@@ -34,16 +35,10 @@ const BlogsGrid = ({ posts }) => {
     const query = debouncedSearchQuery.toLowerCase();
     return posts.filter((post) => {
       const matchesSearch =
-        debouncedSearchQuery === "" ||
-        post.title
-          ?.toLowerCase()
-          .includes(debouncedSearchQuery.toLowerCase()) ||
-        post.excerpt
-          ?.toLowerCase()
-          .includes(debouncedSearchQuery.toLowerCase()) ||
-        post.content
-          ?.toLowerCase()
-          .includes(debouncedSearchQuery.toLowerCase());
+        query === "" ||
+        (post.title?.toLowerCase() || "").includes(query) ||
+        (post.excerpt?.toLowerCase() || "").includes(query) ||
+        (post.content?.toLowerCase() || "").includes(query);
 
       const matchesCategory =
         selectedCategory === "All" || post.category?.name === selectedCategory;

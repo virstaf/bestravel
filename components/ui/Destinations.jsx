@@ -1,9 +1,6 @@
 import Image from "next/image";
 import { isOptimizableImage } from "@/lib/image-utils";
 
-/**
- * Destinations component optimized with Next.js Image for better performance and LCP.
- */
 const Destinations = ({
   title,
   imgSrc,
@@ -15,15 +12,15 @@ const Destinations = ({
 
   return (
     <div className="my-2 bg-white shadow rounded-2xl overflow-hidden">
-      <div className="relative w-full h-64 overflow-hidden">
+      <div className="relative h-64 overflow-hidden">
         <Image
           src={imgSrc}
           alt={title}
           fill
           priority={priority}
-          className="object-cover rounded-b-none hover:scale-105 transform transition duration-300 ease-in-out"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           unoptimized={!isOptimizableImage(imgSrc)}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover rounded-b-none hover:scale-105 transform transition duration-300 ease-in-out"
         />
       </div>
       <div className="p-6">
