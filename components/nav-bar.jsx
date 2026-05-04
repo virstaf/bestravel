@@ -6,15 +6,20 @@ import Link from "next/link";
 import UserProfile from "./ui/userProfile";
 import { useProfileContext } from "@/contexts/profile";
 import { NavLinks } from "@/lib/data";
+import { useProfileContext } from "@/contexts/profile";
 import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import { AlignRight } from "lucide-react";
 import Logo from "./ui/logo";
 
 const NavBar = () => {
-  const { profile: user, isLoading } = useProfileContext();
+  const { profile, isLoading } = useProfileContext();
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  // Use profile from context to determine if user is logged in
+  // If loading, we treat as not logged in to avoid flickering or show a skeleton (optional)
+  const user = !isLoading && profile?.id ? profile : null;
 
   useEffect(() => {
     const handleResize = () => {
