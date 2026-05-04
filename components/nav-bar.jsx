@@ -6,11 +6,9 @@ import Link from "next/link";
 import UserProfile from "./ui/userProfile";
 import { useProfileContext } from "@/contexts/profile";
 import { NavLinks } from "@/lib/data";
-import { useProfileContext } from "@/contexts/profile";
 import { usePathname } from "next/navigation";
 import { X, AlignRight } from "lucide-react";
 import Logo from "./ui/logo";
-import { useProfileContext } from "@/contexts/profile";
 
 const NavBar = () => {
   const { profile: user, isLoading } = useProfileContext();

@@ -31,8 +31,6 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
   const { originalPrice, discountedPrice, savings, discountPercentage } =
     useMemo(() => calculateDealPrices(deal), [deal]);
 
-  const dealHash = useMemo(() => hashCode(String(deal.id)), [deal.id]);
-
   // Memoize image URL
   const imageUrl = useMemo(() => {
     if (deal.image_url) return deal.image_url;

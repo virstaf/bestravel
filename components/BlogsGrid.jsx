@@ -3,10 +3,8 @@
 import { useState, useMemo } from "react";
 import { useDebounce } from "use-debounce";
 import { Search } from "lucide-react";
-import { useDebounce } from "use-debounce";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { useDebounce } from "use-debounce";
 import BlogCard from "./BlogCard";
 
 /**
@@ -17,9 +15,6 @@ const BlogsGrid = ({ posts }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
   const [selectedCategory, setSelectedCategory] = useState("All");
-
-  // Debounce search query to reduce the frequency of filtering operations
-  const [debouncedSearchQuery] = useDebounce(searchQuery, 300);
 
   // Get unique categories from database
   const categories = useMemo(() => {
@@ -34,7 +29,6 @@ const BlogsGrid = ({ posts }) => {
   const filteredPosts = useMemo(() => {
     const query = debouncedSearchQuery.toLowerCase();
     return posts.filter((post) => {
-      const query = debouncedSearchQuery.toLowerCase();
       const matchesSearch =
         debouncedSearchQuery === "" ||
         post.title?.toLowerCase().includes(query) ||

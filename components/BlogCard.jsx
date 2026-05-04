@@ -1,7 +1,6 @@
 import { memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { memo } from "react";
 import { Calendar, Clock } from "lucide-react";
 import { getFormattedDate } from "@/lib/getFormattedDate";
 import { Badge } from "@/components/ui/badge";
