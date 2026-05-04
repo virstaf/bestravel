@@ -19,6 +19,7 @@ const FeaturedDestinations = () => {
                 imgSrc={destination.imgSrc}
                 description={destination.description}
                 isFeatured={destination.isFeatured}
+                priority={idx < 3}
               />
             ))}
         </div>
