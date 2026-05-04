@@ -32,3 +32,8 @@
 
 **Learning:** Including runtime logs like `dev_server.log` in a PR can be misinterpreted as faking performance data and adds unnecessary noise to the codebase. It is critical to verify `git status` and unstage any accidental log modifications before submission.
 **Action:** Always run `git restore --staged <log_file>` before committing if a local process modified a log file.
+
+## 2025-05-16 - [Consolidating Profile Fetching for Network Efficiency]
+
+**Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
+**Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.

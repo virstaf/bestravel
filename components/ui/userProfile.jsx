@@ -9,9 +9,11 @@ import { usePathname } from "next/navigation";
 import { useProfileContext } from "@/contexts/profile";
 
 const UserProfile = ({ className }) => {
-  const { profile: user, isLoading: loading } = useProfileContext();
   const [logoutOpen, setLogoutOpen] = useState(false);
+  const { profile: user, isLoading } = useProfileContext();
   const pathname = usePathname();
+
+  if (isLoading || !user) return null;
 
   return (
     <div
@@ -22,7 +24,7 @@ const UserProfile = ({ className }) => {
       <div
         className={`${
           logoutOpen ? "flex" : "hidden"
-        } flex-col items-center gap-2 backdrop-blur-xs bg-white p-6 rounded-2xl shadow absolute top-10 right-0`}
+        } flex-col items-center gap-2 backdrop-blur-xs bg-white p-6 rounded-2xl shadow absolute top-10 right-0 z-50`}
       >
         <span className="text-muted-foreground">{user?.email}</span>
         {!pathname.includes("dashboard") && (

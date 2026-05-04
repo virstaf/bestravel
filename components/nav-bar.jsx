@@ -3,15 +3,14 @@
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import { useProfileContext } from "@/contexts/profile";
 import UserProfile from "./ui/userProfile";
 import { useProfileContext } from "@/contexts/profile";
 import { NavLinks } from "@/lib/data";
 import { useProfileContext } from "@/contexts/profile";
 import { usePathname } from "next/navigation";
-import { X } from "lucide-react";
-import { AlignRight } from "lucide-react";
+import { X, AlignRight } from "lucide-react";
 import Logo from "./ui/logo";
+import { useProfileContext } from "@/contexts/profile";
 
 const NavBar = () => {
   const { profile: user, isLoading } = useProfileContext();
@@ -60,33 +59,39 @@ const NavBar = () => {
         <div
           className={`flex items-center justify-center gap-4 ${menuOpen ? "w-full flex flex-col" : "hidden md:flex"}`}
         >
-          {user ? (
+          {!isLoading && (
             <>
-              <Button
-                asChild
-                className={`text-white ${menuOpen ? "w-full" : ""}`}
-              >
-                <Link href="/dashboard">Dashboard</Link>
-              </Button>
-              <UserProfile className="hidden md:block" />
+              {user ? (
+                <>
+                  <Button
+                    asChild
+                    className={`text-white ${menuOpen ? "w-full" : ""}`}
+                  >
+                    <Link href="/dashboard">Dashboard</Link>
+                  </Button>
+                  <UserProfile className="hidden md:block" />
+                </>
+              ) : (
+                <div
+                  className={
+                    `flex gap-2` + (menuOpen ? " flex-col w-full" : "")
+                  }
+                >
+                  <Button
+                    asChild
+                    variant="outline"
+                    className={menuOpen ? "w-full" : ""}
+                  >
+                    <Link href="/auth/login">Login</Link>
+                  </Button>
+                  <Button asChild className={menuOpen ? "w-full" : ""}>
+                    <Link href="/auth/signup" className="text-white">
+                      Get Started
+                    </Link>
+                  </Button>
+                </div>
+              )}
             </>
-          ) : (
-            <div
-              className={`flex gap-2` + (menuOpen ? " flex-col w-full" : "")}
-            >
-              <Button
-                asChild
-                variant="outline"
-                className={menuOpen ? "w-full" : ""}
-              >
-                <Link href="/auth/login">Login</Link>
-              </Button>
-              <Button asChild className={menuOpen ? "w-full" : ""}>
-                <Link href="/auth/signup" className="text-white">
-                  Get Started
-                </Link>
-              </Button>
-            </div>
           )}
         </div>
         <div className="text-gray-600 absolute top-4 right-8 md:hidden">

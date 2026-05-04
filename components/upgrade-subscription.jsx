@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { getUser } from "@/lib/supabase/server";
 import { pricingPlans } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -12,11 +11,24 @@ import { LoaderIcon } from "lucide-react";
 
 const UpgradeSubscription = () => {
   const [duration, setDuration] = useState("monthly");
-  const [user, setUser] = useState(null);
   const [isPending, startTransition] = useTransition();
   const [plan, setPlan] = useState(null);
-  const { profile, isLoading } = useProfileContext();
+  const { profile: user, isLoading } = useProfileContext();
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      if (user?.id) {
+        try {
+          const data = await getUserSubscription(user.id);
+          setPlan(data);
+        } catch (error) {
+          console.error("Error fetching subscription:", error);
+        }
+      }
+    };
+    fetchSubscription();
+  }, [user?.id]);
 
   if (isLoading) {
     return (
@@ -30,19 +42,6 @@ const UpgradeSubscription = () => {
       </div>
     );
   }
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const data = await getUserSubscription(profile.id);
-      // console.log("data::", data);
-      setPlan(data);
-      const user = await getUser();
-      if (user) {
-        setUser(user);
-      }
-    };
-    fetchUser();
-  }, []);
 
   const handleSubscribeClick = async (priceId) => {
     if (!user) {
