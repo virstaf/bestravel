@@ -31,7 +31,7 @@ export const ProfileProvider = ({ children, initialProfile = null }) => {
   const [isLoading, setIsLoading] = useState(!initialProfile);
 
   useEffect(() => {
-    // If we already have an initialProfile from the server, we can skip the 
+    // If we already have an initialProfile from the server, we can skip the
     // first client-side fetch unless we want to refresh it.
     if (initialProfile) {
       setIsLoading(false);
@@ -70,7 +70,10 @@ export const ProfileProvider = ({ children, initialProfile = null }) => {
             id: supabaseUser.id,
             email: supabaseUser.email,
             phone: supabaseUser.phone || null,
-            user_type: supabaseUser.user_metadata?.role === "ADMIN" ? "ADMINUSER" : "APPUSER",
+            user_type:
+              supabaseUser.user_metadata?.role === "ADMIN"
+                ? "ADMINUSER"
+                : "APPUSER",
             channel: "WEB",
             is_kyc_completed: null,
             kyc: null,

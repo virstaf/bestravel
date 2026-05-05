@@ -9,6 +9,7 @@ import { ShareButton, ShareArticleButton } from "@/components/ShareButtons";
 import { notFound } from "next/navigation";
 import { TiptapRenderer } from "@/components/TiptapRenderer";
 import { JsonLdSchema } from "@/components/JsonLdSchema";
+import DOMPurify from "isomorphic-dompurify";
 
 export const generateMetadata = async ({ params }) => {
   const { postId: slug } = await params;
@@ -167,7 +168,7 @@ const PostPage = async ({ params }) => {
         ) : (
           <div
             className="article"
-            dangerouslySetInnerHTML={{ __html: content }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(content) }}
           />
         )}
 

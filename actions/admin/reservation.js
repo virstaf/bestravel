@@ -7,28 +7,25 @@ export const getAllReservations = async () => {
     const supabase = await createAdminClient();
     const { data: reservations, error } = await supabase
       .from("reservations")
-      .select("*")
+      .select("*, profiles(full_name, subscription_plan), trips(title)")
       .neq("status", "cancelled")
       .order("created_at", { ascending: false });
-    const { data: users } = await supabase.from("profiles").select("*");
-    const { data: trips } = await supabase.from("trips").select("*");
 
     if (error) {
       throw new Error("Error fetching reservations");
     }
 
     const reducedReservations = reservations.map((res) => {
-      const user = users.find((u) => u.id === res.user_id);
-      const trip = trips.find((t) => t.id === res.trip_id);
-
-      const userName = user ? user?.full_name : "Unknown User";
-      const userPlan = user ? user?.subscription_plan : "Free";
-      const tripName = trip ? trip?.title : "Unknown Trip";
+      const userName = res.profiles?.full_name || "Unknown User";
+      const userPlan = res.profiles?.subscription_plan || "Free";
+      const tripName = res.trips?.title || "Unknown Trip";
 
       return {
         ...res,
         user: { name: userName, plan: userPlan },
         trip: { name: tripName },
+        profiles: undefined,
+        trips: undefined,
       };
     });
 
@@ -210,9 +207,15 @@ export const modifyReservationStatus = async (reservation_id, status) => {
 
 export const modifyReservationsStatus = async (reservation_ids, status) => {
     try {
-       await Promise.all(
-           reservation_ids.map((id) => modifyReservationStatus(id, status))
-       );
+        const supabase = await createAdminClient();
+        const { error } = await supabase
+            .from("reservations")
+            .update({ status })
+            .in("id", reservation_ids);
+
+        if (error) {
+            return error;
+        }
     } catch (error) {
         return error;
     }

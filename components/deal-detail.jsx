@@ -1,4 +1,4 @@
-// components/DealDetail.js
+// components/deal-detail.jsx
 "use client";
 import React, { useState, useMemo } from "react";
 import Link from "next/link";
@@ -25,13 +25,13 @@ import BookingDialog from "@/components/booking-dialog";
 const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
+  const dealHash = useMemo(() => hashCode(String(deal.id)), [deal.id]);
+
   // Memoize price calculations using centralized utility
   const { originalPrice, discountedPrice, savings, discountPercentage } =
     useMemo(() => calculateDealPrices(deal), [deal]);
 
-  const dealHash = useMemo(() => hashCode(deal.id || "default"), [deal.id]);
-
-  // Memoize image URL — FastAPI returns cover_image_url; legacy Supabase used image_url
+  // Memoize image URL
   const imageUrl = useMemo(() => {
     if (deal.cover_image_url) return deal.cover_image_url;
     if (deal.image_url) return deal.image_url;
@@ -52,7 +52,6 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
   const {
     location,
     title,
-    packageType,
     nights,
     includesFlight,
     includesHotel,
@@ -60,9 +59,12 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
   } = useMemo(
     () => ({
       // FastAPI DealOut uses `destination`; legacy Supabase used `location`
-      location: deal.destination || deal.location || deal.partners?.location || "Destination",
+      location:
+        deal.destination ||
+        deal.location ||
+        deal.partners?.location ||
+        "Destination",
       title: deal.title || deal.package_type || "Travel Package",
-      packageType: deal.package_type || deal.title || "Travel Package",
       nights: deal.duration_nights || 4,
       includesFlight: deal.includes_flight !== false,
       includesHotel: deal.includes_hotel !== false,
@@ -70,14 +72,6 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
     }),
     [deal],
   );
-
-  const inclusionsSummary = useMemo(() => {
-    const parts = [];
-    if (includesFlight) parts.push("Flights");
-    if (includesHotel) parts.push(`${nights} Nights Hotel`);
-    if (includesTransfer) parts.push("Transfers");
-    return parts.length > 0 ? parts.join(" • ") : "Custom Package";
-  }, [includesFlight, includesHotel, includesTransfer, nights]);
 
   const { formattedEndDate, formattedStartDate, formattedTravelEndDate } =
     useMemo(
@@ -111,6 +105,14 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
       ],
     );
 
+  const inclusionsSummary = useMemo(() => {
+    const parts = [];
+    if (includesFlight) parts.push("Flights");
+    if (includesHotel) parts.push(`${nights} Nights Hotel`);
+    if (includesTransfer) parts.push("Transfers");
+    return parts.join(" + ");
+  }, [includesFlight, includesHotel, includesTransfer, nights]);
+
   return (
     <>
       <div className="space-y-6 max-w-6xl mx-auto px-4">
@@ -131,7 +133,7 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
           <div className="relative aspect-[21/9] w-full bg-muted">
             <Image
               src={imageUrl}
-              alt={packageType}
+              alt={title}
               fill
               className="object-cover"
               priority
@@ -209,7 +211,6 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
             </div>
 
             {/* Details */}
-            
 
             {/* What's Included */}
             <div className="space-y-3">
@@ -247,25 +248,36 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
               <h3 className="text-xl font-semibold">About This Deal</h3>
               <div className="content text-muted-foreground leading-relaxed">
                 {(() => {
-                  const desc = deal.description || `Experience the magic of ${location} with this exclusive travel package. Enjoy comfortable accommodations, convenient flights, and unforgettable memories in one of the world's most beautiful destinations.`;
-                  
+                  const desc =
+                    deal.description ||
+                    `Experience the magic of ${location} with this exclusive travel package. Enjoy comfortable accommodations, convenient flights, and unforgettable memories in one of the world's most beautiful destinations.`;
+
                   // Split the entire string by WhatsApp-style bold (*text*)
                   const parts = desc.split(/(\*[^*]+\*)/g);
-                  
+
                   const elements = [];
                   let currentList = [];
                   let currentParagraph = [];
-                  
+
                   const flushList = () => {
                     if (currentList.length > 0) {
-                      elements.push(<ul key={`ul-${elements.length}`} className="list-none space-y-2 mt-2 mb-4">{currentList}</ul>);
+                      elements.push(
+                        <ul
+                          key={`ul-${elements.length}`}
+                          className="list-none space-y-2 mt-2 mb-4"
+                        >
+                          {currentList}
+                        </ul>,
+                      );
                       currentList = [];
                     }
                   };
 
                   const flushParagraph = () => {
                     if (currentParagraph.length > 0) {
-                      elements.push(<p key={`p-${elements.length}`}>{currentParagraph}</p>);
+                      elements.push(
+                        <p key={`p-${elements.length}`}>{currentParagraph}</p>,
+                      );
                       currentParagraph = [];
                     }
                   };
@@ -276,27 +288,51 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
                   };
 
                   parts.forEach((part, i) => {
-                    if (part.startsWith('*') && part.endsWith('*')) {
+                    if (part.startsWith("*") && part.endsWith("*")) {
                       const content = part.slice(1, -1).trim();
                       const lower = content.toLowerCase();
-                      const isHeader = ['overview', 'why visit:', 'nearby attractions:', 'conclusion', 'conclusion:', 'itinerary', 'full payment', 'based on 2 adults'].includes(lower) || lower.endsWith(':');
-                      
+                      const isHeader =
+                        [
+                          "overview",
+                          "why visit:",
+                          "nearby attractions:",
+                          "conclusion",
+                          "conclusion:",
+                          "itinerary",
+                          "full payment",
+                          "based on 2 adults",
+                        ].includes(lower) || lower.endsWith(":");
+
                       if (isHeader) {
                         flushAll();
-                        elements.push(<h3 key={`h-${i}`} className="mt-6 mb-2 text-foreground font-semibold text-lg">{content}</h3>);
+                        elements.push(
+                          <h3
+                            key={`h-${i}`}
+                            className="mt-6 mb-2 text-foreground font-semibold text-lg"
+                          >
+                            {content}
+                          </h3>,
+                        );
                       } else {
-                        currentParagraph.push(<strong key={`s-${i}`} className="text-foreground font-semibold mr-1">{content}</strong>);
+                        currentParagraph.push(
+                          <strong
+                            key={`s-${i}`}
+                            className="text-foreground font-semibold mr-1"
+                          >
+                            {content}
+                          </strong>,
+                        );
                       }
                     } else if (part.trim()) {
                       // Normal text: split by known bullet markers
                       const bulletSplit = part.split(/(?=[✔➡️●•])/g);
-                      
+
                       bulletSplit.forEach((segment, j) => {
                         const trimmed = segment.trim();
                         if (!trimmed) return;
-                        
+
                         let bulletMatch = null;
-                        const bullets = ['✔', '➡️', '●', '•'];
+                        const bullets = ["✔", "➡️", "●", "•"];
                         for (const b of bullets) {
                           if (trimmed.startsWith(b)) {
                             bulletMatch = b;
@@ -307,34 +343,54 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
                         if (bulletMatch) {
                           flushParagraph();
                           currentList.push(
-                            <li key={`li-${i}-${j}`} className="flex items-start gap-2">
-                              <span className="mt-0.5 text-primary">{bulletMatch === '✔' ? '✓' : bulletMatch === '➡️' ? '→' : '•'}</span>
-                              <span>{trimmed.slice(bulletMatch.length).trim().replace(/^:\s*/, '')}</span>
-                            </li>
+                            <li
+                              key={`li-${i}-${j}`}
+                              className="flex items-start gap-2"
+                            >
+                              <span className="mt-0.5 text-primary">
+                                {bulletMatch === "✔"
+                                  ? "✓"
+                                  : bulletMatch === "➡️"
+                                    ? "→"
+                                    : "•"}
+                              </span>
+                              <span>
+                                {trimmed
+                                  .slice(bulletMatch.length)
+                                  .trim()
+                                  .replace(/^:\s*/, "")}
+                              </span>
+                            </li>,
                           );
                         } else {
                           // Normal text block
                           flushList();
                           let text = trimmed;
                           // Remove dangling colon from headers like "*Conclusion* :"
-                          if (text.startsWith(':')) {
+                          if (text.startsWith(":")) {
                             text = text.slice(1).trim();
                           }
-                          
+
                           // Double newlines mean a new paragraph
                           const pBlocks = text.split(/\r?\n\s*\r?\n/);
                           pBlocks.forEach((block, bIdx) => {
                             if (bIdx > 0) flushParagraph();
-                            const cleanBlock = block.replace(/\r?\n/g, ' ').trim();
+                            const cleanBlock = block
+                              .replace(/\r?\n/g, " ")
+                              .trim();
                             if (cleanBlock) {
-                              currentParagraph.push(<span key={`t-${i}-${j}-${bIdx}`}>{cleanBlock} </span>);
+                              currentParagraph.push(
+                                <span key={`t-${i}-${j}-${bIdx}`}>
+                                  {cleanBlock}{" "}
+                                </span>,
+                              );
                             }
                           });
                         }
                       });
                     }
                   });
-                  
+
                   flushAll();
                   return elements;
                 })()}
