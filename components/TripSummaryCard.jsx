@@ -1,3 +1,8 @@
+import { memo } from "react";
+/**
+ * TripSummaryCard component optimized with React.memo to prevent unnecessary re-renders
+ * in trip list views.
+ */
 import {
   Card,
   CardHeader,
@@ -13,7 +18,7 @@ import { MapPinIcon } from "./ui/MapPinIcon";
 import { UsersRoundIcon } from "./ui/UsersRoundIcon";
 import { getStatusColor } from "@/lib/statusHelpers";
 
-const TripSummaryCard = ({ trip, variant="full", className }) => {
+const TripSummaryCard = memo(({ trip, variant="full", className }) => {
   const displayStatus = trip.currentStatus || trip.status;
   
   return (
@@ -57,6 +62,8 @@ const TripSummaryCard = ({ trip, variant="full", className }) => {
       </CardContent>
     </Card>
   );
-};
+});
+
+TripSummaryCard.displayName = "TripSummaryCard";
 
 export default TripSummaryCard;
