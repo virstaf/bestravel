@@ -1,33 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import CurrentUserAvatar from "../current-user-avatar";
 import LogoutButton from "./logout-button";
 import Link from "next/link";
 import { Button } from "./button";
 import { usePathname } from "next/navigation";
-import { getProfileAction } from "@/actions/profiles";
+import { useProfileContext } from "@/contexts/profile";
 
 const UserProfile = ({ className }) => {
-  const [loading, setLoading] = useState(true);
   const [logoutOpen, setLogoutOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const { profile: user, isLoading } = useProfileContext();
   const pathname = usePathname();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const {profile} = await getProfileAction();
-        setUser(profile);
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
+  if (isLoading || !user) return null;
 
   return (
     <div
@@ -38,7 +24,7 @@ const UserProfile = ({ className }) => {
       <div
         className={`${
           logoutOpen ? "flex" : "hidden"
-        } flex-col items-center gap-2 backdrop-blur-xs bg-white p-6 rounded-2xl shadow absolute top-10 right-0`}
+        } flex-col items-center gap-2 backdrop-blur-xs bg-white p-6 rounded-2xl shadow absolute top-10 right-0 z-50`}
       >
         <span className="text-muted-foreground">{user?.email}</span>
         {!pathname.includes("dashboard") && (
