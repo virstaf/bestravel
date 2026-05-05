@@ -114,7 +114,7 @@ export default function ProblemSection() {
           {/* Right Column: Visual */}
           <div className="relative">
             {/* Replace with your image/illustration */}
-            <div className="bg-gray-200 rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+            <div className="relative bg-gray-200 rounded-xl overflow-hidden aspect-video flex items-center justify-center">
               {/* <span className="text-gray-500">
                 (Image: Stressed traveler at airport)
               </span> */}
