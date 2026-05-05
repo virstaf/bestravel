@@ -26,7 +26,7 @@ const Pricing = ({ className }) => {
       }
     };
     fetchUser();
-  }, [profile.id, isLoading]);
+  }, [profile?.id, isLoading]);
 
   const handleSubscribeClick = async (priceId) => {
     if (!user) {
