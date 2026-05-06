@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   Card,
   CardHeader,
@@ -13,11 +14,18 @@ import { MapPinIcon } from "./ui/MapPinIcon";
 import { UsersRoundIcon } from "./ui/UsersRoundIcon";
 import { getStatusColor } from "@/lib/statusHelpers";
 
-const TripSummaryCard = ({ trip, variant="full", className }) => {
+/**
+ * Optimized TripSummaryCard component with memoization.
+ * Prevents unnecessary re-renders when used in lists.
+ */
+const TripSummaryCard = memo(({ trip, variant = "full", className }) => {
   const displayStatus = trip.currentStatus || trip.status;
-  
+
   return (
-    <Card key={trip.id} className={`hover:shadow-lg transition-shadow ${className}`}>
+    <Card
+      key={trip.id}
+      className={`hover:shadow-lg transition-shadow ${className}`}
+    >
       <CardHeader>
         <CardTitle>{trip.title}</CardTitle>
         <CardDescription>{trip.destination}</CardDescription>
@@ -25,8 +33,7 @@ const TripSummaryCard = ({ trip, variant="full", className }) => {
       <CardContent className="space-y-2">
         <div className="flex items-center text-sm">
           <Calendar className="h-4 w-4 mr-2" />
-          {getFormattedDate(trip.start_date)} -{" "}
-          {getFormattedDate(trip.end_date)}
+          {getFormattedDate(trip.start_date)} - {getFormattedDate(trip.end_date)}
         </div>
         <div className="flex items-center text-sm">
           <MapPinIcon className="h-4 w-4 mr-2" />
@@ -39,11 +46,16 @@ const TripSummaryCard = ({ trip, variant="full", className }) => {
         </div>
         <div className="flex justify-between items-center pt-4">
           <span
-            className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(displayStatus)}`}
+            className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+              displayStatus
+            )}`}
           >
             {displayStatus.replace("_", " ")}
           </span>
-          <div className="flex items-center justify-between gap-4" style={{ display: variant === "full" ? "flex" : "none" }}>
+          <div
+            className="flex items-center justify-between gap-4"
+            style={{ display: variant === "full" ? "flex" : "none" }}
+          >
             <Button asChild variant="outline" size="sm">
               <Link href={`/dashboard/trips/${trip.id}`}>View Details</Link>
             </Button>
@@ -57,6 +69,8 @@ const TripSummaryCard = ({ trip, variant="full", className }) => {
       </CardContent>
     </Card>
   );
-};
+});
+
+TripSummaryCard.displayName = "TripSummaryCard";
 
 export default TripSummaryCard;
