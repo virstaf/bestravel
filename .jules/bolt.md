@@ -37,3 +37,8 @@
 
 **Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
 **Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
+
+## 2025-05-18 - [Avoiding Client-Side Optimizations in Server Components]
+
+**Learning:** Applying React-specific client-side optimizations like `React.memo`, `useMemo`, or `useCallback` to Server Components in Next.js (App Router) is not only ineffective but can lead to build or runtime errors. Server Components are rendered on the server and do not have a standard "re-render" cycle in the way Client Components do.
+**Action:** Always check for the `"use client"` directive before applying memoization or hooks. If a component is a Server Component, focus on server-side performance (data fetching, database queries) rather than render-cycle optimizations.

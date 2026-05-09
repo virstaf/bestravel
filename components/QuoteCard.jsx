@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import {
   Card,
   CardHeader,
@@ -20,7 +21,22 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-const QuoteCard = ({ quote }) => {
+/**
+ * Performance Optimization:
+ * 1. Hoisted Intl.NumberFormat to module scope to avoid expensive re-instantiation on every render.
+ * 2. Wrapped in React.memo to prevent unnecessary re-renders when the parent component updates
+ *    but the quote data remains the same.
+ *
+ * Expected Impact:
+ * - Reduces CPU usage during list rendering by reusing the expensive Intl.NumberFormat object.
+ * - Skips redundant re-renders for stable quote items in the dashboard list.
+ */
+const currencyFormatter = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+});
+
+const QuoteCard = memo(({ quote }) => {
   const {
     quote_number,
     total_amount,
@@ -32,12 +48,9 @@ const QuoteCard = ({ quote }) => {
     trip_id,
   } = quote;
 
-  // Format currency
+  // Format currency using hoisted formatter
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: "GBP",
-    }).format(amount || 0);
+    return currencyFormatter.format(amount || 0);
   };
 
   // Format date
@@ -183,6 +196,8 @@ const QuoteCard = ({ quote }) => {
       </CardFooter>
     </Card>
   );
-};
+});
+
+QuoteCard.displayName = "QuoteCard";
 
 export default QuoteCard;
