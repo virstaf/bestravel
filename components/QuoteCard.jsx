@@ -19,8 +19,85 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { memo } from "react";
 
-const QuoteCard = ({ quote }) => {
+// Hoisted expensive Intl formatters to module scope
+const currencyFormatter = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+});
+
+const dateFormatter = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
+/**
+ * Format currency using hoisted formatter
+ */
+const formatCurrency = (amount) => currencyFormatter.format(amount || 0);
+
+/**
+ * Format date using hoisted formatter
+ */
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return dateFormatter.format(new Date(dateString));
+};
+
+/**
+ * Get status badge variant and icon - hoisted to module scope
+ */
+const getStatusInfo = (status) => {
+  const statusLower = status?.toLowerCase();
+  switch (statusLower) {
+    case "sent":
+      return {
+        variant: "default",
+        icon: <FileText className="h-3 w-3" />,
+        label: "Sent",
+      };
+    case "accepted":
+      return {
+        variant: "success",
+        icon: <CheckCircle2 className="h-3 w-3" />,
+        label: "Accepted",
+      };
+    case "rejected":
+      return {
+        variant: "destructive",
+        icon: <XCircle className="h-3 w-3" />,
+        label: "Rejected",
+      };
+    case "expired":
+      return {
+        variant: "secondary",
+        icon: <Clock className="h-3 w-3" />,
+        label: "Expired",
+      };
+    case "draft":
+      return {
+        variant: "outline",
+        icon: <AlertCircle className="h-3 w-3" />,
+        label: "Draft",
+      };
+    default:
+      return {
+        variant: "outline",
+        icon: <FileText className="h-3 w-3" />,
+        label: status || "Unknown",
+      };
+  }
+};
+
+/**
+ * Optimized QuoteCard component.
+ * ⚡ Optimization:
+ * 1. Hoisted Intl formatters and helpers to module scope to avoid re-creation on render.
+ * 2. Wrapped in React.memo to prevent unnecessary re-renders in grid views.
+ */
+const QuoteCard = memo(function QuoteCard({ quote }) {
   const {
     quote_number,
     total_amount,
@@ -31,67 +108,6 @@ const QuoteCard = ({ quote }) => {
     created_at,
     trip_id,
   } = quote;
-
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: "GBP",
-    }).format(amount || 0);
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
-
-  // Get status badge variant and icon
-  const getStatusInfo = (status) => {
-    const statusLower = status?.toLowerCase();
-    switch (statusLower) {
-      case "sent":
-        return {
-          variant: "default",
-          icon: <FileText className="h-3 w-3" />,
-          label: "Sent",
-        };
-      case "accepted":
-        return {
-          variant: "success",
-          icon: <CheckCircle2 className="h-3 w-3" />,
-          label: "Accepted",
-        };
-      case "rejected":
-        return {
-          variant: "destructive",
-          icon: <XCircle className="h-3 w-3" />,
-          label: "Rejected",
-        };
-      case "expired":
-        return {
-          variant: "secondary",
-          icon: <Clock className="h-3 w-3" />,
-          label: "Expired",
-        };
-      case "draft":
-        return {
-          variant: "outline",
-          icon: <AlertCircle className="h-3 w-3" />,
-          label: "Draft",
-        };
-      default:
-        return {
-          variant: "outline",
-          icon: <FileText className="h-3 w-3" />,
-          label: status || "Unknown",
-        };
-    }
-  };
 
   const statusInfo = getStatusInfo(currentStatus || status);
 
@@ -184,5 +200,7 @@ const QuoteCard = ({ quote }) => {
     </Card>
   );
 };
+
+QuoteCard.displayName = "QuoteCard";
 
 export default QuoteCard;

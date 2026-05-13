@@ -12,49 +12,58 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, FileText, Package } from "lucide-react";
 import { notFound } from "next/navigation";
 
+// Hoisted expensive Intl formatters to module scope
+const currencyFormatter = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+});
+
+const dateFormatter = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+/**
+ * Format currency using hoisted formatter
+ */
+const formatCurrency = (amount) => currencyFormatter.format(amount || 0);
+
+/**
+ * Format date using hoisted formatter
+ */
+const formatDate = (dateString) => {
+  if (!dateString) return "N/A";
+  return dateFormatter.format(new Date(dateString));
+};
+
+/**
+ * Get status badge variant - hoisted to module scope
+ */
+const getStatusVariant = (status) => {
+  const statusLower = status?.toLowerCase();
+  switch (statusLower) {
+    case "sent":
+      return "default";
+    case "accepted":
+      return "success";
+    case "rejected":
+      return "destructive";
+    case "expired":
+      return "secondary";
+    case "draft":
+      return "outline";
+    default:
+      return "outline";
+  }
+};
+
 export default async function QuoteDetailPage({ params }) {
   const { quote_number } = await params;
 
   try {
     const quote = await getQuoteByNumber(quote_number);
     const quoteItems = await getQuoteItemsByQuoteId(quote.id);
-
-    // Format currency
-    const formatCurrency = (amount) => {
-      return new Intl.NumberFormat("en-GB", {
-        style: "currency",
-        currency: "GBP",
-      }).format(amount || 0);
-    };
-
-    // Format date
-    const formatDate = (dateString) => {
-      if (!dateString) return "N/A";
-      return new Date(dateString).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-    };
-
-    // Get status badge variant
-    const getStatusVariant = (status) => {
-      const statusLower = status?.toLowerCase();
-      switch (statusLower) {
-        case "sent":
-          return "default";
-        case "accepted":
-          return "success";
-        case "rejected":
-          return "destructive";
-        case "expired":
-          return "secondary";
-        case "draft":
-          return "outline";
-        default:
-          return "outline";
-      }
-    };
 
     const isExpired =
       quote.valid_until && new Date(quote.valid_until) < new Date();
