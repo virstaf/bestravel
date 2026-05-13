@@ -1,11 +1,11 @@
-import { getUser } from "@/lib/supabase/server";
+import { getProfileAction } from "@/actions/profiles";
 import { redirect } from "next/navigation";
 import CookieWarning from "@/components/ui/CookieWarning";
 
 export default async function AuthLayout({ children }) {
   try {
-    const user = await getUser();
-    if (user) {
+    const { profile } = await getProfileAction();
+    if (profile) {
       redirect("/dashboard");
     }
   } catch (error) {}

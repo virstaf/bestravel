@@ -4,8 +4,20 @@ import { getProfileAction } from "@/actions/profiles";
 const WelcomeSection = async () => {
   const { profile } = await getProfileAction();
   const profileData = profile?.kyc || profile;
+  
+  if (!profileData) {
+    return (
+      <WelcomeCard
+        username="Traveler"
+        firstName="Traveler"
+        membershipTier="Free"
+        onboardingCompleted={false}
+      />
+    );
+  }
+
   const firstName =
-    profileData.full_name.split(" ")[0] ||
+    profileData.full_name?.split(" ")[0] ||
     profileData?.first_name ||
     "Traveler";
   const username = firstName.toLowerCase() || "Traveler";

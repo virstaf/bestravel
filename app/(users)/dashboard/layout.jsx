@@ -9,23 +9,11 @@ import { redirect } from "next/navigation";
 import DashboardNotFound from "./not-found";
 
 export default async function DashboardLayout({ children }) {
-  // Auth gate — check for FastAPI JWT first, then Supabase A session (legacy fallback)
-  const token = await getServerToken();
-  // console.log(token);
-
-  if (!token) {
-    // Check Supabase A session for migration-pending users
-    try {
-      const { getUser } = await import("@/lib/supabase/server");
-      const user = await getUser();
-      if (!user) redirect("/auth/login");
-    } catch {
-      redirect("/auth/login");
-    }
-  }
-
   const { profile } = await getProfileAction();
-  // console.log("profile:: ", profile);
+
+  if (!profile) {
+    redirect("/auth/login");
+  }
 
   // Check if user has completed onboarding (legacy Supabase A field)
   if (profile && profile.onboarding_completed === false) {

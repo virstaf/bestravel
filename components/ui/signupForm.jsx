@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { googleAuthAction, signupAction } from "@/actions/users";
-import { getUser } from "@/lib/supabase/server";
+import { getProfileAction } from "@/actions/profiles";
 import Image from "next/image";
 import { EyeClosed, Eye } from "lucide-react";
 import {
@@ -64,9 +64,9 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
   useEffect(() => {
     if (redirect) {
       const fetchUser = async () => {
-        const userObject = await getUser();
+        const { profile } = await getProfileAction();
 
-        if (userObject) {
+        if (profile) {
           router.replace("/dashboard");
         }
       };
@@ -143,7 +143,11 @@ const SignupForm = ({ onSuccess, redirect = true }) => {
   return (
     <div className="w-full max-w-[450px] mx-auto mt-15">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-8 ">
+        <form
+          method="post"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6 p-8 "
+        >
           <div className="flex flex-col gap-1">
             <h3 className="text-2xl font-medium text-center">
               Create an account

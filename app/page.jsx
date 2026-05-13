@@ -1,64 +1,34 @@
-import Hero from "@/components/hero";
-import ProblemSection from "@/components/problem";
-import BenefitSection from "@/components/benefit";
-import WhoItsFor from "@/components/who-its-for";
-import Process from "@/components/process";
-import Testimonials from "@/components/Testimonials";
-import FAQSection from "@/components/FAQSection";
-import TravelSmarter from "@/components/travel-smarter";
-import StartTrialCta from "@/components/start-trial-cta";
 import NavBar from "@/components/nav-bar";
 import LandingFooter from "@/components/LandingFooter";
-import GetInTouch from "@/components/GetInTouch";
-import Newsletter from "@/components/Newsletter";
-import TrialCTA from "@/components/trial-cta";
+import ClubHero from "@/components/club/ClubHero";
+import TrustBar from "@/components/club/TrustBar";
+import ProblemSection from "@/components/club/ProblemSection";
+import SolutionGrid from "@/components/club/SolutionGrid";
+import MembershipHighlights from "@/components/club/MembershipHighlights";
+import HowItWorksSteps from "@/components/club/HowItWorksSteps";
+import InspirationSection from "@/components/club/InspirationSection";
+import TravelInsights from "@/components/club/TravelInsights";
+import TestimonialSection from "@/components/club/TestimonialSection";
+import FinalCTA from "@/components/club/FinalCTA";
 
 const HomePage = () => {
   return (
-    <div className="w-full bg-white min-h-screen">
+    <main className="w-full bg-white min-h-screen">
       <NavBar />
-      <div className="w-full h-full flex flex-col mt-16">
-        <section className="w-full h-full">
-          <Hero />
-        </section>
-        <section className="">
-          <ProblemSection />
-        </section>
-        {/* <section><SolutionSection /></section> */}
-        <section id="benefit-section">
-          <BenefitSection />
-        </section>
-        <section className="w-full max-w-7xl mx-auto px-4 my-8">
-          <TrialCTA />
-        </section>
-        <section>
-          <WhoItsFor />
-        </section>
-        <section>
-          <Process />
-        </section>
-        <section className="w-full max-w-5xl mx-auto my-8 px-4">
-          <FAQSection />
-        </section>
-        {/* <section>Feature</section> */}
-        <section className="w-full bg-gray-50">
-          <Testimonials />
-        </section>
-        <section className="">
-          <TravelSmarter />
-        </section>
-        <section className="">
-          <StartTrialCta />
-        </section>
-        <section className="w-full bg-gray-50">
-          <GetInTouch />
-        </section>
-        <section className="w-full">
-          <Newsletter />
-        </section>
+      <div className="w-full flex flex-col">
+        <ClubHero />
+        <TrustBar />
+        <ProblemSection />
+        <SolutionGrid />
+        <MembershipHighlights />
+        <HowItWorksSteps />
+        <InspirationSection />
+        <TravelInsights />
+        <TestimonialSection />
+        <FinalCTA />
       </div>
       <LandingFooter />
-    </div>
+    </main>
   );
 };
 

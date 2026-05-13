@@ -7,7 +7,8 @@ import { usePathname } from "next/navigation";
 import { NavLinks } from "@/lib/data";
 import UserProfile from "./ui/userProfile";
 import Image from "next/image";
-import { getUser } from "@/lib/supabase/server";
+import { getProfileAction } from "@/actions/profiles";
+import LogoutButton from "./ui/logout-button";
 
 const NavSection = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,11 +19,11 @@ const NavSection = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const { data } = await getUser();
-      setUserData(data?.user);
+      const { profile } = await getProfileAction();
+      setUserData(profile);
     };
     fetchUserData();
-  }, [userData]);
+  }, []);
 
   useEffect(() => {
     setActiveTab(pathname.split("/")[1]);
@@ -113,6 +114,7 @@ const NavSection = () => {
             </Button>
           </div>
         )}
+        <LogoutButton className="cursor-pointer" />
       </div>
     </div>
   );

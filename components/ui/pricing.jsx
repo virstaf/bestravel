@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import { getUser } from "@/lib/supabase/server";
+import { getProfileAction } from "@/actions/profiles";
 import { Button } from "./button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -20,9 +20,9 @@ const Pricing = ({ className }) => {
     if (isLoading) return;
     const fetchUser = async () => {
       setPlan(profile?.subscription_plan || "Free");
-      const user = await getUser();
-      if (user) {
-        setUser(user);
+      const { profile: userProfile } = await getProfileAction();
+      if (userProfile) {
+        setUser(userProfile);
       }
     };
     fetchUser();

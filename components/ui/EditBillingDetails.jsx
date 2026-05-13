@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition } from "react";
 import { Button } from "./button";
-import { getUser } from "@/lib/supabase/server";
+import { getProfileAction } from "@/actions/profiles";
 import { useRouter } from "next/navigation";
 import { useProfileContext } from "@/contexts/profile";
 import { toast } from "sonner";
@@ -17,8 +17,8 @@ const EditBillingDetails = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const user = await getUser();
-      setUser(user);
+      const { profile: userProfile } = await getProfileAction();
+      setUser(userProfile);
     };
     fetchUser();
   }, []);

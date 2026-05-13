@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Virstravel Club",
-  description: "Travel made easy",
+  title: "Virstravel Club — Premium Travel Membership & Travel Savings Platform",
+  description: "Virstravel Club helps modern travelers save on hotels, access airport lounges, unlock premium travel perks, and travel smarter through one flexible membership platform.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",

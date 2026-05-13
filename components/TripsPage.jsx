@@ -5,6 +5,7 @@ import Link from "next/link";
 
 export default async function Trips({ trips, profile }) {
   const isSubscribed = profile?.is_subscribed;
+  console.log(trips, profile);
 
   return (
     <div className="space-y-8">

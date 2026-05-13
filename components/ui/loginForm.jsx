@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { googleAuthAction, loginAction } from "@/actions/users";
 import { useEffect, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import { EyeClosed } from "lucide-react";
@@ -36,21 +36,27 @@ const LoginForm = ({ onSuccess, redirect = true }) => {
   const [isPending, startTransition] = useTransition();
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
 
   useEffect(() => {
     // Only redirect if redirect prop is true
     if (redirect) {
       const checkUser = async () => {
         const { profile } = await getProfileAction();
-        if (profile && profile.role === "ADMIN") {
-          router.replace("/admin");
-        } else if (profile) {
-          router.replace("/dashboard");
+        if (profile) {
+          if (returnTo) {
+            router.replace(returnTo);
+          } else if (profile.role === "ADMIN") {
+            router.replace("/admin");
+          } else {
+            router.replace("/dashboard");
+          }
         }
       };
       checkUser();
     }
-  }, [redirect]);
+  }, [redirect, returnTo]);
 
   async function onSubmit(values) {
     startTransition(async () => {
@@ -75,11 +81,15 @@ const LoginForm = ({ onSuccess, redirect = true }) => {
         }
 
         if (redirect) {
-          const isAdmin = profile?.role === "ADMIN";
-          if (isAdmin) {
-            router.replace("/admin");
+          if (returnTo) {
+            router.replace(returnTo);
           } else {
-            router.replace("/dashboard");
+            const isAdmin = profile?.role === "ADMIN";
+            if (isAdmin) {
+              router.replace("/admin");
+            } else {
+              router.replace("/dashboard");
+            }
           }
         }
       } else {
@@ -104,7 +114,11 @@ const LoginForm = ({ onSuccess, redirect = true }) => {
   return (
     <div className="w-full max-w-[450px] mx-auto">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 p-8 ">
+        <form
+          method="post"
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 p-8 "
+        >
           <div className="flex flex-col gap-1">
             <h3 className="text-2xl font-medium text-center">
               Login to your account
