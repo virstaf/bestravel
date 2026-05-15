@@ -26,11 +26,11 @@ const DashboardPage = async () => {
         {profile && <SubscriptionPrompt profile={profile} />}
 
         <section className="my-12">
-          <WelcomeSection />
+          <WelcomeSection profile={profile} />
         </section>
 
         <section className="my-12">
-          <TripsSection />
+          <TripsSection profile={profile} />
         </section>
 
         <section className="my-12">
@@ -38,7 +38,7 @@ const DashboardPage = async () => {
         </section>
 
         <section className="my-12">
-          <ReservationsSection />
+          <ReservationsSection profile={profile} />
         </section>
 
         <div className="my-12">

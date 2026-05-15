@@ -1,12 +1,14 @@
-import { getProfileAction } from "@/actions/profiles";
 import { getUserReservations } from "@/actions/reservations";
 import { fetchTrips } from "@/actions/trips";
 import { ReservationSummaryCard } from "./reservation-summary";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
-const ReservationsSection = async () => {
-  const { profile } = await getProfileAction();
+/**
+ * ReservationsSection component optimized for performance.
+ * Accepts profile as a prop to avoid redundant server action calls.
+ */
+const ReservationsSection = async ({ profile }) => {
   const userId = profile?.id;
   const reservations = await getUserReservations(userId);
   const trips = await fetchTrips(userId);

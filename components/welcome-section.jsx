@@ -1,8 +1,10 @@
 import WelcomeCard from "./welcome-card";
-import { getProfileAction } from "@/actions/profiles";
 
-const WelcomeSection = async () => {
-  const { profile } = await getProfileAction();
+/**
+ * WelcomeSection component optimized for performance.
+ * Accepts profile as a prop to avoid redundant server action calls.
+ */
+const WelcomeSection = async ({ profile }) => {
   const firstName =
     profile?.full_name?.split(" ")[0] || profile?.username || "Traveler";
   const membershipTier = profile?.membership_tier || "Gold";
