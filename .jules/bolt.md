@@ -37,3 +37,8 @@
 
 **Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
 **Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
+
+## 2025-05-17 - [Module Resolution in Node.js Test Runner]
+
+**Learning:** When running unit tests with `node --test` in a project that uses ES modules but doesn't have `"type": "module"` in `package.json` (or even when it does), internal imports between library files often require explicit file extensions (e.g., `.js`) to be resolved correctly by the Node.js native ESM loader. Omitting these extensions leads to `ERR_MODULE_NOT_FOUND` errors that don't occur in the Next.js/Webpack build process.
+**Action:** Always include the `.js` extension in relative imports within `lib/` or other non-component utility files to ensure compatibility with the native Node.js test runner.
