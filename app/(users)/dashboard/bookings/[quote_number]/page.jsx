@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Calendar, FileText, Package } from "lucide-react";
 import { notFound } from "next/navigation";
+import { currencyGBP, dateGBLong } from "@/lib/formatters";
 
 export default async function QuoteDetailPage({ params }) {
   const { quote_number } = await params;
@@ -19,22 +20,13 @@ export default async function QuoteDetailPage({ params }) {
     const quote = await getQuoteByNumber(quote_number);
     const quoteItems = await getQuoteItemsByQuoteId(quote.id);
 
-    // Format currency
-    const formatCurrency = (amount) => {
-      return new Intl.NumberFormat("en-GB", {
-        style: "currency",
-        currency: "GBP",
-      }).format(amount || 0);
-    };
+    // Format currency using shared hoisted formatter
+    const formatCurrency = (amount) => currencyGBP.format(amount || 0);
 
-    // Format date
+    // Format date using shared hoisted formatter
     const formatDate = (dateString) => {
       if (!dateString) return "N/A";
-      return new Date(dateString).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
+      return dateGBLong.format(new Date(dateString));
     };
 
     // Get status badge variant
