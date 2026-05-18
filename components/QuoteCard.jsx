@@ -19,8 +19,14 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { memo } from "react";
+import { currencyGBP, dateGBShort } from "@/lib/formatters";
 
-const QuoteCard = ({ quote }) => {
+/**
+ * Optimized QuoteCard component.
+ * Uses memoization and shared formatters to improve rendering performance in lists.
+ */
+const QuoteCard = memo(({ quote }) => {
   const {
     quote_number,
     total_amount,
@@ -29,25 +35,15 @@ const QuoteCard = ({ quote }) => {
     valid_until,
     client_notes,
     created_at,
-    trip_id,
   } = quote;
 
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: "GBP",
-    }).format(amount || 0);
-  };
+  // Format currency using shared hoisted formatter
+  const formatCurrency = (amount) => currencyGBP.format(amount || 0);
 
-  // Format date
+  // Format date using shared hoisted formatter
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+    return dateGBShort.format(new Date(dateString));
   };
 
   // Get status badge variant and icon
@@ -99,7 +95,7 @@ const QuoteCard = ({ quote }) => {
   const isExpired = valid_until && new Date(valid_until) < new Date();
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-300">
+    <Card className="hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
       <CardHeader>
         <div className="flex items-start justify-between">
           <div>
@@ -118,7 +114,7 @@ const QuoteCard = ({ quote }) => {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 flex-grow">
         {/* Total Amount */}
         <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
           <span className="text-sm font-medium text-muted-foreground">
@@ -183,6 +179,8 @@ const QuoteCard = ({ quote }) => {
       </CardFooter>
     </Card>
   );
-};
+});
+
+QuoteCard.displayName = "QuoteCard";
 
 export default QuoteCard;
