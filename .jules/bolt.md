@@ -37,3 +37,8 @@
 
 **Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
 **Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
+
+## 2025-05-17 - [Intl Formatter Hoisting for Performance]
+
+**Learning:** Instantiating `Intl.NumberFormat` and `Intl.DateTimeFormat` objects is computationally expensive. When done inside a component's render body or a frequently called utility function, it creates significant overhead and GC pressure. Hoisting these to a module-level scope or a centralized utility significantly improves execution speed and memory efficiency.
+**Action:** Centralize and hoist all `Intl` formatters to module scope or a shared `lib/formatters.js` utility.

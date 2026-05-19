@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import {
   Card,
   CardHeader,
@@ -19,8 +20,15 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { currencyGBP, dateGBShort } from "@/lib/formatters";
 
-const QuoteCard = ({ quote }) => {
+/**
+ * Optimized QuoteCard component.
+ * ⚡ Performance:
+ * 1. Wrapped in React.memo to prevent unnecessary re-renders in lists.
+ * 2. Uses hoisted Intl formatters to avoid re-instantiation on every render.
+ */
+const QuoteCard = memo(({ quote }) => {
   const {
     quote_number,
     total_amount,
@@ -32,22 +40,15 @@ const QuoteCard = ({ quote }) => {
     trip_id,
   } = quote;
 
-  // Format currency
+  // Format currency using hoisted formatter
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: "GBP",
-    }).format(amount || 0);
+    return currencyGBP.format(amount || 0);
   };
 
-  // Format date
+  // Format date using hoisted formatter
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+    return dateGBShort.format(new Date(dateString));
   };
 
   // Get status badge variant and icon
@@ -183,6 +184,8 @@ const QuoteCard = ({ quote }) => {
       </CardFooter>
     </Card>
   );
-};
+});
+
+QuoteCard.displayName = "QuoteCard";
 
 export default QuoteCard;
