@@ -19,7 +19,12 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { currencyGBP, dateGBShort } from "@/lib/formatters";
 
+/**
+ * Optimized QuoteCard component.
+ * Uses hoisted Intl formatters for better performance.
+ */
 const QuoteCard = ({ quote }) => {
   const {
     quote_number,
@@ -32,22 +37,17 @@ const QuoteCard = ({ quote }) => {
     trip_id,
   } = quote;
 
-  // Format currency
+  // Format currency using hoisted formatter
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: "GBP",
-    }).format(amount || 0);
+    return currencyGBP.format(amount || 0);
   };
 
-  // Format date
+  // Format date using hoisted formatter
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "Invalid Date";
+    return dateGBShort.format(date);
   };
 
   // Get status badge variant and icon

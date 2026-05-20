@@ -1,5 +1,11 @@
 
-const SlidingCard = ({ message, author, stars }) => {
+import { memo } from "react";
+
+/**
+ * Memoized SlidingCard component to prevent unnecessary re-renders.
+ * Useful when parent components (like Testimonials) re-render on a timer.
+ */
+const SlidingCard = memo(({ message, author, stars }) => {
   const totalStars = 5;
   const filledStars = Array(stars).fill("★").join("");
   const emptyStars = Array(totalStars - stars)
@@ -18,6 +24,8 @@ const SlidingCard = ({ message, author, stars }) => {
       </div>
     </div>
   );
-};
+});
+
+SlidingCard.displayName = "SlidingCard";
 
 export default SlidingCard;
