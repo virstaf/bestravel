@@ -10,6 +10,7 @@ import { DateRangePicker } from "./ui/date-range-picker";
 import { AuthDialog } from "./auth-dialog";
 import useUserStore from "@/user.store";
 import { toast } from "sonner";
+import { sendGAEvent } from "@next/third-parties/google";
 
 export function HeroForm() {
   const [fromLocation, setFromLocation] = useState(null);
@@ -39,7 +40,7 @@ export function HeroForm() {
       setAuthOpen(true);
       return;
     }
-
+    sendGAEvent({ event: "buttonClicked", value: "Landing Trip Request" });
     submitDealRequest();
   };
 
