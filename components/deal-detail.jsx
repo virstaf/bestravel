@@ -5,6 +5,7 @@ import Link from "next/link";
 import { hashCode } from "@/utils/hash";
 import { isOptimizableImage } from "@/lib/image-utils";
 import { calculateDealPrices } from "@/lib/deal-utils";
+import { dateUSLong, dateUSShortDateTime } from "@/lib/formatters";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -71,23 +72,13 @@ const DealDetail = React.memo(function DealDetail({ deal, isPublic = false }) {
       () => ({
         formattedEndDate:
           deal.end_date || deal.valid_until
-            ? new Date(deal.end_date || deal.valid_until).toLocaleDateString(
-                "en-US",
-                { month: "short", day: "numeric", year: "numeric" },
-              )
+            ? dateUSLong.format(new Date(deal.end_date || deal.valid_until))
             : "Open-ended",
         formattedStartDate: deal.travel_start_date
-          ? new Date(deal.travel_start_date).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-            })
+          ? dateUSShortDateTime.format(new Date(deal.travel_start_date)).split(",")[0]
           : null,
         formattedTravelEndDate: deal.travel_end_date
-          ? new Date(deal.travel_end_date).toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              year: "numeric",
-            })
+          ? dateUSLong.format(new Date(deal.travel_end_date))
           : null,
       }),
       [
