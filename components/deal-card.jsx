@@ -6,6 +6,7 @@ import Image from "next/image";
 import { hashCode } from "@/utils/hash";
 import { isOptimizableImage } from "@/lib/image-utils";
 import { calculateDealPrices } from "@/lib/deal-utils";
+import { dateUSLong, dateUSShortDateTime } from "@/lib/formatters";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -94,24 +95,16 @@ const DealCard = memo(function DealCard({ deal, isPublic = false, priority = fal
     return "Prices may increase soon";
   }, [validUntil]);
 
-  // Format date for display
+  // Format date for display using shared formatters
   const formattedDate = useMemo(
-    () =>
-      validUntil.toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      }),
+    () => dateUSLong.format(validUntil),
     [validUntil],
   );
 
   const travelStartDate = useMemo(
     () =>
       deal.travel_start_date
-        ? new Date(deal.travel_start_date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          })
+        ? dateUSShortDateTime.format(new Date(deal.travel_start_date)).split(",")[0]
         : null,
     [deal.travel_start_date],
   );
@@ -119,10 +112,7 @@ const DealCard = memo(function DealCard({ deal, isPublic = false, priority = fal
   const travelEndDate = useMemo(
     () =>
       deal.travel_end_date
-        ? new Date(deal.travel_end_date).toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-          })
+        ? dateUSShortDateTime.format(new Date(deal.travel_end_date)).split(",")[0]
         : null,
     [deal.travel_end_date],
   );
