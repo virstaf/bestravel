@@ -43,7 +43,6 @@ export function HeroForm() {
     sendGAEvent({ event: "buttonClicked", value: "Landing Trip Request" });
     submitDealRequest();
   };
-
   // ... inside component
 
   const submitDealRequest = async () => {
