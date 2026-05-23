@@ -105,5 +105,13 @@
     "secretlint": "^12.3.1",
     "supabase": "^2.54.11",
     "tailwindcss": "^4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "core-js",
+      "sharp",
+      "supabase",
+      "msw"
+    ]
   }
 }
