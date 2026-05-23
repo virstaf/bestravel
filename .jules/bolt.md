@@ -37,3 +37,8 @@
 
 **Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
 **Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
+
+## 2026-05-23 - [Dashboard Data Fetching Hoisting]
+
+**Learning:** In the Next.js App Router, multiple child server components independently calling the same server actions (like `getProfileAction`) can lead to redundant database/auth queries and a sequential "waterfall" of network requests. Hoisting these calls to the common parent page and passing data down as props allows for parallelization via `Promise.all` and ensures a single efficient query per resource.
+**Action:** When a page has multiple sections requiring the same or related data, hoist the fetching to the parent page and pass the results as props to optimize performance and reduce server load.
