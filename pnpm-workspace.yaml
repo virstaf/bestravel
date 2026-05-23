@@ -1,2 +1,5 @@
-onlyBuiltDependencies:
-  - supabase
+allowBuilds:
+  core-js: true
+  sharp: true
+  supabase: true
+  msw: true
