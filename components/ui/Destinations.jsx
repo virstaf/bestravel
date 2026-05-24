@@ -1,7 +1,12 @@
 import Image from "next/image";
+import { memo } from "react";
 import { isOptimizableImage } from "@/lib/image-utils";
 
-const Destinations = ({
+/**
+ * Optimized Destinations component with React.memo.
+ * Prevents unnecessary re-renders when used in lists or grids.
+ */
+const Destinations = memo(({
   title,
   imgSrc,
   description,
