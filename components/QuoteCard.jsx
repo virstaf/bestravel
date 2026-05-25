@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import {
   Card,
   CardHeader,
@@ -20,7 +21,24 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-const QuoteCard = ({ quote }) => {
+// Hoisted formatters for performance: reused across renders and components
+const currencyFormatter = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+});
+
+const dateFormatter = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
+/**
+ * Optimized QuoteCard component.
+ * Wrapped in React.memo to prevent unnecessary re-renders in the dashboard grid.
+ * Uses hoisted Intl formatters to avoid redundant object allocation.
+ */
+const QuoteCard = memo(({ quote }) => {
   const {
     quote_number,
     total_amount,
@@ -32,22 +50,13 @@ const QuoteCard = ({ quote }) => {
     trip_id,
   } = quote;
 
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: "GBP",
-    }).format(amount || 0);
-  };
+  // Format currency using hoisted formatter
+  const formatCurrency = (amount) => currencyFormatter.format(amount || 0);
 
-  // Format date
+  // Format date using hoisted formatter
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
+    return dateFormatter.format(new Date(dateString));
   };
 
   // Get status badge variant and icon
@@ -183,6 +192,8 @@ const QuoteCard = ({ quote }) => {
       </CardFooter>
     </Card>
   );
-};
+});
+
+QuoteCard.displayName = "QuoteCard";
 
 export default QuoteCard;
