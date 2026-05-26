@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import {
   Card,
   CardHeader,
@@ -19,8 +20,13 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { currencyGBPWithDecimals, dateGBShort } from "@/lib/formatters";
 
-const QuoteCard = ({ quote }) => {
+/**
+ * QuoteCard component optimized with React.memo and hoisted formatters.
+ * Memoization prevents redundant re-renders when the parent dashboard updates.
+ */
+const QuoteCard = memo(({ quote }) => {
   const {
     quote_number,
     total_amount,
@@ -31,24 +37,6 @@ const QuoteCard = ({ quote }) => {
     created_at,
     trip_id,
   } = quote;
-
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: "GBP",
-    }).format(amount || 0);
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
 
   // Get status badge variant and icon
   const getStatusInfo = (status) => {
@@ -98,6 +86,14 @@ const QuoteCard = ({ quote }) => {
   // Check if quote is expired
   const isExpired = valid_until && new Date(valid_until) < new Date();
 
+  const formattedCreatedAt = created_at
+    ? dateGBShort.format(new Date(created_at))
+    : "N/A";
+
+  const formattedValidUntil = valid_until
+    ? dateGBShort.format(new Date(valid_until))
+    : "N/A";
+
   return (
     <Card className="hover:shadow-lg transition-shadow duration-300">
       <CardHeader>
@@ -105,7 +101,7 @@ const QuoteCard = ({ quote }) => {
           <div>
             <CardTitle className="text-lg">Quote #{quote_number}</CardTitle>
             <CardDescription className="mt-1">
-              Created {formatDate(created_at)}
+              Created {formattedCreatedAt}
             </CardDescription>
           </div>
           <Badge
@@ -125,7 +121,7 @@ const QuoteCard = ({ quote }) => {
             Total Amount
           </span>
           <span className="text-2xl font-bold">
-            {formatCurrency(total_amount)}
+            {currencyGBPWithDecimals.format(total_amount || 0)}
           </span>
         </div>
 
@@ -139,7 +135,7 @@ const QuoteCard = ({ quote }) => {
                 isExpired ? "text-destructive font-medium" : "font-medium"
               }
             >
-              {formatDate(valid_until)}
+              {formattedValidUntil}
             </span>
             {isExpired && (
               <Badge variant="destructive" className="ml-2">
@@ -183,6 +179,8 @@ const QuoteCard = ({ quote }) => {
       </CardFooter>
     </Card>
   );
-};
+});
+
+QuoteCard.displayName = "QuoteCard";
 
 export default QuoteCard;
