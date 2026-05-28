@@ -37,3 +37,11 @@
 
 **Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
 **Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
+
+## 2024-05-20 - [Hoisting Intl formatters for Performance]
+**Learning:** Instantiating `Intl.NumberFormat` and `Intl.DateTimeFormat` objects is computationally expensive. When these are created inside a component's render body (especially those in lists like `QuoteCard`), it leads to redundant memory allocation and initialization overhead on every render.
+**Action:** Hoist `Intl` formatters to module scope or a centralized utility file (`lib/formatters.js`) to reuse the instances across the application and improve rendering performance.
+
+## 2024-05-20 - [Log Hygiene in PRs]
+**Learning:** Accidental inclusion of runtime log files (e.g., `dev_server.log`) in a PR adds unnecessary noise and can be interpreted as faking performance data.
+**Action:** Always verify `git status` and use `git restore --staged <file>` to remove accidental log file changes before committing.
