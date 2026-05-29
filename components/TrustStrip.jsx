@@ -2,26 +2,32 @@
 
 import { Check, Shield, Clock, Users, CreditCard } from "lucide-react";
 
-const TrustStrip = () => {
-  const trustItems = [
-    {
-      icon: Users,
-      text: "Trusted by 1,000+ travelers",
-    },
-    {
-      icon: CreditCard,
-      text: "Secure payments",
-    },
-    {
-      icon: Clock,
-      text: "Human support, 24/7",
-    },
-    {
-      icon: Shield,
-      text: "Flexible booking options",
-    },
-  ];
+/**
+ * Hoisted static data to module scope to prevent re-creation on every render.
+ */
+const trustItems = [
+  {
+    icon: Users,
+    text: "Trusted by 1,000+ travelers",
+  },
+  {
+    icon: CreditCard,
+    text: "Secure payments",
+  },
+  {
+    icon: Clock,
+    text: "Human support, 24/7",
+  },
+  {
+    icon: Shield,
+    text: "Flexible booking options",
+  },
+];
 
+/**
+ * TrustStrip component optimized by hoisting static data.
+ */
+const TrustStrip = () => {
   return (
     <section className="w-full bg-gradient-to-b from-background to-muted/30 border-y border-border/40 py-12">
       <div className="container mx-auto px-4">
