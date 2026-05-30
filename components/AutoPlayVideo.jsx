@@ -1,6 +1,13 @@
-// components/AutoPlayVideo.jsx
+import { memo } from "react";
 
-const AutoPlayVideo = ({ source, style }) => {
+/**
+ * Optimized AutoPlayVideo component.
+ * Uses React.memo to prevent unnecessary re-renders when the parent (e.g., Testimonials) slider updates.
+ * Includes a guard clause to prevent rendering if the source is missing.
+ */
+const AutoPlayVideo = memo(({ source, style }) => {
+  if (!source) return null;
+
   return (
     <video
       autoPlay
@@ -14,6 +21,8 @@ const AutoPlayVideo = ({ source, style }) => {
       Your browser does not support the video tag.
     </video>
   );
-};
+});
+
+AutoPlayVideo.displayName = "AutoPlayVideo";
 
 export default AutoPlayVideo;
