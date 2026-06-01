@@ -1,16 +1,13 @@
-import { getProfileAction } from "@/actions/profiles";
-import { getUserReservations } from "@/actions/reservations";
-import { fetchTrips } from "@/actions/trips";
 import { ReservationSummaryCard } from "./reservation-summary";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
-const ReservationsSection = async () => {
-  const { profile } = await getProfileAction();
-  const userId = profile?.id;
-  const reservations = await getUserReservations(userId);
-  const trips = await fetchTrips(userId);
-
+/**
+ * Optimized ReservationsSection component.
+ * Now a presentational component that receives reservations, trips, and profile data as props,
+ * eliminating redundant database queries and supporting parallel data fetching.
+ */
+const ReservationsSection = ({ reservations, trips, profile }) => {
   const getTripName = (tripId) => {
     const trip = trips.find((trip) => trip.id === tripId);
     return trip ? trip.title : "Unknown Trip";
