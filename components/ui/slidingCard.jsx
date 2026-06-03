@@ -1,5 +1,12 @@
 
-const SlidingCard = ({ message, author, stars }) => {
+import { memo } from "react";
+
+/**
+ * Optimized SlidingCard component.
+ * Wrapped in React.memo to prevent unnecessary re-renders when the parent (e.g. Testimonials)
+ * state changes, as the props only change when the slider index changes.
+ */
+const SlidingCard = memo(({ message, author, stars }) => {
   const totalStars = 5;
   const filledStars = Array(stars).fill("★").join("");
   const emptyStars = Array(totalStars - stars)
@@ -18,6 +25,8 @@ const SlidingCard = ({ message, author, stars }) => {
       </div>
     </div>
   );
-};
+});
+
+SlidingCard.displayName = "SlidingCard";
 
 export default SlidingCard;

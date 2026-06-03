@@ -37,3 +37,7 @@
 
 **Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
 **Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
+
+## 2026-06-03 - [Memoization of Static Components in Active Sliders]
+**Learning:** Components that update state on an interval (like a testimonial slider) trigger re-renders of all children. Purely static children (like a background video or a trust bar) or children whose props only change occasionally (like the active slide) should be wrapped in 'React.memo' to avoid redundant reconciliation work every few seconds.
+**Action:** When implementing auto-playing sliders or timers, identify static or infrequently-changing child components and apply 'React.memo' to optimize the render loop.
