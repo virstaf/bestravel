@@ -1,33 +1,39 @@
 "use client";
 
 import { Check, Shield, Clock, Users, CreditCard } from "lucide-react";
+import { memo } from "react";
 
-const TrustStrip = () => {
-  const trustItems = [
-    {
-      icon: Users,
-      text: "Trusted by 1,000+ travelers",
-    },
-    {
-      icon: CreditCard,
-      text: "Secure payments",
-    },
-    {
-      icon: Clock,
-      text: "Human support, 24/7",
-    },
-    {
-      icon: Shield,
-      text: "Flexible booking options",
-    },
-  ];
+const TRUST_ITEMS = [
+  {
+    icon: Users,
+    text: "Trusted by 1,000+ travelers",
+  },
+  {
+    icon: CreditCard,
+    text: "Secure payments",
+  },
+  {
+    icon: Clock,
+    text: "Human support, 24/7",
+  },
+  {
+    icon: Shield,
+    text: "Flexible booking options",
+  },
+];
 
+/**
+ * Optimized TrustStrip component with memoization and hoisted static data.
+ * Expected Impact: Prevents redundant array creation on every render and
+ * avoids re-renders if the parent component (e.g., LandingPage) updates.
+ */
+const TrustStrip = memo(() => {
   return (
     <section className="w-full bg-gradient-to-b from-background to-muted/30 border-y border-border/40 py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {trustItems.map((item, index) => {
+            {TRUST_ITEMS.map((item, index) => {
               const Icon = item.icon;
               return (
                 <div
@@ -51,6 +57,8 @@ const TrustStrip = () => {
       </div>
     </section>
   );
-};
+});
+
+TrustStrip.displayName = "TrustStrip";
 
 export default TrustStrip;
