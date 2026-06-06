@@ -1,16 +1,8 @@
-import { getProfileAction } from "@/actions/profiles";
-import { getUserReservations } from "@/actions/reservations";
-import { fetchTrips } from "@/actions/trips";
 import { ReservationSummaryCard } from "./reservation-summary";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
-const ReservationsSection = async () => {
-  const { profile } = await getProfileAction();
-  const userId = profile?.id;
-  const reservations = await getUserReservations(userId);
-  const trips = await fetchTrips(userId);
-
+const ReservationsSection = async ({ profile, reservations = [], trips = [] }) => {
   const getTripName = (tripId) => {
     const trip = trips.find((trip) => trip.id === tripId);
     return trip ? trip.title : "Unknown Trip";

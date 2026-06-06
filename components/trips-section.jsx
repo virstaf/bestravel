@@ -1,15 +1,10 @@
 import TripsList from "./TripsList";
-import { getProfileAction } from "@/actions/profiles";
-import { fetchTrips } from "@/actions/trips";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { PlusIcon } from "lucide-react";
 import { EyeIcon } from "lucide-react";
 
-const TripsSection = async () => {
-  const { profile } = await getProfileAction();
-  const trips = await fetchTrips(profile?.id); // await fetchTrips(); // Fetch trips if needed
-
+const TripsSection = async ({ profile, trips }) => {
   return (
     <div className="bg-gradient-to-b from-primary/5 to-gray-white py-8 px-4 rounded-2xl">
       <div className="flex justify-between gap-4">
