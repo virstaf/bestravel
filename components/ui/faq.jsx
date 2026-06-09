@@ -1,10 +1,15 @@
+import { memo } from "react";
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-const Faq = ({ question, answer, number }) => {
+/**
+ * Faq component optimized with React.memo.
+ * Prevents unnecessary re-renders when other parts of the FAQ section update.
+ */
+const Faq = memo(({ question, answer, number }) => {
   return (
     <AccordionItem value={number}>
       <AccordionTrigger className="text-lg">{question}</AccordionTrigger>
@@ -13,6 +18,8 @@ const Faq = ({ question, answer, number }) => {
       </AccordionContent>
     </AccordionItem>
   );
-};
+});
+
+Faq.displayName = "Faq";
 
 export default Faq;
