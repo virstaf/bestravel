@@ -8,6 +8,7 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
+import { memo, useMemo } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,8 +20,13 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { getShortDate } from "@/lib/getFormattedDate";
 
-const QuoteCard = ({ quote }) => {
+/**
+ * Memoized QuoteCard component to prevent unnecessary re-renders.
+ * Uses centralized date formatting and memoized currency formatting.
+ */
+const QuoteCard = memo(({ quote }) => {
   const {
     quote_number,
     total_amount,
@@ -32,23 +38,13 @@ const QuoteCard = ({ quote }) => {
     trip_id,
   } = quote;
 
-  // Format currency
-  const formatCurrency = (amount) => {
+  // Memoized currency formatter
+  const formattedAmount = useMemo(() => {
     return new Intl.NumberFormat("en-GB", {
       style: "currency",
       currency: "GBP",
-    }).format(amount || 0);
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
+    }).format(total_amount || 0);
+  }, [total_amount]);
 
   // Get status badge variant and icon
   const getStatusInfo = (status) => {
@@ -96,7 +92,9 @@ const QuoteCard = ({ quote }) => {
   const statusInfo = getStatusInfo(currentStatus || status);
 
   // Check if quote is expired
-  const isExpired = valid_until && new Date(valid_until) < new Date();
+  const isExpired = useMemo(() => {
+    return valid_until && new Date(valid_until) < new Date();
+  }, [valid_until]);
 
   return (
     <Card className="hover:shadow-lg transition-shadow duration-300">
@@ -105,7 +103,7 @@ const QuoteCard = ({ quote }) => {
           <div>
             <CardTitle className="text-lg">Quote #{quote_number}</CardTitle>
             <CardDescription className="mt-1">
-              Created {formatDate(created_at)}
+              Created {getShortDate(created_at)}
             </CardDescription>
           </div>
           <Badge
@@ -125,7 +123,7 @@ const QuoteCard = ({ quote }) => {
             Total Amount
           </span>
           <span className="text-2xl font-bold">
-            {formatCurrency(total_amount)}
+            {formattedAmount}
           </span>
         </div>
 
@@ -139,7 +137,7 @@ const QuoteCard = ({ quote }) => {
                 isExpired ? "text-destructive font-medium" : "font-medium"
               }
             >
-              {formatDate(valid_until)}
+              {getShortDate(valid_until)}
             </span>
             {isExpired && (
               <Badge variant="destructive" className="ml-2">
@@ -183,6 +181,8 @@ const QuoteCard = ({ quote }) => {
       </CardFooter>
     </Card>
   );
-};
+});
+
+QuoteCard.displayName = "QuoteCard";
 
 export default QuoteCard;
