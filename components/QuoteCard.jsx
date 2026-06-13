@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import {
   Card,
   CardHeader,
@@ -19,8 +20,22 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { getShortDate } from "@/lib/getFormattedDate";
 
-const QuoteCard = ({ quote }) => {
+/**
+ * Hoisted currency formatter for performance.
+ */
+const currencyFormatter = new Intl.NumberFormat("en-GB", {
+  style: "currency",
+  currency: "GBP",
+});
+
+/**
+ * Optimized QuoteCard component.
+ * Uses React.memo to prevent unnecessary re-renders.
+ * Uses useMemo for complex status and validity logic.
+ */
+const QuoteCard = memo(({ quote }) => {
   const {
     quote_number,
     total_amount,
@@ -29,30 +44,27 @@ const QuoteCard = ({ quote }) => {
     valid_until,
     client_notes,
     created_at,
-    trip_id,
   } = quote;
 
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: "GBP",
-    }).format(amount || 0);
-  };
+  // Format currency using hoisted formatter
+  const formattedAmount = useMemo(
+    () => currencyFormatter.format(total_amount || 0),
+    [total_amount]
+  );
 
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
+  // Format dates using optimized utilities
+  const formattedCreatedAt = useMemo(
+    () => getShortDate(created_at),
+    [created_at]
+  );
+  const formattedValidUntil = useMemo(
+    () => getShortDate(valid_until),
+    [valid_until]
+  );
 
-  // Get status badge variant and icon
-  const getStatusInfo = (status) => {
-    const statusLower = status?.toLowerCase();
+  // Memoize status info to avoid re-calculating on every render
+  const statusInfo = useMemo(() => {
+    const statusLower = (currentStatus || status)?.toLowerCase();
     switch (statusLower) {
       case "sent":
         return {
@@ -88,15 +100,16 @@ const QuoteCard = ({ quote }) => {
         return {
           variant: "outline",
           icon: <FileText className="h-3 w-3" />,
-          label: status || "Unknown",
+          label: currentStatus || status || "Unknown",
         };
     }
-  };
+  }, [currentStatus, status]);
 
-  const statusInfo = getStatusInfo(currentStatus || status);
-
-  // Check if quote is expired
-  const isExpired = valid_until && new Date(valid_until) < new Date();
+  // Memoize expiration check
+  const isExpired = useMemo(
+    () => valid_until && new Date(valid_until) < new Date(),
+    [valid_until]
+  );
 
   return (
     <Card className="hover:shadow-lg transition-shadow duration-300">
@@ -105,7 +118,7 @@ const QuoteCard = ({ quote }) => {
           <div>
             <CardTitle className="text-lg">Quote #{quote_number}</CardTitle>
             <CardDescription className="mt-1">
-              Created {formatDate(created_at)}
+              Created {formattedCreatedAt}
             </CardDescription>
           </div>
           <Badge
@@ -124,9 +137,7 @@ const QuoteCard = ({ quote }) => {
           <span className="text-sm font-medium text-muted-foreground">
             Total Amount
           </span>
-          <span className="text-2xl font-bold">
-            {formatCurrency(total_amount)}
-          </span>
+          <span className="text-2xl font-bold">{formattedAmount}</span>
         </div>
 
         {/* Validity */}
@@ -139,7 +150,7 @@ const QuoteCard = ({ quote }) => {
                 isExpired ? "text-destructive font-medium" : "font-medium"
               }
             >
-              {formatDate(valid_until)}
+              {formattedValidUntil}
             </span>
             {isExpired && (
               <Badge variant="destructive" className="ml-2">
@@ -183,6 +194,8 @@ const QuoteCard = ({ quote }) => {
       </CardFooter>
     </Card>
   );
-};
+});
+
+QuoteCard.displayName = "QuoteCard";
 
 export default QuoteCard;
