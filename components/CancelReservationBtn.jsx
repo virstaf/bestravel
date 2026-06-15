@@ -11,8 +11,7 @@ const CancelReservationBtn = ({
 }) => {
   const handleClick = async (resId) => {
     try {
-      const { error } = await cancelReservation(resId);
-      if (error) throw data.error;
+      await cancelReservation(resId);
       toast.success("Cancelled successfully", { description: resId });
     } catch (error) {
       toast.error("Cancelling reservation failed!", {
