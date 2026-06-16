@@ -1,8 +1,13 @@
 "use client";
 
+import { memo } from "react";
 import { Check, Shield, Clock, Users, CreditCard } from "lucide-react";
 
-const TrustStrip = () => {
+/**
+ * TrustStrip component displaying social proof and trust indicators.
+ * Memoized to prevent re-renders as the content is static.
+ */
+const TrustStrip = memo(() => {
   const trustItems = [
     {
       icon: Users,
@@ -51,6 +56,8 @@ const TrustStrip = () => {
       </div>
     </section>
   );
-};
+});
+
+TrustStrip.displayName = "TrustStrip";
 
 export default TrustStrip;
