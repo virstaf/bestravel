@@ -1,5 +1,11 @@
+import { memo } from "react";
 
-const SlidingCard = ({ message, author, stars }) => {
+/**
+ * SlidingCard component for testimonial messages.
+ * Memoized to prevent redundant re-renders within the testimonial slider.
+ */
+const SlidingCard = memo(({ message, author, stars }) => {
+  // console.log(`Rendering SlidingCard for ${author}`);
   const totalStars = 5;
   const filledStars = Array(stars).fill("★").join("");
   const emptyStars = Array(totalStars - stars)
@@ -18,6 +24,8 @@ const SlidingCard = ({ message, author, stars }) => {
       </div>
     </div>
   );
-};
+});
+
+SlidingCard.displayName = "SlidingCard";
 
 export default SlidingCard;
