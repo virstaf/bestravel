@@ -1,6 +1,10 @@
-// components/AutoPlayVideo.jsx
+import { memo } from "react";
 
-const AutoPlayVideo = ({ source, style }) => {
+/**
+ * AutoPlayVideo component is memoized to prevent redundant re-renders
+ * especially when used within the Testimonials slider which updates every 5 seconds.
+ */
+const AutoPlayVideo = memo(({ source, style }) => {
   return (
     <video
       autoPlay
@@ -14,6 +18,8 @@ const AutoPlayVideo = ({ source, style }) => {
       Your browser does not support the video tag.
     </video>
   );
-};
+});
+
+AutoPlayVideo.displayName = "AutoPlayVideo";
 
 export default AutoPlayVideo;
