@@ -1,5 +1,10 @@
+import { memo } from "react";
 
-const SlidingCard = ({ message, author, stars }) => {
+/**
+ * Performance Optimization: SlidingCard
+ * Memoized to prevent redundant render cycles during parent state updates.
+ */
+const SlidingCard = memo(({ message, author, stars }) => {
   const totalStars = 5;
   const filledStars = Array(stars).fill("★").join("");
   const emptyStars = Array(totalStars - stars)
@@ -18,6 +23,8 @@ const SlidingCard = ({ message, author, stars }) => {
       </div>
     </div>
   );
-};
+});
+
+SlidingCard.displayName = "SlidingCard";
 
 export default SlidingCard;
