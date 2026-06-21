@@ -1,6 +1,11 @@
 // components/AutoPlayVideo.jsx
+import { memo } from "react";
 
-const AutoPlayVideo = ({ source, style }) => {
+/**
+ * AutoPlayVideo component memoized to prevent video restarts or flicker
+ * when parent components (like Testimonials slider) re-render.
+ */
+const AutoPlayVideo = memo(({ source, style }) => {
   return (
     <video
       autoPlay
@@ -14,6 +19,8 @@ const AutoPlayVideo = ({ source, style }) => {
       Your browser does not support the video tag.
     </video>
   );
-};
+});
+
+AutoPlayVideo.displayName = "AutoPlayVideo";
 
 export default AutoPlayVideo;

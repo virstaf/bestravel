@@ -1,8 +1,13 @@
 "use client";
 
+import { memo } from "react";
 import { Check, Shield, Clock, Users, CreditCard } from "lucide-react";
 
-const TrustStrip = () => {
+/**
+ * TrustStrip component memoized since it renders static trust indicators
+ * and does not need to re-render when its parent (like LandingPage or DealsPage) updates.
+ */
+const TrustStrip = memo(() => {
   const trustItems = [
     {
       icon: Users,
@@ -51,6 +56,8 @@ const TrustStrip = () => {
       </div>
     </section>
   );
-};
+});
+
+TrustStrip.displayName = "TrustStrip";
 
 export default TrustStrip;
