@@ -1,5 +1,10 @@
+import { memo } from "react";
 
-const SlidingCard = ({ message, author, stars }) => {
+/**
+ * SlidingCard component memoized to prevent redundant renders when the
+ * testimonials slider cycle updates, ensuring smooth transitions.
+ */
+const SlidingCard = memo(({ message, author, stars }) => {
   const totalStars = 5;
   const filledStars = Array(stars).fill("★").join("");
   const emptyStars = Array(totalStars - stars)
@@ -18,6 +23,8 @@ const SlidingCard = ({ message, author, stars }) => {
       </div>
     </div>
   );
-};
+});
+
+SlidingCard.displayName = "SlidingCard";
 
 export default SlidingCard;
