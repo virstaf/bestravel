@@ -1,5 +1,12 @@
+"use client";
 
-const SlidingCard = ({ message, author, stars }) => {
+import { memo } from "react";
+
+/**
+ * Optimized SlidingCard component.
+ * Performance: Memoized to prevent redundant re-renders when parent state updates.
+ */
+const SlidingCard = memo(({ message, author, stars }) => {
   const totalStars = 5;
   const filledStars = Array(stars).fill("★").join("");
   const emptyStars = Array(totalStars - stars)
@@ -18,6 +25,8 @@ const SlidingCard = ({ message, author, stars }) => {
       </div>
     </div>
   );
-};
+});
+
+SlidingCard.displayName = "SlidingCard";
 
 export default SlidingCard;
