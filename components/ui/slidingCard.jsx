@@ -1,5 +1,13 @@
+"use client";
+import { memo } from "react";
 
-const SlidingCard = ({ message, author, stars }) => {
+/**
+ * SlidingCard Component
+ *
+ * Wrapped in React.memo to prevent unnecessary re-renders.
+ * Explicitly marked with "use client" for compatibility with client-side state updates.
+ */
+const SlidingCard = memo(({ message, author, stars }) => {
   const totalStars = 5;
   const filledStars = Array(stars).fill("★").join("");
   const emptyStars = Array(totalStars - stars)
@@ -18,6 +26,8 @@ const SlidingCard = ({ message, author, stars }) => {
       </div>
     </div>
   );
-};
+});
+
+SlidingCard.displayName = "SlidingCard";
 
 export default SlidingCard;

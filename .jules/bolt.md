@@ -37,3 +37,7 @@
 
 **Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
 **Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
+
+## 2026-06-24 - [Intl Hoisting and Component Memoization]
+**Learning:** Hoisting Intl.DateTimeFormat instances is ~70x faster than repeated instantiation. When memoizing components in Next.js App Router, ensure "use client" is present to avoid runtime errors, but be cautious not to convert Server Components to Client Components unnecessarily.
+**Action:** Hoist formatters for performance; verify "use client" when using React.memo in client components.
