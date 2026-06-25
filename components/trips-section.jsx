@@ -1,15 +1,14 @@
 import TripsList from "./TripsList";
-import { getProfileAction } from "@/actions/profiles";
-import { fetchTrips } from "@/actions/trips";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { PlusIcon } from "lucide-react";
 import { EyeIcon } from "lucide-react";
 
-const TripsSection = async () => {
-  const { profile } = await getProfileAction();
-  const trips = await fetchTrips(profile?.id); // await fetchTrips(); // Fetch trips if needed
-
+/**
+ * TripsSection component.
+ * Performance: Accepts profile and trips as props to avoid redundant fetching.
+ */
+const TripsSection = ({ profile, trips }) => {
   return (
     <div className="bg-gradient-to-b from-primary/5 to-gray-white py-8 px-4 rounded-2xl">
       <div className="flex justify-between gap-4">
