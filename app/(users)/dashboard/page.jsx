@@ -9,11 +9,27 @@ import WelcomeSection from "@/components/welcome-section";
 import HolidayDestinationsSection from "@/components/holiday-destinations-section";
 import SubscriptionPrompt from "@/components/subscription-prompt";
 import { getProfileAction } from "@/actions/profiles";
+import { fetchTrips } from "@/actions/trips";
+import { getUserReservations } from "@/actions/reservations";
+import { getFeaturedDealsAction } from "@/actions/deals";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * Optimized DashboardPage.
+ * Performance: Hoists data fetching for all sections to the top level.
+ * Using Promise.all parallelizes independent database requests, reducing TTFB.
+ */
 const DashboardPage = async () => {
   const { profile } = await getProfileAction();
+  const userId = profile?.id;
+
+  // Parallelize fetching of trips, reservations, and deals to avoid a waterfall
+  const [trips, reservations, featuredDeals] = await Promise.all([
+    userId ? fetchTrips(userId) : Promise.resolve([]),
+    userId ? getUserReservations(userId) : Promise.resolve([]),
+    getFeaturedDealsAction({ limit: 3 }),
+  ]);
 
   return (
     <div className="px-4 h-full w-full sm:w-[calc(100%-100px)]">
@@ -26,19 +42,23 @@ const DashboardPage = async () => {
         {profile && <SubscriptionPrompt profile={profile} />}
 
         <section className="my-12">
-          <WelcomeSection />
+          <WelcomeSection profile={profile} />
         </section>
 
         <section className="my-12">
-          <TripsSection />
+          <TripsSection profile={profile} trips={trips} />
         </section>
 
         <section className="my-12">
-          <DealsSection />
+          <DealsSection featuredDeals={featuredDeals} />
         </section>
 
         <section className="my-12">
-          <ReservationsSection />
+          <ReservationsSection
+            profile={profile}
+            reservations={reservations}
+            trips={trips}
+          />
         </section>
 
         <div className="my-12">

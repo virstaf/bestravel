@@ -37,3 +37,8 @@
 
 **Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
 **Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
+
+## 2026-05-20 - [Hoisting Data Fetching to Eliminate SSR Waterfalls]
+
+**Learning:** When multiple sections of a page (like the Dashboard) independently fetch overlapping data or rely on the same initial data (like the user profile), it creates a sequential "waterfall" of server-side requests. This increases TTFB and stresses the database. Hoisting all primary data fetching to the page level and using `Promise.all` allows parallel execution and single-pass data distribution via props.
+**Action:** Always audit complex pages for redundant Server Action calls and hoist them to the top-level Server Component for parallelization.
