@@ -35,5 +35,10 @@
 
 ## 2025-05-16 - [Consolidating Profile Fetching for Network Efficiency]
 
-**Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
+**Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
 **Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
+
+## 2025-05-20 - [Hoisting Intl.DateTimeFormat for High-Frequency Rendering]
+
+**Learning:** Repeatedly calling `.toLocaleDateString()` or creating new `Intl.DateTimeFormat` objects in high-frequency rendering paths (like large grids or frequently updating state) is a significant performance bottleneck. Engines must re-initialize locale and formatting rules for every call. Hoisting these instances to module scope and reusing them via `.format()` is up to 70x faster.
+**Action:** Always hoist `Intl.DateTimeFormat` instances to module scope for date formatting in components or utility functions.
