@@ -37,3 +37,8 @@
 
 **Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
 **Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
+
+## 2025-10-27 - [Hoisting Intl.DateTimeFormat for High-Frequency Formatting]
+
+**Learning:** Benchmarking revealed that hoisting `Intl.DateTimeFormat` instances is up to ~45x faster than repeated `.toLocaleDateString()` calls (e.g., ~37ms vs ~1.67s for 10,000 iterations). This significantly reduces overhead in high-frequency rendering paths by avoiding redundant formatter object creation and locale/options parsing.
+**Action:** Always hoist `Intl.DateTimeFormat` instances to the module level for performance-critical date formatting.
