@@ -1,6 +1,12 @@
-// components/AutoPlayVideo.jsx
+"use client";
 
-const AutoPlayVideo = ({ source, style }) => {
+import { memo } from "react";
+
+/**
+ * Optimized AutoPlayVideo component.
+ * Memoized to prevent redundant re-renders when parent state (like slider index) changes.
+ */
+const AutoPlayVideo = memo(({ source, style }) => {
   return (
     <video
       autoPlay
@@ -14,6 +20,8 @@ const AutoPlayVideo = ({ source, style }) => {
       Your browser does not support the video tag.
     </video>
   );
-};
+});
+
+AutoPlayVideo.displayName = "AutoPlayVideo";
 
 export default AutoPlayVideo;
