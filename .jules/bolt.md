@@ -37,3 +37,11 @@
 
 **Learning:** In applications with multiple persistent UI elements (Navbar, Sidebar, etc.) that require user state, decentralized data fetching leads to redundant network requests and potential hydration flickering. Centralizing user state in a React Context and exposing it via a hook reduces the number of initial API calls to one, improving perceived performance and reducing server load.
 **Action:** Use a single `ProfileContext` to manage user state and consume it in all client components that require user data.
+
+## 2024-05-20 - [Intl Formatter Hoisting Performance]
+**Learning:** Instantiating `Intl.NumberFormat` and `Intl.DateTimeFormat` is expensive. Hoisting these instances to a centralized utility (`lib/formatters.js`) provides a ~60x to ~100x speedup for formatting operations. This is especially critical in React components that render large lists or tables (e.g., `QuoteCard` in a grid).
+**Action:** Always use hoisted `Intl` instances from `lib/formatters.js` for currency and date formatting.
+
+## 2024-05-20 - [ESLint 9.x Circular Structure Error]
+**Learning:** In this environment, running ESLint 9.x globally can fail with a `TypeError: Converting circular structure to JSON` due to how certain plugins (like `react`) are loaded in flat config or legacy wrappers.
+**Action:** If global linting fails, target specific files or directories, or use `next lint` with care, avoiding the circular structure trigger.

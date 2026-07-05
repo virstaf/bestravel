@@ -19,6 +19,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Link from "next/link";
+import { formatCurrencyGBP, formatDateShort } from "@/lib/formatters";
 
 const QuoteCard = ({ quote }) => {
   const {
@@ -32,23 +33,6 @@ const QuoteCard = ({ quote }) => {
     trip_id,
   } = quote;
 
-  // Format currency
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-GB", {
-      style: "currency",
-      currency: "GBP",
-    }).format(amount || 0);
-  };
-
-  // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  };
 
   // Get status badge variant and icon
   const getStatusInfo = (status) => {
@@ -105,7 +89,7 @@ const QuoteCard = ({ quote }) => {
           <div>
             <CardTitle className="text-lg">Quote #{quote_number}</CardTitle>
             <CardDescription className="mt-1">
-              Created {formatDate(created_at)}
+              Created {formatDateShort(created_at)}
             </CardDescription>
           </div>
           <Badge
@@ -125,7 +109,7 @@ const QuoteCard = ({ quote }) => {
             Total Amount
           </span>
           <span className="text-2xl font-bold">
-            {formatCurrency(total_amount)}
+            {formatCurrencyGBP(total_amount)}
           </span>
         </div>
 
@@ -139,7 +123,7 @@ const QuoteCard = ({ quote }) => {
                 isExpired ? "text-destructive font-medium" : "font-medium"
               }
             >
-              {formatDate(valid_until)}
+              {formatDateShort(valid_until)}
             </span>
             {isExpired && (
               <Badge variant="destructive" className="ml-2">
