@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Calendar, FileText, Package } from "lucide-react";
 import { notFound } from "next/navigation";
+import { formatCurrencyGBP, formatDateLong } from "@/lib/formatters";
 
 export default async function QuoteDetailPage({ params }) {
   const { quote_number } = await params;
@@ -18,24 +19,6 @@ export default async function QuoteDetailPage({ params }) {
   try {
     const quote = await getQuoteByNumber(quote_number);
     const quoteItems = await getQuoteItemsByQuoteId(quote.id);
-
-    // Format currency
-    const formatCurrency = (amount) => {
-      return new Intl.NumberFormat("en-GB", {
-        style: "currency",
-        currency: "GBP",
-      }).format(amount || 0);
-    };
-
-    // Format date
-    const formatDate = (dateString) => {
-      if (!dateString) return "N/A";
-      return new Date(dateString).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-    };
 
     // Get status badge variant
     const getStatusVariant = (status) => {
@@ -76,7 +59,7 @@ export default async function QuoteDetailPage({ params }) {
                     Quote #{quote.quote_number}
                   </CardTitle>
                   <CardDescription className="mt-2">
-                    Created {formatDate(quote.created_at)}
+                    Created {formatDateLong(quote.created_at)}
                   </CardDescription>
                 </div>
                 <Badge
@@ -101,7 +84,7 @@ export default async function QuoteDetailPage({ params }) {
                       <p
                         className={`font-medium ${isExpired ? "text-destructive" : ""}`}
                       >
-                        {formatDate(quote.valid_until)}
+                        {formatDateLong(quote.valid_until)}
                         {isExpired && " (Expired)"}
                       </p>
                     </div>
@@ -169,11 +152,11 @@ export default async function QuoteDetailPage({ params }) {
                     </div>
                     <div className="text-right">
                       <p className="text-lg font-semibold">
-                        {formatCurrency(item.subtotal)}
+                        {formatCurrencyGBP(item.subtotal)}
                       </p>
                       {item.quantity > 1 && (
                         <p className="text-sm text-muted-foreground">
-                          {formatCurrency(item.price)} each
+                          {formatCurrencyGBP(item.price)} each
                         </p>
                       )}
                     </div>
@@ -185,7 +168,7 @@ export default async function QuoteDetailPage({ params }) {
               <div className="mt-6 pt-6 border-t">
                 <div className="flex items-center justify-between text-xl font-bold">
                   <span>Total Amount</span>
-                  <span>{formatCurrency(quote.total_amount)}</span>
+                  <span>{formatCurrencyGBP(quote.total_amount)}</span>
                 </div>
               </div>
             </CardContent>
