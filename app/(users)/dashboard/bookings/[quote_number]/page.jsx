@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Calendar, FileText, Package } from "lucide-react";
 import { notFound } from "next/navigation";
+import { formatCurrencyGBP, dateLongGB, safeFormatDate } from "@/lib/formatters";
 
 export default async function QuoteDetailPage({ params }) {
   const { quote_number } = await params;
@@ -19,23 +20,8 @@ export default async function QuoteDetailPage({ params }) {
     const quote = await getQuoteByNumber(quote_number);
     const quoteItems = await getQuoteItemsByQuoteId(quote.id);
 
-    // Format currency
-    const formatCurrency = (amount) => {
-      return new Intl.NumberFormat("en-GB", {
-        style: "currency",
-        currency: "GBP",
-      }).format(amount || 0);
-    };
-
-    // Format date
-    const formatDate = (dateString) => {
-      if (!dateString) return "N/A";
-      return new Date(dateString).toLocaleDateString("en-GB", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      });
-    };
+    // Format date using optimized formatter
+    const formatDate = (dateString) => safeFormatDate(dateString, dateLongGB);
 
     // Get status badge variant
     const getStatusVariant = (status) => {
@@ -169,11 +155,11 @@ export default async function QuoteDetailPage({ params }) {
                     </div>
                     <div className="text-right">
                       <p className="text-lg font-semibold">
-                        {formatCurrency(item.subtotal)}
+                        {formatCurrencyGBP(item.subtotal)}
                       </p>
                       {item.quantity > 1 && (
                         <p className="text-sm text-muted-foreground">
-                          {formatCurrency(item.price)} each
+                          {formatCurrencyGBP(item.price)} each
                         </p>
                       )}
                     </div>
@@ -185,7 +171,7 @@ export default async function QuoteDetailPage({ params }) {
               <div className="mt-6 pt-6 border-t">
                 <div className="flex items-center justify-between text-xl font-bold">
                   <span>Total Amount</span>
-                  <span>{formatCurrency(quote.total_amount)}</span>
+                  <span>{formatCurrencyGBP(quote.total_amount)}</span>
                 </div>
               </div>
             </CardContent>
